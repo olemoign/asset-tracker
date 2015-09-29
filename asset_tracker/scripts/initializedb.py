@@ -8,7 +8,7 @@ from zope.sqlalchemy import register
 from pyramid.paster import get_appsettings, setup_logging
 from pyramid.scripts.common import parse_vars
 
-from ..utilities.domain_model import Model
+from ..models import Model
 
 
 def usage(argv):

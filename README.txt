@@ -1,4 +1,4 @@
-tracking README
+asset_tracker README
 ==================
 
 Getting Started
@@ -8,7 +8,7 @@ Getting Started
 
 - $VENV/bin/python setup.py develop
 
-- $VENV/bin/initialize_tracking_db development.ini
+- $VENV/bin/initialize_asset_tracker_db development.ini
 
 - $VENV/bin/pserve development.ini
 

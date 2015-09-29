@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
-Name: tracking
+Name: asset-tracker
 Version: 0.1
-Summary: tracking
+Summary: asset_tracker
 Home-page: UNKNOWN
 Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
-Description: tracking README
+Description: asset_tracker README
         ==================
         
         Getting Started
@@ -16,7 +16,7 @@ Description: tracking README
         
         - $VENV/bin/python setup.py develop
         
-        - $VENV/bin/initialize_tracking_db development.ini
+        - $VENV/bin/initialize_asset_tracker_db development.ini
         
         - $VENV/bin/pserve development.ini
         

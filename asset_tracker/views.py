@@ -7,12 +7,23 @@ from jwt import decode, ExpiredSignatureError, InvalidAudienceError, InvalidIssu
 from requests import ConnectionError, get, post, Timeout
 from oauthlib.oauth2 import OAuth2Error, WebApplicationClient
 
+from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPServiceUnavailable
 from pyramid.security import Allow, Authenticated, forget, remember
 from pyramid.session import signed_deserialize, signed_serialize
 from pyramid.view import forbidden_view_config, view_config
 
-logger = getLogger('tracking')
+logger = getLogger('asset_tracker')
+
+
+@subscriber(BeforeRender)
+def add_global_variables(event):
+    event['client_id'] = event['request'].registry.settings['rta.client_id']
+
+    if event['request'].user:
+        event['user_alias'] = event['request'].user['alias']
+        event['principals'] = event['request'].effective_principals
+        event['locale'] = event['request'].user['locale']
 
 
 class AssetsEndPoint(object):
@@ -57,7 +68,7 @@ class Users(object):
         else:
             if self.request.cookies.get('rta_at'):
                 # Access token is still valid, request user info using access token
-                cookie_signature = self.request.registry.settings.get('meerkat.cookie_signature')
+                cookie_signature = self.request.registry.settings.get('asset_tracker.cookie_signature')
                 try:
                     access_token = signed_deserialize(self.request.cookies.get('rta_at'), cookie_signature)
                 except ValueError:
@@ -78,7 +89,7 @@ class Users(object):
 
             if self.request.cookies.get('rta_rt'):
                 # Access token has expired but we have a refresh token, request new access token using the refresh token
-                cookie_signature = self.request.registry.settings.get('meerkat.cookie_signature')
+                cookie_signature = self.request.registry.settings.get('asset_tracker.cookie_signature')
                 try:
                     refresh_token = signed_deserialize(self.request.cookies.get('rta_rt'), cookie_signature)
                 except ValueError:
@@ -100,13 +111,13 @@ class Users(object):
             # Either access token and refresh tokens failed or no existing authentication information => prepare OAuth authorization process
             oauth_client_id = self.request.registry.settings['rta.client_id']
             oauth_client = WebApplicationClient(oauth_client_id)
-            meerkat_request_token_endpoint = self.request.route_url('oauth_request_token')
+            asset_tracker_request_token_endpoint = self.request.route_url('oauth-request_token')
             rta_authorization_url = self.request.route_url('rta', path='api/oauth/authorize/')
 
             security_token = encode(urandom(16), 'hex_codec').decode('utf-8')
             target_path = self.request.path
             state = {'security_token': security_token, 'target_path': target_path}
-            rta_authorization_request = oauth_client.prepare_request_uri(rta_authorization_url, redirect_uri=meerkat_request_token_endpoint, state=quote(urlencode(state)))
+            rta_authorization_request = oauth_client.prepare_request_uri(rta_authorization_url, redirect_uri=asset_tracker_request_token_endpoint, state=quote(urlencode(state)))
 
             self.request.session['rta_csrf'] = security_token
             return HTTPFound(location=rta_authorization_request)
@@ -130,7 +141,7 @@ class Users(object):
         if security_token and security_token == self.request.session.pop('rta_csrf', None):
             # Using authorization code, request token
             rta_token_url = self.request.route_url('rta', path='api/oauth/token/')
-            data = oauth_client.prepare_request_body(code=authorization_code, redirect_uri=self.request.route_url('oauth_request_token'))
+            data = oauth_client.prepare_request_body(code=authorization_code, redirect_uri=self.request.route_url('oauth-request_token'))
             secret = self.request.registry.settings['rta.secret']
             try:
                 r = post(rta_token_url, data=data, auth=(oauth_client_id, secret))
@@ -179,7 +190,7 @@ class Users(object):
             self.request.user = user_info
             headers = remember(self.request, self.request.user['id'])
             response = HTTPFound(location=target_path, headers=headers)
-            cookie_signature = self.request.registry.settings['tracking.cookie_signature']
+            cookie_signature = self.request.registry.settings['asset_tracker.cookie_signature']
             response.set_cookie('rta_at', signed_serialize(access_token, cookie_signature), max_age=expires_in)
             response.set_cookie('rta_rt', signed_serialize(refresh_token, cookie_signature), max_age=604800)
             logger.info(';'.join([str(self.request.user['id']), 'log in']))

@@ -41,7 +41,7 @@ def main(global_config, **settings):
 
     config.include('pyramid_jinja2')
     jinja2_settings = {
-        'jinja2.directories': 'tracking:templates',
+        'jinja2.directories': 'asset_tracker:templates',
         'jinja2.cache_size': 400,
         'jinja2.bytecode_caching': True,
         'jinja2.filters': {
@@ -53,9 +53,9 @@ def main(global_config, **settings):
     config.add_settings(jinja2_settings)
     config.add_jinja2_renderer('.html')
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_translation_dirs('tracking:locale')
+    config.add_translation_dirs('asset_tracker:locale')
 
-    cookie_signature = settings['tracking.cookie_signature']
+    cookie_signature = settings['asset_tracker.cookie_signature']
     authenticationn_policy = AuthTktAuthenticationPolicy(cookie_signature, callback=effective_principals, hashalg='sha512')
     authorization_policy = ACLAuthorizationPolicy()
     config.set_authentication_policy(authenticationn_policy)
@@ -69,14 +69,14 @@ def main(global_config, **settings):
     rta_url = settings['rta.server_url'] + '/{path}'
     config.add_route('rta', rta_url)
 
-    config.include('tracking.api', route_prefix='api')
-    config.include('tracking.views')
+    config.include('asset_tracker.api', route_prefix='api')
+    config.include('asset_tracker.views')
     config.scan()
 
     # config.include('pyramid_assetviews')
-    # config.add_asset_views('tracking:static', filenames=['apple-touch-icon.png', 'favicon.ico', '.htaccess', 'robots.txt'], http_cache=3600)
+    # config.add_asset_views('asset_tracker:static', filenames=['apple-touch-icon.png', 'favicon.ico', '.htaccess', 'robots.txt'], http_cache=3600)
 
-    if settings.get('tracking.debug') == 'True':
+    if settings.get('asset_tracker.debug') == 'True':
         return TransLogger(config.make_wsgi_app(), setup_console_handler=False)
     else:
         return config.make_wsgi_app()

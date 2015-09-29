@@ -1,0 +1,52 @@
+$icon-font-path: "/static/fonts/";
+
+//@import 'branding';
+@import 'bootstrap';
+
+$black: #000;
+
+.panel__title {
+    margin: 0;
+    display: inline;
+}
+
+table td a {
+  text-decoration: none;
+  color: $black;
+  //even if text doesn't cover the whole td, the whole space is clickable
+  display: block;
+}
+
+table td a:hover {
+  text-decoration: none;
+}
+
+//prevent showing horizontal scroll bar on xs screen even if table isn't big enough
+.table-responsive {
+  overflow-x: auto;
+}
+
+table tr[data-href] {
+  cursor: pointer;
+}
+
+//add padding to datatables tools in case we are in a panel
+.panel .dataTables_length,
+.panel .dataTables_filter {
+  padding-top: 10px;
+}
+
+.panel .dataTables_length,
+.panel .dataTables_info {
+  padding-left: 10px;
+}
+
+.panel .dataTables_filter,
+.panel .dataTables_paginate {
+  padding-right: 10px;
+}
+
+td {
+    overflow: hidden;
+    word-break: break-all;
+}

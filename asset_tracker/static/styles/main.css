@@ -5795,5 +5795,38 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+.panel__title {
+  margin: 0;
+  display: inline; }
+
+table td a {
+  text-decoration: none;
+  color: #000;
+  display: block; }
+
+table td a:hover {
+  text-decoration: none; }
+
+.table-responsive {
+  overflow-x: auto; }
+
+table tr[data-href] {
+  cursor: pointer; }
+
+.panel .dataTables_length,
+.panel .dataTables_filter {
+  padding-top: 10px; }
+
+.panel .dataTables_length,
+.panel .dataTables_info {
+  padding-left: 10px; }
+
+.panel .dataTables_filter,
+.panel .dataTables_paginate {
+  padding-right: 10px; }
+
+td {
+  overflow: hidden;
+  word-break: break-all; }
 
 /*# sourceMappingURL=main.css.map */

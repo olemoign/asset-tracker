@@ -8,7 +8,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title>{{ app_name }} | {% block title %}{% endblock %}</title>
+        <title>Asset manager | {% block title %}{% endblock %}</title>
 
         <meta name="description" content="{{ app_name }}">
         <meta name="viewport" content="width=device-width">
@@ -21,10 +21,11 @@
         <script src="/static/scripts/jquery.js"></script>
         <script src="/static/scripts/datatables.js"></script>
         <script src="/static/scripts/bootstrap/alert.js"></script>
+        <script src="/static/scripts/bootstrap/collapse.js"></script>
         <script src="/static/scripts/bootstrap/dropdown.js"></script>
         <script src="/static/scripts/bootstrap/transition.js"></script>
         <script>var userLocale = '{{ locale }}';</script>
-        <script src="/static/scripts/tracking.js"></script>
+        <script src="/static/scripts/asset_tracker.js"></script>
 
         {% block page %}{% endblock %}
     </body>

@@ -2,9 +2,9 @@
 {% from 'macros.html' import input with context %}
 
 {% if update %}
-    {% set title = gettext('Modify oauth client') %}
+    {% set title = gettext('Modify asset') %}
 {% else %}
-    {% set title = gettext('Create oauth client') %}
+    {% set title = gettext('Create asset') %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -25,22 +25,12 @@
         </div>
 
         <div class="panel-body">
-            <form role="form" action="{% if update %}{{ 'admin-oauth_clients-update'|route_path(oauth_client_id=object.id) }}{% else %}{{ 'admin-oauth_clients-create'|route_path }}{% endif %}" method="post">
+            <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=object.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                 <div class="row">
-                    {% if update %}
-                    <div class="col-sm-6 form-group">
-                        <label>{{ gettext('Client ID') }}</label>
-                        <p class="form-control-static">{{ object.client_id }}</p>
-                    </div>
-                    <div class="col-sm-6 form-group">
-                        <label>{{ gettext('Secret') }}</label>
-                        <p class="form-control-static">{{ object.secret }}</p>
-                    </div>
-                    {% endif %}
-                    {{ input('Name *', 'oauth_client', 'name') }}
-                    {{ input('Redirect URI *', 'oauth_client', 'redirect_uri') }}
-                    {{ input('Home page *', 'oauth_client', 'homepage') }}
-                    {{ input('Logo', 'oauth_client', 'logo') }}
+                    {{ input('Asset ID *', 'asset', 'asset_id') }}
+                    {{ input('Customer', 'asset', 'customer') }}
+                    {{ input('Site', 'asset', '<site></site>') }}
+                    {{ input('Logo', 'asset', 'logo') }}
                 </div>
                 <div class="form-group">
                     <label>{{ gettext('Rights') }}</label>
@@ -69,13 +59,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="oauth_client-is_active"{% if not object or object.is_active %} checked{% endif %}> {{ gettext('Active') }}
-                    </label>
-                </div>
                 <div class="btn-group pull-right">
-                    <a href="{{ 'admin-oauth_clients-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
+                    <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
                     <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
                 </div>
             </form>

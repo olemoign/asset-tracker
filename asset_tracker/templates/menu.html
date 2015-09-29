@@ -1,24 +1,24 @@
 <header class="navbar navbar-default navbar-static-top" style="margin-bottom: 20px;" role="banner">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#tracking-navbar-collapse">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#asset_tracker-navbar-collapse">
                 <span class="sr-only">{{ gettext('Toggle navigation') }}</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ homepage }}">{{ app_name }}</a>
+            <a class="navbar-brand" href="{{ homepage }}">Asset manager</a>
         </div>
 
-        <nav class="collapse navbar-collapse" id="tracking-navbar-collapse" role="navigation">
+        <nav class="collapse navbar-collapse" id="asset_tracker-navbar-collapse" role="navigation">
             <ul id="menu-main" class="nav navbar-nav">
-
+                <li><a href="{{ 'rta'|route_url(path='') }}">{{ gettext('Users') }}</a></li>
             </ul>
             <ul id="menu-settings" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user_alias }} <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user_alias }} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ 'rta'|route_url(path='users/settings/', _query=(('client_id', client_id),)) }}" class="click_collapse">{{ gettext('Settings') }}</a></li>
+                        <li><a href="{{ 'rta'|route_url(path='users/settings/', _query=(('client_id', client_id),)) }}">{{ gettext('Settings') }}</a></li>
                         <li><a href="{{ 'users-logout'|route_path(_query=(('client_id', client_id),)) }}">{{ gettext('Logout') }}</a></li>
                     </ul>
                 </li>
