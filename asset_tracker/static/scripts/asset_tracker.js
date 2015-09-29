@@ -27,7 +27,7 @@ var dataTablesTranslations = {
 };
 
 $(document).ready(function() {
-    let dataTableParameters = {
+    var dataTableParameters = {
         'serverSide': true,
         'stateSave': true,
         'pageLength': 50,
@@ -43,7 +43,7 @@ $(document).ready(function() {
 });
 
 function addHrefToDataTablesRows(row, data) {
-    let object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
+    var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
     row.setAttribute('data-href', object_link[0].href);
 }
 
