@@ -1,8 +1,7 @@
+from codecs import encode
 from logging import getLogger
 from os import urandom
-# check python3 way of url parsing
-from urllib import quote, unquote, urlencode
-from urlparse import parse_qs
+from urllib.parse import parse_qs, quote, unquote, urlencode
 
 from jwt import decode, ExpiredSignatureError, InvalidAudienceError, InvalidIssuerError
 from requests import ConnectionError, get, post, Timeout
@@ -16,11 +15,38 @@ from pyramid.view import forbidden_view_config, view_config
 logger = getLogger('tracking')
 
 
-class Users(object):
+class AssetsEndPoint(object):
     __acl__ = [
-       (Allow, Authenticated, 'authenticated'),
+        (Allow, 'r:assets-create', 'assets-create'),
+        (Allow, 'r:assets-update', 'assets-update'),
+        (Allow, 'r:assets-list', 'assets-list'),
     ]
 
+    def __init__(self, request):
+        self.request = request
+
+    @view_config(route_name='assets-create', request_method='GET', permission='assets-create', renderer='assets-create_update.html')
+    def create_get(self):
+        return {}
+
+    @view_config(route_name='assets-create', request_method='POST', permission='assets-create', renderer='assets-create_update.html')
+    def create_post(self):
+        return {}
+
+    @view_config(route_name='assets-update', request_method='GET', permission='assets-update', renderer='assets-create_update.html')
+    def update_get(self):
+        return {}
+
+    @view_config(route_name='assets-update', request_method='POST', permission='assets-update', renderer='assets-create_update.html')
+    def update_post(self):
+        return {}
+
+    @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
+    def list_get(self):
+        return {}
+
+
+class Users(object):
     def __init__(self, request):
         self.request = request
 
@@ -77,7 +103,7 @@ class Users(object):
             meerkat_request_token_endpoint = self.request.route_url('oauth_request_token')
             rta_authorization_url = self.request.route_url('rta', path='api/oauth/authorize/')
 
-            security_token = urandom(16)
+            security_token = encode(urandom(16), 'hex_codec').decode('utf-8')
             target_path = self.request.path
             state = {'security_token': security_token, 'target_path': target_path}
             rta_authorization_request = oauth_client.prepare_request_uri(rta_authorization_url, redirect_uri=meerkat_request_token_endpoint, state=quote(urlencode(state)))
@@ -85,7 +111,7 @@ class Users(object):
             self.request.session['rta_csrf'] = security_token
             return HTTPFound(location=rta_authorization_request)
 
-    @view_config(route_name='oauth_request_token', request_method='GET')
+    @view_config(route_name='oauth-request_token', request_method='GET')
     def request_token(self):
         oauth_client_id = self.request.registry.settings['rta.client_id']
         oauth_client = WebApplicationClient(oauth_client_id)
@@ -153,13 +179,13 @@ class Users(object):
             self.request.user = user_info
             headers = remember(self.request, self.request.user['id'])
             response = HTTPFound(location=target_path, headers=headers)
-            cookie_signature = self.request.registry.settings['meerkat.cookie_signature']
+            cookie_signature = self.request.registry.settings['tracking.cookie_signature']
             response.set_cookie('rta_at', signed_serialize(access_token, cookie_signature), max_age=expires_in)
             response.set_cookie('rta_rt', signed_serialize(refresh_token, cookie_signature), max_age=604800)
             logger.info(';'.join([str(self.request.user['id']), 'log in']))
             return response
 
-    @view_config(route_name='users_logout', request_method='GET', permission='authenticated')
+    @view_config(route_name='users-logout', request_method='GET', permission='authenticated')
     def logout_get(self):
         client_id = self.request.registry.settings['rta.client_id']
         rta_logout_url = self.request.route_url('rta', path='users/logout/', _query=(('client_id', client_id),))
@@ -170,6 +196,10 @@ class Users(object):
         logger.info(';'.join([str(self.request.user['id']), 'log out']))
         return response
 
+
 def includeme(config):
-    config.add_route(pattern='logout/',                 name='users_logout',            factory=Users)
-    config.add_route(pattern='oauth/request_token/',    name='oauth_request_token',     factory=Users)
+    config.add_route(pattern='',                        name='assets-list',             factory=AssetsEndPoint)
+    config.add_route(pattern='create/',                 name='assets-create',           factory=AssetsEndPoint)
+    config.add_route(pattern='{asset_id}/',             name='assets-update',           factory=AssetsEndPoint)
+    config.add_route(pattern='logout/',                 name='users-logout')
+    config.add_route(pattern='oauth/request_token/',    name='oauth-request_token')

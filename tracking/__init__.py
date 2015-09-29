@@ -7,7 +7,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import register
 
-from tracking.utilities import Model
+from .utilities.domain_model import Model
 
 
 def get_user(request):
@@ -41,7 +41,7 @@ def main(global_config, **settings):
 
     config.include('pyramid_jinja2')
     jinja2_settings = {
-        'jinja2.directories': 'branding:templates',
+        'jinja2.directories': 'tracking:templates',
         'jinja2.cache_size': 400,
         'jinja2.bytecode_caching': True,
         'jinja2.filters': {
@@ -66,12 +66,17 @@ def main(global_config, **settings):
     config.add_request_method(get_user, 'user', reify=True)
     config.add_request_method(lambda request: maker(), 'db_session', reify=True)
 
+    rta_url = settings['rta.server_url'] + '/{path}'
+    config.add_route('rta', rta_url)
+
+    config.include('tracking.api', route_prefix='api')
     config.include('tracking.views')
+    config.scan()
 
     # config.include('pyramid_assetviews')
     # config.add_asset_views('tracking:static', filenames=['apple-touch-icon.png', 'favicon.ico', '.htaccess', 'robots.txt'], http_cache=3600)
 
-    if settings.get('meerkat.debug') == 'True':
+    if settings.get('tracking.debug') == 'True':
         return TransLogger(config.make_wsgi_app(), setup_console_handler=False)
     else:
         return config.make_wsgi_app()

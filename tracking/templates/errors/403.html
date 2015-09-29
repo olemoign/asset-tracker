@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ gettext('Error') }}{% endblock %}
+
+{% block page %}
+<div class="login-container container">
+    <img class="main-logo img-responsive" src="{{ logo }}">
+    <div class="alert alert-danger" role="alert">
+        {{ gettext('You are not authorized to access this page.') }}
+    </div>
+</div>
+{% endblock %}
+

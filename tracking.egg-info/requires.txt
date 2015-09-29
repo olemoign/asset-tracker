@@ -3,6 +3,7 @@ babel
 inflection
 ndg-httpsclient
 newrelic
+oauthlib
 Paste
 pyasn1
 PyJWT
@@ -13,6 +14,7 @@ pyramid_debugtoolbar
 pyramid_jinja2
 pyramid_tm
 pytest
+requests
 SQLAlchemy
 transaction
 zope.sqlalchemy

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ gettext('Assets') }}{% endblock %}
+
+{% block page %}
+{% include 'menu.html' %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel__title">{{ gettext('Assets') }}</h3>
+            <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
+        </div>
+
+        <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-datatables-assets'|route_path }}" width="100%">
+            <thead>
+                <tr>
+                    <th data-data="asset_id">{{ gettext('Asset ID') }}</th>
+                    <th data-data="customer">{{ gettext('Customer') }}</th>
+                    <th data-data="site">{{ gettext('Site') }}</th>
+                    <th data-data="status">{{ gettext('Status') }}</th>
+                    <th data-data="notes">{{ gettext('Notes') }}</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+{% endblock %}
