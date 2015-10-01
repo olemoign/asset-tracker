@@ -1,4 +1,7 @@
-from .utilities.domain_model import CreationDateTimeMixin, Enum, Integer, Field, ForeignKey, Model, relationship, String
+from collections import OrderedDict
+from pyramid.i18n import TranslationString as _
+
+from .utilities.domain_model import CreationDateTimeMixin, Date, Enum, Integer, Field, ForeignKey, Model, relationship, String
 
 
 class Asset(Model, CreationDateTimeMixin):
@@ -6,7 +9,7 @@ class Asset(Model, CreationDateTimeMixin):
     customer = Field(String)
     site = Field(String)
     notes = Field(String)
-    history = relationship('Event')
+    history = relationship('Event', order_by='Event.date')
     current_location = Field(String)
     equipments = relationship('Equipment')
 
@@ -22,8 +25,17 @@ class Equipment(Model):
     serial_number = Field(String)
 
 
-class Event(Model, CreationDateTimeMixin):
+class Event(Model):
     asset_id = Field(Integer, ForeignKey('asset.id'))
+    date = Field(Date)
     creator_id = Field(Integer)
     creator_alias = Field(String)
     status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))
+
+    status_labels = OrderedDict([
+        ('service', _('In service')),
+        ('repair', _('In repair')),
+        ('calibration', _('In calibration')),
+        ('transit_parsys', _('In transit to Parsys')),
+        ('transit_customer', _('In transit to customer')),
+    ])

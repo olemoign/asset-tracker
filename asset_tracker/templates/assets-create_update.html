@@ -27,37 +27,86 @@
         <div class="panel-body">
             <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=object.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                 <div class="row">
+                    <div class="col-sm-6 form-group">
+                        <label for="asset-status">{{ gettext('Status') }} *</label>
+                        <select class="form-control" id="asset-status" name="asset-status">
+                            {% for key, value in status.items() %}
+                            <option value="{{ key }}"{% if object and object.status == key %} selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     {{ input('Asset ID *', 'asset', 'asset_id') }}
                     {{ input('Customer', 'asset', 'customer') }}
-                    {{ input('Site', 'asset', '<site></site>') }}
-                    {{ input('Logo', 'asset', 'logo') }}
+                    {{ input('Last calibration date', 'asset', 'last_calibration_date', 'date') }}
+                    {{ input('Site', 'asset', 'site') }}
+                    {{ input('Asset activation date', 'asset', 'activation_date', 'date') }}
+                    {{ input('Current location', 'asset', 'current_location') }}
                 </div>
-                <div class="form-group">
-                    <label>{{ gettext('Rights') }}</label>
-                    <div class="row">
-                        {% for right in rights %}
-                        <div class="col-sm-4 rights__input">
-                            <div class="input-group">
-                                {% if right.id %}
-                                <div class="input-group-addon rights__id">{{ right.id }}</div>
-                                {% endif %}
-                                <input type="text" class="form-control" value="{{ right.name }}"
-                                       name="oauth_client-{% if right.id %}right-{{ right.id }}{% else %}new_right{% endif %}">
-                                <div class="input-group-addon rights__remove">x</div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add"><span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                    {% for equipment in (object or {}).equipments %}
+                    <div class="col-sm-4 equipment__block">
+                        <div class="well well-sm">
+                            <div class="form-group">
+                                <select class="form-control" name="asset-equipment-family">
+                                    <option></option>
+                                    {% for family in equipments_families %}
+                                    {{ equipment.family }} {{ family.id }}
+                                    <option value="{{ family.id }}"{% if equipment.family == family.id or equipment.family.id == family.id %} selected{% endif %}>{{ family.model }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                        </div>
-                        {% else %}
-                        <div class="col-sm-4 rights__input">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="oauth_client-new_right">
-                                <div class="input-group-addon rights__remove">x</div>
+                                <input type="text" class="form-control" name="asset-equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
+                                <span class="input-group-btn equipment__remove">
+                                    <button class="btn btn-default" type="button">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
                             </div>
-                        </div>
-                        {% endfor %}
-                        <div class="col-sm-4 rights__add">
-                            <span class="glyphicon glyphicon-plus"></span>
                         </div>
                     </div>
+                    {% else %}
+                    <div class="col-sm-4 equipment__block">
+                        <div class="well well-sm">
+                            <div class="form-group">
+                                <select class="form-control" name="asset-equipment-family">
+                                    <option></option>
+                                    {% for family in equipments_families %}
+                                    <option value="{{ family.id }}">{{ family.model }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="asset-equipment-serial_number" placeholder="S/N">
+                                <span class="input-group-btn equipment__remove">
+                                    <button class="btn btn-default" type="button">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 form-group">
+                        <label for="asset-notes">{{ gettext('Notes') }}</label>
+                        <textarea class="form-control" rows="3" id="asset-notes" name="asset-notes">
+                            {%- if object and object.notes -%}{{ object.notes }}{%- endif -%}
+                        </textarea>
+                    </div>
+                    {% if update %}
+                    <div class="col-sm-12 form-group">
+                        <label for="asset-notes">{{ gettext('History') }}</label>
+                        {% for event in object.history %}
+                        <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
+                            status=status[event.status], date=event.date) }}.</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="btn-group pull-right">
                     <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>

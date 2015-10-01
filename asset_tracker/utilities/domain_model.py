@@ -10,6 +10,7 @@ AsciiString = sqlalchemy.String
 backref = sqlalchemy.orm.backref
 Boolean = sqlalchemy.Boolean
 Bytes = sqlalchemy.String
+Date = sqlalchemy.Date
 DateTime = sqlalchemy.DateTime
 Enum = sqlalchemy.Enum
 Field = sqlalchemy.Column

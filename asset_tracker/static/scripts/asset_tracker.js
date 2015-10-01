@@ -1,5 +1,25 @@
 'use strict';
 
+
+//Manage equipments
+$(document).on('click', '.equipment__add', function() {
+    $(this).parent().next().clone()
+        .find('select').val('').end()
+        .find('input').val('').end()
+        .appendTo($(this).parents().eq(1));
+});
+
+$(document).on('click', '.equipment__remove', function() {
+    if ($('.equipment__block').size() > 1) {
+        $(this).parents('.equipment__block').remove();
+    } else {
+        $(this).parents('.equipment__block')
+        .find('[name="asset-equipment-family"]').val('').end()
+        .find('[name="asset-equipment-serial_number"]').val('').focus();
+    }
+});
+
+
 //Datatables
 var dataTablesTranslations = {
     'fr': {

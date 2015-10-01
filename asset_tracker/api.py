@@ -6,7 +6,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.view import view_config
 
-from .models import Asset
+from .models import Asset, Event
 from .utilities.domain_model import func, String
 
 
@@ -150,8 +150,9 @@ class Assets(API):
     def format_output(self, result):
         return {'id': result.id, 'asset_id': result.asset_id, 'customer': result.customer, 'site': result.site,
                 'notes': result.notes, 'current_location': result.current_location,
-                'history': [{'creator_id': event.creator_id, 'creator_alias': event.creator_alias, 'status': event.status} for event in result.history],
-                'equipments': [{'model': equipment.family.model, 'serial_number': equipment.serial_number} for equipment in result.equipments],
+                'status': Event.status_labels[result.history[-1].status],
+                'history': [{'date': str(event.date), 'creator_id': event.creator_id, 'creator_alias': event.creator_alias, 'status': event.status} for event in result.history],
+                'equipments': [{'model': equipment.family.model if equipment.family else None, 'serial_number': equipment.serial_number} for equipment in result.equipments],
                 'links': [{'rel': 'self', 'href': self.request.route_path('assets-update', asset_id=result.id)}]}
 
     @property
