@@ -71,13 +71,15 @@ class AssetsEndPoint(object):
         calibration_date = datetime.strptime(form_asset['last_calibration_date'], '%Y-%m-%d').date() if form_asset['last_calibration_date'] else None
         if calibration_date and calibration_date != today:
             calibration = Event(date=calibration_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status='calibration')
+            asset.history.append(calibration)
             self.request.db_session.add(calibration)
 
         if form_asset['status'] == 'service' and not calibration_date:
-            calibration = Event(date=today, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status='calibration')
+            calibration = Event(date=datetime.utcnow(), creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status='calibration')
+            asset.history.append(calibration)
             self.request.db_session.add(calibration)
 
-        event = Event(date=today, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status=form_asset['status'])
+        event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status=form_asset['status'])
         asset.history.append(event)
         self.request.db_session.add(event)
 
@@ -86,7 +88,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-update', renderer='assets-create_update.html')
     def update_get(self):
         asset_id = self.request.matchdict['asset_id']
-        asset = self.request.db_session.query(Asset).filter_by(id=asset_id).first()
+        asset = self.request.db_session.query(Asset).get(asset_id)
 
         if asset:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()

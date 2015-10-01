@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from pyramid.i18n import TranslationString as _
 
-from .utilities.domain_model import CreationDateTimeMixin, Date, Enum, Integer, Field, ForeignKey, Model, relationship, String
+from .utilities.domain_model import CreationDateTimeMixin, DateTime, Enum, Integer, Field, ForeignKey, Model, relationship, String
 
 
 class Asset(Model, CreationDateTimeMixin):
@@ -11,7 +11,7 @@ class Asset(Model, CreationDateTimeMixin):
     notes = Field(String)
     history = relationship('Event', order_by='Event.date')
     current_location = Field(String)
-    equipments = relationship('Equipment')
+    equipments = relationship('Equipment', lazy='dynamic')
 
 
 class EquipmentFamily(Model):
@@ -27,7 +27,7 @@ class Equipment(Model):
 
 class Event(Model):
     asset_id = Field(Integer, ForeignKey('asset.id'))
-    date = Field(Date)
+    date = Field(DateTime)
     creator_id = Field(Integer)
     creator_alias = Field(String)
     status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))

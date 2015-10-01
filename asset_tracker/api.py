@@ -161,7 +161,13 @@ class Assets(API):
 
     @property
     def specific_sort_methods(self):
-        return {}
+        subquery_last_status = self.request.db_session.query(Event.asset_id, Event.status, func.max(Event.date)) \
+            .group_by(Event.asset_id).subquery()
+
+        return {
+            'status': lambda q, sort_order: q.outerjoin((subquery_last_status, subquery_last_status.c.asset_id == Asset.id))
+                .order_by(getattr(subquery_last_status.c.status, sort_order)())
+        }
     
     
 def includeme(config):
