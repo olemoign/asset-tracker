@@ -1,3 +1,4 @@
+from json import load
 from paste.translogger import TransLogger
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -5,9 +6,11 @@ from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
+from transaction import manager
 from zope.sqlalchemy import register
 
 from .utilities.domain_model import Model
+from .models import EquipmentFamily
 
 
 def get_user(request):
@@ -35,6 +38,15 @@ def main(global_config, **settings):
     register(maker)
     maker.configure(bind=engine)
     Model.metadata.bind = engine
+
+    with manager:
+        db_session = maker()
+        db_session.query(EquipmentFamily).delete()
+        with open('equipments_families.json') as families_list:
+            json_families = load(families_list)
+            for json_family in json_families:
+                family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
+                db_session.add(family)
 
     config = Configurator(settings=settings, locale_negotiator=user_locale)
     config.include('pyramid_tm')
