@@ -18,7 +18,6 @@
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
     </div>
 {% endif %}
-
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel__title">{{ title }}</h3>
@@ -31,7 +30,7 @@
                         <label for="asset-status">{{ gettext('Status') }} *</label>
                         <select class="form-control" id="asset-status" name="asset-status">
                             {% for key, value in status.items() %}
-                            <option value="{{ key }}"{% if object and (object.status == key or object.history and object.history[-1].status == key) %} selected{% endif %}>{{ value }}</option>
+                            <option value="{{ key }}"{% if object and object.status == key %} selected{% endif %}>{{ value }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -101,7 +100,7 @@
                     {% if update %}
                     <div class="col-sm-12 form-group">
                         <label for="asset-notes">{{ gettext('History') }}</label>
-                        {% for event in object.history %}
+                        {% for event in object.history|sort(attribute='date') %}
                         <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
                             status=status[event.status], date=event.date) }}.</p>
                         {% endfor %}

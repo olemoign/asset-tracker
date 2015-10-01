@@ -150,8 +150,8 @@ class Assets(API):
     def format_output(self, result):
         return {'id': result.id, 'asset_id': result.asset_id, 'customer': result.customer, 'site': result.site,
                 'notes': result.notes, 'current_location': result.current_location,
-                'status': Event.status_labels[result.history[-1].status],
-                'history': [{'date': str(event.date), 'creator_id': event.creator_id, 'creator_alias': event.creator_alias, 'status': event.status} for event in result.history],
+                'status': Event.status_labels[result.history.order_by(Event.date.desc()).first().status],
+                'history': [{'date': str(event.date), 'creator_id': event.creator_id, 'creator_alias': event.creator_alias, 'status': event.status} for event in result.history.order_by(Event.date).all()],
                 'equipments': [{'model': equipment.family.model if equipment.family else None, 'serial_number': equipment.serial_number} for equipment in result.equipments],
                 'links': [{'rel': 'self', 'href': self.request.route_path('assets-update', asset_id=result.id)}]}
 

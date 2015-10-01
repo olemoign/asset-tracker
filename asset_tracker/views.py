@@ -91,6 +91,12 @@ class AssetsEndPoint(object):
         asset = self.request.db_session.query(Asset).get(asset_id)
 
         if asset:
+            last_calibration_date = asset.history.filter_by(status='calibration').order_by(Event.date.desc()).first()
+            asset.last_calibration_date = last_calibration_date.date.date() if last_calibration_date else None
+            activation_date = asset.history.filter_by(status='service').order_by(Event.date).first()
+            asset.activation_date = activation_date.date.date() if activation_date else None
+            asset.status = asset.history.order_by(Event.date.desc()).first().status
+
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
             return {'update': True, 'object': asset, 'equipments_families': equipments_families, 'status': Event.status_labels}
         else:
@@ -98,7 +104,53 @@ class AssetsEndPoint(object):
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update', renderer='assets-create_update.html')
     def update_post(self):
-        return {}
+        asset_id = self.request.matchdict['asset_id']
+        asset = self.request.db_session.query(Asset).get(asset_id)
+
+        if asset:
+            form_asset = self.read_form()
+
+            if not form_asset['status'] or not form_asset['asset_id']:
+                equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+                return {'error': _('Missing mandatory data.'), 'object': form_asset, 'equipments_families': equipments_families, 'status': Event.status_labels}
+
+            asset.asset_id = form_asset['asset_id']
+            asset.customer = form_asset['customer']
+            asset.site = form_asset['site']
+            asset.current_location = form_asset['current_location']
+            asset.notes = form_asset['notes']
+
+            asset.equipments.delete()
+            for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
+                equipment = Equipment(family_id=form_equipment['family'], serial_number=form_equipment['serial_number'])
+                asset.equipments.append(equipment)
+                self.request.db_session.add(equipment)
+
+            if form_asset['status'] != asset.history.order_by(Event.date.desc()).first().status:
+                event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status=form_asset['status'])
+                asset.history.append(event)
+                self.request.db_session.add(event)
+
+            activation = asset.history.filter_by(status='service').order_by(Event.date).first()
+            activation_date = activation.date.date() if activation else None
+            form_activation_date = datetime.strptime(form_asset['activation_date'], '%Y-%m-%d').date() if form_asset['activation_date'] else None
+            if form_activation_date and form_activation_date < activation_date:
+                activation = Event(date=form_activation_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status='service')
+                asset.history.append(activation)
+                self.request.db_session.add(activation)
+
+            today = date.today()
+            calibrations = asset.history.filter_by(status='service').order_by(Event.date).all()
+            calibrations_date = [x.date.date() for x in calibrations]
+            form_calibration_date = datetime.strptime(form_asset['last_calibration_date'], '%Y-%m-%d').date() if form_asset['last_calibration_date'] else None
+            if form_calibration_date and form_calibration_date < today and form_calibration_date not in calibrations_date:
+                calibration = Event(date=form_calibration_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'], status='calibration')
+                asset.history.append(calibration)
+                self.request.db_session.add(calibration)
+
+            return HTTPFound(location=self.request.route_path('assets-list'))
+        else:
+            return HTTPNotFound()
 
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
     def list_get(self):

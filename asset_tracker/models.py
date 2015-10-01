@@ -9,7 +9,7 @@ class Asset(Model, CreationDateTimeMixin):
     customer = Field(String)
     site = Field(String)
     notes = Field(String)
-    history = relationship('Event', order_by='Event.date')
+    history = relationship('Event', lazy='dynamic')
     current_location = Field(String)
     equipments = relationship('Equipment', lazy='dynamic')
 
