@@ -1,14 +1,14 @@
 [
     {
-        "id": 1,
+        "id": "1",
         "model": "Cardialys"
     },
     {
-        "id": 2,
+        "id": "2",
         "model": "Biosys"
     },
     {
-        "id": 3,
+        "id": "3",
         "model": "Foracare IR20"
     }
 ]
