@@ -16,6 +16,7 @@ requires = [
     'newrelic',
     'oauthlib',
     'Paste',
+    'PasteScript',
     'pyasn1',
     'PyJWT',
     'pyOpenSSL',
