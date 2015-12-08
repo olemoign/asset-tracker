@@ -1,30 +1,35 @@
 from json import load
 from paste.translogger import TransLogger
-from pyramid.authentication import AuthTktAuthenticationPolicy
-from pyramid.authorization import ACLAuthorizationPolicy
+
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
+from pyramid.settings import asbool
+
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 from transaction import manager
 from zope.sqlalchemy import register
 
-from .utilities.domain_model import Model
 from .models import EquipmentFamily
+from .utilities.authorization import RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.domain_model import Model
 
 
 def get_user(request):
     return request.session.get('user')
 
 
-def user_locale(request):
-    if request.user is not None:
+def get_user_locale(request):
+    if request.user:
         return request.user['locale']
 
 
-def effective_principals(userid, request):
+def get_effective_principals(userid, request):
     if request.user:
-        return ['r:' + right for right in request.user['rights']]
+        if request.user['is_admin']:
+            return ['g:admin']
+        else:
+            return [(item[0], item[1]) for item in request.user['rights']]
 
 
 def main(global_config, **settings):
@@ -32,6 +37,7 @@ def main(global_config, **settings):
     assert(settings.get('rta.server_url'))
     assert(settings.get('rta.client_id'))
     assert(settings.get('rta.secret'))
+    debug_mode = asbool(settings.get('asset_tracker.debug'))
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     maker = sessionmaker()
@@ -48,7 +54,7 @@ def main(global_config, **settings):
                 family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
                 db_session.add(family)
 
-    config = Configurator(settings=settings, locale_negotiator=user_locale)
+    config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.include('pyramid_tm')
 
     config.include('pyramid_jinja2')
@@ -68,9 +74,11 @@ def main(global_config, **settings):
     config.add_translation_dirs('asset_tracker:locale')
 
     cookie_signature = settings['asset_tracker.cookie_signature']
-    authenticationn_policy = AuthTktAuthenticationPolicy(cookie_signature, callback=effective_principals, hashalg='sha512')
-    authorization_policy = ACLAuthorizationPolicy()
-    config.set_authentication_policy(authenticationn_policy)
+    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt', secure=not debug_mode,
+                                                    callback=get_effective_principals, http_only=True, wild_domain=False,
+                                                    hashalg='sha512')
+    authorization_policy = TenantedAuthorizationPolicy()
+    config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
 
     config.set_session_factory(SignedCookieSessionFactory(cookie_signature))
@@ -82,6 +90,7 @@ def main(global_config, **settings):
     config.add_route('rta', rta_url)
 
     config.include('asset_tracker.api', route_prefix='api')
+    config.include('asset_tracker.openid_connect_client')
     config.include('asset_tracker.views')
     config.scan()
 

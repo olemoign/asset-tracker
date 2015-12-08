@@ -133,7 +133,10 @@ class API(object):
 
 
 class Assets(API):
-    __acl__ = [(Allow, 'r:assets-list', 'assets-list')]
+    __acl__ = [
+        (Allow, None, 'assets-list', 'assets-list'),
+        (Allow, None, 'g:admin', 'assets-list'),
+    ]
 
     @property
     def searched_object(self):

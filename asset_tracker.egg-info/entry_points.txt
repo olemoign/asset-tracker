@@ -1,5 +1,5 @@
-      [paste.app_factory]
-      main = asset_tracker:main
-      [console_scripts]
-      initialize_asset_tracker_db = asset_tracker.scripts.initializedb:main
-      
+    [paste.app_factory]
+    main = asset_tracker:main
+    [console_scripts]
+    initialize_asset_tracker_db = asset_tracker.scripts.initializedb:main
+    
