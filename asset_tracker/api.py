@@ -64,7 +64,8 @@ class API(object):
 
         output = self.search(limit=limit, offset=offset, sort=sort, full_text_search=full_text_search)
         if output:
-            return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output.get('recordsFiltered'), 'data': output.get('items')}
+            return {'draw': draw, 'recordsTotal': output.get('recordsTotal'),
+                    'recordsFiltered': output.get('recordsFiltered'), 'data': output.get('items')}
         else:
             return {'draw': draw, 'error': self.request.localizer.translate(_('Server error'))}
 
@@ -151,12 +152,18 @@ class Assets(API):
         return self.manage_datatables_queries()
 
     def format_output(self, result):
+        history = [{'date': str(event.date), 'creator_id': event.creator_id, 'creator_alias': event.creator_alias,
+                    'status': event.status} for event in result.history.order_by(Event.date).all()]
+        equipments = [{'model': equipment.family.model if equipment.family else None,
+                       'serial_number': equipment.serial_number} for equipment in result.equipments]
+        link = None
+        if 'g:admin' in self.request.effective_principals or'assets-update' in self.request.effective_principals:
+            link = self.request.route_path('assets-update', asset_id=result.id)
         return {'id': result.id, 'asset_id': result.asset_id, 'customer': result.customer, 'site': result.site,
                 'notes': result.notes, 'current_location': result.current_location,
                 'status': Event.status_labels[result.history.order_by(Event.date.desc()).first().status],
-                'history': [{'date': str(event.date), 'creator_id': event.creator_id, 'creator_alias': event.creator_alias, 'status': event.status} for event in result.history.order_by(Event.date).all()],
-                'equipments': [{'model': equipment.family.model if equipment.family else None, 'serial_number': equipment.serial_number} for equipment in result.equipments],
-                'links': [{'rel': 'self', 'href': self.request.route_path('assets-update', asset_id=result.id)}]}
+                'history': history, 'equipments': equipments,
+                'links': [{'rel': 'self', 'href': link}]}
 
     @property
     def full_text_search(self):
@@ -169,7 +176,7 @@ class Assets(API):
 
         return {
             'status': lambda q, sort_order: q.outerjoin((subquery_last_status, subquery_last_status.c.asset_id == Asset.id))
-                .order_by(getattr(subquery_last_status.c.status, sort_order)())
+            .order_by(getattr(subquery_last_status.c.status, sort_order)())
         }
     
     

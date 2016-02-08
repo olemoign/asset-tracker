@@ -72,7 +72,7 @@ function addHrefToDataTablesRows(row, data) {
 }
 
 $(document).on('click', 'table tr', function() {
-    if (this.hasAttribute('data-href')) {
+    if (this.hasAttribute('data-href') && this.getAttribute('data-href') != 'null') {
         window.location.href = this.getAttribute('data-href');
     }
 });

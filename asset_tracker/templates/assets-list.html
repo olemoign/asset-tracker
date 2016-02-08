@@ -9,7 +9,9 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <h3 class="panel__title">{{ gettext('Assets') }}</h3>
+            {% if 'g:admin' in principals or 'assets-create' in principals %}
             <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
+            {% endif %}
         </div>
 
         <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-datatables-assets'|route_path }}" width="100%">
