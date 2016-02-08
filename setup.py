@@ -7,31 +7,8 @@ with open(os.path.join(here, 'README.txt')) as f:
     README = f.read()
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
-
-requires = [
-    'alembic',
-    'babel',
-    'inflection',
-    'ndg-httpsclient',
-    'newrelic',
-    'oauthlib',
-    'Paste',
-    'PasteScript',
-    'pyasn1',
-    'PyJWT',
-    'pyOpenSSL',
-    'pyramid',
-    'pyramid_assetviews',
-    'pyramid_debugtoolbar',
-    'pyramid_jinja2',
-    'pyramid_tm',
-    'pytest',
-    'requests',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'waitress',
-]
+with open(os.path.join(here, 'requirements.txt')) as f:
+    requires = f.read()
 
 setup(
     name='asset_tracker',
@@ -57,6 +34,6 @@ setup(
     [paste.app_factory]
     main = asset_tracker:main
     [console_scripts]
-    initialize_asset_tracker_db = asset_tracker.scripts.initializedb:main
+    asset_tracker_initialize_db = asset_tracker.scripts.initializedb:main
     """,
 )

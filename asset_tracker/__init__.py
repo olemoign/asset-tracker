@@ -4,14 +4,13 @@ from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
-
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 from transaction import manager
 from zope.sqlalchemy import register
 
 from .models import EquipmentFamily
-from .utilities.authorization import RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
 from .utilities.domain_model import Model
 
 
@@ -29,7 +28,7 @@ def get_effective_principals(userid, request):
         if request.user['is_admin']:
             return ['g:admin']
         else:
-            return [(item[0], item[1]) for item in request.user['rights']]
+            return [Right(tenant=item[0], name=item[1]) for item in request.user['rights']]
 
 
 def main(global_config, **settings):
@@ -73,10 +72,10 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_translation_dirs('asset_tracker:locale')
 
-    cookie_signature = settings['asset_tracker.cookie_signature']
-    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt', secure=not debug_mode,
-                                                    callback=get_effective_principals, http_only=True, wild_domain=False,
-                                                    hashalg='sha512')
+    cookie_signature = settings['open_id.cookie_signature']
+    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt',
+                                                    secure=not debug_mode, callback=get_effective_principals,
+                                                    http_only=True, wild_domain=False, hashalg='sha512')
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
@@ -90,9 +89,11 @@ def main(global_config, **settings):
     config.add_route('rta', rta_url)
 
     config.include('asset_tracker.api', route_prefix='api')
-    config.include('asset_tracker.openid_connect_client')
     config.include('asset_tracker.views')
     config.scan()
+
+    config.include('py_openid_connect.openid_connect_client')
+    config.scan('py_openid_connect')
 
     # config.include('pyramid_assetviews')
     # config.add_asset_views('asset_tracker:static', filenames=['apple-touch-icon.png', 'favicon.ico', '.htaccess', 'robots.txt'], http_cache=3600)
