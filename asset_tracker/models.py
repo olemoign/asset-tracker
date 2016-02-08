@@ -1,10 +1,13 @@
 from collections import OrderedDict
 from pyramid.i18n import TranslationString as _
 
-from .utilities.domain_model import CreationDateTimeMixin, DateTime, Enum, Integer, Field, ForeignKey, Model, relationship, String
+from .utilities.domain_model import CreationDateTimeMixin, DateTime, Enum, hybrid_property, Integer, Field, ForeignKey, \
+    Model, relationship, select, String
 
 
 class Asset(Model, CreationDateTimeMixin):
+    tenant_id = Field(String)
+
     asset_id = Field(String)
     customer = Field(String)
     site = Field(String)
@@ -12,6 +15,17 @@ class Asset(Model, CreationDateTimeMixin):
     history = relationship('Event', lazy='dynamic')
     current_location = Field(String)
     equipments = relationship('Equipment', lazy='dynamic')
+
+    @hybrid_property
+    def status(self):
+        if self.history:
+            return self.history[-1].status
+        else:
+            return None
+
+    @status.expression
+    def status(cls):
+        return select([Event.status]).where(Event.asset_id == cls.id).order_by(Event.date.desc()).limit(1)
 
 
 class EquipmentFamily(Model):

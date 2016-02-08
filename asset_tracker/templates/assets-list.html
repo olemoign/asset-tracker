@@ -14,7 +14,7 @@
             {% endif %}
         </div>
 
-        <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-datatables-assets'|route_path }}" width="100%">
+        <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}" width="100%">
             <thead>
                 <tr>
                     <th data-data="asset_id">{{ gettext('Asset ID') }}</th>

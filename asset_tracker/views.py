@@ -48,9 +48,12 @@ class AssetsEndPoint(object):
             return {'error': _('Missing mandatory data.'), 'object': form_asset,
                     'equipments_families': equipments_families, 'status': Event.status_labels}
 
-        asset = Asset(asset_id=form_asset['asset_id'], customer=form_asset['customer'], site=form_asset['site'],
-                      current_location=form_asset['current_location'], notes=form_asset['notes'])
+        # TODO-OLM: tenanting
+        asset = Asset(tenant_id=None, asset_id=form_asset['asset_id'],
+                      customer=form_asset['customer'], site=form_asset['site'],
+                      current_location=form_asset['current_location'],  notes=form_asset['notes'])
         self.request.db_session.add(asset)
+
         for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
             equipment = Equipment(family_id=form_equipment['family'], serial_number=form_equipment['serial_number'])
             asset.equipments.append(equipment)
@@ -99,7 +102,6 @@ class AssetsEndPoint(object):
             asset.last_calibration_date = last_calibration_date.date.date() if last_calibration_date else None
             activation_date = asset.history.filter_by(status='service').order_by(Event.date).first()
             asset.activation_date = activation_date.date.date() if activation_date else None
-            asset.status = asset.history.order_by(Event.date.desc()).first().status
 
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
             return {'update': True, 'object': asset, 'equipments_families': equipments_families,
