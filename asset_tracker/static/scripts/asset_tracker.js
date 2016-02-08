@@ -47,12 +47,16 @@ var dataTablesTranslations = {
 };
 
 $(document).ready(function() {
+    var favicon_link = $('link[rel=icon]');
+    var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g,'');
+    favicon_link.attr('href', favicon);
+
     var dataTableParameters = {
         'serverSide': true,
         'stateSave': true,
         'pageLength': 50,
         'lengthChange': false,
-        'rowCallback': addHrefToDataTablesRows,
+        'rowCallback': addHrefToDataTablesRows
     };
 
     if (userLocale !== 'en') {

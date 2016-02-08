@@ -1,9 +1,21 @@
 $icon-font-path: "/static/fonts/";
 
-//@import 'branding';
+//Remove all radius
+$border-radius-base: 0;
+$border-radius-large: 0;
+$border-radius-small: 0;
+
+@import 'branding/parsys_cloud';
 @import 'bootstrap';
 
 $black: #000;
+
+.img-background-fixed {
+    position: fixed;
+    z-index: -1;
+    top: 50px;
+    left: 0;
+}
 
 .panel__title {
     margin: 0;

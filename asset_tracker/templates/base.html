@@ -10,22 +10,26 @@
 
         <title>Asset Manager | {% block title %}{% endblock %}</title>
 
-        <meta name="description" content="{{ app_name }}">
+        <meta name="description" content="Asset Manager">
         <meta name="viewport" content="width=device-width">
 
-        <link rel="stylesheet" href="/static/styles/datatables.css">
+        <link rel="icon">
+
         <link rel="stylesheet" href="/static/styles/main.css">
+        <link rel="stylesheet" href="/static/styles/vendor/datatables.css">
     </head>
 
     <body>
-        <script src="/static/scripts/jquery.js"></script>
-        <script src="/static/scripts/datatables.js"></script>
+        <script src="/static/scripts/vendor/jquery.js"></script>
+        <script src="/static/scripts/vendor/datatables.js"></script>
         <script src="/static/scripts/bootstrap/alert.js"></script>
         <script src="/static/scripts/bootstrap/collapse.js"></script>
         <script src="/static/scripts/bootstrap/dropdown.js"></script>
         <script src="/static/scripts/bootstrap/transition.js"></script>
-        <script>var userLocale = '{{ locale }}';</script>
+        <script>var userLocale = '{{ locale|truncate(2) }}';</script>
         <script src="/static/scripts/asset_tracker.js"></script>
+
+        <div class="img-background-fixed"></div>
 
         {% block page %}{% endblock %}
     </body>
