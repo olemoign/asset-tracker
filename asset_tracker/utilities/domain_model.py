@@ -12,6 +12,7 @@ and_ = sqlalchemy.and_
 asc = sqlalchemy.asc
 backref = sqlalchemy.orm.backref
 Boolean = sqlalchemy.Boolean
+Bytes = sqlalchemy.String
 Date = sqlalchemy.Date
 DateTime = sqlalchemy.DateTime
 desc = sqlalchemy.desc
