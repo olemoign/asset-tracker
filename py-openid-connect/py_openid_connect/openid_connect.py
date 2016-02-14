@@ -129,7 +129,7 @@ class OpenIDConnectClient(object):
         else:
             raise HTTPBadRequest()
 
-    def verify_json_web_token(self, jwt):
+    def verify_json_web_token(self, jwt, issuer):
         try:
             signed_id_token = jwt['id_token']
             access_token = jwt['access_token']
@@ -140,8 +140,7 @@ class OpenIDConnectClient(object):
 
         try:
             # Even if we don't persist it, make sure that the id_token is valid
-            # TODO-OLM: issuer
-            _ = decode(signed_id_token, self.secret, audience=self.oauth_client_id)
+            _ = decode(signed_id_token, self.secret, audience=self.oauth_client_id, issuer=issuer)
         except (ExpiredSignatureError, InvalidAudienceError, InvalidIssuerError, OAuth2Error):
             return HTTPBadRequest()
         else:

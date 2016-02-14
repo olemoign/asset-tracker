@@ -25,7 +25,8 @@ class Users(object):
         self.openid_client = OpenIDConnectClient(oauth_client_id, secret, cookie_signature)
 
     def request_user_info_with_json_web_token(self, json_web_token, persist, target_path):
-        access_token, refresh_token, expires_in = self.openid_client.verify_json_web_token(json_web_token)
+        issuer = self.request.registry.settings['rta.server_url']
+        access_token, refresh_token, expires_in = self.openid_client.verify_json_web_token(json_web_token, issuer)
 
         rta_userinfo_url = self.request.route_url('rta', path='api/oauth/userinfo/')
         user_info = self.openid_client.request_user_info(rta_userinfo_url, access_token)
