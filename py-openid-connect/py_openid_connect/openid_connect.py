@@ -1,4 +1,4 @@
-from urllib.parse import parse_qs, quote, unquote, urlencode
+from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 
 from jwt import decode, ExpiredSignatureError, InvalidAudienceError, InvalidIssuerError
 from oauthlib.oauth2 import OAuth2Error, WebApplicationClient
@@ -118,6 +118,7 @@ class OpenIDConnectClient(object):
 
             csrf_token = state['csrf_token'][0]
             user_target_path = state['target_path'][0]
+            user_target_path = urlparse(user_target_path).path
             # TODO-OLM
             persist = parse_qs(url).get('persist')
             persist = asbool(persist[0]) if persist else False
