@@ -51,7 +51,7 @@ class AssetsEndPoint(object):
         # TODO-OLM: tenanting
         asset = Asset(tenant_id=None, asset_id=form_asset['asset_id'],
                       customer=form_asset['customer'], site=form_asset['site'],
-                      current_location=form_asset['current_location'],  notes=form_asset['notes'])
+                      current_location=form_asset['current_location'], notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
         for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):

@@ -53,11 +53,11 @@ Model = sqlalchemy.ext.declarative.declarative_base(cls=_ModelBase, name='Object
 
 
 class CreationDateTimeMixin(object):
-    created_at = Field(DateTime, default=datetime.utcnow(), nullable=False)
+    created_at = Field(DateTime, default=datetime.utcnow, nullable=False)
 
 
 class UpdateDateTimeMixin(object):
-    updated_at = Field(DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow(), nullable=False)
+    updated_at = Field(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
 
 
