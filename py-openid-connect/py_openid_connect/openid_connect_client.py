@@ -116,7 +116,14 @@ class Users(object):
         logger.info(';'.join([self.request.user['id'], 'log out']))
         return response
 
+    @view_config(route_name='users_settings', request_method='GET', permission='authenticated')
+    def logout_get(self):
+        rta_settings_url = self.request.route_url('rta', path='users/settings/')
+        self.request.session.invalidate()
+        return HTTPFound(location=rta_settings_url)
+
 
 def includeme(config):
     config.add_route(pattern='users/logout/', name='users_logout', factory=Users)
+    config.add_route(pattern='users/settings/', name='users_settings', factory=Users)
     config.add_route(pattern='oauth/request_token/', name='oauth_request_token')
