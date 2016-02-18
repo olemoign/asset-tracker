@@ -118,9 +118,9 @@ class Users(object):
 
     @view_config(route_name='users_settings', request_method='GET', permission='authenticated')
     def logout_get(self):
-        rta_settings_url = self.request.route_url('rta', path='users/settings/')
+        rta_logout_url = self.request.route_url('rta', path='users/logout/')
         self.request.session.invalidate()
-        return HTTPFound(location=rta_settings_url)
+        return HTTPFound(location=rta_logout_url)
 
 
 def includeme(config):
