@@ -118,9 +118,12 @@ class Users(object):
 
     @view_config(route_name='users_settings', request_method='GET', permission='authenticated')
     def logout_get(self):
-        rta_logout_url = self.request.route_url('rta', path='users/logout/')
+        redirect_uri = {'redirect_uri': self.request.host_url}
+        rta_logout_url = self.request.route_url('rta', path='users/logout/', _query=redirect_uri)
         self.request.session.invalidate()
-        return HTTPFound(location=rta_logout_url)
+        response = HTTPFound(location=rta_logout_url)
+        self.openid_client.delete_cookies(response)
+        return response
 
 
 def includeme(config):
