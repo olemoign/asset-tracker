@@ -117,13 +117,10 @@ class Users(object):
         return response
 
     @view_config(route_name='users_settings', request_method='GET', permission='authenticated')
-    def logout_get(self):
-        redirect_uri = {'redirect_uri': self.request.host_url}
-        rta_logout_url = self.request.route_url('rta', path='users/logout/', _query=redirect_uri)
+    def settings_get(self):
+        rta_settings_url = self.request.route_url('rta', path='users/settings/')
         self.request.session.invalidate()
-        response = HTTPFound(location=rta_logout_url)
-        self.openid_client.delete_cookies(response)
-        return response
+        return HTTPFound(location=rta_settings_url)
 
 
 def includeme(config):
