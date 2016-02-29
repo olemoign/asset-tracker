@@ -46,6 +46,9 @@ class Users(object):
             self.request.response.status_int = 403
             return render_to_response('errors/403.html', {}, request=self.request, response=self.request.response)
 
+        if self.request.is_xhr:
+            return HTTPUnauthorized()
+
         # If an access token is present, try to retrieve the user info
         access_token = self.openid_client.read_access_token(self.request.cookies)
         if access_token:
