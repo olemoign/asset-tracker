@@ -49,7 +49,7 @@ class Users(object):
         if self.request.is_xhr:
             return HTTPUnauthorized()
 
-        # If an access token is present, try to retrieve the user info
+        # If an access token is present, try to retrieve the user info.
         access_token = self.openid_client.read_access_token(self.request.cookies)
         if access_token:
             rta_userinfo_url = self.request.route_url('rta', path='api/oauth/userinfo/')
@@ -66,7 +66,7 @@ class Users(object):
                 logger.info(';'.join([user_info['id'], 'log in']))
                 return HTTPFound(location=self.request.path)
 
-        # If no access token was present or the token was bad, but we have a refresh token, use it
+        # If no access token was present or the token was bad, but we have a refresh token, use it.
         refresh_token = self.openid_client.read_refresh_token(self.request.cookies)
         if refresh_token:
             rta_token_url = self.request.route_url('rta', path='api/oauth/token/')
@@ -82,7 +82,7 @@ class Users(object):
                 persist = self.openid_client.persistant_cookies(self.request)
                 return self.request_user_info_with_json_web_token(json_web_token, persist, self.request.path)
 
-        # If we had neither an access or refresh token, go through the whole Oauth2 process
+        # If we had neither an access or refresh token, go through the whole Oauth2 process.
         request_token_endpoint = self.request.route_url('oauth_request_token')
         rta_authorization_url = self.request.route_url('rta', path='api/oauth/authorize/')
         csrf_token = self.request.session.new_csrf_token()

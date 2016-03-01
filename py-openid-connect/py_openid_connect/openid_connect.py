@@ -110,7 +110,7 @@ class OpenIDConnectClient(object):
 
     def verify_authorization_response(self, url, session_csrf_token):
         try:
-            # Retrieve information from Oauth authorization success
+            # Retrieve information from Oauth authorization success.
             authorization_response = self.oauth_client.parse_request_uri_response(url)
             authorization_code = authorization_response['code']
             state_encoded = authorization_response['state']
@@ -140,7 +140,7 @@ class OpenIDConnectClient(object):
             raise HTTPBadRequest()
 
         try:
-            # Even if we don't persist it, make sure that the id_token is valid
+            # Even if we don't persist it, make sure that the id_token is valid.
             _ = decode(signed_id_token, self.secret, audience=self.oauth_client_id, issuer=issuer)
         except (ExpiredSignatureError, InvalidAudienceError, InvalidIssuerError, OAuth2Error):
             return HTTPBadRequest()

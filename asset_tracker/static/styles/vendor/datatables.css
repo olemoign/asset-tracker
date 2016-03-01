@@ -4,10 +4,10 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#bs/dt-1.10.10,r-2.0.0
+ *   https://datatables.net/download/#bs/dt-1.10.11,r-2.0.2
  *
  * Included libraries:
- *   DataTables 1.10.10, Responsive 2.0.0
+ *   DataTables 1.10.11, Responsive 2.0.2
  */
 
 table.dataTable {
@@ -228,6 +228,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
   border-radius: 16px;
   box-shadow: 0 0 3px #444;
   box-sizing: content-box;
+  text-align: left;
   font-family: 'Courier New', Courier, monospace;
   text-indent: 4px;
   line-height: 16px;
@@ -276,6 +277,7 @@ table.dataTable.dtr-column > tbody > tr > th.control:before {
   border-radius: 16px;
   box-shadow: 0 0 3px #444;
   box-sizing: content-box;
+  text-align: left;
   font-family: 'Courier New', Courier, monospace;
   text-indent: 4px;
   line-height: 16px;
