@@ -1,3 +1,2 @@
-include *.txt *.ini *.cfg *.rst
+include *.txt *.ini *.cfg *.rst equipments_families.json
 recursive-include asset_tracker *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml .htaccess
-include equipments_families.json
