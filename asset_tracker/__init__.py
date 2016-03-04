@@ -1,5 +1,6 @@
 from json import load
 from paste.translogger import TransLogger
+from pkg_resources import resource_string
 
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
@@ -47,7 +48,7 @@ def main(global_config, **settings):
     with manager:
         db_session = maker()
         db_session.query(EquipmentFamily).delete()
-        with open('equipments_families.json') as families_list:
+        with open(resource_string(__name__, 'equipments_families.json')) as families_list:
             json_families = load(families_list)
             for json_family in json_families:
                 family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
@@ -95,8 +96,8 @@ def main(global_config, **settings):
     config.include('py_openid_connect.openid_connect_client')
     config.scan('py_openid_connect')
 
-    # config.include('pyramid_assetviews')
-    # config.add_asset_views('asset_tracker:static', filenames=['apple-touch-icon.png', 'favicon.ico', '.htaccess', 'robots.txt'], http_cache=3600)
+    config.include('pyramid_assetviews')
+    config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=3600)
 
     if settings.get('asset_tracker.debug') == 'True':
         return TransLogger(config.make_wsgi_app(), setup_console_handler=False)
