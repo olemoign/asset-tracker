@@ -71,7 +71,7 @@ def main(global_config, **settings):
     config.add_settings(jinja2_settings)
     config.add_jinja2_renderer('.html')
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_translation_dirs('asset_tracker:locale')
+    # config.add_translation_dirs('asset_tracker:locale')
 
     cookie_signature = settings['open_id.cookie_signature']
     authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt',
