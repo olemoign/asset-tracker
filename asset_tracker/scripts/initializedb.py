@@ -1,12 +1,11 @@
 import os
 import sys
 
+from pyramid.paster import get_appsettings, setup_logging
+from pyramid.scripts.common import parse_vars
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import register
-
-from pyramid.paster import get_appsettings, setup_logging
-from pyramid.scripts.common import parse_vars
 
 from ..models import Model
 
