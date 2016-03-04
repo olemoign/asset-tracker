@@ -1,4 +1,4 @@
-from json import load
+from json import loads
 from paste.translogger import TransLogger
 from pkg_resources import resource_string
 
@@ -48,11 +48,11 @@ def main(global_config, **settings):
     with manager:
         db_session = maker()
         db_session.query(EquipmentFamily).delete()
-        with open(resource_string(__name__, 'equipments_families.json')) as families_list:
-            json_families = load(families_list)
-            for json_family in json_families:
-                family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
-                db_session.add(family)
+        families_list = resource_string(__name__, 'equipments_families.json').decode('utf-8')
+        json_families = loads(families_list)
+        for json_family in json_families:
+            family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
+            db_session.add(family)
 
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.include('pyramid_tm')
