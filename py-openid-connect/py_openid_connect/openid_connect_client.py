@@ -110,8 +110,8 @@ class Users(object):
 
     @view_config(route_name='users_logout', request_method='GET', permission='authenticated')
     def logout_get(self):
-        home_uri = self.request.route_url('home')
-        rta_logout_url = self.request.route_url('rta', path='users/logout/', _query={'redirect_uri': home_uri})
+        host_url = self.request.host_url
+        rta_logout_url = self.request.route_url('rta', path='users/logout/', _query={'redirect_uri': host_url})
         response = HTTPFound(location=rta_logout_url)
         self.openid_client.delete_cookies(response)
         self.request.session.invalidate()
@@ -121,7 +121,8 @@ class Users(object):
 
     @view_config(route_name='users_settings', request_method='GET', permission='authenticated')
     def settings_get(self):
-        rta_settings_url = self.request.route_url('rta', path='users/settings/')
+        host_url = self.request.host_url
+        rta_settings_url = self.request.route_url('rta', path='users/settings/', _query={'redirect_uri': host_url})
         self.request.session.invalidate()
         return HTTPFound(location=rta_settings_url)
 
