@@ -1,6 +1,14 @@
 'use strict';
 
 
+$(document).ready(function() {
+    //Set the favicon from CSS.
+    var favicon_link = $('link[rel=icon]');
+    var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g, '');
+    favicon_link.attr('href', favicon);
+});
+
+
 //Manage equipments
 $(document).on('click', '.equipment__add', function() {
     $(this).parent().next().clone()

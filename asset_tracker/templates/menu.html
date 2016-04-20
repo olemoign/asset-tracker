@@ -7,7 +7,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ 'assets-list'|route_path }}">Asset Manager</a>
+            <a data-pjax class="navbar-brand" href="{{ 'assets-list'|route_path }}">
+                <div class="menu-name">{{ cloud_name }}</div>
+                <div class="menu-logo"></div>
+            </a>
         </div>
 
         <nav class="collapse navbar-collapse" id="asset_tracker-navbar-collapse" role="navigation">

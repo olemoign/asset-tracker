@@ -5796,10 +5796,12 @@ button.close {
   .hidden-print {
     display: none !important; } }
 .img-background-fixed {
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
   position: fixed;
-  z-index: -1;
   top: 50px;
-  left: 0; }
+  z-index: -1; }
 
 .panel__title {
   margin: 0;
