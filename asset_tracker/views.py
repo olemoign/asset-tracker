@@ -15,6 +15,7 @@ logger = getLogger('asset_tracker')
 
 @subscriber(BeforeRender)
 def add_global_variables(event):
+    event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', 'parsys_cloud')
 
     if event['request'].user:
