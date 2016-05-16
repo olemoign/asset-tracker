@@ -1,14 +1,34 @@
 [
     {
         "id": "1",
-        "model": "Cardialys"
+        "model": "Biosys - Parsys (in kit)"
     },
     {
         "id": "2",
-        "model": "Biosys"
+        "model": "Telecardia - Parsys (in kit)"
     },
     {
         "id": "3",
-        "model": "Foracare IR20"
+        "model": "Stethoscope - PCP-USB"
+    },
+    {
+        "id": "4",
+        "model": "Thermometer - Foracare IR21"
+    },
+    {
+        "id": "5",
+        "model": "Glucometer - Beurer GL50"
+    },
+    {
+        "id": "6",
+        "model": "Cardialys - Parsys"
+    },
+    {
+        "id": "7",
+        "model": "Ultrasound - Interson abdominal 99-5929"
+    },
+    {
+        "id": "8",
+        "model": "Blood analyser - PTS Cardiochek"
     }
 ]
