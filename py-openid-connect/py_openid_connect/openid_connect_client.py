@@ -5,6 +5,7 @@ from pyramid.renderers import render_to_response
 from pyramid.security import Allow, Authenticated
 from pyramid.view import forbidden_view_config, view_config
 
+from . import session_id
 from .openid_connect import OpenIDConnectClient
 
 logger = getLogger(__name__)
@@ -31,6 +32,8 @@ class Users(object):
         user_info = self.openid_client.request_user_info(rta_userinfo_url, access_token)
 
         self.request.session['user'] = user_info
+        self.request.session['session_id'] = session_id()
+
         response = HTTPFound(location=target_path)
         if not persist:
             expires_in = None
@@ -62,6 +65,7 @@ class Users(object):
 
             if user_info:
                 self.request.session['user'] = user_info
+                self.request.session['session_id'] = session_id()
                 logger.info(';'.join([user_info['id'], 'log in']))
                 return HTTPFound(location=self.request.path)
 
