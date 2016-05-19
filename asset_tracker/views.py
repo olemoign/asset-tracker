@@ -1,5 +1,4 @@
 from datetime import date, datetime
-from logging import getLogger
 
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -9,8 +8,6 @@ from pyramid.view import view_config
 
 from .models import Asset, Equipment, EquipmentFamily, Event
 from .utilities.authorization import rights_without_tenants
-
-logger = getLogger('asset_tracker')
 
 
 @subscriber(BeforeRender)
@@ -52,9 +49,9 @@ class AssetsEndPoint(object):
                     'equipments_families': equipments_families, 'status': Event.status_labels}
 
         # TODO-OLM: tenanting
-        asset = Asset(tenant_id=None, asset_id=form_asset['asset_id'],
-                      customer=form_asset['customer'], site=form_asset['site'],
-                      current_location=form_asset['current_location'], notes=form_asset['notes'])
+        asset = Asset(tenant_id=None, asset_id=form_asset['asset_id'], customer=form_asset['customer'],
+                      site=form_asset['site'], current_location=form_asset['current_location'],
+                      notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
         for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
@@ -94,6 +91,7 @@ class AssetsEndPoint(object):
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
+    # TODO: tenanting
     @view_config(route_name='assets-update', request_method='GET', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_get(self):
@@ -112,6 +110,7 @@ class AssetsEndPoint(object):
         else:
             return HTTPNotFound()
 
+    # TODO: tenanting
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):

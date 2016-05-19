@@ -166,8 +166,10 @@ class Assets(APIEndPoint):
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer, models.Asset.site, 
                                        models.Asset.current_location]
 
-        output = self.sql_search(models.Asset, full_text_search_attributes, tenanting=self.apply_tenanting_filter,
-                                 search_parameters=search_parameters)
+        # TODO: add tenanting
+        output = self.sql_search(models.Asset, full_text_search_attributes, search_parameters=search_parameters)
+        # output = self.sql_search(models.Asset, full_text_search_attributes, tenanting=self.apply_tenanting_filter,
+        #                          search_parameters=search_parameters)
 
         assets = []
         for asset in output['items']:
