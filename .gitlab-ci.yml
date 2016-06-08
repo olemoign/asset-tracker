@@ -38,13 +38,14 @@ build:
     - docker
 
   script:
-    - pip3 install py-openid-connect/
+    - pip -q install -U pip wheel setuptools
+    - pip install py-openid-connect/
 
-    - python3 py-openid-connect/setup.py bdist_wheel
-    - pip3 wheel -w dist/ py-openid-connect/
+    - python py-openid-connect/setup.py bdist_wheel
+    - pip wheel -w dist/ py-openid-connect/
 
-    - python3 setup.py bdist_wheel
-    - pip3 wheel -w dist/ .
+    - python setup.py bdist_wheel
+    - pip wheel -w dist/ .
 
   artifacts:
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
