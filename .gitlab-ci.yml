@@ -24,7 +24,7 @@ pylint-quality:
 
 pyflakes:
   stage: lint
-  image: python:3.5-alpine
+  image: python:3
   tags:
     - docker
 
