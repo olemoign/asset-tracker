@@ -8,7 +8,6 @@ with open(os.path.join(here, 'README.txt')) as f:
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
-
 requires = [
     'alembic',
     'babel',
@@ -29,9 +28,17 @@ requires = [
     'zope.sqlalchemy',
 ]
 
+tests_require = [
+    'mccabe',
+    'pylint',
+    'pylint-mccabe',
+    'vulture',
+    'pyflakes',
+]
+
 setup(
     name='asset_tracker',
-    version='0.1',
+    version='2.6',
     description='asset_tracker',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
@@ -46,9 +53,12 @@ setup(
     keywords='web wsgi bfg pylons pyramid',
     packages=find_packages(),
     include_package_data=True,
-    zip_safe=False,
+    zip_safe=True,
     test_suite='asset_tracker',
     install_requires=requires,
+    extras_require={
+        'testing': tests_require,
+    },
     entry_points="""\
     [paste.app_factory]
     main = asset_tracker:main

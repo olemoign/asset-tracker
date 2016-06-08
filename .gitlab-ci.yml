@@ -18,7 +18,7 @@ pylint-quality:
   allow_failure: true
 
   script:
-    - pip -q install -r requirements-tests.txt
+    - pip -q install .[testing]
     - pylint asset_tracker
 
 pyflakes:
@@ -28,7 +28,7 @@ pyflakes:
     - docker
 
   script:
-    - pip -q install -r requirements-tests.txt
+    - pip -q install .[testing]
     - pyflakes asset_tracker
 
 build:

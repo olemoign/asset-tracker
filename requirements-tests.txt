@@ -1,5 +1,0 @@
-mccabe
-pylint
-pylint-mccabe
-vulture
-pyflakes
