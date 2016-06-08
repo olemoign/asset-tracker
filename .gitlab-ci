@@ -1,0 +1,79 @@
+stages:
+ - lint
+ - build
+ - dist
+ - release
+
+
+variables:
+  CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:latest
+
+pylint-quality:
+  stage: lint
+  image: python:3.5-alpine
+  tags:
+    - docker
+
+  allow_failure: true
+
+  script:
+    - pip -q install -r requirements-tests.txt
+    - pylint asset_tracker
+
+pyflakes:
+  stage: lint
+  image: python:3.5-alpine
+  tags:
+    - docker
+
+  script:
+    - pip -q install -r requirements-tests.txt
+    - pyflakes asset_tracker
+
+build:
+  stage: build
+  image: python:3
+  tags:
+    - docker
+
+  script:
+    - pip3 install py-openid-connect/
+
+    - python3 py-openid-connect/setup.py bdist_wheel
+    - pip3 wheel -w dist/ py-openid-connect/
+
+    - python3 setup.py bdist_wheel
+    - pip3 wheel -w dist/ .
+
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - dist/
+
+docker-image:
+  stage: dist
+  tags:
+    - docker-builder
+
+  script:
+    - echo creating $CONTAINER_TEST_IMAGE
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
+    - docker push $CONTAINER_TEST_IMAGE
+
+release-image:
+  stage: release
+  tags:
+    - docker-builder
+
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+
+# TODO : run tests

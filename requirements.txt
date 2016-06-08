@@ -1,16 +1,1 @@
-alembic
-babel
-inflection
-newrelic
-Paste
-PasteScript
-py_openid_connect
-pyramid
-pyramid_assetviews
-pyramid_debugtoolbar
-pyramid_jinja2
-pyramid_tm
-SQLAlchemy
-transaction
-waitress
-zope.sqlalchemy
+.

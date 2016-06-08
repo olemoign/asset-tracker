@@ -1,0 +1,10 @@
+[MASTER]
+load-plugins=pylint_mccabe
+jobs=2
+disable=missing-docstring, no-value-for-parameter, unexpected-keyword-arg,
+
+[DESIGN]
+max-complexity=5
+
+[FORMAT]
+max-line-length=160

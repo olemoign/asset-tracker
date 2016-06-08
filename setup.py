@@ -7,8 +7,27 @@ with open(os.path.join(here, 'README.txt')) as f:
     README = f.read()
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
-with open(os.path.join(here, 'requirements.txt')) as f:
-    requires = f.read()
+
+
+requires = [
+    'alembic',
+    'babel',
+    'inflection',
+    'newrelic',
+    'Paste',
+    'PasteScript',
+    'py_openid_connect',
+    'psycopg2',
+    'pyramid',
+    'pyramid_assetviews',
+    'pyramid_debugtoolbar',
+    'pyramid_jinja2',
+    'pyramid_tm',
+    'SQLAlchemy',
+    'transaction',
+    'waitress',
+    'zope.sqlalchemy',
+]
 
 setup(
     name='asset_tracker',
