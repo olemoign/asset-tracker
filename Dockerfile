@@ -1,10 +1,10 @@
-FROM python:2
+FROM python:3
 
 # should not copy this in a layer. Maybe use a wheel cache outside ? or a local bind ?
 COPY dist/ /opt
 
 # Install app, supervisor
-RUN pip3 -q install /opt/* \
+RUN pip -q install /opt/* \
  && mkdir -p /opt/files
 
 # copy config files
