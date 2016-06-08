@@ -15,7 +15,7 @@ requires = [
     'newrelic',
     'Paste',
     'PasteScript',
-    'py_openid_connect',
+    # 'py_openid_connect',
     'psycopg2',
     'pyramid',
     'pyramid_assetviews',
