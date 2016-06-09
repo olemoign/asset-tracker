@@ -163,7 +163,7 @@ class Assets(APIEndPoint):
         draw, limit, offset, search, sort, full_text_search = self.manage_datatables_queries()
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
-        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer, models.Asset.site, 
+        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
                                        models.Asset.current_location]
 
         # TODO: add tenanting
@@ -182,8 +182,9 @@ class Assets(APIEndPoint):
                 link = self.request.route_path('assets-update', asset_id=asset.id)
                 
             asset_output = {
-                'id': asset.id, 'asset_id': asset.asset_id, 'customer': asset.customer, 'site': asset.site,
+                'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
                 'notes': asset.notes, 'current_location': asset.current_location, 'history': history,
+                'next_calibration': str(asset.next_calibration or ''),
                 'status': models.Event.status_labels[asset.history.order_by(models.Event.date.desc()).first().status],
                 'equipments': equipments, 'links': [{'rel': 'self', 'href': link}]
             }

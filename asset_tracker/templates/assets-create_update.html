@@ -26,6 +26,14 @@
         <div class="panel-body">
             <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=object.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                 <div class="row">
+                    {{ input('Asset ID', 'asset', 'asset_id', required=True) }}
+                    {{ input('Customer ID (Subscription ID)', 'asset', 'customer_id') }}
+                    {{ input('Customer name', 'asset', 'customer_name') }}
+                </div>
+
+                <hr>
+
+                <div class="row">
                     <div class="col-sm-6 form-group">
                         <label for="asset-status">{{ gettext('Status') }} *</label>
                         <select class="form-control" id="asset-status" name="asset-status">
@@ -34,16 +42,18 @@
                             {% endfor %}
                         </select>
                     </div>
-                    {{ input('Asset ID *', 'asset', 'asset_id') }}
-                    {{ input('Customer', 'asset', 'customer') }}
-                    {{ input('Last calibration date', 'asset', 'last_calibration_date', 'date') }}
+                    {{ input('Asset activation', 'asset', 'activation', 'date') }}
                     {{ input('Site', 'asset', 'site') }}
-                    {{ input('Asset activation date', 'asset', 'activation_date', 'date') }}
+                    {{ input('Last calibration', 'asset', 'last_calibration', 'date') }}
                     {{ input('Current location', 'asset', 'current_location') }}
+                    {{ input('Next calibration', 'asset', 'next_calibration', 'date') }}
                 </div>
+
+                <hr>
+
                 <div class="row">
                     <div class="col-sm-12">
-                        <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add"><span class="glyphicon glyphicon-plus"></span></a>
+                        <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
                     </div>
                     {% for equipment in (object or {}).equipments %}
                     <div class="col-sm-4 equipment__block">
@@ -102,7 +112,7 @@
                         <label for="asset-notes">{{ gettext('History') }}</label>
                         {% for event in object.history|sort(attribute='date') %}
                         <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                            status=status[event.status], date=event.date) }}.</p>
+                                status=status[event.status], date=event.date.date()) }}.</p>
                         {% endfor %}
                     </div>
                     {% endif %}
