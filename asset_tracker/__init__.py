@@ -3,6 +3,7 @@ from paste.translogger import TransLogger
 from pkg_resources import resource_string
 
 from pyramid.config import Configurator
+from pyramid.events import NewResponse, subscriber
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
@@ -13,6 +14,15 @@ from zope.sqlalchemy import register
 from .models import EquipmentFamily
 from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
 from .utilities.domain_model import Model
+
+
+@subscriber(NewResponse)
+def add_security_headers(event):
+    secure_headers = asbool(event.request.registry.settings.get('asset_tracker.dev.secure_headers', True))
+    if secure_headers:
+        event.response.headers.add('X-Frame-Options', 'deny')
+        event.response.headers.add('X-XSS-Protection', '1; mode=block')
+        event.response.headers.add('X-Content-Type-Options', 'nosniff')
 
 
 def get_user(request):
@@ -37,7 +47,6 @@ def main(global_config, **settings):
     assert(settings.get('rta.server_url'))
     assert(settings.get('rta.client_id'))
     assert(settings.get('rta.secret'))
-    debug_mode = asbool(settings.get('asset_tracker.debug'))
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     maker = sessionmaker()
@@ -74,8 +83,9 @@ def main(global_config, **settings):
     # config.add_translation_dirs('asset_tracker:locale')
 
     cookie_signature = settings['open_id.cookie_signature']
+    secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
     authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt',
-                                                    secure=not debug_mode, callback=get_effective_principals,
+                                                    secure=secure_cookies, callback=get_effective_principals,
                                                     http_only=True, wild_domain=False, hashalg='sha512')
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
@@ -99,7 +109,8 @@ def main(global_config, **settings):
     config.include('pyramid_assetviews')
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=3600)
 
-    if settings.get('asset_tracker.debug') == 'True':
+    log_requests = asbool(settings.get('asset_tracker.dev.log_requests', False))
+    if log_requests:
         return TransLogger(config.make_wsgi_app(), setup_console_handler=False)
     else:
         return config.make_wsgi_app()
