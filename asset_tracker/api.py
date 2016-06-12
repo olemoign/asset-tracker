@@ -178,8 +178,9 @@ class Assets(APIEndPoint):
             equipments = [{'model': equipment.family.model if equipment.family else None,
                            'serial_number': equipment.serial_number} for equipment in asset.equipments]
             link = None
-            if 'g:admin' in self.request.effective_principals or'assets-update' in self.request.effective_principals:
-                link = self.request.route_path('assets-update', asset_id=asset.id)
+            # TODO
+            #if 'g:admin' in self.request.effective_principals or 'assets-update' in self.request.effective_principals:
+            link = self.request.route_path('assets-update', asset_id=asset.id)
                 
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
