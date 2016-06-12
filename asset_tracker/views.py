@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
