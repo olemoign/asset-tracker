@@ -1,5 +1,6 @@
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
+from dateutil import relativedelta
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -19,6 +20,10 @@ def add_global_variables(event):
         event['user_alias'] = event['request'].user['alias']
         event['principals'] = rights_without_tenants(event['request'].effective_principals)
         event['locale'] = event['request'].locale_name
+
+
+def get_datetime(value):
+    return datetime.strptime(value, '%Y-%m-%d')
 
 
 class AssetsEndPoint(object):
@@ -49,8 +54,6 @@ class AssetsEndPoint(object):
             return {'error': _('Missing mandatory data.'), 'object': form_asset,
                     'equipments_families': equipments_families, 'status': Event.status_labels}
 
-        today = date.today()
-
         # noinspection PyArgumentList
         asset = Asset(asset_id=form_asset['asset_id'], tenant_id=None, customer_id=form_asset['customer_id'],
                       customer_name=form_asset['customer_name'], site=form_asset['site'],
@@ -64,39 +67,37 @@ class AssetsEndPoint(object):
 
         form_last_calibration = None
         if form_asset['last_calibration']:
-            form_last_calibration = datetime.strptime(form_asset['last_calibration'], '%Y-%m-%d')
-            if form_last_calibration.date() <= today:
-                last_calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
-                                         creator_alias=self.request.user['alias'], status='calibration')
-                asset.history.append(last_calibration)
-                self.request.db_session.add(last_calibration)
+            form_last_calibration = get_datetime(form_asset['last_calibration'])
+            last_calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
+                                     creator_alias=self.request.user['alias'], status='calibration')
+            asset.history.append(last_calibration)
+            self.request.db_session.add(last_calibration)
 
         form_activation = None
         if form_asset['activation']:
-            form_activation = datetime.strptime(form_asset['activation'], '%Y-%m-%d')
-            if form_activation.date() <= today:
-                # Small trick to make sure that the activation is always stored AFTER the calibration.
-                form_activation = form_activation + timedelta(hours=23, minutes=59)
-                activation = Event(date=form_activation, creator_id=self.request.user['id'],
-                                   creator_alias=self.request.user['alias'], status='service')
-                asset.history.append(activation)
-                self.request.db_session.add(activation)
+            form_activation = get_datetime(form_asset['activation'])
+            # Small trick to make sure that the activation is always stored AFTER the calibration.
+            form_activation = form_activation + timedelta(hours=23, minutes=59)
+            activation = Event(date=form_activation, creator_id=self.request.user['id'],
+                               creator_alias=self.request.user['alias'], status='service')
+            asset.history.append(activation)
+            self.request.db_session.add(activation)
 
         form_next_calibration = None
         if form_asset['next_calibration']:
-            form_next_calibration = datetime.strptime(form_asset['next_calibration'], '%Y-%m-%d').date()
+            form_next_calibration = get_datetime(form_asset['next_calibration']).date()
 
-        if form_next_calibration and form_next_calibration >= today:
+        if form_next_calibration:
             asset.next_calibration = form_next_calibration
 
-        elif form_last_calibration and form_last_calibration.date() <= today:
-            asset.next_calibration = form_last_calibration + timedelta(days=365) * 3
+        elif form_last_calibration:
+            asset.next_calibration = form_last_calibration + relativedelta(years=3)
 
         elif form_asset['status'] == 'service':
-            asset.next_calibration = today + timedelta(days=365) * 3
+            asset.next_calibration = datetime.utcnow().date() + relativedelta(years=3)
 
-        elif form_activation and form_activation.date() <= today:
-            asset.next_calibration = form_activation + timedelta(days=365) * 3
+        elif form_activation:
+            asset.next_calibration = form_activation + relativedelta(years=3)
 
         event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
                       creator_alias=self.request.user['alias'], status=form_asset['status'])
@@ -139,8 +140,6 @@ class AssetsEndPoint(object):
             return {'error': _('Missing mandatory data.'), 'object': form_asset, 'status': Event.status_labels,
                     'equipments_families': equipments_families}
 
-        today = date.today()
-
         asset.asset_id = form_asset['asset_id']
         asset.tenant_id = form_asset['tenant_id']
         asset.customer_id = form_asset['customer_id']
@@ -150,7 +149,7 @@ class AssetsEndPoint(object):
         asset.notes = form_asset['notes']
 
         if form_asset['next_calibration']:
-            asset.next_calibration = datetime.strptime(form_asset['next_calibration'], '%Y-%m-%d')
+            asset.next_calibration = get_datetime(form_asset['next_calibration'])
 
         asset.equipments.delete()
         for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
@@ -160,26 +159,26 @@ class AssetsEndPoint(object):
 
         last_status = asset.history.order_by(Event.date.desc()).first().status
         if form_asset['status'] != last_status:
-            event = Event(date=today, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
-                          status=form_asset['status'])
+            event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
+                          creator_alias=self.request.user['alias'], status=form_asset['status'])
             asset.history.append(event)
             self.request.db_session.add(event)
 
         if form_asset['activation']:
-            form_activation = datetime.strptime(form_asset['activation'], '%Y-%m-%d')
+            form_activation = get_datetime(form_asset['activation'])
             activations = [activation.date.date() for activation in asset.history.filter_by(status='service').all()]
 
-            if form_activation.date() <= today and form_activation.date() not in activations:
+            if form_activation.date() not in activations:
                 activation = Event(date=form_activation, creator_id=self.request.user['id'],
                                    creator_alias=self.request.user['alias'], status='service')
                 asset.history.append(activation)
                 self.request.db_session.add(activation)
 
         if form_asset['last_calibration']:
-            form_last_calibration = datetime.strptime(form_asset['last_calibration'], '%Y-%m-%d')
+            form_last_calibration = get_datetime(form_asset['last_calibration'])
             calibrations = [calibration.date.date() for calibration in asset.history.filter_by(status='calibration').all()]
 
-            if form_last_calibration.date() <= today and form_last_calibration.date() not in calibrations:
+            if form_last_calibration.date() not in calibrations:
                 calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
                                     creator_alias=self.request.user['alias'], status='calibration')
                 asset.history.append(calibration)
