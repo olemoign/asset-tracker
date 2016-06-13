@@ -18,7 +18,6 @@ pylint-quality:
   allow_failure: true
 
   script:
-    - pip -q install py-openid-connect/
     - pip -q install .[testing]
     - pylint asset_tracker
 
@@ -29,7 +28,6 @@ pyflakes:
     - docker
 
   script:
-    - pip -q install py-openid-connect/
     - pip -q install .[testing]
     - pyflakes asset_tracker
 
@@ -41,10 +39,6 @@ build:
 
   script:
     - pip -q install -U pip wheel setuptools
-    - pip -q install py-openid-connect/
-
-    - python py-openid-connect/setup.py bdist_wheel
-    - pip wheel -w dist/ py-openid-connect/
 
     - python setup.py bdist_wheel
     - pip wheel -w dist/ .
