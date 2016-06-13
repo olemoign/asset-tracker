@@ -19,6 +19,7 @@ pylint-quality:
 
   script:
     - pip -q install -U pip wheel setuptools
+    - pip -q install 'git+ssh://git@github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect'
     - pip -q install .[testing]
     - pylint asset_tracker
 
@@ -30,6 +31,7 @@ pyflakes:
 
   script:
     - pip -q install -U pip wheel setuptools
+    - pip -q install 'git+ssh://git@github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect'
     - pip -q install .[testing]
     - pyflakes asset_tracker
 
