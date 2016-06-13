@@ -2,18 +2,15 @@ from json import loads
 from paste.translogger import TransLogger
 from pkg_resources import resource_string
 
+import transaction
 from pyramid.config import Configurator
 from pyramid.events import NewResponse, subscriber
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
-from sqlalchemy import engine_from_config
-from sqlalchemy.orm import sessionmaker
-from transaction import manager
-from zope.sqlalchemy import register
 
-from .models import EquipmentFamily
+from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
+from .models.meta import Model
 from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
-from .utilities.domain_model import Model
 
 
 @subscriber(NewResponse)
@@ -47,16 +44,15 @@ def main(global_config, **settings):
     assert(settings.get('rta.server_url'))
     assert(settings.get('rta.client_id'))
     assert(settings.get('rta.secret'))
+    assert settings.get('sqlalchemy.url')
 
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    maker = sessionmaker()
-    register(maker)
-    maker.configure(bind=engine)
-    Model.metadata.bind = engine
+    with transaction.manager:
+        engine = get_engine(settings)
+        session_factory = get_session_factory(engine)
+        db_session = get_tm_session(session_factory, transaction.manager)
 
-    with manager:
-        db_session = maker()
         db_session.query(EquipmentFamily).delete()
+
         families_list = resource_string(__name__, 'equipments_families.json').decode('utf-8')
         json_families = loads(families_list)
         for json_family in json_families:
@@ -94,17 +90,17 @@ def main(global_config, **settings):
     config.set_session_factory(SignedCookieSessionFactory(cookie_signature))
 
     config.add_request_method(get_user, 'user', reify=True)
-    config.add_request_method(lambda request: maker(), 'db_session', reify=True)
 
-    rta_url = settings['rta.server_url'] + '/{path}'
-    config.add_route('rta', rta_url)
-
+    config.include('.models')
     config.include('asset_tracker.api', route_prefix='api')
     config.include('asset_tracker.views')
     config.scan()
 
     config.include('py_openid_connect.openid_connect_client')
     config.scan('py_openid_connect')
+
+    rta_url = settings['rta.server_url'] + '/{path}'
+    config.add_route('rta', rta_url)
 
     config.include('pyramid_assetviews')
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=3600)

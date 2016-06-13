@@ -2,8 +2,8 @@ from collections import OrderedDict
 from operator import attrgetter
 from pyramid.i18n import TranslationString as _
 
-from .utilities.domain_model import CreationDateTimeMixin, Date, DateTime, Enum, hybrid_property, Integer, Field, \
-    ForeignKey, Model, relationship, select, String
+from .meta import CreationDateTimeMixin, Date, DateTime, Enum, hybrid_property, Integer, Field, ForeignKey, Model, \
+    relationship, select, String
 
 
 class Asset(Model, CreationDateTimeMixin):

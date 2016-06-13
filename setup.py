@@ -66,7 +66,5 @@ setup(
     entry_points="""\
     [paste.app_factory]
     main = asset_tracker:main
-    [console_scripts]
-    asset_tracker_initialize_db = asset_tracker.scripts.initializedb:main
     """,
 )

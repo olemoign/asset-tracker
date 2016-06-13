@@ -8,8 +8,8 @@ from pyramid.view import view_config
 from sqlalchemy.exc import InvalidRequestError
 
 from . import models
+from .models.meta import asc, Boolean, desc, func, or_, String
 from .utilities.authorization import Right
-from .utilities.domain_model import asc, Boolean, desc, func, or_, String
 
 
 class APIBadRequest(Exception):
