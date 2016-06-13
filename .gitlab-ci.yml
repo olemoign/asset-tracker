@@ -18,6 +18,7 @@ pylint-quality:
   allow_failure: true
 
   script:
+    - pip -q install -U pip wheel setuptools
     - pip -q install .[testing]
     - pylint asset_tracker
 
@@ -28,6 +29,7 @@ pyflakes:
     - docker
 
   script:
+    - pip -q install -U pip wheel setuptools
     - pip -q install .[testing]
     - pyflakes asset_tracker
 
@@ -39,7 +41,6 @@ build:
 
   script:
     - pip -q install -U pip wheel setuptools
-
     - python setup.py bdist_wheel
     - pip wheel -w dist/ .
 
