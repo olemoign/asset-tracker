@@ -9,7 +9,6 @@ from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
-from .models.meta import Model
 from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
 
 
