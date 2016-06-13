@@ -19,8 +19,7 @@ pylint-quality:
 
   script:
     - pip -q install -U pip wheel setuptools
-    - pip -q install 'git+https://github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect'
-    - pip -q install .[testing]
+    - pip -q install .[testing] --process-dependency-links
     - pylint asset_tracker
 
 pyflakes:
@@ -31,8 +30,7 @@ pyflakes:
 
   script:
     - pip -q install -U pip wheel setuptools
-    - pip -q install 'git+https://github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect'
-    - pip -q install .[testing]
+    - pip -q install .[testing] --process-dependency-links
     - pyflakes asset_tracker
 
 build:
@@ -44,7 +42,7 @@ build:
   script:
     - pip -q install -U pip wheel setuptools
     - python setup.py bdist_wheel
-    - pip wheel -w dist/ .
+    - pip wheel -w dist/ . --process-dependency-links
 
   artifacts:
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
