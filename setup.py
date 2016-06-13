@@ -61,7 +61,7 @@ setup(
         'testing': tests_require,
     },
     dependency_links={
-        'git+ssh://git@github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect',
+        'https://github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect',
     },
     entry_points="""\
     [paste.app_factory]
