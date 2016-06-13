@@ -15,7 +15,7 @@ requires = [
     'newrelic',
     'Paste',
     'PasteScript',
-    # 'py_openid_connect',
+    'py_openid_connect',
     'psycopg2',
     'pyramid',
     'pyramid_assetviews',
@@ -59,6 +59,9 @@ setup(
     install_requires=requires,
     extras_require={
         'testing': tests_require,
+    },
+    dependency_links={
+        'git+ssh://git@github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect',
     },
     entry_points="""\
     [paste.app_factory]

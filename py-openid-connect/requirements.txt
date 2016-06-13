@@ -1,6 +1,0 @@
-oauthlib
-PyJWT
-pyramid
-pyramid_jinja2
-pyramid_tm
-requests[security]
