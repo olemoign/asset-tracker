@@ -66,7 +66,7 @@ class AssetsEndPoint(object):
 
         if not form_asset['status'] or not form_asset['asset_id']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-            return {'error': _('Missing mandatory data.'), 'object': form_asset,
+            return {'error': _('Missing mandatory data.'), 'asset': form_asset,
                     'equipments_families': equipments_families, 'status': Event.status_labels}
 
         # noinspection PyArgumentList
@@ -130,7 +130,7 @@ class AssetsEndPoint(object):
         self.asset.activation = activation.date.date() if activation else None
 
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'update': True, 'object': self.asset, 'equipments_families': equipments_families,
+        return {'update': True, 'asset': self.asset, 'equipments_families': equipments_families,
                 'status': Event.status_labels}
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
@@ -140,7 +140,7 @@ class AssetsEndPoint(object):
 
         if not form_asset['asset_id'] or not form_asset['tenant_id'] or not form_asset['status']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-            return {'error': _('Missing mandatory data.'), 'object': form_asset, 'status': Event.status_labels,
+            return {'error': _('Missing mandatory data.'), 'asset': form_asset, 'status': Event.status_labels,
                     'equipments_families': equipments_families}
 
         self.asset.asset_id = form_asset['asset_id']
