@@ -27,16 +27,31 @@ def get_datetime(value):
 
 
 class AssetsEndPoint(object):
-    __acl__ = [
-        (Allow, None, 'assets-create', 'assets-create'),
-        (Allow, None, 'assets-read', 'assets-read'),
-        (Allow, None, 'assets-update', 'assets-update'),
-        (Allow, None, 'assets-list', 'assets-list'),
-        (Allow, None, 'g:admin', ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
-    ]
+    def __acl__(self):
+        acl = [
+            (Allow, None, 'assets-create', 'assets-create'),
+            (Allow, None, 'assets-list', 'assets-list'),
+            (Allow, None, 'g:admin', ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
+        ]
+
+        if self.asset:
+            acl.append((Allow, self.asset.tenant_id, 'assets-read', 'assets-read'))
+            acl.append((Allow, self.asset.tenant_id, 'assets-update', 'assets-update'))
+
+        return acl
 
     def __init__(self, request):
         self.request = request
+        self.asset = self.get_asset()
+        
+    def get_asset(self):
+        asset_id = self.request.matchdict.get('asset_id')
+        if asset_id:
+            asset = self.request.db_session.query(Asset).get(asset_id)
+            if not asset:
+                raise HTTPNotFound()
+            else:
+                return asset
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -109,79 +124,67 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        asset_id = self.request.matchdict['asset_id']
-        asset = self.request.db_session.query(Asset).get(asset_id)
-
-        if not asset:
-            return HTTPNotFound()
-
-        last_calibration = asset.history.filter_by(status='calibration').order_by(Event.date.desc()).first()
-        asset.last_calibration = last_calibration.date.date() if last_calibration else None
-        activation = asset.history.filter_by(status='service').order_by(Event.date).first()
-        asset.activation = activation.date.date() if activation else None
+        last_calibration = self.asset.history.filter_by(status='calibration').order_by(Event.date.desc()).first()
+        self.asset.last_calibration = last_calibration.date.date() if last_calibration else None
+        activation = self.asset.history.filter_by(status='service').order_by(Event.date).first()
+        self.asset.activation = activation.date.date() if activation else None
 
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'update': True, 'object': asset, 'equipments_families': equipments_families,
+        return {'update': True, 'object': self.asset, 'equipments_families': equipments_families,
                 'status': Event.status_labels}
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):
-        asset_id = self.request.matchdict['asset_id']
-        asset = self.request.db_session.query(Asset).get(asset_id)
-
-        if not asset:
-            return HTTPNotFound()
-
         form_asset = self.read_form()
 
-        if not form_asset['asset_id'] or not form_asset['status']:
+        if not form_asset['asset_id'] or not form_asset['tenant_id'] or not form_asset['status']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
             return {'error': _('Missing mandatory data.'), 'object': form_asset, 'status': Event.status_labels,
                     'equipments_families': equipments_families}
 
-        asset.asset_id = form_asset['asset_id']
-        asset.tenant_id = form_asset['tenant_id']
-        asset.customer_id = form_asset['customer_id']
-        asset.customer_name = form_asset['customer_name']
-        asset.site = form_asset['site']
-        asset.current_location = form_asset['current_location']
-        asset.notes = form_asset['notes']
+        self.asset.asset_id = form_asset['asset_id']
+        self.asset.tenant_id = form_asset['tenant_id']
+        self.asset.customer_id = form_asset['customer_id']
+        self.asset.customer_name = form_asset['customer_name']
+        self.asset.site = form_asset['site']
+        self.asset.current_location = form_asset['current_location']
+        self.asset.notes = form_asset['notes']
 
         if form_asset['next_calibration']:
-            asset.next_calibration = get_datetime(form_asset['next_calibration'])
+            self.asset.next_calibration = get_datetime(form_asset['next_calibration'])
 
-        asset.equipments.delete()
+        self.asset.equipments.delete()
         for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
             equipment = Equipment(family_id=form_equipment['family'], serial_number=form_equipment['serial_number'])
-            asset.equipments.append(equipment)
+            self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
-        last_status = asset.history.order_by(Event.date.desc()).first().status
+        last_status = self.asset.history.order_by(Event.date.desc()).first().status
         if form_asset['status'] != last_status:
             event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
                           creator_alias=self.request.user['alias'], status=form_asset['status'])
-            asset.history.append(event)
+            self.asset.history.append(event)
             self.request.db_session.add(event)
 
         if form_asset['activation']:
             form_activation = get_datetime(form_asset['activation'])
-            activations = [activation.date.date() for activation in asset.history.filter_by(status='service').all()]
+            activations = [activation.date.date() for activation in self.asset.history.filter_by(status='service').all()]
 
             if form_activation.date() not in activations:
                 activation = Event(date=form_activation, creator_id=self.request.user['id'],
                                    creator_alias=self.request.user['alias'], status='service')
-                asset.history.append(activation)
+                self.asset.history.append(activation)
                 self.request.db_session.add(activation)
 
         if form_asset['last_calibration']:
             form_last_calibration = get_datetime(form_asset['last_calibration'])
-            calibrations = [calibration.date.date() for calibration in asset.history.filter_by(status='calibration').all()]
+            calibrations = [calibration.date.date() for calibration in self.asset.history.filter_by(status='calibration').all()]
 
             if form_last_calibration.date() not in calibrations:
                 calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
                                     creator_alias=self.request.user['alias'], status='calibration')
-                asset.history.append(calibration)
+                self.asset.history.append(calibration)
                 self.request.db_session.add(calibration)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
