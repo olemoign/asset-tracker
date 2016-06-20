@@ -79,14 +79,16 @@ def main(global_config, **settings):
 
     cookie_signature = settings['open_id.cookie_signature']
     secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
-    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt',
+    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='asset_tracker_auth_tkt',
                                                     secure=secure_cookies, callback=get_effective_principals,
                                                     http_only=True, wild_domain=False, hashalg='sha512')
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
 
-    config.set_session_factory(SignedCookieSessionFactory(cookie_signature))
+    session_factory = SignedCookieSessionFactory(cookie_signature, cookie_name='asset_tracker_session',
+                                                 secure=secure_cookies, httponly=True)
+    config.set_session_factory(session_factory)
 
     config.add_request_method(get_user, 'user', reify=True)
 
