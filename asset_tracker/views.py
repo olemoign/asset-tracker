@@ -30,6 +30,10 @@ def get_date(value):
         return None
 
 
+class FormException(Exception):
+    pass
+
+
 class AssetsEndPoint(object):
     def __acl__(self):
         acl = [
@@ -56,32 +60,49 @@ class AssetsEndPoint(object):
                 raise HTTPNotFound()
             else:
                 return asset
+            
+    def get_base_form_data(self):
+        # TODO manage tenants
+        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        return {'equipments_families': equipments_families, 'status': Event.status_labels,
+                'tenants': self.request.session['tenants']}
 
     def read_form(self):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         form['equipment-family'] = form['equipment-family'] or []
         form['equipment-serial_number'] = form['equipment-serial_number'] or []
+
+        if not form['asset_id'] or not form['tenant_id'] or not form['status']:
+            raise FormException(_('Missing mandatory data.'))
+
+        today = datetime.utcnow().date()
+
+        form_last_calibration = get_date(form['last_calibration'])
+        if form_last_calibration and form_last_calibration > today:
+            raise FormException(_('Invalid last calibration date.'))
+
+        form_activation = get_date(form['activation'])
+        if form_activation and form_activation > today:
+            raise FormException(_('Invalid activation date.'))
+
         return form
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_get(self):
-        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'equipments_families': equipments_families, 'status': Event.status_labels}
+        return self.get_base_form_data()
 
     @view_config(route_name='assets-create', request_method='POST', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_post(self):
-        form_asset = self.read_form()
-
-        if not form_asset['status'] or not form_asset['asset_id']:
-            equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-            return {'error': _('Missing mandatory data.'), 'asset': form_asset,
-                    'equipments_families': equipments_families, 'status': Event.status_labels}
+        try:
+            form_asset = self.read_form()
+        except FormException as e:
+            return dict(error=e, **self.get_base_form_data())
 
         # noinspection PyArgumentList
-        asset = Asset(asset_id=form_asset['asset_id'], tenant_id=None, customer_id=form_asset['customer_id'],
-                      customer_name=form_asset['customer_name'], site=form_asset['site'],
+        asset = Asset(asset_id=form_asset['asset_id'], tenant_id=form_asset['tenant_id'], site=form_asset['site'],
+                      customer_id=form_asset['customer_id'], customer_name=form_asset['customer_name'],
                       current_location=form_asset['current_location'], notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
@@ -134,19 +155,15 @@ class AssetsEndPoint(object):
         activation = self.asset.history.filter_by(status='service').order_by(Event.date).first()
         self.asset.activation = activation.date.date() if activation else None
 
-        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'update': True, 'asset': self.asset, 'equipments_families': equipments_families,
-                'status': Event.status_labels}
+        return dict(update=True, asset=self.asset, **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):
-        form_asset = self.read_form()
-
-        if not form_asset['asset_id'] or not form_asset['tenant_id'] or not form_asset['status']:
-            equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-            return {'error': _('Missing mandatory data.'), 'asset': form_asset, 'status': Event.status_labels,
-                    'equipments_families': equipments_families}
+        try:
+            form_asset = self.read_form()
+        except FormException as e:
+            return dict(error=e, **self.get_base_form_data())
 
         self.asset.asset_id = form_asset['asset_id']
         self.asset.tenant_id = form_asset['tenant_id']
