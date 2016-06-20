@@ -25,6 +25,7 @@
 
         <div class="panel-body">
             <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="row">
                     {{ input(asset, 'Asset ID', 'asset_id', required=True) }}
                     {{ input(asset, 'Customer ID (Subscription ID)', 'customer_id') }}
