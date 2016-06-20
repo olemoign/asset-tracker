@@ -22,7 +22,7 @@ def add_global_variables(event):
         event['locale'] = event['request'].locale_name
 
 
-def get_datetime(value):
+def get_date(value):
     return datetime.strptime(value, '%Y-%m-%d')
 
 
@@ -82,7 +82,7 @@ class AssetsEndPoint(object):
 
         form_last_calibration = None
         if form_asset['last_calibration']:
-            form_last_calibration = get_datetime(form_asset['last_calibration'])
+            form_last_calibration = get_date(form_asset['last_calibration'])
             last_calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
                                      creator_alias=self.request.user['alias'], status='calibration')
             asset.history.append(last_calibration)
@@ -90,7 +90,7 @@ class AssetsEndPoint(object):
 
         form_activation = None
         if form_asset['activation']:
-            form_activation = get_datetime(form_asset['activation'])
+            form_activation = get_date(form_asset['activation'])
             # Small trick to make sure that the activation is always stored AFTER the calibration.
             form_activation = form_activation + timedelta(hours=23, minutes=59)
             activation = Event(date=form_activation, creator_id=self.request.user['id'],
@@ -98,12 +98,8 @@ class AssetsEndPoint(object):
             asset.history.append(activation)
             self.request.db_session.add(activation)
 
-        form_next_calibration = None
         if form_asset['next_calibration']:
-            form_next_calibration = get_datetime(form_asset['next_calibration']).date()
-
-        if form_next_calibration:
-            asset.next_calibration = form_next_calibration
+            asset.next_calibration = get_date(form_asset['next_calibration']).date()
 
         elif form_last_calibration:
             asset.next_calibration = form_last_calibration + relativedelta(years=3)
@@ -152,7 +148,7 @@ class AssetsEndPoint(object):
         self.asset.notes = form_asset['notes']
 
         if form_asset['next_calibration']:
-            self.asset.next_calibration = get_datetime(form_asset['next_calibration'])
+            self.asset.next_calibration = get_date(form_asset['next_calibration']).date()
 
         self.asset.equipments.delete()
         for index, value in enumerate(form_asset['equipment-family']):
@@ -168,7 +164,7 @@ class AssetsEndPoint(object):
             self.request.db_session.add(event)
 
         if form_asset['activation']:
-            form_activation = get_datetime(form_asset['activation'])
+            form_activation = get_date(form_asset['activation'])
             activations = [activation.date.date() for activation in self.asset.history.filter_by(status='service').all()]
 
             if form_activation.date() not in activations:
@@ -178,7 +174,7 @@ class AssetsEndPoint(object):
                 self.request.db_session.add(activation)
 
         if form_asset['last_calibration']:
-            form_last_calibration = get_datetime(form_asset['last_calibration'])
+            form_last_calibration = get_date(form_asset['last_calibration'])
             calibrations = [calibration.date.date() for calibration in self.asset.history.filter_by(status='calibration').all()]
 
             if form_last_calibration.date() not in calibrations:
