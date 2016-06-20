@@ -62,7 +62,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-create', request_method='POST', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_post(self):
-        form_asset = self.read_form()
+        form_asset = {key: value or None for key, value in self.request.POST.mixed().items()}
 
         if not form_asset['status'] or not form_asset['asset_id']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
@@ -75,8 +75,8 @@ class AssetsEndPoint(object):
                       current_location=form_asset['current_location'], notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
-        for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
-            equipment = Equipment(family_id=form_equipment['family'], serial_number=form_equipment['serial_number'])
+        for index, value in enumerate(form_asset['equipment-family']):
+            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
             asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
