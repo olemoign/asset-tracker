@@ -31,7 +31,9 @@ def get_date(value):
 
 
 class FormException(Exception):
-    pass
+    def __init__(self, msg, form):
+        self.msg = msg
+        self.form = form
 
 
 class AssetsEndPoint(object):
@@ -73,17 +75,17 @@ class AssetsEndPoint(object):
         form['equipment-serial_number'] = form['equipment-serial_number'] or []
 
         if not form['asset_id'] or not form['tenant_id'] or not form['status']:
-            raise FormException(_('Missing mandatory data.'))
+            raise FormException(_('Missing mandatory data.'), form)
 
         today = datetime.utcnow().date()
 
         form_last_calibration = get_date(form['last_calibration'])
         if form_last_calibration and form_last_calibration > today:
-            raise FormException(_('Invalid last calibration date.'))
+            raise FormException(_('Invalid last calibration date.'), form)
 
         form_activation = get_date(form['activation'])
         if form_activation and form_activation > today:
-            raise FormException(_('Invalid activation date.'))
+            raise FormException(_('Invalid activation date.'), form)
 
         return form
 
@@ -97,8 +99,8 @@ class AssetsEndPoint(object):
     def create_post(self):
         try:
             form_asset = self.read_form()
-        except FormException as e:
-            return dict(error=e, **self.get_base_form_data())
+        except FormException as error:
+            return dict(error=error.msg, asset=error.form, **self.get_base_form_data())
 
         # noinspection PyArgumentList
         asset = Asset(asset_id=form_asset['asset_id'], tenant_id=form_asset['tenant_id'], site=form_asset['site'],
@@ -162,8 +164,10 @@ class AssetsEndPoint(object):
     def update_post(self):
         try:
             form_asset = self.read_form()
-        except FormException as e:
-            return dict(error=e, **self.get_base_form_data())
+        except FormException as error:
+            asset = error.form
+            asset.update({'id': self.asset.id, 'history': self.asset.history})
+            return dict(error=error.msg, update=True, asset=asset, **self.get_base_form_data())
 
         self.asset.asset_id = form_asset['asset_id']
         self.asset.tenant_id = form_asset['tenant_id']
