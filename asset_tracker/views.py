@@ -23,7 +23,10 @@ def add_global_variables(event):
 
 
 def get_date(value):
-    return datetime.strptime(value, '%Y-%m-%d')
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').date()
+    except (TypeError, ValueError):
+        return None
 
 
 class AssetsEndPoint(object):
@@ -80,17 +83,15 @@ class AssetsEndPoint(object):
             asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
-        form_last_calibration = None
-        if form_asset['last_calibration']:
-            form_last_calibration = get_date(form_asset['last_calibration'])
+        form_last_calibration = get_date(form_asset['last_calibration'])
+        if form_last_calibration:
             last_calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
                                      creator_alias=self.request.user['alias'], status='calibration')
             asset.history.append(last_calibration)
             self.request.db_session.add(last_calibration)
 
-        form_activation = None
-        if form_asset['activation']:
-            form_activation = get_date(form_asset['activation'])
+        form_activation = get_date(form_asset['activation'])
+        if form_activation:
             # Small trick to make sure that the activation is always stored AFTER the calibration.
             form_activation = form_activation + timedelta(hours=23, minutes=59)
             activation = Event(date=form_activation, creator_id=self.request.user['id'],
@@ -98,8 +99,9 @@ class AssetsEndPoint(object):
             asset.history.append(activation)
             self.request.db_session.add(activation)
 
-        if form_asset['next_calibration']:
-            asset.next_calibration = get_date(form_asset['next_calibration']).date()
+        form_next_calibration = get_date(form_asset['next_calibration'])
+        if form_next_calibration:
+            asset.next_calibration = form_next_calibration
 
         elif form_last_calibration:
             asset.next_calibration = form_last_calibration + relativedelta(years=3)
@@ -147,8 +149,9 @@ class AssetsEndPoint(object):
         self.asset.current_location = form_asset['current_location']
         self.asset.notes = form_asset['notes']
 
-        if form_asset['next_calibration']:
-            self.asset.next_calibration = get_date(form_asset['next_calibration']).date()
+        form_next_calibration = get_date(form_asset['next_calibration'])
+        if form_next_calibration:
+            self.asset.next_calibration = form_next_calibration
 
         self.asset.equipments.delete()
         for index, value in enumerate(form_asset['equipment-family']):
@@ -163,21 +166,21 @@ class AssetsEndPoint(object):
             self.asset.history.append(event)
             self.request.db_session.add(event)
 
-        if form_asset['activation']:
-            form_activation = get_date(form_asset['activation'])
+        form_activation = get_date(form_asset['activation'])
+        if form_activation:
             activations = [activation.date.date() for activation in self.asset.history.filter_by(status='service').all()]
 
-            if form_activation.date() not in activations:
+            if form_activation not in activations:
                 activation = Event(date=form_activation, creator_id=self.request.user['id'],
                                    creator_alias=self.request.user['alias'], status='service')
                 self.asset.history.append(activation)
                 self.request.db_session.add(activation)
 
-        if form_asset['last_calibration']:
-            form_last_calibration = get_date(form_asset['last_calibration'])
+        form_last_calibration = get_date(form_asset['last_calibration'])
+        if form_last_calibration:
             calibrations = [calibration.date.date() for calibration in self.asset.history.filter_by(status='calibration').all()]
 
-            if form_last_calibration.date() not in calibrations:
+            if form_last_calibration not in calibrations:
                 calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
                                     creator_alias=self.request.user['alias'], status='calibration')
                 self.asset.history.append(calibration)
