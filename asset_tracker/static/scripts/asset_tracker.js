@@ -6,6 +6,12 @@ $(document).ready(function() {
     var favicon_link = $('link[rel=icon]');
     var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g, '');
     favicon_link.attr('href', favicon);
+
+    //Auto focus first input in page
+    var firstInput = $('input[type=text]').first();
+    firstInput.focus();
+    //Move cursor to the end of the input
+    firstInput.val(firstInput.val());
 });
 
 
