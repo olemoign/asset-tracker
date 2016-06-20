@@ -56,6 +56,12 @@ class AssetsEndPoint(object):
             else:
                 return asset
 
+    def read_form(self):
+        form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
+        form['equipment-family'] = form['equipment-family'] or []
+        form['equipment-serial_number'] = form['equipment-serial_number'] or []
+        return form
+
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_get(self):
@@ -65,7 +71,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-create', request_method='POST', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_post(self):
-        form_asset = {key: value or None for key, value in self.request.POST.mixed().items()}
+        form_asset = self.read_form()
 
         if not form_asset['status'] or not form_asset['asset_id']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
@@ -134,7 +140,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):
-        form_asset = {key: value or None for key, value in self.request.POST.mixed().items()}
+        form_asset = self.read_form()
 
         if not form_asset['asset_id'] or not form_asset['tenant_id'] or not form_asset['status']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
