@@ -1,9 +1,8 @@
-{% macro input(label, object_name, field, type='text', required=False) -%}
+{% macro input(object, label, field, type='text', required=False) -%}
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="{{ object_name }}-{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
-            <input type="{{ type }}" class="form-control"
-                   id="{{ object_name }}-{{ field }}" name="{{ object_name }}-{{ field }}"
+            <label for="{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
+            <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
                    {% if object and object[field] %} value="{{ object[field] }}"{% endif %}
                    {% if required %} required{% endif %}>
         </div>

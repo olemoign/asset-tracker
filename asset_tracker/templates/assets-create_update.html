@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import input with context %}
+{% from 'macros.html' import input %}
 
 {% if update %}
     {% set title = gettext('Modify asset') %}
@@ -26,35 +26,35 @@
         <div class="panel-body">
             <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                 <div class="row">
-                    {{ input('Asset ID', 'asset', 'asset_id', required=True) }}
-                    {{ input('Customer ID (Subscription ID)', 'asset', 'customer_id') }}
+                    {{ input(asset, 'Asset ID', 'asset_id', required=True) }}
+                    {{ input(asset, 'Customer ID (Subscription ID)', 'customer_id') }}
                     <div class="col-sm-6 form-group">
-                        <label for="asset-tenant_id">{{ gettext('Tenant') }} *</label>
-                        <select class="form-control" id="asset-tenant_id" name="asset-tenant_id">
-                            {% for id, name in tenants.items() %}
-                            <option value="{{ id }}"{% if asset and asset.tenant_id == id %} selected{% endif %}>{{ name }}</option>
+                        <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                        <select class="form-control" id="tenant_id" name="tenant_id">
+                            {% for tenant in tenants %}
+                            <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == id %} selected{% endif %}>{{ tenant.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    {{ input('Customer name', 'asset', 'customer_name') }}
+                    {{ input(asset, 'Customer name', 'customer_name') }}
                 </div>
 
                 <hr>
 
                 <div class="row">
                     <div class="col-sm-6 form-group">
-                        <label for="asset-status">{{ gettext('Status') }} *</label>
-                        <select class="form-control" id="asset-status" name="asset-status">
+                        <label for="status">{{ gettext('Status') }} *</label>
+                        <select class="form-control" id="status" name="status">
                             {% for key, value in status.items() %}
                             <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ value }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    {{ input('Asset activation', 'asset', 'activation', 'date') }}
-                    {{ input('Site', 'asset', 'site') }}
-                    {{ input('Last calibration', 'asset', 'last_calibration', 'date') }}
-                    {{ input('Current location', 'asset', 'current_location') }}
-                    {{ input('Next calibration', 'asset', 'next_calibration', 'date') }}
+                    {{ input(asset, 'Asset activation', 'activation', 'date') }}
+                    {{ input(asset, 'Site', 'site') }}
+                    {{ input(asset, 'Last calibration', 'last_calibration', 'date') }}
+                    {{ input(asset, 'Current location', 'current_location') }}
+                    {{ input(asset, 'Next calibration', 'next_calibration', 'date') }}
                 </div>
 
                 <hr>
@@ -67,7 +67,7 @@
                     <div class="col-sm-4 equipment__block">
                         <div class="well well-sm">
                             <div class="form-group">
-                                <select class="form-control" name="asset-equipment-family">
+                                <select class="form-control" name="equipment-family">
                                     <option></option>
                                     {% for family in equipments_families %}
                                     {{ equipment.family }} {{ family.id }}
@@ -76,7 +76,7 @@
                                 </select>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="asset-equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
+                                <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
                                 <span class="input-group-btn equipment__remove">
                                     <button class="btn btn-default" type="button">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -89,7 +89,7 @@
                     <div class="col-sm-4 equipment__block">
                         <div class="well well-sm">
                             <div class="form-group">
-                                <select class="form-control" name="asset-equipment-family">
+                                <select class="form-control" name="equipment-family">
                                     <option></option>
                                     {% for family in equipments_families %}
                                     <option value="{{ family.id }}">{{ family.model }}</option>
@@ -97,7 +97,7 @@
                                 </select>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="asset-equipment-serial_number" placeholder="S/N">
+                                <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
                                 <span class="input-group-btn equipment__remove">
                                     <button class="btn btn-default" type="button">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -110,14 +110,14 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12 form-group">
-                        <label for="asset-notes">{{ gettext('Notes') }}</label>
-                        <textarea class="form-control" rows="3" id="asset-notes" name="asset-notes">
+                        <label for="notes">{{ gettext('Notes') }}</label>
+                        <textarea class="form-control" rows="3" id="notes" name="notes">
                             {%- if asset and asset.notes -%}{{ asset.notes }}{%- endif -%}
                         </textarea>
                     </div>
                     {% if update %}
                     <div class="col-sm-12 form-group">
-                        <label for="asset-notes">{{ gettext('History') }}</label>
+                        <label for="notes">{{ gettext('History') }}</label>
                         {% for event in asset.history|sort(attribute='date') %}
                         <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
                                 status=status[event.status], date=event.date.date()) }}.</p>

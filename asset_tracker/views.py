@@ -136,7 +136,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):
-        form_asset = self.read_form()
+        form_asset = {key: value or None for key, value in self.request.POST.mixed().items()}
 
         if not form_asset['asset_id'] or not form_asset['tenant_id'] or not form_asset['status']:
             equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
@@ -155,8 +155,8 @@ class AssetsEndPoint(object):
             self.asset.next_calibration = get_datetime(form_asset['next_calibration'])
 
         self.asset.equipments.delete()
-        for form_equipment in filter(lambda item: item.get('family') or item.get('serial_number'), form_asset['equipments']):
-            equipment = Equipment(family_id=form_equipment['family'], serial_number=form_equipment['serial_number'])
+        for index, value in enumerate(form_asset['equipment-family']):
+            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -193,23 +193,6 @@ class AssetsEndPoint(object):
     def list_get(self):
         return {}
 
-    def read_form(self):
-        equipments_families = self.request.POST.getall('asset-equipment-family')
-        equipments_serial_numbers = self.request.POST.getall('asset-equipment-serial_number')
-        return {
-            'asset_id': self.request.POST.get('asset-asset_id'),
-            'tenant_id': self.request.POST.get('asset-tenant_id'),
-            'customer_id': self.request.POST.get('asset-customer_id'),
-            'customer_name': self.request.POST.get('asset-customer_name'),
-            'status': self.request.POST.get('asset-status'),
-            'site': self.request.POST.get('asset-site'),
-            'current_location': self.request.POST.get('asset-current_location'),
-            'activation': self.request.POST.get('asset-activation'),
-            'last_calibration': self.request.POST.get('asset-last_calibration'),
-            'next_calibration': self.request.POST.get('asset-next_calibration'),
-            'equipments': [{'family': f, 'serial_number': s} for f, s in zip(equipments_families, equipments_serial_numbers)],
-            'notes': self.request.POST.get('asset-notes'),
-        }
 
 
 def includeme(config):
