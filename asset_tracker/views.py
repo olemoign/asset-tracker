@@ -194,6 +194,9 @@ class AssetsEndPoint(object):
             self.asset.history.append(event)
             self.request.db_session.add(event)
 
+            if form_asset['status'] == 'calibration':
+                self.asset.next_calibration = datetime.utcnow().date() + relativedelta(years=3)
+
         form_activation = get_date(form_asset['activation'])
         if form_activation:
             activations = [activation.date.date() for activation in self.asset.history.filter_by(status='service').all()]
@@ -213,6 +216,9 @@ class AssetsEndPoint(object):
                                     creator_alias=self.request.user['alias'], status='calibration')
                 self.asset.history.append(calibration)
                 self.request.db_session.add(calibration)
+
+                if form_last_calibration > self.asset.next_calibration - relativedelta(years=3):
+                    self.asset.next_calibration = form_last_calibration + relativedelta(years=3)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
