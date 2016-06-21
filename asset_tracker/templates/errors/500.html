@@ -7,6 +7,7 @@
     <div class="main-logo"></div>
     <div class="alert alert-danger" role="alert">
         {{ gettext('An error occured. Please retry later.') }}
+        <a href="{{ 'home'|route_path }}">{{ gettext('Home') }}</a>
     </div>
 </div>
 {% endblock %}
