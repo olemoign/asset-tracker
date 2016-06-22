@@ -17,6 +17,7 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Field(String)
     notes = Field(String)
 
+    software_version = Field(String)
     history = relationship('Event', lazy='dynamic')
     equipments = relationship('Equipment', lazy='dynamic')
 

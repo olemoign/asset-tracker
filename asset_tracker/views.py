@@ -105,7 +105,8 @@ class AssetsEndPoint(object):
         # noinspection PyArgumentList
         asset = Asset(asset_id=form_asset['asset_id'], tenant_id=form_asset['tenant_id'], site=form_asset['site'],
                       customer_id=form_asset['customer_id'], customer_name=form_asset['customer_name'],
-                      current_location=form_asset['current_location'], notes=form_asset['notes'])
+                      current_location=form_asset['current_location'], software_version=form_asset['software_version'],
+                      notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
         for index, value in enumerate(form_asset['equipment-family']):
@@ -175,6 +176,7 @@ class AssetsEndPoint(object):
         self.asset.customer_name = form_asset['customer_name']
         self.asset.site = form_asset['site']
         self.asset.current_location = form_asset['current_location']
+        self.asset.software_version = form_asset['software_version']
         self.asset.notes = form_asset['notes']
 
         form_next_calibration = get_date(form_asset['next_calibration'])
