@@ -18,6 +18,28 @@ $border-radius-small: 0;
     z-index: -1;
 }
 
+
+
+//Login page
+.login-container.login-container {
+    max-width: 500px;
+}
+
+.main-logo {
+    height: 300px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+.forgot-pwd {
+    margin-top: 50px;
+}
+
+
+
 .panel__title {
     margin: 0;
     display: inline;

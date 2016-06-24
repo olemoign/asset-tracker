@@ -4,7 +4,7 @@
 
 {% block page %}
 <div class="login-container container">
-    <div class="main-logo"></div>
+    <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
     <div class="alert alert-danger" role="alert">
         {{ gettext('An error occured. Please retry later.') }}
         <a href="{{ 'home'|route_path }}">{{ gettext('Home') }}</a>

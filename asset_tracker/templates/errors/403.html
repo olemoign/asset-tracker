@@ -4,7 +4,7 @@
 
 {% block page %}
 <div class="login-container container">
-    <div class="main-logo"></div>
+    <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
     <div class="alert alert-danger" role="alert">
         {{ gettext('You are not authorized to access this page.') }}
         <a href="{{ 'users-logout'|route_path }}">{{ gettext('Logout') }}</a>
