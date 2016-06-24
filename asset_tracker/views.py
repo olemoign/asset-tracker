@@ -243,8 +243,8 @@ class Utilities(object):
 
     @view_config(context=Exception, renderer='errors/500.html')
     def exception_view(self):
-        render_exceptions = asbool(self.request.registry.settings.get('asset_tracker.dev.render_exceptions', False))
-        if render_exceptions:
+        debug_exceptions = asbool(self.request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
+        if debug_exceptions:
             raise self.request.exception
 
         else:
