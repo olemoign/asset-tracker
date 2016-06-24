@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
+from traceback import format_exc
 
 from dateutil.relativedelta import relativedelta
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
-from pyramid.view import view_config
+from pyramid.settings import asbool
+from pyramid.view import notfound_view_config, view_config
 
 from .models import Asset, Equipment, EquipmentFamily, Event
 from .utilities.authorization import rights_without_tenants
@@ -229,6 +231,30 @@ class AssetsEndPoint(object):
     def list_get(self):
         return {}
 
+
+class Utilities(object):
+    def __init__(self, request):
+        self.request = request
+
+    @notfound_view_config(append_slash=True, renderer='errors/404.html')
+    def not_found_get(self):
+        self.request.response.status_int = 404
+        return {}
+
+    @view_config(context=Exception, renderer='errors/500.html')
+    def exception_view(self):
+        render_exceptions = asbool(self.request.registry.settings.get('asset_tracker.dev.render_exceptions', False))
+        if render_exceptions:
+            raise self.request.exception
+
+        else:
+            error_text = 'Method: {}\n\nUrl: {}\n\n'.format(self.request.method, self.request.url) + format_exc()
+            subject = 'Exception on {}'.format(self.request.host_url)
+            message = {'email': {'subject': subject, 'text': error_text}}
+            self.request.notifier.notify(message, level='exception')
+
+            self.request.response.status_int = 500
+            return {}
 
 
 def includeme(config):

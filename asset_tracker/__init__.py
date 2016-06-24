@@ -8,8 +8,10 @@ from pyramid.events import NewResponse, subscriber
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 
+from .celery import app as celery_app
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
 from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.notifications import Notifier
 
 
 @subscriber(NewResponse)
@@ -92,6 +94,11 @@ def main(global_config, **settings):
     config.set_session_factory(session_factory)
 
     config.add_request_method(get_user, 'user', reify=True)
+    config.add_request_method(Notifier, 'notifier', reify=True)
+
+    celery_broker_url = settings.get('celery.broker_url')
+    if celery_broker_url:
+        celery_app.conf.update(BROKER_URL=celery_broker_url)
 
     config.include('.models')
     config.include('asset_tracker.api', route_prefix='api')
