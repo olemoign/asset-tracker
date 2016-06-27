@@ -17,6 +17,7 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Field(String)
     notes = Field(String)
 
+    software_version = Field(String)
     history = relationship('Event', lazy='dynamic')
     equipments = relationship('Equipment', lazy='dynamic')
 
@@ -52,7 +53,7 @@ class Event(Model):
 
     date = Field(DateTime)
 
-    creator_id = Field(Integer)
+    creator_id = Field(String)
     creator_alias = Field(String)
 
     status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))

@@ -2,10 +2,14 @@ $icon-font-path: "/static/fonts/";
 
 $black: #000;
 
+$link-color: $black;
+
 //Remove all radius
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
+
+$grid-float-breakpoint: 800px;
 
 @import 'bootstrap';
 
@@ -17,6 +21,28 @@ $border-radius-small: 0;
     top: 50px;
     z-index: -1;
 }
+
+
+
+//Login page
+.login-container.login-container {
+    max-width: 500px;
+}
+
+.main-logo {
+    height: 300px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+.forgot-pwd {
+    margin-top: 50px;
+}
+
+
 
 .panel__title {
     margin: 0;

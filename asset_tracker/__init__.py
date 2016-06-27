@@ -8,8 +8,10 @@ from pyramid.events import NewResponse, subscriber
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 
+from .celery import app as celery_app
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
 from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.notifications import Notifier
 
 
 @subscriber(NewResponse)
@@ -59,6 +61,7 @@ def main(global_config, **settings):
             db_session.add(family)
 
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
+    config.set_default_csrf_options(require_csrf=True)
     config.include('pyramid_tm')
 
     config.include('pyramid_jinja2')
@@ -79,16 +82,23 @@ def main(global_config, **settings):
 
     cookie_signature = settings['open_id.cookie_signature']
     secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
-    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='parsys_cloud_auth_tkt',
+    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='asset_tracker_auth_tkt',
                                                     secure=secure_cookies, callback=get_effective_principals,
                                                     http_only=True, wild_domain=False, hashalg='sha512')
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
 
-    config.set_session_factory(SignedCookieSessionFactory(cookie_signature))
+    session_factory = SignedCookieSessionFactory(cookie_signature, cookie_name='asset_tracker_session',
+                                                 secure=secure_cookies, httponly=True)
+    config.set_session_factory(session_factory)
 
     config.add_request_method(get_user, 'user', reify=True)
+    config.add_request_method(Notifier, 'notifier', reify=True)
+
+    celery_broker_url = settings.get('celery.broker_url')
+    if celery_broker_url:
+        celery_app.conf.update(BROKER_URL=celery_broker_url)
 
     config.include('.models')
     config.include('asset_tracker.api', route_prefix='api')
