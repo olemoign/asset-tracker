@@ -109,6 +109,10 @@ class AssetsEndPoint(object):
         except FormException as error:
             return dict(error=error.msg, asset=error.form, **self.get_base_form_data())
 
+        if not self.request.user['is_admin'] and \
+                (form_asset['tenant_id'], 'assets-create') not in self.request.effective_principals:
+            return dict(error=_('Invalid tenant.'), asset=form_asset, **self.get_base_form_data())
+
         # noinspection PyArgumentList
         asset = Asset(asset_id=form_asset['asset_id'], tenant_id=form_asset['tenant_id'], site=form_asset['site'],
                       customer_id=form_asset['customer_id'], customer_name=form_asset['customer_name'],
@@ -173,9 +177,14 @@ class AssetsEndPoint(object):
         try:
             form_asset = self.read_form()
         except FormException as error:
-            asset = error.form
-            asset.update({'id': self.asset.id, 'history': self.asset.history})
-            return dict(error=error.msg, update=True, asset=asset, **self.get_base_form_data())
+            error.form.update({'id': self.asset.id, 'history': self.asset.history})
+            return dict(error=error.msg, update=True, asset=error.form, **self.get_base_form_data())
+
+        manager_has_right = form_asset['tenant_id'] == self.asset.tenant_id or \
+            (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
+        if not self.request.user['is_admin'] and not manager_has_right:
+            form_asset.update({'id': self.asset.id, 'history': self.asset.history})
+            return dict(error=_('Invalid tenant.'), update=True, asset=form_asset, **self.get_base_form_data())
 
         self.asset.asset_id = form_asset['asset_id']
         self.asset.tenant_id = form_asset['tenant_id']
