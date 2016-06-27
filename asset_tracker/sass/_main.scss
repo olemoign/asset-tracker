@@ -2,10 +2,14 @@ $icon-font-path: "/static/fonts/";
 
 $black: #000;
 
+$link-color: $black;
+
 //Remove all radius
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
+
+$grid-float-breakpoint: 800px;
 
 @import 'bootstrap';
 
