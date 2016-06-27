@@ -53,7 +53,7 @@ class Event(Model):
 
     date = Field(DateTime)
 
-    creator_id = Field(Integer)
+    creator_id = Field(String)
     creator_alias = Field(String)
 
     status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))
