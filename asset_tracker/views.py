@@ -21,7 +21,8 @@ def add_global_variables(event):
 
     if event['request'].user:
         event['user_alias'] = event['request'].user['alias']
-        event['principals'] = rights_without_tenants(event['request'].effective_principals)
+        event['principals'] = event['request'].effective_principals
+        event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
         event['locale'] = event['request'].locale_name
 
 
@@ -66,10 +67,14 @@ class AssetsEndPoint(object):
                 return asset
             
     def get_base_form_data(self):
-        # TODO manage tenants
+        if self.request.user['is_admin'] or not self.asset:
+            tenants = self.request.user['tenants']
+        else:
+            tenants = [tenant for tenant in self.request.user['tenants']
+                       if (tenant['id'], 'assets-create') in self.request.effective_principals or
+                       tenant['id'] == self.asset.tenant_id]
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'equipments_families': equipments_families, 'status': Event.status_labels,
-                'tenants': self.request.session['tenants']}
+        return {'equipments_families': equipments_families, 'status': Event.status_labels, 'tenants': tenants}
 
     def read_form(self):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}

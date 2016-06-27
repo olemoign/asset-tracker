@@ -152,7 +152,7 @@ class Assets(APIEndPoint):
             return q
         else:
             authorized_tenants = {right.tenant for right in self.request.effective_principals
-                                  if isinstance(right, Right) and right.name == 'assets-update'}
+                                  if isinstance(right, Right) and right.name == 'assets-list'}
             return q.filter(models.Asset.tenant_id.in_(authorized_tenants))
 
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
@@ -166,10 +166,8 @@ class Assets(APIEndPoint):
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
                                        models.Asset.current_location]
 
-        # TODO: add tenanting
-        output = self.sql_search(models.Asset, full_text_search_attributes, search_parameters=search_parameters)
-        # output = self.sql_search(models.Asset, full_text_search_attributes, tenanting=self.apply_tenanting_filter,
-        #                          search_parameters=search_parameters)
+        output = self.sql_search(models.Asset, full_text_search_attributes, tenanting=self.apply_tenanting_filter,
+                                 search_parameters=search_parameters)
 
         assets = []
         for asset in output['items']:
@@ -178,9 +176,9 @@ class Assets(APIEndPoint):
             equipments = [{'model': equipment.family.model if equipment.family else None,
                            'serial_number': equipment.serial_number} for equipment in asset.equipments]
             link = None
-            # TODO
-            #if 'g:admin' in self.request.effective_principals or 'assets-update' in self.request.effective_principals:
-            link = self.request.route_path('assets-update', asset_id=asset.id)
+            if 'g:admin' in self.request.effective_principals or \
+                    (asset.tenant_id, 'assets-read') in self.request.effective_principals:
+                link = self.request.route_path('assets-update', asset_id=asset.id)
                 
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,

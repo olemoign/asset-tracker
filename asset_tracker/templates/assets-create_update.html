@@ -33,7 +33,7 @@
                         <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                         <select class="form-control" id="tenant_id" name="tenant_id">
                             {% for tenant in tenants %}
-                            <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == id %} selected{% endif %}>{{ tenant.name }}</option>
+                            <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -127,10 +127,12 @@
                     </div>
                     {% endif %}
                 </div>
+                {% if not update or 'g:admin' in principals or (asset.tenant_id, 'assets-update') in principals %}
                 <div class="btn-group pull-right">
                     <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
                     <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
                 </div>
+                {% endif %}
             </form>
         </div>
     </div>
