@@ -9,8 +9,8 @@ from pyramid.settings import asbool
 
 from .celery import app as celery_app
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
-from .utilities.authorization import get_user, get_effective_principals, get_user_locale, Right, \
-    RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.authorization import get_user, get_effective_principals, get_user_locale, RTAAuthenticationPolicy, \
+    TenantedAuthorizationPolicy
 from .utilities.notifications import Notifier
 
 
