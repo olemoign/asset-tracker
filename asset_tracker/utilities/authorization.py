@@ -3,8 +3,11 @@ from collections import namedtuple
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.compat import is_nonstr_iter
+from pyramid.events import NewResponse, subscriber
 from pyramid.location import lineage
 from pyramid.security import ACLAllowed, ACLDenied, Allow, Authenticated, Everyone
+from pyramid.settings import asbool
+
 
 Right = namedtuple('Right', ['tenant', 'name'])
 
@@ -17,6 +20,33 @@ def rights_without_tenants(principals):
         else:
             rights.add(principal)
     return rights
+
+
+@subscriber(NewResponse)
+def add_security_headers(event):
+    secure_headers = asbool(event.request.registry.settings.get('asset_tracker.dev.secure_headers', True))
+    if secure_headers:
+        event.response.headers.add('X-Frame-Options', 'deny')
+        event.response.headers.add('X-XSS-Protection', '1; mode=block')
+        event.response.headers.add('X-Content-Type-Options', 'nosniff')
+
+
+def get_user(request):
+    return request.session.get('user')
+
+
+def get_user_locale(request):
+    if request.user:
+        return request.user['locale']
+
+
+# noinspection PyUnusedLocal
+def get_effective_principals(userid, request):
+    if request.user:
+        if request.user['is_admin']:
+            return ['g:admin']
+        else:
+            return [Right(tenant=item[0], name=item[1]) for item in request.user['rights']]
 
 
 class RTAAuthenticationPolicy(AuthTktAuthenticationPolicy):
@@ -47,8 +77,8 @@ class RTAAuthenticationPolicy(AuthTktAuthenticationPolicy):
 
     def unauthenticated_userid(self, request):
         try:
-            return request.session['user']['id']
-        except KeyError:
+            return request.user['id']
+        except (KeyError, TypeError):
             pass
 
 

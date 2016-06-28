@@ -4,42 +4,17 @@ from pkg_resources import resource_string
 
 import transaction
 from pyramid.config import Configurator
-from pyramid.events import NewResponse, subscriber
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 
 from .celery import app as celery_app
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
-from .utilities.authorization import Right, RTAAuthenticationPolicy, TenantedAuthorizationPolicy
+from .utilities.authorization import get_user, get_effective_principals, get_user_locale, Right, \
+    RTAAuthenticationPolicy, TenantedAuthorizationPolicy
 from .utilities.notifications import Notifier
 
 
-@subscriber(NewResponse)
-def add_security_headers(event):
-    secure_headers = asbool(event.request.registry.settings.get('asset_tracker.dev.secure_headers', True))
-    if secure_headers:
-        event.response.headers.add('X-Frame-Options', 'deny')
-        event.response.headers.add('X-XSS-Protection', '1; mode=block')
-        event.response.headers.add('X-Content-Type-Options', 'nosniff')
-
-
-def get_user(request):
-    return request.session.get('user')
-
-
-def get_user_locale(request):
-    if request.user:
-        return request.user['locale']
-
-
-def get_effective_principals(userid, request):
-    if request.user:
-        if request.user['is_admin']:
-            return ['g:admin']
-        else:
-            return [Right(tenant=item[0], name=item[1]) for item in request.user['rights']]
-
-
+# noinspection PyUnusedLocal
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application."""
     assert(settings.get('rta.server_url'))
@@ -119,4 +94,3 @@ def main(global_config, **settings):
         return TransLogger(config.make_wsgi_app(), setup_console_handler=False)
     else:
         return config.make_wsgi_app()
-
