@@ -6,7 +6,7 @@ from ..celery.tasks import post_notifications_to_rta
 class Notifier(object):
     def __init__(self, request):
         self.request = request
-        self.debug = asbool(self.request.registry.settings.get('parsys_cloud.debug'))
+        self.send_notifications = asbool(self.request.registry.settings.get('asset_tracker.dev.send_notifications', True))
 
     def notify(self, message, user_id=None, profile=None, right=None, level='info'):
         client_id = self.request.registry.settings['rta.client_id']
@@ -22,6 +22,6 @@ class Notifier(object):
         elif right:
             json.update({'right': right})
 
-        if not self.debug:
+        if self.send_notifications:
             args = [notifications_url, client_id, secret, json]
             post_notifications_to_rta.apply_async(args=args, queue='notifications')
