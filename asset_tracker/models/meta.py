@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from datetime import datetime
-
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.ext.hybrid
