@@ -4,7 +4,7 @@ from requests import ConnectionError, HTTPError, post, Timeout
 from . import app
 
 
-logger = get_task_logger(__name__)
+logger = get_task_logger('asset_tracker')
 
 
 @app.task(bind=True)

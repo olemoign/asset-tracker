@@ -67,8 +67,8 @@ Model = declarative_base(cls=_ModelBase, name='ObjectModel', metaclass=_Declarat
 
 
 class CreationDateTimeMixin(object):
-    created_at = Field(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Field(DateTime, default=func.now(), nullable=False)
 
 
 class UpdateDateTimeMixin(object):
-    updated_at = Field(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    updated_at = Field(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
