@@ -79,8 +79,8 @@ def main(global_config, **settings):
     config.include('asset_tracker.views')
     config.scan()
 
-    config.include('py_openid_connect.openid_connect_client')
-    config.scan('py_openid_connect')
+    config.include('parsys_utilities.openid_client')
+    config.scan('parsys_utilities.openid_client')
 
     rta_url = settings['rta.server_url'] + '/{path}'
     config.add_route('rta', rta_url)
