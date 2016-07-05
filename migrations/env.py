@@ -14,7 +14,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from asset_tracker.models.meta import Model
+from parsys_utilities.model import Model
 target_metadata = Model.metadata
 
 # other values from the config, defined by the needs of env.py,

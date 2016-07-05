@@ -7,11 +7,11 @@ from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 
-from .celery import app as celery_app
+from parsys_utilities.authorization import openid_connect_get_user, openid_connect_get_effective_principals, \
+    openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.celery_app import app as celery_app
+from parsys_utilities.notifications import Notifier
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
-from .utilities.authorization import get_user, get_effective_principals, get_user_locale, RTAAuthenticationPolicy, \
-    TenantedAuthorizationPolicy
-from .utilities.notifications import Notifier
 
 
 # noinspection PyUnusedLocal
@@ -35,7 +35,7 @@ def main(global_config, **settings):
             family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
             db_session.add(family)
 
-    config = Configurator(settings=settings, locale_negotiator=get_user_locale)
+    config = Configurator(settings=settings, locale_negotiator=openid_connect_get_user_locale)
     config.set_default_csrf_options(require_csrf=True)
     config.include('pyramid_tm')
 
@@ -57,9 +57,8 @@ def main(global_config, **settings):
 
     cookie_signature = settings['open_id.cookie_signature']
     secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
-    authentication_policy = RTAAuthenticationPolicy(cookie_signature, cookie_name='asset_tracker_auth_tkt',
-                                                    secure=secure_cookies, callback=get_effective_principals,
-                                                    http_only=True, wild_domain=False, hashalg='sha512')
+    authentication_policy = OpenIDConnectAuthenticationPolicy(
+        cookie_signature, callback=openid_connect_get_effective_principals)
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
@@ -68,7 +67,7 @@ def main(global_config, **settings):
                                                  secure=secure_cookies, httponly=True)
     config.set_session_factory(session_factory)
 
-    config.add_request_method(get_user, 'user', reify=True)
+    config.add_request_method(openid_connect_get_user, 'user', reify=True)
     config.add_request_method(Notifier, 'notifier', reify=True)
 
     celery_broker_url = settings.get('celery.broker_url')

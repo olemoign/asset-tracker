@@ -15,9 +15,9 @@ requires = [
     'inflection',
     'kombu==3.0.34',
     'newrelic',
+    'parsys_utilities',
     'paste',
     'pasteScript',
-    'py_openid_connect',
     'psycopg2',
     'pyramid',
     'pyramid_assetviews',
@@ -59,11 +59,11 @@ setup(
     zip_safe=True,
     test_suite='asset_tracker',
     install_requires=requires,
+    dependency_links={
+        'git+https://github.com/Parsys-Telemedicine/parsys_utilities.git#egg=parsys_utilities-1.0.0',
+    },
     extras_require={
         'testing': tests_require,
-    },
-    dependency_links={
-        'git+https://github.com/Parsys-Telemedicine/py-openid-connect.git#egg=py_openid_connect-1.0.0',
     },
     entry_points="""\
     [paste.app_factory]
