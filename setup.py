@@ -11,8 +11,6 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'alembic',
     'babel',
-    'celery[redis]',
-    'inflection',
     'kombu==3.0.34',
     'newrelic',
     'parsys_utilities',
