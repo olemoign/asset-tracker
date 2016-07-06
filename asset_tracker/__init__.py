@@ -1,11 +1,11 @@
 from json import loads
-from paste.translogger import TransLogger
 from pkg_resources import resource_string
 
 import transaction
+from paste.translogger import TransLogger
 from pyramid.config import Configurator
-from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
+from pyramid_redis_sessions import RedisSessionFactory
 
 from parsys_utilities.authorization import openid_connect_get_user, openid_connect_get_effective_principals, \
     openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
@@ -20,6 +20,7 @@ def main(global_config, **settings):
     assert(settings.get('rta.server_url'))
     assert(settings.get('rta.client_id'))
     assert(settings.get('rta.secret'))
+    assert settings.get('asset_tracker.sessions_broker_url')
     assert settings.get('sqlalchemy.url')
 
     with transaction.manager:
@@ -37,7 +38,6 @@ def main(global_config, **settings):
 
     config = Configurator(settings=settings, locale_negotiator=openid_connect_get_user_locale)
     config.set_default_csrf_options(require_csrf=True)
-    config.include('pyramid_tm')
 
     config.include('pyramid_jinja2')
     jinja2_settings = {
@@ -55,16 +55,17 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     # config.add_translation_dirs('asset_tracker:locale')
 
-    cookie_signature = settings['open_id.cookie_signature']
-    secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
+    cookie_signature = settings['asset_tracker.cookie_signature']
     authentication_policy = OpenIDConnectAuthenticationPolicy(
         cookie_signature, callback=openid_connect_get_effective_principals)
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
 
-    session_factory = SignedCookieSessionFactory(cookie_signature, cookie_name='asset_tracker_session',
-                                                 secure=secure_cookies, httponly=True)
+    sessions_broker_url = settings['asset_tracker.sessions_broker_url']
+    secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
+    session_factory = RedisSessionFactory(cookie_signature, url=sessions_broker_url, cookie_secure=secure_cookies,
+                                          cookie_name='asset_tracker_session')
     config.set_session_factory(session_factory)
 
     config.add_request_method(openid_connect_get_user, 'user', reify=True)

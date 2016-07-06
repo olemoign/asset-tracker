@@ -21,6 +21,7 @@ requires = [
     'pyramid_assetviews',
     'pyramid_debugtoolbar',
     'pyramid_jinja2',
+    'pyramid_redis_sessions',
     'pyramid_tm',
     'python-dateutil',
     'sqlalchemy',
