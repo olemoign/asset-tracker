@@ -5,7 +5,6 @@ from pyramid.view import view_config
 
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
-from parsys_utilities.model import asc, Boolean, desc, func, or_, String
 from parsys_utilities.sql import sql_search
 from . import models
 
