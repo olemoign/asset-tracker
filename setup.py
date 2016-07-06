@@ -15,7 +15,7 @@ requires = [
     'newrelic',
     'parsys_utilities',
     'paste',
-    'pasteScript',
+    'pastescript',
     'psycopg2',
     'pyramid',
     'pyramid_assetviews',
@@ -56,7 +56,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=True,
-    test_suite='asset_tracker',
     install_requires=requires,
     dependency_links={
         'git+https://github.com/Parsys-Telemedicine/parsys_utilities.git#egg=parsys_utilities-1.0.0',
