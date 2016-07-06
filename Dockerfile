@@ -9,7 +9,7 @@ RUN pip -q install /opt/* \
 
 # copy config files
 COPY production.ini /opt/files
-COPY alembic /opt/alembic
+COPY migrations /opt/migrations
 WORKDIR /srv
 
 

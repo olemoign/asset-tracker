@@ -9,8 +9,8 @@ from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
+from parsys_utilities.authorization import rights_without_tenants
 from .models import Asset, Equipment, EquipmentFamily, Event
-from .utilities.authorization import rights_without_tenants
 
 
 @subscriber(BeforeRender)
