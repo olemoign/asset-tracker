@@ -41,8 +41,8 @@ class Assets(object):
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
                                        models.Asset.current_location]
         try:
-            output = sql_search(models.Asset, full_text_search_attributes, tenanting=self.apply_tenanting_filter,
-                                search_parameters=search_parameters)
+            output = sql_search(self.request.db_session, models.Asset, full_text_search_attributes,
+                                tenanting=self.apply_tenanting_filter, search_parameters=search_parameters)
         except KeyError:
             return HTTPBadRequest()
 
