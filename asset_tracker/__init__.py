@@ -80,13 +80,13 @@ def main(global_config, **settings):
     config.set_authorization_policy(authorization_policy)
 
     sessions_broker_url = settings['asset_tracker.sessions_broker_url']
-    secure_cookies = asbool(not settings.get('asset_tracker.dev.allow_http_cookies', False))
+    secure_cookies = asbool(not settings.get('asset_tracker.dev.disable_secure_cookies', False))
     session_factory = RedisSessionFactory(cookie_signature, url=sessions_broker_url, cookie_secure=secure_cookies,
                                           cookie_name='asset_tracker_session')
     config.set_session_factory(session_factory)
 
     config.add_request_method(openid_connect_get_user, 'user', reify=True)
-    send_notifications = asbool(not settings.get('asset_tracker.dev.deactivate_notifications', False))
+    send_notifications = asbool(not settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
 
     celery_broker_url = settings.get('celery.broker_url')
