@@ -3,16 +3,32 @@ from json import loads
 from pkg_resources import resource_string
 
 import transaction
+from parsys_utilities.authorization import add_security_headers as basic_security_headers, openid_connect_get_user, \
+    openid_connect_get_effective_principals, openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, \
+    TenantedAuthorizationPolicy
+from parsys_utilities.celery_app import app as celery_app
+from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
+from pyramid.events import NewResponse, subscriber
 from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
-from parsys_utilities.authorization import openid_connect_get_user, openid_connect_get_effective_principals, \
-    openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
-from parsys_utilities.celery_app import app as celery_app
-from parsys_utilities.notifications import Notifier
 from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
+
+
+@subscriber(NewResponse)
+def add_security_headers(event):
+    """ Add https-related security and cross origin xhr headers.
+
+    Args:
+        event (pyramid.request.Request): Request.
+
+    """
+    secure_headers = asbool(not event.request.registry.settings.get('asset_tracker.dev.disable_secure_headers', False))
+    # Deactivate HTTPS-linked headers in dev.
+    if secure_headers:
+        basic_security_headers(event)
 
 
 # noinspection PyUnusedLocal
