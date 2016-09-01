@@ -70,7 +70,8 @@ def main(global_config, **settings):
     config.set_session_factory(session_factory)
 
     config.add_request_method(openid_connect_get_user, 'user', reify=True)
-    config.add_request_method(Notifier, 'notifier', reify=True)
+    send_notifications = asbool(not settings.get('asset_tracker.dev.deactivate_notifications', False))
+    config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
 
     celery_broker_url = settings.get('celery.broker_url')
     if celery_broker_url:
