@@ -1,3 +1,4 @@
+from functools import partial
 from json import loads
 from pkg_resources import resource_string
 
@@ -57,7 +58,7 @@ def main(global_config, **settings):
 
     cookie_signature = settings['asset_tracker.cookie_signature']
     authentication_policy = OpenIDConnectAuthenticationPolicy(
-        cookie_signature, callback=openid_connect_get_effective_principals)
+        callback=partial(openid_connect_get_effective_principals, allow_admins=True))
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
