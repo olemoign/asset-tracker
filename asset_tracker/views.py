@@ -246,29 +246,27 @@ class AssetsEndPoint(object):
         return {}
 
 
-class Utilities(object):
-    def __init__(self, request):
-        self.request = request
+@notfound_view_config(append_slash=True, renderer='errors/404.html')
+def not_found_get(request):
+    request.response.status_int = 404
+    return {}
 
-    @notfound_view_config(append_slash=True, renderer='errors/404.html')
-    def not_found_get(self):
-        self.request.response.status_int = 404
+
+@view_config(context=Exception, renderer='errors/500.html')
+def exception_view(request):
+    debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
+    if debug_exceptions:
+        raise request.exception
+
+    else:
+        error_text = 'Method: {}\n\nUrl: {}\n\n'.format(request.method, request.url) + format_exc()
+        subject = 'Exception on {}'.format(request.host_url)
+        message = {'email': {'subject': subject, 'text': error_text}}
+        request.notifier.notify(message, level='exception')
+        request.logger_actions.error(error_text)
+
+        request.response.status_int = 500
         return {}
-
-    @view_config(context=Exception, renderer='errors/500.html')
-    def exception_view(self):
-        debug_exceptions = asbool(self.request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
-        if debug_exceptions:
-            raise self.request.exception
-
-        else:
-            error_text = 'Method: {}\n\nUrl: {}\n\n'.format(self.request.method, self.request.url) + format_exc()
-            subject = 'Exception on {}'.format(self.request.host_url)
-            message = {'email': {'subject': subject, 'text': error_text}}
-            self.request.notifier.notify(message, level='exception')
-
-            self.request.response.status_int = 500
-            return {}
 
 
 def includeme(config):

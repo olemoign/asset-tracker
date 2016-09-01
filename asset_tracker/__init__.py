@@ -7,6 +7,7 @@ from parsys_utilities.authorization import add_security_headers as basic_securit
     openid_connect_get_effective_principals, openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, \
     TenantedAuthorizationPolicy
 from parsys_utilities.celery_app import app as celery_app
+from parsys_utilities.logging import logger
 from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
@@ -86,6 +87,7 @@ def main(global_config, **settings):
     config.set_session_factory(session_factory)
 
     config.add_request_method(openid_connect_get_user, 'user', reify=True)
+    config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
     send_notifications = asbool(not settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
 
