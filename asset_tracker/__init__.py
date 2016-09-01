@@ -64,7 +64,7 @@ def main(global_config, **settings):
     config.set_authorization_policy(authorization_policy)
 
     sessions_broker_url = settings['asset_tracker.sessions_broker_url']
-    secure_cookies = asbool(settings.get('asset_tracker.dev.secure_cookies', True))
+    secure_cookies = asbool(not settings.get('asset_tracker.dev.allow_http_cookies', False))
     session_factory = RedisSessionFactory(cookie_signature, url=sessions_broker_url, cookie_secure=secure_cookies,
                                           cookie_name='asset_tracker_session')
     config.set_session_factory(session_factory)
