@@ -26,7 +26,7 @@ def add_security_headers(event):
         event (pyramid.request.Request): Request.
 
     """
-    secure_headers = asbool(not event.request.registry.settings.get('asset_tracker.dev.disable_secure_headers', False))
+    secure_headers = not asbool(event.request.registry.settings.get('asset_tracker.dev.disable_secure_headers', False))
     # Deactivate HTTPS-linked headers in dev.
     if secure_headers:
         basic_security_headers(event)
@@ -81,14 +81,14 @@ def main(global_config, **settings):
     config.set_authorization_policy(authorization_policy)
 
     sessions_broker_url = settings['asset_tracker.sessions_broker_url']
-    secure_cookies = asbool(not settings.get('asset_tracker.dev.disable_secure_cookies', False))
+    secure_cookies = not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False))
     session_factory = RedisSessionFactory(cookie_signature, url=sessions_broker_url, cookie_secure=secure_cookies,
                                           cookie_name='asset_tracker_session')
     config.set_session_factory(session_factory)
 
     config.add_request_method(openid_connect_get_user, 'user', reify=True)
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
-    send_notifications = asbool(not settings.get('asset_tracker.dev.disable_notifications', False))
+    send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
 
     celery_broker_url = settings.get('celery.broker_url')
