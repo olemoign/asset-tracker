@@ -3,9 +3,8 @@ from json import loads
 from pkg_resources import resource_string
 
 import transaction
-from parsys_utilities.authorization import add_security_headers as basic_security_headers, openid_connect_get_user, \
-    openid_connect_get_effective_principals, openid_connect_get_user_locale, OpenIDConnectAuthenticationPolicy, \
-    TenantedAuthorizationPolicy
+from parsys_utilities.authorization import add_security_headers as basic_security_headers, get_user, \
+    get_effective_principals, get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.celery_app import app as celery_app
 from parsys_utilities.logging import logger
 from parsys_utilities.notifications import Notifier
@@ -54,7 +53,7 @@ def main(global_config, **settings):
             family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
             db_session.add(family)
 
-    config = Configurator(settings=settings, locale_negotiator=openid_connect_get_user_locale)
+    config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.set_default_csrf_options(require_csrf=True)
 
     config.include('pyramid_jinja2')
@@ -75,7 +74,7 @@ def main(global_config, **settings):
 
     cookie_signature = settings['asset_tracker.cookie_signature']
     authentication_policy = OpenIDConnectAuthenticationPolicy(
-        callback=partial(openid_connect_get_effective_principals, allow_admins=True))
+        callback=partial(get_effective_principals, allow_admins=True))
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
@@ -86,7 +85,7 @@ def main(global_config, **settings):
                                           cookie_name='asset_tracker_session')
     config.set_session_factory(session_factory)
 
-    config.add_request_method(openid_connect_get_user, 'user', reify=True)
+    config.add_request_method(get_user, 'user', reify=True)
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
