@@ -11,129 +11,131 @@
 
 {% block page %}
 {% include 'menu.html' %}
-<div class="container">
-{% if error %}
-    <div class="alert alert-danger alert-dismissible">
-        {{ gettext(error) }}
-        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
-    </div>
-{% endif %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel__title">{{ title }}</h3>
+<div class="root-container">
+    <div class="container">
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible">
+            {{ gettext(error) }}
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
+    {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel__title">{{ title }}</h3>
+            </div>
 
-        <div class="panel-body">
-            <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <div class="row">
-                    {{ input(asset, 'Asset ID', 'asset_id', required=True) }}
-                    {{ input(asset, 'Customer ID (Subscription ID)', 'customer_id') }}
-                    <div class="col-sm-6 form-group">
-                        <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                        <select class="form-control" id="tenant_id" name="tenant_id">
-                            {% for tenant in tenants %}
-                            <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
-                            {% endfor %}
-                        </select>
+            <div class="panel-body">
+                <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <div class="row">
+                        {{ input(asset, 'Asset ID', 'asset_id', required=True) }}
+                        {{ input(asset, 'Customer ID (Subscription ID)', 'customer_id') }}
+                        <div class="col-sm-6 form-group">
+                            <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                            <select class="form-control" id="tenant_id" name="tenant_id">
+                                {% for tenant in tenants %}
+                                <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {{ input(asset, 'Customer name', 'customer_name') }}
+                        {{ input(asset, 'Site', 'site') }}
+                        {{ input(asset, 'Current location', 'current_location') }}
                     </div>
-                    {{ input(asset, 'Customer name', 'customer_name') }}
-                    {{ input(asset, 'Site', 'site') }}
-                    {{ input(asset, 'Current location', 'current_location') }}
-                </div>
 
-                <hr>
+                    <hr>
 
-                <div class="row">
-                    <div class="col-sm-6 form-group">
-                        <label for="status">{{ gettext('Status') }} *</label>
-                        <select class="form-control" id="status" name="status">
-                            {% for key, value in status.items() %}
-                            <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ value }}</option>
-                            {% endfor %}
-                        </select>
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="status">{{ gettext('Status') }} *</label>
+                            <select class="form-control" id="status" name="status">
+                                {% for key, value in status.items() %}
+                                <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {{ input(asset, 'Asset activation', 'activation', 'date') }}
+                        {{ input(asset, 'Last calibration', 'last_calibration', 'date') }}
+                        {{ input(asset, 'Next calibration', 'next_calibration', 'date') }}
+                        {{ input(asset, 'Software version', 'software_version') }}
                     </div>
-                    {{ input(asset, 'Asset activation', 'activation', 'date') }}
-                    {{ input(asset, 'Last calibration', 'last_calibration', 'date') }}
-                    {{ input(asset, 'Next calibration', 'next_calibration', 'date') }}
-                    {{ input(asset, 'Software version', 'software_version') }}
-                </div>
 
-                <hr>
+                    <hr>
 
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
-                    </div>
-                    {% for equipment in (asset or {}).equipments %}
-                    <div class="col-sm-4 equipment__block">
-                        <div class="well well-sm">
-                            <div class="form-group">
-                                <select class="form-control" name="equipment-family">
-                                    <option></option>
-                                    {% for family in equipments_families %}
-                                    {{ equipment.family }} {{ family.id }}
-                                    <option value="{{ family.id }}"{% if equipment.family == family.id or equipment.family.id == family.id %} selected{% endif %}>{{ family.model }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
-                                <span class="input-group-btn equipment__remove">
-                                    <button class="btn btn-default" type="button">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </span>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
+                        </div>
+                        {% for equipment in (asset or {}).equipments %}
+                        <div class="col-sm-4 equipment__block">
+                            <div class="well well-sm">
+                                <div class="form-group">
+                                    <select class="form-control" name="equipment-family">
+                                        <option></option>
+                                        {% for family in equipments_families %}
+                                        {{ equipment.family }} {{ family.id }}
+                                        <option value="{{ family.id }}"{% if equipment.family == family.id or equipment.family.id == family.id %} selected{% endif %}>{{ family.model }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
+                                    <span class="input-group-btn equipment__remove">
+                                        <button class="btn btn-default" type="button">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% else %}
-                    <div class="col-sm-4 equipment__block">
-                        <div class="well well-sm">
-                            <div class="form-group">
-                                <select class="form-control" name="equipment-family">
-                                    <option></option>
-                                    {% for family in equipments_families %}
-                                    <option value="{{ family.id }}">{{ family.model }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
-                                <span class="input-group-btn equipment__remove">
-                                    <button class="btn btn-default" type="button">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </span>
+                        {% else %}
+                        <div class="col-sm-4 equipment__block">
+                            <div class="well well-sm">
+                                <div class="form-group">
+                                    <select class="form-control" name="equipment-family">
+                                        <option></option>
+                                        {% for family in equipments_families %}
+                                        <option value="{{ family.id }}">{{ family.model }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
+                                    <span class="input-group-btn equipment__remove">
+                                        <button class="btn btn-default" type="button">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <label for="notes">{{ gettext('Notes') }}</label>
-                        <textarea class="form-control" rows="3" id="notes" name="notes">
-                            {%- if asset and asset.notes -%}{{ asset.notes }}{%- endif -%}
-                        </textarea>
-                    </div>
-                    {% if update %}
-                    <div class="col-sm-12 form-group">
-                        <label for="notes">{{ gettext('History') }}</label>
-                        {% for event in asset.history|sort(attribute='date') %}
-                        <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                status=status[event.status], date=event.date.date()) }}.</p>
                         {% endfor %}
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <label for="notes">{{ gettext('Notes') }}</label>
+                            <textarea class="form-control" rows="3" id="notes" name="notes">
+                                {%- if asset and asset.notes -%}{{ asset.notes }}{%- endif -%}
+                            </textarea>
+                        </div>
+                        {% if update %}
+                        <div class="col-sm-12 form-group">
+                            <label for="notes">{{ gettext('History') }}</label>
+                            {% for event in asset.history|sort(attribute='date') %}
+                            <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
+                                    status=status[event.status], date=event.date.date()) }}.</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if not update or 'g:admin' in principals or (asset.tenant_id, 'assets-update') in principals %}
+                    <div class="btn-group pull-right">
+                        <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
+                        <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
+                    </div>
                     {% endif %}
-                </div>
-                {% if not update or 'g:admin' in principals or (asset.tenant_id, 'assets-update') in principals %}
-                <div class="btn-group pull-right">
-                    <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                    <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
-                </div>
-                {% endif %}
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>

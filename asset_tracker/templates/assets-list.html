@@ -5,26 +5,28 @@
 {% block page %}
 {% include 'menu.html' %}
 
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-            <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-            {% if 'g:admin' in principals or 'assets-create' in principals_without_tenants %}
-            <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
-            {% endif %}
-        </div>
+<div class="root-container">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h3 class="panel__title">{{ gettext('Assets') }}</h3>
+                {% if 'g:admin' in principals or 'assets-create' in principals_without_tenants %}
+                <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
+                {% endif %}
+            </div>
 
-        <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}" width="100%">
-            <thead>
-                <tr>
-                    <th data-data="asset_id">{{ gettext('Asset ID') }}</th>
-                    <th data-data="customer_name">{{ gettext('Customer') }}</th>
-                    <th data-data="site">{{ gettext('Site') }}</th>
-                    <th data-data="status">{{ gettext('Status') }}</th>
-                    <th data-data="next_calibration">{{ gettext('Next calibration') }}</th>
-                </tr>
-            </thead>
-        </table>
+            <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}" width="100%">
+                <thead>
+                    <tr>
+                        <th data-data="asset_id">{{ gettext('Asset ID') }}</th>
+                        <th data-data="customer_name">{{ gettext('Customer') }}</th>
+                        <th data-data="site">{{ gettext('Site') }}</th>
+                        <th data-data="status">{{ gettext('Status') }}</th>
+                        <th data-data="next_calibration">{{ gettext('Next calibration') }}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
