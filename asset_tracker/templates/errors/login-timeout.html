@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ gettext('Error') }}{% endblock %}
+
+{% block page %}
+<div class="img-background-fixed"></div>
+<div class="login-container container">
+    <a href="{{ 'home'|route_path }}"><div class="top-left-logo"></div></a>
+    <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
+    <div class="alert alert-danger" role="alert">
+        {{ gettext('Your connection timed out.') }}
+        <a href="{{ 'users-logout'|route_path }}">{{ gettext('Retry') }}</a>
+    </div>
+</div>
+{% endblock %}
