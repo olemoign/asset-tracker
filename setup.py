@@ -12,7 +12,6 @@ requires = [
     'alembic',
     'babel',
     'kombu==3.0.34',
-    'newrelic',
     'parsys_utilities',
     'paste',
     'pastescript',
