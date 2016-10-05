@@ -1,12 +1,12 @@
+from parsys_utilities.api import manage_datatables_queries
+from parsys_utilities.authorization import Right
+from parsys_utilities.sql import sql_search
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
-from parsys_utilities.api import manage_datatables_queries
-from parsys_utilities.authorization import Right
-from parsys_utilities.sql import sql_search
-from . import models
+from asset_tracker import models
 
 
 class Assets(object):

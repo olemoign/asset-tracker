@@ -14,7 +14,7 @@ from pyramid.events import NewResponse, subscriber
 from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
-from .models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
+from asset_tracker.models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
 
 
 @subscriber(NewResponse)

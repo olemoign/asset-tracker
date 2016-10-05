@@ -55,9 +55,6 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=requires,
-    dependency_links={
-        'git+https://github.com/Parsys-Telemedicine/parsys_utilities.git#egg=parsys_utilities-1.0.0',
-    },
     extras_require={
         'testing': tests_require,
     },
