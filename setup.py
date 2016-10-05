@@ -11,7 +11,6 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'alembic',
     'babel',
-    'kombu==3.0.34',
     'parsys_utilities',
     'paste',
     'pastescript',
@@ -23,7 +22,7 @@ requires = [
     'pyramid_redis_sessions',
     'pyramid_tm',
     'python-dateutil',
-    'sqlalchemy',
+    'sqlalchemy<1.1',
     'transaction',
     'waitress',
     'zope.sqlalchemy',
