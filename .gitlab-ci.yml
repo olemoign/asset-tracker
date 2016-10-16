@@ -42,7 +42,7 @@ build:
   script:
     - pip -q install -U pip wheel setuptools
     - python setup.py bdist_wheel
-    - pip wheel -w dist/ .
+    - pip wheel -w dist/ .[prod]
 
   artifacts:
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"

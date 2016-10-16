@@ -18,7 +18,6 @@ COPY migrations /opt/migrations
 
 WORKDIR /srv
 
-
 CMD mkdir -p /srv/log/ /srv/socket/ /srv/data/ \
  && cp -n /opt/files/* /srv || true \
  && alembic -c production.ini upgrade head \
