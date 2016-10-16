@@ -35,7 +35,7 @@ prod_requires = [
     'psycopg2',
 ]
 
-tests_requires = [
+tests_require = [
     'mccabe',
     'pyflakes',
     'pylint',
@@ -62,10 +62,11 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=requires,
+    tests_require=tests_require,
     extras_require={
         'dev': dev_requires,
         'prod': prod_requires,
-        'testing': tests_requires,
+        'testing': tests_require,
     },
     entry_points="""\
     [paste.app_factory]
