@@ -228,6 +228,3 @@ msgstr "d'une adresse incorrecte"
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
 
-#~ msgid "Update asset"
-#~ msgstr "Mettre à jour"
-

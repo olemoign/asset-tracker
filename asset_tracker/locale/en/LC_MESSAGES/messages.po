@@ -228,6 +228,3 @@ msgstr ""
 msgid "an out-of-date link"
 msgstr ""
 
-#~ msgid "Update asset"
-#~ msgstr ""
-
