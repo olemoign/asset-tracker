@@ -1,0 +1,229 @@
+# Translations template for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-10-16 14:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: templates/assets-create_update.html:125
+#, python-format
+msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
+msgstr ""
+
+#: templates/errors/500.html:9
+msgid "An error occured. Please retry later."
+msgstr ""
+
+#: templates/assets-create_update.html:5
+msgid "Asset"
+msgstr ""
+
+#: templates/assets-create_update.html:31 templates/assets-list.html:21
+msgid "Asset ID"
+msgstr ""
+
+#: templates/assets-create_update.html:57
+msgid "Asset activation"
+msgstr ""
+
+#: templates/assets-list.html:3 templates/assets-list.html:12
+#: templates/menu.html:18
+msgid "Assets"
+msgstr ""
+
+#: equipments_families.json:4
+msgid "Biosys - Parsys (in kit)"
+msgstr ""
+
+#: equipments_families.json:32
+msgid "Blood analyser - PTS Cardiochek"
+msgstr ""
+
+#: templates/assets-create_update.html:133
+msgid "Cancel"
+msgstr ""
+
+#: equipments_families.json:24
+msgid "Cardialys - Parsys"
+msgstr ""
+
+#: templates/assets-create_update.html:7
+msgid "Create asset"
+msgstr ""
+
+#: templates/assets-create_update.html:43
+msgid "Current location"
+msgstr ""
+
+#: templates/assets-list.html:22
+msgid "Customer"
+msgstr ""
+
+#: templates/assets-create_update.html:32
+msgid "Customer ID (Subscription ID)"
+msgstr ""
+
+#: templates/assets-create_update.html:41
+msgid "Customer name"
+msgstr ""
+
+#: templates/assets-create_update.html:67
+msgid "Equipments"
+msgstr ""
+
+#: templates/errors/403.html:3 templates/errors/500.html:3
+msgid "Error"
+msgstr ""
+
+#: equipments_families.json:20
+msgid "Glucometer - Beurer GL50"
+msgstr ""
+
+#: templates/assets-create_update.html:123
+msgid "History"
+msgstr ""
+
+#: templates/errors/500.html:10
+msgid "Home"
+msgstr ""
+
+#: models/asset_tracker.py:64
+msgid "In calibration"
+msgstr ""
+
+#: models/asset_tracker.py:63
+msgid "In repair"
+msgstr ""
+
+#: models/asset_tracker.py:62
+msgid "In service"
+msgstr ""
+
+#: models/asset_tracker.py:65
+msgid "In transit to Parsys"
+msgstr ""
+
+#: models/asset_tracker.py:66
+msgid "In transit to customer"
+msgstr ""
+
+#: views.py:95
+msgid "Invalid activation date."
+msgstr ""
+
+#: views.py:91
+msgid "Invalid last calibration date."
+msgstr ""
+
+#: views.py:114 views.py:187
+msgid "Invalid tenant."
+msgstr ""
+
+#: templates/errors/404.html:146
+msgid "It looks like this was the result of either:"
+msgstr ""
+
+#: templates/assets-create_update.html:58
+msgid "Last calibration"
+msgstr ""
+
+#: templates/errors/403.html:10 templates/menu.html:25
+msgid "Logout"
+msgstr ""
+
+#: views.py:85
+msgid "Missing mandatory data."
+msgstr ""
+
+#: templates/assets-list.html:14
+msgid "New"
+msgstr ""
+
+#: templates/assets-create_update.html:59 templates/assets-list.html:25
+msgid "Next calibration"
+msgstr ""
+
+#: templates/errors/404.html:144
+msgid "Not found"
+msgstr ""
+
+#: templates/assets-create_update.html:116
+msgid "Notes"
+msgstr ""
+
+#: templates/errors/404.html:5
+msgid "Page Not Found"
+msgstr ""
+
+#: templates/menu.html:24
+msgid "Settings"
+msgstr ""
+
+#: templates/assets-create_update.html:42 templates/assets-list.html:23
+msgid "Site"
+msgstr ""
+
+#: templates/assets-create_update.html:60
+msgid "Software version"
+msgstr ""
+
+#: templates/errors/404.html:145
+msgid "Sorry, but the page you were trying to view does not exist."
+msgstr ""
+
+#: templates/assets-create_update.html:50 templates/assets-list.html:24
+msgid "Status"
+msgstr ""
+
+#: equipments_families.json:12
+msgid "Stethoscope - PCP-USB"
+msgstr ""
+
+#: templates/assets-create_update.html:134
+msgid "Submit"
+msgstr ""
+
+#: equipments_families.json:8
+msgid "Telecardia - Parsys (in kit)"
+msgstr ""
+
+#: templates/assets-create_update.html:34
+msgid "Tenant"
+msgstr ""
+
+#: equipments_families.json:16
+msgid "Thermometer - Foracare IR21"
+msgstr ""
+
+#: templates/menu.html:5
+msgid "Toggle navigation"
+msgstr ""
+
+#: equipments_families.json:28
+msgid "Ultrasound - Interson abdominal 99-5929"
+msgstr ""
+
+#: templates/errors/403.html:9
+msgid "You are not authorized to access this page."
+msgstr ""
+
+#: templates/errors/404.html:148
+msgid "a mistyped address"
+msgstr ""
+
+#: templates/errors/404.html:149
+msgid "an out-of-date link"
+msgstr ""
+

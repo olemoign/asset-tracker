@@ -10,30 +10,37 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'alembic',
-    'babel',
     'parsys_utilities',
     'paste',
     'pastescript',
-    'psycopg2',
     'pyramid',
     'pyramid_assetviews',
-    'pyramid_debugtoolbar',
     'pyramid_jinja2',
     'pyramid_redis_sessions',
     'pyramid_tm',
     'python-dateutil',
-    'sqlalchemy<1.1',
+    'sqlalchemy',
     'transaction',
     'waitress',
     'zope.sqlalchemy',
 ]
 
-tests_require = [
+dev_requires = [
+    'babel',
+    'pybabel-json',
+    'pyramid_debugtoolbar',
+]
+
+prod_requires = [
+    'psycopg2',
+]
+
+tests_requires = [
     'mccabe',
+    'pyflakes',
     'pylint',
     'pylint-mccabe',
     'vulture',
-    'pyflakes',
 ]
 
 setup(
@@ -56,7 +63,9 @@ setup(
     zip_safe=True,
     install_requires=requires,
     extras_require={
-        'testing': tests_require,
+        'dev': dev_requires,
+        'prod': prod_requires,
+        'testing': tests_requires,
     },
     entry_points="""\
     [paste.app_factory]
