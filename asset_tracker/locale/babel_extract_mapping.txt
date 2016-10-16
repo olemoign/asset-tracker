@@ -1,0 +1,9 @@
+# Extraction from Python source files
+[python: **.py]
+# Extraction from Genshi HTML and text templates
+[jinja2: **/templates/**.txt]
+encoding = utf-8
+[jinja2: **/templates/**.html]
+encoding = utf-8
+# Extraction from JSON
+[json: **.json]

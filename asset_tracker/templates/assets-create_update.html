@@ -2,7 +2,7 @@
 {% from 'macros.html' import input %}
 
 {% if update %}
-    {% set title = gettext('Modify asset') %}
+    {% set title = gettext('Asset') + ' ' + asset.asset_id %}
 {% else %}
     {% set title = gettext('Create asset') %}
 {% endif %}
@@ -28,8 +28,8 @@
                 <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(asset, 'Asset ID', 'asset_id', required=True) }}
-                        {{ input(asset, 'Customer ID (Subscription ID)', 'customer_id') }}
+                        {{ input(asset, gettext('Asset ID'), 'asset_id', required=True) }}
+                        {{ input(asset, gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
@@ -38,9 +38,9 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(asset, 'Customer name', 'customer_name') }}
-                        {{ input(asset, 'Site', 'site') }}
-                        {{ input(asset, 'Current location', 'current_location') }}
+                        {{ input(asset, gettext('Customer name'), 'customer_name') }}
+                        {{ input(asset, gettext('Site'), 'site') }}
+                        {{ input(asset, gettext('Current location'), 'current_location') }}
                     </div>
 
                     <hr>
@@ -50,14 +50,14 @@
                             <label for="status">{{ gettext('Status') }} *</label>
                             <select class="form-control" id="status" name="status">
                                 {% for key, value in status.items() %}
-                                <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ value }}</option>
+                                <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ gettext(value) }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(asset, 'Asset activation', 'activation', 'date') }}
-                        {{ input(asset, 'Last calibration', 'last_calibration', 'date') }}
-                        {{ input(asset, 'Next calibration', 'next_calibration', 'date') }}
-                        {{ input(asset, 'Software version', 'software_version') }}
+                        {{ input(asset, gettext('Asset activation'), 'activation', 'date') }}
+                        {{ input(asset, gettext('Last calibration'), 'last_calibration', 'date') }}
+                        {{ input(asset, gettext('Next calibration'), 'next_calibration', 'date') }}
+                        {{ input(asset, gettext('Software version'), 'software_version') }}
                     </div>
 
                     <hr>
