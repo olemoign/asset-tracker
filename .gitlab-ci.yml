@@ -19,7 +19,7 @@ pylint-quality:
 
   script:
     - pip -q install -U pip wheel setuptools
-    - pip -q install .[testing]
+    - pip -q install '.[testing]'
     - pylint asset_tracker
 
 pyflakes:
@@ -30,7 +30,7 @@ pyflakes:
 
   script:
     - pip -q install -U pip wheel setuptools
-    - pip -q install .[testing]
+    - pip -q install '.[testing]'
     - pyflakes asset_tracker
 
 build:
@@ -42,7 +42,7 @@ build:
   script:
     - pip -q install -U pip wheel setuptools
     - python setup.py bdist_wheel
-    - pip wheel -w dist/ .[prod]
+    - pip wheel -w dist/ '.[prod]'
 
   artifacts:
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
