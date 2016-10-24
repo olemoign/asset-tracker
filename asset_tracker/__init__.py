@@ -20,8 +20,8 @@ from asset_tracker.models import EquipmentFamily, get_engine, get_session_factor
 
 @subscriber(NewResponse)
 def add_app_version_header(event):
-    rta_version = pkg_resources.require(__package__)[0].version
-    event.response.headers.add('X-Parsys-Version', rta_version)
+    asset_tracker_version = pkg_resources.require(__package__)[0].version
+    event.response.headers.add('X-Parsys-Version', asset_tracker_version)
 
 
 @subscriber(NewResponse)
@@ -81,8 +81,8 @@ def main(global_config, **settings):
     config.add_translation_dirs('asset_tracker:locale')
 
     cookie_signature = settings['asset_tracker.cookie_signature']
-    authentication_policy = OpenIDConnectAuthenticationPolicy(
-        callback=partial(get_effective_principals, allow_admins=True))
+    authentication_policy = \
+        OpenIDConnectAuthenticationPolicy(callback=partial(get_effective_principals, allow_admins=True))
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
