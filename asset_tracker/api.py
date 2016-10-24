@@ -56,7 +56,7 @@ class Assets(object):
             if 'g:admin' in self.request.effective_principals or \
                     (asset.tenant_id, 'assets-read') in self.request.effective_principals:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
-                
+
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
                 'notes': asset.notes, 'current_location': asset.current_location, 'history': history,
@@ -69,7 +69,7 @@ class Assets(object):
 
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
-    
-    
+
+
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)

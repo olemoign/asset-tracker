@@ -37,6 +37,7 @@ class FormException(Exception):
     def __init__(self, msg, form):
         self.msg = msg
         self.form = form
+        super().__init__()
 
 
 class AssetsEndPoint(object):
@@ -56,7 +57,7 @@ class AssetsEndPoint(object):
     def __init__(self, request):
         self.request = request
         self.asset = self.get_asset()
-        
+
     def get_asset(self):
         asset_id = self.request.matchdict.get('asset_id')
         if asset_id:
@@ -65,7 +66,7 @@ class AssetsEndPoint(object):
                 raise HTTPNotFound()
             else:
                 return asset
-            
+
     def get_base_form_data(self):
         if self.request.user['is_admin'] or not self.asset:
             tenants = self.request.user['tenants']

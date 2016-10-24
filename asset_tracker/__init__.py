@@ -41,16 +41,16 @@ def add_security_headers(event):
 # noinspection PyUnusedLocal
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application."""
-    assert(settings.get('rta.server_url'))
-    assert(settings.get('rta.client_id'))
-    assert(settings.get('rta.secret'))
+    assert settings.get('rta.server_url')
+    assert settings.get('rta.client_id')
+    assert settings.get('rta.secret')
     assert settings.get('asset_tracker.sessions_broker_url')
     assert settings.get('sqlalchemy.url')
 
     with transaction.manager:
         engine = get_engine(settings)
-        session_factory = get_session_factory(engine)
-        db_session = get_tm_session(session_factory, transaction.manager)
+        db_session_factory = get_session_factory(engine)
+        db_session = get_tm_session(db_session_factory, transaction.manager)
 
         db_session.query(EquipmentFamily).delete()
 
