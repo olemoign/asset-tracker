@@ -1,5 +1,5 @@
 import os
-
+import subprocess
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -43,9 +43,14 @@ tests_require = [
     'vulture',
 ]
 
+
+get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --first-parent --dirty | sed -e "s/-/+/"'
+version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
+
+
 setup(
     name='asset_tracker',
-    version='2.6',
+    version=version,
     description='asset_tracker',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[

@@ -1,6 +1,7 @@
+import logging
+import pkg_resources
 from functools import partial
 from json import loads
-from pkg_resources import resource_string
 
 import transaction
 from parsys_utilities.authorization import add_security_headers as basic_security_headers, get_user, \
@@ -15,6 +16,12 @@ from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
 from asset_tracker.models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
+
+
+@subscriber(NewResponse)
+def add_app_version_header(event):
+    rta_version = pkg_resources.require(__package__)[0].version
+    event.response.headers.add('X-Parsys-Version', rta_version)
 
 
 @subscriber(NewResponse)
@@ -47,7 +54,7 @@ def main(global_config, **settings):
 
         db_session.query(EquipmentFamily).delete()
 
-        families_list = resource_string(__name__, 'equipments_families.json').decode('utf-8')
+        families_list = pkg_resources.resource_string(__name__, 'equipments_families.json').decode('utf-8')
         json_families = loads(families_list)
         for json_family in json_families:
             family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
@@ -108,6 +115,9 @@ def main(global_config, **settings):
 
     config.include('pyramid_assetviews')
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=3600)
+
+    asset_tracker_version = pkg_resources.require(__package__)[0].version
+    logging.getLogger('asset_tracker_actions').info('Starting rta version %s', asset_tracker_version)
 
     log_requests = asbool(settings.get('asset_tracker.dev.log_requests', False))
     if log_requests:
