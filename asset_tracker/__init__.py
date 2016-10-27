@@ -38,6 +38,25 @@ def add_security_headers(event):
         basic_security_headers(event)
 
 
+def update_equipments_families(settings):
+    with transaction.manager:
+        engine = get_engine(settings)
+        db_session_factory = get_session_factory(engine)
+        db_session = get_tm_session(db_session_factory, transaction.manager)
+
+        existing_families = db_session.query(EquipmentFamily).all()
+
+        families_list = pkg_resources.resource_string(__name__, 'equipments_families.json').decode('utf-8')
+        families_list = loads(families_list)
+
+        for family in families_list:
+            family_persisted = next((x for x in existing_families if x.id == int(family['id'])), None)
+            if not family_persisted:
+                family_persisted = EquipmentFamily(id=family['id'])
+                db_session.add(family_persisted)
+            family_persisted.model = family['model']
+
+
 # noinspection PyUnusedLocal
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application."""
@@ -47,18 +66,7 @@ def main(global_config, **settings):
     assert settings.get('asset_tracker.sessions_broker_url')
     assert settings.get('sqlalchemy.url')
 
-    with transaction.manager:
-        engine = get_engine(settings)
-        db_session_factory = get_session_factory(engine)
-        db_session = get_tm_session(db_session_factory, transaction.manager)
-
-        db_session.query(EquipmentFamily).delete()
-
-        families_list = pkg_resources.resource_string(__name__, 'equipments_families.json').decode('utf-8')
-        json_families = loads(families_list)
-        for json_family in json_families:
-            family = EquipmentFamily(id=json_family['id'], model=json_family['model'])
-            db_session.add(family)
+    update_equipments_families(settings)
 
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.set_default_csrf_options(require_csrf=True)
