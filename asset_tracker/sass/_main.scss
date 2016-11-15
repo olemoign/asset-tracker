@@ -11,6 +11,8 @@ $border-radius-small: 0;
 
 $grid-float-breakpoint: 800px;
 
+$navbar-margin-bottom: 9px;
+
 @import 'bootstrap';
 
 body, html {
@@ -29,8 +31,6 @@ body, html {
 
 .root-container {
   width: 100%;
-  min-height: 100%;
-  padding-top: 20px;
 }
 
 //Login page
