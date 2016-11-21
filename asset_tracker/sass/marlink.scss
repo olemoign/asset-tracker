@@ -75,6 +75,8 @@ link[rel=icon] {
 
 .root-container {
   background: $white;
+  min-height: calc(100% - 63px);
+  padding-top: 7px;
 }
 
 #main-rtc-container {
