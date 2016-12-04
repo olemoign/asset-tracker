@@ -120,7 +120,9 @@ class AssetsEndPoint(object):
         asset.history.append(event)
         self.request.db_session.add(event)
 
-        return HTTPFound(location=self.request.route_path('assets-list'))
+        self.request.db_session.flush()
+
+        return HTTPFound(location=self.request.route_path('assets-update', asset_id=asset.id))
 
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
@@ -177,7 +179,7 @@ class AssetsEndPoint(object):
                           status=form_asset['event'])
             self.asset.history.append(event)
 
-        return HTTPFound(location=self.request.route_path('assets-list'))
+        return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
