@@ -60,7 +60,6 @@ class Assets(object):
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
                 'notes': asset.notes, 'current_location': asset.current_location, 'history': history,
-                'next_calibration': str(asset.next_calibration or ''),
                 'status': models.Event.status_labels[asset.history.order_by(models.Event.date.desc()).first().status],
                 'equipments': equipments, 'links': [{'rel': 'self', 'href': link}]
             }

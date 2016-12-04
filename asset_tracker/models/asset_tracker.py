@@ -2,7 +2,7 @@ from collections import OrderedDict
 from operator import attrgetter
 from pyramid.i18n import TranslationString as _
 
-from parsys_utilities.model import CreationDateTimeMixin, Date, DateTime, Enum, hybrid_property, Integer, Field, \
+from parsys_utilities.model import CreationDateTimeMixin, DateTime, Enum, hybrid_property, Integer, Field, \
     ForeignKey, Model, relationship, select, String
 
 
@@ -21,8 +21,6 @@ class Asset(Model, CreationDateTimeMixin):
     history = relationship('Event', lazy='dynamic')
     equipments = relationship('Equipment', lazy='dynamic')
 
-    next_calibration = Field(Date)
-
     @hybrid_property
     def status(self):
         if self.history:
@@ -30,6 +28,7 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             return None
 
+    # noinspection PyMethodParameters
     @status.expression
     def status(cls):
         return select([Event.status]).where(Event.asset_id == cls.id).order_by(Event.date.desc()).limit(1)
@@ -56,12 +55,17 @@ class Event(Model):
     creator_id = Field(String)
     creator_alias = Field(String)
 
-    status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))
+    status = Field(Enum('produced', 'service', 'stock_distributor', 'stock_parsys', 'repair', 'calibration',
+                        'transit_customer', 'transit_distributor', 'transit_parsys', name='status'))
 
     status_labels = OrderedDict([
+        ('produced', _('Produced')),
         ('service', _('In service')),
+        ('stock_distributor', _('In stock - distributor')),
+        ('stock_parsys', _('In stock - Parsys')),
         ('repair', _('In repair')),
         ('calibration', _('In calibration')),
-        ('transit_parsys', _('In transit to Parsys')),
         ('transit_customer', _('In transit to customer')),
+        ('transit_distributor', _('In transit to distributor')),
+        ('transit_parsys', _('In transit to Parsys')),
     ])
