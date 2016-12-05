@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from traceback import format_exc
 
 from parsys_utilities.authorization import rights_without_tenants
@@ -137,9 +138,10 @@ class AssetsEndPoint(object):
         self.asset.calibration_last = last_calibration.date.date() if last_calibration else None
 
         # TODO
-        self.asset.calibration_next = None
-        self.asset.calibration_end = None
-        self.asset.warranty_end = None
+        if self.asset.calibration_last:
+            self.asset.calibration_next = self.asset.calibration_last + relativedelta(years=2)
+        if self.asset.activation:
+            self.asset.warranty_end = self.asset.activation + relativedelta(years=1)
 
         return dict(update=True, asset=self.asset, **self.get_base_form_data())
 

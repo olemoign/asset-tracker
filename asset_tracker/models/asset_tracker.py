@@ -7,8 +7,8 @@ from parsys_utilities.model import CreationDateTimeMixin, DateTime, Enum, hybrid
 
 
 class Asset(Model, CreationDateTimeMixin):
-    tenant_id = Field(String)
-    asset_id = Field(String)
+    tenant_id = Field(String, nullable=False)
+    asset_id = Field(String, nullable=False)
 
     customer_id = Field(String)
     customer_name = Field(String)
