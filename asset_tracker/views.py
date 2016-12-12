@@ -13,10 +13,13 @@ from pyramid.view import notfound_view_config, view_config
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event
 
 
+DEFAULT_BRANDING = 'parsys_cloud'
+
+
 @subscriber(BeforeRender)
 def add_global_variables(event):
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
-    event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', 'parsys_cloud')
+    event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
     event['csrf_token'] = event['request'].session.get_csrf_token()
 
     if event['request'].user:
