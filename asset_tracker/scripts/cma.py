@@ -22,7 +22,7 @@ db_session_factory = get_session_factory(engine)
 with transaction.manager:
     db_session = get_tm_session(db_session_factory, transaction.manager)
 
-    with open('/Users/olemoign/Downloads/asset_tracker/cma_cgm.csv') as csv_file:
+    with open('/srv/cma_cgm.csv') as csv_file:
         csv_reader = reader(csv_file, delimiter=';')
         headers = next(csv_reader)
 
@@ -38,8 +38,11 @@ with transaction.manager:
                 kit.equipments.append(base)
                 kit.equipments.append(telecardia)
 
+                # noinspection PyArgumentList
                 production = Event(date=date(2014, 1, 1), creator_id='X9A39F0g', creator_alias='Sylvain TISON',
                                    status='produced')
+                # noinspection PyArgumentList
+                # TODO: put either created_at or date slightly after production to make sure service is after production
                 activation = Event(date=date(2014, 1, 1), creator_id='X9A39F0g', creator_alias='Sylvain TISON',
                                    status='service')
                 kit.history.append(production)
