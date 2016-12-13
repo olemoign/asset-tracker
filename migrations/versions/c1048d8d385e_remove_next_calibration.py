@@ -18,13 +18,13 @@ import sqlalchemy as sa
 
 def upgrade():
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.alter_column('asset_id', existing_type=sa.VARCHAR(), nullable=False)
-        batch_op.alter_column('tenant_id', existing_type=sa.VARCHAR(), nullable=False)
+        batch_op.alter_column('asset_id', existing_type=sa.Unicode(), nullable=False)
+        batch_op.alter_column('tenant_id', existing_type=sa.Unicode(), nullable=False)
         batch_op.drop_column('next_calibration')
 
 
 def downgrade():
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('next_calibration', sa.DATE(), nullable=True))
-        batch_op.alter_column('tenant_id', existing_type=sa.VARCHAR(), nullable=True)
-        batch_op.alter_column('asset_id', existing_type=sa.VARCHAR(), nullable=True)
+        batch_op.add_column(sa.Column('next_calibration', sa.Date(), nullable=True))
+        batch_op.alter_column('tenant_id', existing_type=sa.Unicode(), nullable=True)
+        batch_op.alter_column('asset_id', existing_type=sa.Unicode(), nullable=True)
