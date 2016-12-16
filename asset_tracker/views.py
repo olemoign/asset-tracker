@@ -221,7 +221,8 @@ class AssetsEndPoint(object):
 
         form_activation = get_date(form_asset['activation'])
         if form_activation:
-            activations = [activation.date.date() for activation in self.asset.history.filter_by(status='service').all()]
+            activations = self.asset.history.filter_by(status='service').all()
+            activations = [activation.date.date() for activation in activations]
 
             if form_activation not in activations:
                 activation = Event(date=form_activation, creator_id=self.request.user['id'],
@@ -231,7 +232,8 @@ class AssetsEndPoint(object):
 
         form_last_calibration = get_date(form_asset['last_calibration'])
         if form_last_calibration:
-            calibrations = [calibration.date.date() for calibration in self.asset.history.filter_by(status='calibration').all()]
+            calibrations = self.asset.history.filter_by(status='calibration').all()
+            calibrations = [calibration.date.date() for calibration in calibrations]
 
             if form_last_calibration not in calibrations:
                 calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],

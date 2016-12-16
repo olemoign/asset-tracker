@@ -1,19 +1,19 @@
 """0.9
 
 Revision ID: e48836ce2279
-Revises: 
+Revises:
 Create Date: 2016-06-13 16:10:42.694244
 
 """
+
+from alembic import op
+import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'e48836ce2279'
 down_revision = None
 branch_labels = None
 depends_on = None
-
-from alembic import op
-import sqlalchemy as sa
 
 
 def upgrade():
