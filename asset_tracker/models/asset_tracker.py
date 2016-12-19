@@ -30,13 +30,13 @@ class Asset(Model, CreationDateTimeMixin):
     # noinspection PyMethodParameters
     @status.expression
     def status(cls):
-        return select([Status]).select_from(join(Event, Status)).where(Event.asset_id == cls.id) \
+        return select([EventStatus]).select_from(join(Event, EventStatus)).where(Event.asset_id == cls.id) \
             .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)
 
     @hybrid_property
     def calibration_next(self):
         if self.history:
-            calibration_last = self.history.join(Status).filter(Status.status_id == 'calibration') \
+            calibration_last = self.history.join(EventStatus).filter(EventStatus.status_id == 'calibration') \
                 .order_by(Event.date.desc()).first()
             if calibration_last:
                 return calibration_last.date.date() + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
@@ -47,8 +47,8 @@ class Asset(Model, CreationDateTimeMixin):
         # TODO: this returns the last calibration, which works as this function is used for ordering and
         # currently the delta between next and last calibration is the same for all assets.
         # This will need work if the delta is no longer the same for all.
-        return select([Event.date]).select_from(join(Event, Status)). \
-            where(and_(Event.asset_id == cls.id, Status.status_id == 'calibration')) \
+        return select([Event.date]).select_from(join(Event, EventStatus)). \
+            where(and_(Event.asset_id == cls.id, EventStatus.status_id == 'calibration')) \
             .order_by(Event.date.desc()).limit(1)
 
 
@@ -74,11 +74,11 @@ class Event(Model, CreationDateTimeMixin):
     creator_id = Field(String)
     creator_alias = Field(String)
 
-    status_id = Field(Integer, ForeignKey('status.id'))
-    status = relationship('Status', foreign_keys=status_id)
+    status_id = Field(Integer, ForeignKey('event_status.id'))
+    status = relationship('EventStatus', foreign_keys=status_id)
 
 
-class Status(Model):
+class EventStatus(Model):
     status_id = Field(String)
     position = Field(String)
     label = Field(String)

@@ -4,7 +4,7 @@ from json import loads
 import pkg_resources
 import transaction
 
-from asset_tracker.models import Equipment, EquipmentFamily, get_engine, get_session_factory, get_tm_session, Status
+from asset_tracker.models import Equipment, EquipmentFamily, get_engine, get_session_factory, get_tm_session, EventStatus
 
 
 logger = logging.getLogger('asset_tracker_actions')
@@ -41,14 +41,14 @@ def update_equipment_families(db_session, configuration):
 
 def update_statuses(db_session, configuration):
     config_statuses = configuration['status']
-    db_statuses = db_session.query(Status).all()
+    db_statuses = db_session.query(EventStatus).all()
 
     # Create new status and update names.
     for config_status in config_statuses:
         db_status = next((x for x in db_statuses if x.status_id == config_status['status_id']), None)
 
         if not db_status:
-            db_status = Status(status_id=config_status['status_id'])
+            db_status = EventStatus(status_id=config_status['status_id'])
             db_session.add(db_status)
             logger.info('Adding status {}.'.format(config_status['label']))
 

@@ -11,7 +11,7 @@ from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, Status
+from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
 DEFAULT_BRANDING = 'parsys_cloud'
@@ -73,7 +73,7 @@ class AssetsEndPoint(object):
 
     def get_base_form_data(self):
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        statuses = self.request.db_session.query(Status).all()
+        statuses = self.request.db_session.query(EventStatus).all()
 
         if self.request.user['is_admin'] or not self.asset:
             tenants = self.request.user['tenants']
@@ -110,7 +110,7 @@ class AssetsEndPoint(object):
         else:
             event_date = datetime.utcnow().replace(microsecond=0)
 
-        status = self.request.db_session.query(Status).filter_by(status_id=form_asset['event']).first()
+        status = self.request.db_session.query(EventStatus).filter_by(status_id=form_asset['event']).first()
 
         # noinspection PyArgumentList
         event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
@@ -155,14 +155,14 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        production = self.asset.history.join(Status).filter(Status.status_id == 'manufactured') \
+        production = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'manufactured') \
             .order_by(Event.date).first()
         self.asset.production = production.date.date() if production else None
 
-        activation = self.asset.history.join(Status).filter(Status.status_id == 'service').order_by(Event.date).first()
+        activation = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'service').order_by(Event.date).first()
         self.asset.activation = activation.date.date() if activation else None
 
-        calibration_last = self.asset.history.join(Status).filter(Status.status_id == 'calibration') \
+        calibration_last = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'calibration') \
             .order_by(Event.date.desc()).first()
         self.asset.calibration_last = calibration_last.date.date() if calibration_last else None
 

@@ -17,7 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('status',
+    op.create_table('event_status',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('status_id', sa.Unicode(), nullable=True),
                     sa.Column('position', sa.Unicode(), nullable=True),
@@ -30,18 +30,18 @@ def upgrade():
     with op.batch_alter_table('event', schema=None) as batch_op:
         batch_op.add_column(sa.Column('created_at', sa.DateTime(), nullable=False))
         batch_op.add_column(sa.Column('status_id', sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(batch_op.f('fk_event_status_id_status'), 'status', ['status_id'], ['id'])
+        batch_op.create_foreign_key(batch_op.f('fk_event_status_id_event_status'), 'event_status', ['status_id'], ['id'])
         batch_op.drop_column('status')
 
 
 def downgrade():
     with op.batch_alter_table('event', schema=None) as batch_op:
         batch_op.add_column(sa.Column('status', sa.Unicode(), nullable=True))
-        batch_op.drop_constraint(batch_op.f('fk_event_status_id_status'), type_='foreignkey')
+        batch_op.drop_constraint(batch_op.f('fk_event_status_id_event_status'), type_='foreignkey')
         batch_op.drop_column('status_id')
         batch_op.drop_column('created_at')
 
     with op.batch_alter_table('equipment_family', schema=None) as batch_op:
         batch_op.drop_column('family_id')
 
-    op.drop_table('status')
+    op.drop_table('event_status')
