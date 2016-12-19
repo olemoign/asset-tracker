@@ -159,7 +159,8 @@ class AssetsEndPoint(object):
             .order_by(Event.date).first()
         self.asset.production = production.date.date() if production else None
 
-        activation = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'service').order_by(Event.date).first()
+        activation = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'service') \
+            .order_by(Event.date).first()
         self.asset.activation = activation.date.date() if activation else None
 
         calibration_last = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'calibration') \

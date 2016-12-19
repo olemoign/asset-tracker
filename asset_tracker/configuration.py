@@ -4,7 +4,8 @@ from json import loads
 import pkg_resources
 import transaction
 
-from asset_tracker.models import Equipment, EquipmentFamily, get_engine, get_session_factory, get_tm_session, EventStatus
+from asset_tracker.models import Equipment, EquipmentFamily, get_engine, get_session_factory, get_tm_session, \
+    EventStatus
 
 
 logger = logging.getLogger('asset_tracker_actions')
