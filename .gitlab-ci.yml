@@ -1,37 +1,23 @@
 stages:
- - lint
+ - test
  - build
  - dist
  - release
-
 
 variables:
   CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
   CONTAINER_RELEASE_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:latest
 
-pylint-quality:
-  stage: lint
-  image: python:3
-  tags:
-    - docker
-
-  allow_failure: true
-
-  script:
-    - pip -q install -U pip wheel setuptools
-    - pip -q install '.[testing]'
-    - pylint asset_tracker
-
-pyflakes:
-  stage: lint
+flake8:
+  stage: test
   image: python:3
   tags:
     - docker
 
   script:
-    - pip -q install -U pip wheel setuptools
-    - pip -q install '.[testing]'
-    - pyflakes asset_tracker
+    - pip install -q -U pip setuptools wheel
+    - pip -q install '.[qa]'
+    - flake8
 
 build:
   stage: build

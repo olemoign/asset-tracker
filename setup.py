@@ -2,6 +2,7 @@ import os
 import subprocess
 from setuptools import setup, find_packages
 
+
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.txt')) as f:
     README = f.read()
@@ -35,18 +36,12 @@ prod_requires = [
     'psycopg2',
 ]
 
-tests_require = [
-    'mccabe',
-    'pyflakes',
-    'pylint',
-    'pylint-mccabe',
-    'vulture',
+qa_requires = [
+    'flake8',
 ]
-
 
 get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --first-parent --dirty | sed -e "s/-/+/"'
 version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
-
 
 setup(
     name='asset_tracker',
@@ -67,11 +62,10 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=requires,
-    tests_require=tests_require,
     extras_require={
         'dev': dev_requires,
         'prod': prod_requires,
-        'testing': tests_require,
+        'qa': qa_requires,
     },
     entry_points="""\
     [paste.app_factory]
