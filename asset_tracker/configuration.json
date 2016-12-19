@@ -1,0 +1,104 @@
+{
+  "equipment_families": [
+    {
+      "family_id": "AWmOOZin",
+      "model": "Biosys - Parsys"
+    },
+    {
+      "family_id": "psqeAtt1",
+      "model": "Telecardia - Parsys"
+    },
+    {
+      "family_id": "sSSe3gPI",
+      "model": "Stethoscope - RNK PCP-USB"
+    },
+    {
+      "family_id": "hC5QzQL1",
+      "model": "Thermometer - Foracare IR21"
+    },
+    {
+      "family_id": "2YUEMLmH",
+      "model": "Glucometer - Beurer GL50"
+    },
+    {
+      "family_id": "R7osm3Qa",
+      "model": "Cardialys - Parsys"
+    },
+    {
+      "family_id": "v7haPFiq",
+      "model": "Ultrasound - Interson abdominal 99-5929"
+    },
+    {
+      "family_id": "T5hImspB",
+      "model": "Blood analyser - PTS Cardiochek"
+    },
+    {
+      "family_id": "j7tJ1y4A",
+      "model": "Telecardia charging base - Parsys"
+    },
+    {
+      "family_id": "utFdsO8S",
+      "model": "Spirometer - Spiromir MiniSpir Light"
+    },
+    {
+      "family_id": "VhCLz9FY",
+      "model": "Otoscope - Firefly DE500A"
+    },
+    {
+      "family_id": "OHItgG5I",
+      "model": "Dermatoscope - Firefly DE300A"
+    }
+  ],
+  "status": [
+    {
+      "status_id": "pre_production",
+      "position": "1",
+      "label": "Pre-production"
+    },
+    {
+      "status_id": "manufactured",
+      "position": "2",
+      "label": "Manufactured"
+    },
+    {
+      "status_id": "stock_parsys",
+      "position": "3",
+      "label": "In stock - Parsys"
+    },
+    {
+      "status_id": "transit_distributor",
+      "position": "4",
+      "label": "In transit to distributor"
+    },
+    {
+      "status_id": "stock_distributor",
+      "position": "5",
+      "label": "In stock - distributor"
+    },
+    {
+      "status_id": "transit_customer",
+      "position": "6",
+      "label": "In transit to customer"
+    },
+    {
+      "status_id": "service",
+      "position": "7",
+      "label": "In service"
+    },
+    {
+      "status_id": "transit_parsys",
+      "position": "8",
+      "label": "In transit to Parsys"
+    },
+    {
+      "status_id": "calibration",
+      "position": "9",
+      "label": "In calibration"
+    },
+    {
+      "status_id": "repair",
+      "position": "10",
+      "label": "In repair"
+    }
+  ]
+}

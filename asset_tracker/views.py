@@ -10,7 +10,8 @@ from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event
+from asset_tracker.constants import WARRANTY_DURATION_YEARS
+from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, Status
 
 
 @subscriber(BeforeRender)
@@ -68,14 +69,17 @@ class AssetsEndPoint(object):
                 return asset
 
     def get_base_form_data(self):
+        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        statuses = self.request.db_session.query(Status).all()
+
         if self.request.user['is_admin'] or not self.asset:
             tenants = self.request.user['tenants']
         else:
             tenants = [tenant for tenant in self.request.user['tenants']
                        if (tenant['id'], 'assets-create') in self.request.effective_principals or
                        tenant['id'] == self.asset.tenant_id]
-        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'equipments_families': equipments_families, 'status': Event.status_labels, 'tenants': tenants}
+
+        return {'equipments_families': equipments_families, 'statuses': statuses, 'tenants': tenants}
 
     def read_form(self, update):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
@@ -86,6 +90,30 @@ class AssetsEndPoint(object):
             raise FormException(_('Missing mandatory data.'), form)
 
         return form
+
+    def validate_form(self):
+        # TODO
+        pass
+
+    def add_equipments(self, form_asset, asset):
+        for index, value in enumerate(form_asset['equipment-family']):
+            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
+            asset.equipments.append(equipment)
+            self.request.db_session.add(equipment)
+
+    def add_event(self, form_asset, asset):
+        if form_asset['event_date']:
+            event_date = get_date(form_asset['event_date'])
+        else:
+            event_date = datetime.utcnow().replace(microsecond=0)
+
+        status = self.request.db_session.query(Status).filter_by(status_id=form_asset['event']).first()
+
+        # noinspection PyArgumentList
+        event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
+                      status=status)
+        asset.history.append(event)
+        self.request.db_session.add(event)
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -100,8 +128,10 @@ class AssetsEndPoint(object):
         except FormException as error:
             return dict(error=error.msg, asset=error.form, **self.get_base_form_data())
 
-        if not self.request.user['is_admin'] and \
-                (form_asset['tenant_id'], 'assets-create') not in self.request.effective_principals:
+        tenants_ids = [tenant['id'] for tenant in self.request.user['tenants']]
+        admin_create_right = self.request.user['is_admin'] and form_asset['tenant_id'] in tenants_ids
+        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
+        if not admin_create_right and not user_create_right:
             return dict(error=_('Invalid tenant.'), asset=form_asset, **self.get_base_form_data())
 
         # noinspection PyArgumentList
@@ -111,15 +141,9 @@ class AssetsEndPoint(object):
                       notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
-        for index, value in enumerate(form_asset['equipment-family']):
-            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
-            asset.equipments.append(equipment)
-            self.request.db_session.add(equipment)
+        self.add_equipments(form_asset, asset)
 
-        event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
-                      creator_alias=self.request.user['alias'], status=form_asset['event'])
-        asset.history.append(event)
-        self.request.db_session.add(event)
+        self.add_event(form_asset, asset)
 
         self.request.db_session.flush()
 
@@ -128,20 +152,19 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        production = self.asset.history.filter_by(status='produced').order_by(Event.date).first()
+        production = self.asset.history.join(Status).filter(Status.status_id == 'manufactured') \
+            .order_by(Event.date).first()
         self.asset.production = production.date.date() if production else None
 
-        activation = self.asset.history.filter_by(status='service').order_by(Event.date).first()
+        activation = self.asset.history.join(Status).filter(Status.status_id == 'service').order_by(Event.date).first()
         self.asset.activation = activation.date.date() if activation else None
 
-        last_calibration = self.asset.history.filter_by(status='calibration').order_by(Event.date.desc()).first()
-        self.asset.calibration_last = last_calibration.date.date() if last_calibration else None
+        calibration_last = self.asset.history.join(Status).filter(Status.status_id == 'calibration') \
+            .order_by(Event.date.desc()).first()
+        self.asset.calibration_last = calibration_last.date.date() if calibration_last else None
 
-        # TODO
-        if self.asset.calibration_last:
-            self.asset.calibration_next = self.asset.calibration_last + relativedelta(years=2)
         if self.asset.activation:
-            self.asset.warranty_end = self.asset.activation + relativedelta(years=1)
+            self.asset.warranty_end = self.asset.activation + relativedelta(years=WARRANTY_DURATION_YEARS)
 
         return dict(update=True, asset=self.asset, **self.get_base_form_data())
 
@@ -154,9 +177,10 @@ class AssetsEndPoint(object):
             error.form.update({'id': self.asset.id, 'history': self.asset.history})
             return dict(error=error.msg, update=True, asset=error.form, **self.get_base_form_data())
 
-        manager_has_right = form_asset['tenant_id'] == self.asset.tenant_id or \
-            (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
-        if not self.request.user['is_admin'] and not manager_has_right:
+        asset_tenant_did_not_change = form_asset['tenant_id'] == self.asset.tenant_id
+        admin_update_right = self.request.user['is_admin'] and form_asset['tenant_id'] in self.request.user['tenants']
+        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
+        if not asset_tenant_did_not_change and not admin_update_right and not user_create_right:
             form_asset.update({'id': self.asset.id, 'history': self.asset.history})
             return dict(error=_('Invalid tenant.'), update=True, asset=form_asset, **self.get_base_form_data())
 
@@ -170,16 +194,10 @@ class AssetsEndPoint(object):
         self.asset.notes = form_asset['notes']
 
         self.asset.equipments.delete()
-        for index, value in enumerate(form_asset['equipment-family']):
-            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
-            self.asset.equipments.append(equipment)
-            self.request.db_session.add(equipment)
+        self.add_equipments(form_asset, self.asset)
 
         if form_asset['event']:
-            event_date = get_date(form_asset['event_date']) if form_asset['event_date'] else datetime.utcnow()
-            event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
-                          status=form_asset['event'])
-            self.asset.history.append(event)
+            self.add_event(form_asset, self.asset)
 
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 

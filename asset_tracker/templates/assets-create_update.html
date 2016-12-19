@@ -50,8 +50,8 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>{{ gettext('Current status') }}</label>
-                                <p>{{ gettext(status[asset.status]) }}</p>
+                                <label>{{ gettext('Status') }}</label>
+                                <p>{{ gettext(asset.status.label) }}</p>
                             </div>
                         </div>
                     </div>
@@ -69,11 +69,11 @@
 
                     <div class="row">
                         <div class="col-sm-6 form-group">
-                            <label for="status">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
+                            <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
                             <select class="form-control" id="event" name="event">
                                 {% if update %}<option></option>{% endif %}
-                                {% for key, value in status.items() %}
-                                <option value="{{ key }}">{{ gettext(value) }}</option>
+                                {% for status in statuses %}
+                                <option value="{{ status.status_id }}">{{ status.label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -84,7 +84,7 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
+                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
                         </div>
                         {% for equipment in (asset or {}).equipments %}
                         <div class="col-sm-4 equipment__block">
@@ -141,9 +141,10 @@
                         {% if update %}
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
+                            <!-- TODO -->
                             {% for event in asset.history|sort(attribute='date') %}
                             <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=status[event.status], date=event.date.date()) }}.</p>
+                                    status=gettext(event.status.label), date=event.date.date()) }}.</p>
                             {% endfor %}
                         </div>
                         {% endif %}

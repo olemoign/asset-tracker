@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-12-05 17:16+0100\n"
+"POT-Creation-Date: 2016-12-19 14:45+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: templates/assets-create_update.html:145
+#: templates/assets-create_update.html:146
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr "%(creator)s a modifié le statut en <b>%(status)s</b> le %(date)s"
@@ -29,7 +29,7 @@ msgstr "Mise en service"
 
 #: templates/assets-create_update.html:72
 msgid "Add Event"
-msgstr "Ajouter vénement"
+msgstr "Ajouter Événement"
 
 #: templates/errors/500.html:9
 msgid "An error occured. Please retry later."
@@ -48,19 +48,19 @@ msgstr "ID"
 msgid "Assets"
 msgstr "Matériels"
 
-#: equipments_families.json:4
+#: configuration.json:5
 msgid "Biosys - Parsys"
 msgstr "Biosys - Parsys"
 
-#: equipments_families.json:32
+#: configuration.json:33
 msgid "Blood analyser - PTS Cardiochek"
 msgstr "Analyseur sanguin - PTS Cardiochek"
 
-#: templates/assets-create_update.html:153
+#: templates/assets-create_update.html:154
 msgid "Cancel"
 msgstr "Annuler"
 
-#: equipments_families.json:24
+#: configuration.json:25
 msgid "Cardialys - Parsys"
 msgstr "Cardialys - Parsys"
 
@@ -71,10 +71,6 @@ msgstr "Nouveau matériel"
 #: templates/assets-create_update.html:43
 msgid "Current location"
 msgstr "Position actuelle"
-
-#: templates/assets-create_update.html:53
-msgid "Status"
-msgstr "Statut"
 
 #: templates/assets-list.html:22
 msgid "Customer"
@@ -92,7 +88,7 @@ msgstr "Nom du client"
 msgid "Date"
 msgstr "Date"
 
-#: equipments_families.json:48
+#: configuration.json:49
 msgid "Dermatoscope - Firefly DE300A"
 msgstr "Dermatoscope - Firefly DE300A"
 
@@ -104,7 +100,7 @@ msgstr "Equipements"
 msgid "Error"
 msgstr "Erreur"
 
-#: equipments_families.json:20
+#: configuration.json:21
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
@@ -116,39 +112,39 @@ msgstr "Historique"
 msgid "Home"
 msgstr "Accueil"
 
-#: models/asset_tracker.py:92
+#: configuration.json:96
 msgid "In calibration"
 msgstr "Calibration"
 
-#: models/asset_tracker.py:91
+#: configuration.json:101
 msgid "In repair"
 msgstr "Réparation"
 
-#: models/asset_tracker.py:88
+#: configuration.json:86
 msgid "In service"
 msgstr "En service"
 
-#: models/asset_tracker.py:90
+#: configuration.json:66
 msgid "In stock - Parsys"
 msgstr "En stock - Parsys"
 
-#: models/asset_tracker.py:89
+#: configuration.json:76
 msgid "In stock - distributor"
 msgstr "En stock - distributeur"
 
-#: models/asset_tracker.py:95
+#: configuration.json:91
 msgid "In transit to Parsys"
 msgstr "Transit vers Parsys"
 
-#: models/asset_tracker.py:93
+#: configuration.json:81
 msgid "In transit to customer"
 msgstr "Transit vers le client"
 
-#: models/asset_tracker.py:94
+#: configuration.json:71
 msgid "In transit to distributor"
 msgstr "Transit vers le distributeur"
 
-#: views.py:105 views.py:160
+#: views.py:134 views.py:184
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -164,7 +160,11 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views.py:86
+#: configuration.json:61
+msgid "Manufactured"
+msgstr "Manufacturé"
+
+#: views.py:89
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -172,7 +172,7 @@ msgstr "Donnée obligatoire manquante."
 msgid "New"
 msgstr "Créer"
 
-#: templates/assets-create_update.html:63 templates/assets-list.html:25
+#: templates/assets-create_update.html:63 templates/assets-list.html:24
 msgid "Next calibration"
 msgstr "Prochaine calibration"
 
@@ -184,7 +184,7 @@ msgstr "Non trouvée"
 msgid "Notes"
 msgstr "Notes"
 
-#: equipments_families.json:44
+#: configuration.json:45
 msgid "Otoscope - Firefly DE500A"
 msgstr "Otoscope - Firefly DE500A"
 
@@ -192,9 +192,9 @@ msgstr "Otoscope - Firefly DE500A"
 msgid "Page Not Found"
 msgstr "Page non trouvée"
 
-#: models/asset_tracker.py:87
-msgid "Produced"
-msgstr "Produit"
+#: configuration.json:56
+msgid "Pre-production"
+msgstr "Pré-production"
 
 #: templates/assets-create_update.html:60
 msgid "Production"
@@ -216,27 +216,27 @@ msgstr "Version logicielle"
 msgid "Sorry, but the page you were trying to view does not exist."
 msgstr "La page que vous avez demandée n'existe pas."
 
-#: equipments_families.json:40
+#: configuration.json:41
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr "Spiromètre - Spiromir MiniSpir Light"
 
-#: templates/assets-list.html:24
+#: templates/assets-create_update.html:53 templates/assets-list.html:25
 msgid "Status"
 msgstr "Statut"
 
-#: equipments_families.json:12
+#: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:154
+#: templates/assets-create_update.html:155
 msgid "Submit"
 msgstr "Valider"
 
-#: equipments_families.json:8
+#: configuration.json:9
 msgid "Telecardia - Parsys"
 msgstr "Télécardia - Parsys"
 
-#: equipments_families.json:36
+#: configuration.json:37
 msgid "Telecardia charging base - Parsys"
 msgstr "Base de chargement Télécardia - Parsys"
 
@@ -244,7 +244,7 @@ msgstr "Base de chargement Télécardia - Parsys"
 msgid "Tenant"
 msgstr "Tenant"
 
-#: equipments_families.json:16
+#: configuration.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr "Thermomètre - Foracare IR21"
 
@@ -252,7 +252,7 @@ msgstr "Thermomètre - Foracare IR21"
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: equipments_families.json:28
+#: configuration.json:29
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
@@ -271,4 +271,3 @@ msgstr "d'une adresse incorrecte"
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
-

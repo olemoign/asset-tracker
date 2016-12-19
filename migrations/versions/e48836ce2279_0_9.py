@@ -51,9 +51,8 @@ def upgrade():
                     sa.Column('date', sa.DateTime(), nullable=True),
                     sa.Column('creator_id', sa.Integer(), nullable=True),
                     sa.Column('creator_alias', sa.Unicode(), nullable=True),
-                    sa.Column('status', sa.Enum('produced', 'service', 'stock_distributor', 'stock_parsys', 'repair',
-                                                'calibration', 'transit_customer', 'transit_distributor',
-                                                'transit_parsys', name='status'), nullable=True),
+                    sa.Column('status', sa.Enum('service', 'repair', 'calibration', 'transit_parsys',
+                                                'transit_customer', name='status'), nullable=True),
                     sa.ForeignKeyConstraint(['asset_id'], ['asset.id'], name=op.f('fk_event_asset_id_asset')),
                     sa.PrimaryKeyConstraint('id', name=op.f('pk_event'))
                     )

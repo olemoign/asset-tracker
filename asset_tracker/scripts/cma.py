@@ -40,9 +40,9 @@ with transaction.manager:
 
                 # noinspection PyArgumentList
                 production = Event(date=date(2014, 1, 1), creator_id='X9A39F0g', creator_alias='Sylvain TISON',
-                                   status='produced')
+                                   status='manufactured')
                 # noinspection PyArgumentList
-                # TODO: put either created_at or date slightly after production to make sure service is after production
+                # TODO: what steps should we really implement ?
                 activation = Event(date=date(2014, 1, 1), creator_id='X9A39F0g', creator_alias='Sylvain TISON',
                                    status='service')
                 kit.history.append(production)
