@@ -5,9 +5,9 @@ from sqlalchemy.orm import sessionmaker
 
 # import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
-from asset_tracker.models.asset_tracker import Asset, Equipment, EquipmentFamily, Event
+from asset_tracker.models.asset_tracker import Asset, Equipment, EquipmentFamily, Event, Status
 
-_ = (Asset, Equipment, EquipmentFamily, Event)
+_ = (Asset, Equipment, EquipmentFamily, Event, Status)
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup

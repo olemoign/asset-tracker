@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from traceback import format_exc
 
 from dateutil.relativedelta import relativedelta
@@ -10,7 +10,8 @@ from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event
+from asset_tracker.constants import WARRANTY_DURATION_YEARS
+from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, Status
 
 
 DEFAULT_BRANDING = 'parsys_cloud'
@@ -71,34 +72,51 @@ class AssetsEndPoint(object):
                 return asset
 
     def get_base_form_data(self):
+        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        statuses = self.request.db_session.query(Status).all()
+
         if self.request.user['is_admin'] or not self.asset:
             tenants = self.request.user['tenants']
         else:
             tenants = [tenant for tenant in self.request.user['tenants']
                        if (tenant['id'], 'assets-create') in self.request.effective_principals or
                        tenant['id'] == self.asset.tenant_id]
-        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
-        return {'equipments_families': equipments_families, 'status': Event.status_labels, 'tenants': tenants}
 
-    def read_form(self):
+        return {'equipments_families': equipments_families, 'statuses': statuses, 'tenants': tenants}
+
+    def read_form(self, update):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         form['equipment-family'] = form['equipment-family'] or []
         form['equipment-serial_number'] = form['equipment-serial_number'] or []
 
-        if not form['asset_id'] or not form['tenant_id'] or not form['status']:
+        if not form['asset_id'] or not form['tenant_id'] or (not update and not form['event']):
             raise FormException(_('Missing mandatory data.'), form)
 
-        today = datetime.utcnow().date()
-
-        form_last_calibration = get_date(form['last_calibration'])
-        if form_last_calibration and form_last_calibration > today:
-            raise FormException(_('Invalid last calibration date.'), form)
-
-        form_activation = get_date(form['activation'])
-        if form_activation and form_activation > today:
-            raise FormException(_('Invalid activation date.'), form)
-
         return form
+
+    def validate_form(self):
+        # TODO
+        pass
+
+    def add_equipments(self, form_asset, asset):
+        for index, value in enumerate(form_asset['equipment-family']):
+            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
+            asset.equipments.append(equipment)
+            self.request.db_session.add(equipment)
+
+    def add_event(self, form_asset, asset):
+        if form_asset['event_date']:
+            event_date = get_date(form_asset['event_date'])
+        else:
+            event_date = datetime.utcnow().replace(microsecond=0)
+
+        status = self.request.db_session.query(Status).filter_by(status_id=form_asset['event']).first()
+
+        # noinspection PyArgumentList
+        event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
+                      status=status)
+        asset.history.append(event)
+        self.request.db_session.add(event)
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -109,12 +127,14 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def create_post(self):
         try:
-            form_asset = self.read_form()
+            form_asset = self.read_form(update=False)
         except FormException as error:
             return dict(error=error.msg, asset=error.form, **self.get_base_form_data())
 
-        if not self.request.user['is_admin'] and \
-                (form_asset['tenant_id'], 'assets-create') not in self.request.effective_principals:
+        tenants_ids = [tenant['id'] for tenant in self.request.user['tenants']]
+        admin_create_right = self.request.user['is_admin'] and form_asset['tenant_id'] in tenants_ids
+        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
+        if not admin_create_right and not user_create_right:
             return dict(error=_('Invalid tenant.'), asset=form_asset, **self.get_base_form_data())
 
         # noinspection PyArgumentList
@@ -124,54 +144,30 @@ class AssetsEndPoint(object):
                       notes=form_asset['notes'])
         self.request.db_session.add(asset)
 
-        for index, value in enumerate(form_asset['equipment-family']):
-            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
-            asset.equipments.append(equipment)
-            self.request.db_session.add(equipment)
+        self.add_equipments(form_asset, asset)
 
-        form_last_calibration = get_date(form_asset['last_calibration'])
-        if form_last_calibration:
-            last_calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
-                                     creator_alias=self.request.user['alias'], status='calibration')
-            asset.history.append(last_calibration)
-            self.request.db_session.add(last_calibration)
+        self.add_event(form_asset, asset)
 
-        form_activation = get_date(form_asset['activation'])
-        if form_activation:
-            # Small trick to make sure that the activation is always stored AFTER the calibration.
-            form_activation = form_activation + timedelta(hours=23, minutes=59)
-            activation = Event(date=form_activation, creator_id=self.request.user['id'],
-                               creator_alias=self.request.user['alias'], status='service')
-            asset.history.append(activation)
-            self.request.db_session.add(activation)
+        self.request.db_session.flush()
 
-        form_next_calibration = get_date(form_asset['next_calibration'])
-        if form_next_calibration:
-            asset.next_calibration = form_next_calibration
-
-        elif form_last_calibration:
-            asset.next_calibration = form_last_calibration + relativedelta(years=3)
-
-        elif form_asset['status'] == 'service':
-            asset.next_calibration = datetime.utcnow().date() + relativedelta(years=3)
-
-        elif form_activation:
-            asset.next_calibration = form_activation + relativedelta(years=3)
-
-        event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
-                      creator_alias=self.request.user['alias'], status=form_asset['status'])
-        asset.history.append(event)
-        self.request.db_session.add(event)
-
-        return HTTPFound(location=self.request.route_path('assets-list'))
+        return HTTPFound(location=self.request.route_path('assets-update', asset_id=asset.id))
 
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        last_calibration = self.asset.history.filter_by(status='calibration').order_by(Event.date.desc()).first()
-        self.asset.last_calibration = last_calibration.date.date() if last_calibration else None
-        activation = self.asset.history.filter_by(status='service').order_by(Event.date).first()
+        production = self.asset.history.join(Status).filter(Status.status_id == 'manufactured') \
+            .order_by(Event.date).first()
+        self.asset.production = production.date.date() if production else None
+
+        activation = self.asset.history.join(Status).filter(Status.status_id == 'service').order_by(Event.date).first()
         self.asset.activation = activation.date.date() if activation else None
+
+        calibration_last = self.asset.history.join(Status).filter(Status.status_id == 'calibration') \
+            .order_by(Event.date.desc()).first()
+        self.asset.calibration_last = calibration_last.date.date() if calibration_last else None
+
+        if self.asset.activation:
+            self.asset.warranty_end = self.asset.activation + relativedelta(years=WARRANTY_DURATION_YEARS)
 
         return dict(update=True, asset=self.asset, **self.get_base_form_data())
 
@@ -179,14 +175,15 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def update_post(self):
         try:
-            form_asset = self.read_form()
+            form_asset = self.read_form(update=True)
         except FormException as error:
             error.form.update({'id': self.asset.id, 'history': self.asset.history})
             return dict(error=error.msg, update=True, asset=error.form, **self.get_base_form_data())
 
-        manager_has_right = form_asset['tenant_id'] == self.asset.tenant_id or \
-            (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
-        if not self.request.user['is_admin'] and not manager_has_right:
+        asset_tenant_did_not_change = form_asset['tenant_id'] == self.asset.tenant_id
+        admin_update_right = self.request.user['is_admin'] and form_asset['tenant_id'] in self.request.user['tenants']
+        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
+        if not asset_tenant_did_not_change and not admin_update_right and not user_create_right:
             form_asset.update({'id': self.asset.id, 'history': self.asset.history})
             return dict(error=_('Invalid tenant.'), update=True, asset=form_asset, **self.get_base_form_data())
 
@@ -199,52 +196,13 @@ class AssetsEndPoint(object):
         self.asset.software_version = form_asset['software_version']
         self.asset.notes = form_asset['notes']
 
-        form_next_calibration = get_date(form_asset['next_calibration'])
-        if form_next_calibration:
-            self.asset.next_calibration = form_next_calibration
-
         self.asset.equipments.delete()
-        for index, value in enumerate(form_asset['equipment-family']):
-            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
-            self.asset.equipments.append(equipment)
-            self.request.db_session.add(equipment)
+        self.add_equipments(form_asset, self.asset)
 
-        last_status = self.asset.history.order_by(Event.date.desc()).first().status
-        if form_asset['status'] != last_status:
-            event = Event(date=datetime.utcnow(), creator_id=self.request.user['id'],
-                          creator_alias=self.request.user['alias'], status=form_asset['status'])
-            self.asset.history.append(event)
-            self.request.db_session.add(event)
+        if form_asset['event']:
+            self.add_event(form_asset, self.asset)
 
-            if form_asset['status'] == 'calibration':
-                self.asset.next_calibration = datetime.utcnow().date() + relativedelta(years=3)
-
-        form_activation = get_date(form_asset['activation'])
-        if form_activation:
-            activations = self.asset.history.filter_by(status='service').all()
-            activations = [activation.date.date() for activation in activations]
-
-            if form_activation not in activations:
-                activation = Event(date=form_activation, creator_id=self.request.user['id'],
-                                   creator_alias=self.request.user['alias'], status='service')
-                self.asset.history.append(activation)
-                self.request.db_session.add(activation)
-
-        form_last_calibration = get_date(form_asset['last_calibration'])
-        if form_last_calibration:
-            calibrations = self.asset.history.filter_by(status='calibration').all()
-            calibrations = [calibration.date.date() for calibration in calibrations]
-
-            if form_last_calibration not in calibrations:
-                calibration = Event(date=form_last_calibration, creator_id=self.request.user['id'],
-                                    creator_alias=self.request.user['alias'], status='calibration')
-                self.asset.history.append(calibration)
-                self.request.db_session.add(calibration)
-
-                if form_last_calibration > self.asset.next_calibration - relativedelta(years=3):
-                    self.asset.next_calibration = form_last_calibration + relativedelta(years=3)
-
-        return HTTPFound(location=self.request.route_path('assets-list'))
+        return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')

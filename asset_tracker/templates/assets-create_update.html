@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import input %}
+{% from 'macros.html' import input, text %}
 
 {% if update %}
     {% set title = gettext('Asset') + ' ' + asset.asset_id %}
@@ -41,30 +41,50 @@
                         {{ input(asset, gettext('Customer name'), 'customer_name') }}
                         {{ input(asset, gettext('Site'), 'site') }}
                         {{ input(asset, gettext('Current location'), 'current_location') }}
+                        {{ input(asset, gettext('Software version'), 'software_version') }}
                     </div>
+
+                    {% if update %}
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>{{ gettext('Status') }}</label>
+                                <p>{{ gettext(asset.status.label) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        {{ text(asset, gettext('Production'), 'production') }}
+                        {{ text(asset, gettext('Activation'), 'activation') }}
+                        {{ text(asset, gettext('Last calibration'), 'calibration_last') }}
+                        {{ text(asset, gettext('Next calibration'), 'calibration_next') }}
+                        {{ text(asset, gettext('Warranty end'), 'warranty_end') }}
+                    </div>
+                    {% endif %}
 
                     <hr>
 
                     <div class="row">
                         <div class="col-sm-6 form-group">
-                            <label for="status">{{ gettext('Status') }} *</label>
-                            <select class="form-control" id="status" name="status">
-                                {% for key, value in status.items() %}
-                                <option value="{{ key }}"{% if asset and asset.status == key %} selected{% endif %}>{{ gettext(value) }}</option>
+                            <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
+                            <select class="form-control" id="event" name="event">
+                                {% if update %}<option></option>{% endif %}
+                                {% for status in statuses %}
+                                <option value="{{ status.status_id }}">{{ status.label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(asset, gettext('Asset activation'), 'activation', 'date') }}
-                        {{ input(asset, gettext('Last calibration'), 'last_calibration', 'date') }}
-                        {{ input(asset, gettext('Next calibration'), 'next_calibration', 'date') }}
-                        {{ input(asset, gettext('Software version'), 'software_version') }}
+                        {{ input(asset, gettext('Date'), 'event_date', 'date') }}
                     </div>
 
                     <hr>
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:;" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
+                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
                         </div>
                         {% for equipment in (asset or {}).equipments %}
                         <div class="col-sm-4 equipment__block">
@@ -121,9 +141,10 @@
                         {% if update %}
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
+                            <!-- TODO -->
                             {% for event in asset.history|sort(attribute='date') %}
                             <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=status[event.status], date=event.date.date()) }}.</p>
+                                    status=gettext(event.status.label), date=event.date.date()) }}.</p>
                             {% endfor %}
                         </div>
                         {% endif %}

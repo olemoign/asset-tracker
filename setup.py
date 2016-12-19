@@ -20,6 +20,7 @@ requires = [
     'pyramid_redis_sessions',
     'pyramid_tm',
     'python-dateutil',
+    'setuptools',
     'sqlalchemy',
     'transaction',
     'waitress',

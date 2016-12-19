@@ -1,14 +1,15 @@
-from collections import OrderedDict
 from operator import attrgetter
-from pyramid.i18n import TranslationString as _
 
-from parsys_utilities.model import CreationDateTimeMixin, Date, DateTime, Enum, hybrid_property, Integer, Field, \
-    ForeignKey, Model, relationship, select, String
+from dateutil.relativedelta import relativedelta
+from parsys_utilities.model import and_, CreationDateTimeMixin, DateTime, Field, ForeignKey, hybrid_property, \
+    Integer, join, Model, relationship, select, String
+
+from asset_tracker.constants import CALIBRATION_FREQUENCY_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
-    tenant_id = Field(String)
-    asset_id = Field(String)
+    tenant_id = Field(String, nullable=False)
+    asset_id = Field(String, nullable=False)
 
     customer_id = Field(String)
     customer_name = Field(String)
@@ -21,22 +22,34 @@ class Asset(Model, CreationDateTimeMixin):
     history = relationship('Event', lazy='dynamic')
     equipments = relationship('Equipment', lazy='dynamic')
 
-    next_calibration = Field(Date)
-
     @hybrid_property
     def status(self):
         if self.history:
-            return sorted(self.history, key=attrgetter('date'), reverse=True)[0].status
-        else:
-            return None
+            return sorted(self.history, key=attrgetter('date', 'created_at'), reverse=True)[0].status
 
+    # noinspection PyMethodParameters
     @status.expression
     def status(cls):
-        return select([Event.status]).where(Event.asset_id == cls.id).order_by(Event.date.desc()).limit(1)
+        return select([Status]).select_from(join(Event, Status)).where(Event.asset_id == cls.id) \
+            .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)
 
+    @hybrid_property
+    def calibration_next(self):
+        if self.history:
+            calibration_last = self.history.join(Status).filter(Status.status_id == 'calibration') \
+                .order_by(Event.date.desc()).first()
+            if calibration_last:
+                return calibration_last.date.date() + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
 
-class EquipmentFamily(Model):
-    model = Field(String)
+    # noinspection PyMethodParameters
+    @calibration_next.expression
+    def calibration_next(cls):
+        # TODO: this returns the last calibration, which works as this function is used for ordering and
+        # currently the delta between next and last calibration is the same for all assets.
+        # This will need work if the delta is no longer the same for all.
+        return select([Event.date]).select_from(join(Event, Status)). \
+            where(and_(Event.asset_id == cls.id, Status.status_id == 'calibration')) \
+            .order_by(Event.date.desc()).limit(1)
 
 
 class Equipment(Model):
@@ -48,7 +61,12 @@ class Equipment(Model):
     serial_number = Field(String)
 
 
-class Event(Model):
+class EquipmentFamily(Model):
+    family_id = Field(String)
+    model = Field(String)
+
+
+class Event(Model, CreationDateTimeMixin):
     asset_id = Field(Integer, ForeignKey('asset.id'))
 
     date = Field(DateTime)
@@ -56,12 +74,11 @@ class Event(Model):
     creator_id = Field(String)
     creator_alias = Field(String)
 
-    status = Field(Enum('service', 'repair', 'calibration', 'transit_parsys', 'transit_customer', name='status'))
+    status_id = Field(Integer, ForeignKey('status.id'))
+    status = relationship('Status', foreign_keys=status_id)
 
-    status_labels = OrderedDict([
-        ('service', _('In service')),
-        ('repair', _('In repair')),
-        ('calibration', _('In calibration')),
-        ('transit_parsys', _('In transit to Parsys')),
-        ('transit_customer', _('In transit to customer')),
-    ])
+
+class Status(Model):
+    status_id = Field(String)
+    position = Field(String)
+    label = Field(String)

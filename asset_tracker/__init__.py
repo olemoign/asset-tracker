@@ -1,9 +1,7 @@
 import logging
-import pkg_resources
 from functools import partial
-from json import loads
 
-import transaction
+import pkg_resources
 from parsys_utilities.authorization import add_security_headers as basic_security_headers, get_user, \
     get_effective_principals, get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.celery_app import app as celery_app
@@ -15,7 +13,7 @@ from pyramid.events import NewResponse, subscriber
 from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
-from asset_tracker.models import EquipmentFamily, get_engine, get_session_factory, get_tm_session
+from asset_tracker.configuration import update_configuration
 
 
 @subscriber(NewResponse)
@@ -38,25 +36,6 @@ def add_security_headers(event):
         basic_security_headers(event)
 
 
-def update_equipments_families(settings):
-    with transaction.manager:
-        engine = get_engine(settings)
-        db_session_factory = get_session_factory(engine)
-        db_session = get_tm_session(db_session_factory, transaction.manager)
-
-        existing_families = db_session.query(EquipmentFamily).all()
-
-        families_list = pkg_resources.resource_string(__name__, 'equipments_families.json').decode('utf-8')
-        families_list = loads(families_list)
-
-        for family in families_list:
-            family_persisted = next((x for x in existing_families if x.id == int(family['id'])), None)
-            if not family_persisted:
-                family_persisted = EquipmentFamily(id=family['id'])
-                db_session.add(family_persisted)
-            family_persisted.model = family['model']
-
-
 # noinspection PyUnusedLocal
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application."""
@@ -66,7 +45,7 @@ def main(global_config, **settings):
     assert settings.get('asset_tracker.sessions_broker_url')
     assert settings.get('sqlalchemy.url')
 
-    update_equipments_families(settings)
+    update_configuration(settings)
 
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.set_default_csrf_options(require_csrf=True)

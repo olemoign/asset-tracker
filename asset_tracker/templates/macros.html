@@ -8,3 +8,12 @@
         </div>
     </div>
 {%- endmacro %}
+
+{% macro text(object, label, field) -%}
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label>{{ label }}</label>
+            <p>{{ object[field] or '&nbsp;'|safe }}</p>
+        </div>
+    </div>
+{%- endmacro %}

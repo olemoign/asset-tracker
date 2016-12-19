@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-10-16 14:30+0200\n"
+"POT-Creation-Date: 2016-12-19 14:45+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,9 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: templates/assets-create_update.html:125
+#: templates/assets-create_update.html:146
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
+msgstr ""
+
+#: templates/assets-create_update.html:61
+msgid "Activation"
+msgstr ""
+
+#: templates/assets-create_update.html:72
+msgid "Add Event"
 msgstr ""
 
 #: templates/errors/500.html:9
@@ -35,28 +43,24 @@ msgstr ""
 msgid "Asset ID"
 msgstr ""
 
-#: templates/assets-create_update.html:57
-msgid "Asset activation"
-msgstr ""
-
 #: templates/assets-list.html:3 templates/assets-list.html:12
 #: templates/menu.html:18
 msgid "Assets"
 msgstr ""
 
-#: equipments_families.json:4
-msgid "Biosys - Parsys (in kit)"
+#: configuration.json:5
+msgid "Biosys - Parsys"
 msgstr ""
 
-#: equipments_families.json:32
+#: configuration.json:33
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:133
+#: templates/assets-create_update.html:154
 msgid "Cancel"
 msgstr ""
 
-#: equipments_families.json:24
+#: configuration.json:25
 msgid "Cardialys - Parsys"
 msgstr ""
 
@@ -80,7 +84,15 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:67
+#: templates/assets-create_update.html:80
+msgid "Date"
+msgstr ""
+
+#: configuration.json:49
+msgid "Dermatoscope - Firefly DE300A"
+msgstr ""
+
+#: templates/assets-create_update.html:87
 msgid "Equipments"
 msgstr ""
 
@@ -88,11 +100,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: equipments_families.json:20
+#: configuration.json:21
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:123
+#: templates/assets-create_update.html:143
 msgid "History"
 msgstr ""
 
@@ -100,35 +112,39 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: models/asset_tracker.py:64
+#: configuration.json:96
 msgid "In calibration"
 msgstr ""
 
-#: models/asset_tracker.py:63
+#: configuration.json:101
 msgid "In repair"
 msgstr ""
 
-#: models/asset_tracker.py:62
+#: configuration.json:86
 msgid "In service"
 msgstr ""
 
-#: models/asset_tracker.py:65
+#: configuration.json:66
+msgid "In stock - Parsys"
+msgstr ""
+
+#: configuration.json:76
+msgid "In stock - distributor"
+msgstr ""
+
+#: configuration.json:91
 msgid "In transit to Parsys"
 msgstr ""
 
-#: models/asset_tracker.py:66
+#: configuration.json:81
 msgid "In transit to customer"
 msgstr ""
 
-#: views.py:95
-msgid "Invalid activation date."
+#: configuration.json:71
+msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:91
-msgid "Invalid last calibration date."
-msgstr ""
-
-#: views.py:114 views.py:187
+#: views.py:134 views.py:184
 msgid "Invalid tenant."
 msgstr ""
 
@@ -136,7 +152,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:58
+#: templates/assets-create_update.html:62
 msgid "Last calibration"
 msgstr ""
 
@@ -144,7 +160,11 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views.py:85
+#: configuration.json:61
+msgid "Manufactured"
+msgstr ""
+
+#: views.py:89
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -152,7 +172,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:59 templates/assets-list.html:25
+#: templates/assets-create_update.html:63 templates/assets-list.html:24
 msgid "Next calibration"
 msgstr ""
 
@@ -160,12 +180,24 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:116
+#: templates/assets-create_update.html:136
 msgid "Notes"
+msgstr ""
+
+#: configuration.json:45
+msgid "Otoscope - Firefly DE500A"
 msgstr ""
 
 #: templates/errors/404.html:5
 msgid "Page Not Found"
+msgstr ""
+
+#: configuration.json:56
+msgid "Pre-production"
+msgstr ""
+
+#: templates/assets-create_update.html:60
+msgid "Production"
 msgstr ""
 
 #: templates/menu.html:24
@@ -176,7 +208,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: templates/assets-create_update.html:60
+#: templates/assets-create_update.html:44
 msgid "Software version"
 msgstr ""
 
@@ -184,27 +216,35 @@ msgstr ""
 msgid "Sorry, but the page you were trying to view does not exist."
 msgstr ""
 
-#: templates/assets-create_update.html:50 templates/assets-list.html:24
+#: configuration.json:41
+msgid "Spirometer - Spiromir MiniSpir Light"
+msgstr ""
+
+#: templates/assets-create_update.html:53 templates/assets-list.html:25
 msgid "Status"
 msgstr ""
 
-#: equipments_families.json:12
-msgid "Stethoscope - PCP-USB"
+#: configuration.json:13
+msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:134
+#: templates/assets-create_update.html:155
 msgid "Submit"
 msgstr ""
 
-#: equipments_families.json:8
-msgid "Telecardia - Parsys (in kit)"
+#: configuration.json:9
+msgid "Telecardia - Parsys"
+msgstr ""
+
+#: configuration.json:37
+msgid "Telecardia charging base - Parsys"
 msgstr ""
 
 #: templates/assets-create_update.html:34
 msgid "Tenant"
 msgstr ""
 
-#: equipments_families.json:16
+#: configuration.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
@@ -212,8 +252,12 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: equipments_families.json:28
+#: configuration.json:29
 msgid "Ultrasound - Interson abdominal 99-5929"
+msgstr ""
+
+#: templates/assets-create_update.html:64
+msgid "Warranty end"
 msgstr ""
 
 #: templates/errors/403.html:9
