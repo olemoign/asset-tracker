@@ -21,7 +21,7 @@ msgstr ""
 #: templates/assets-create_update.html:146
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
-msgstr "%(creator)s a modifié le statut en <b>%(status)s</b> le %(date)s"
+msgstr "%(creator)s a défini le statut <b>%(status)s</b> le %(date)s"
 
 #: templates/assets-create_update.html:61
 msgid "Activation"
@@ -94,7 +94,7 @@ msgstr "Dermatoscope - Firefly DE300A"
 
 #: templates/assets-create_update.html:87
 msgid "Equipments"
-msgstr "Equipements"
+msgstr "Équipements"
 
 #: templates/errors/403.html:3 templates/errors/500.html:3
 msgid "Error"
@@ -114,11 +114,11 @@ msgstr "Accueil"
 
 #: configuration.json:96
 msgid "In calibration"
-msgstr "Calibration"
+msgstr "En calibration"
 
 #: configuration.json:101
 msgid "In repair"
-msgstr "Réparation"
+msgstr "En réparation"
 
 #: configuration.json:86
 msgid "In service"
@@ -134,15 +134,15 @@ msgstr "En stock - distributeur"
 
 #: configuration.json:91
 msgid "In transit to Parsys"
-msgstr "Transit vers Parsys"
+msgstr "En transit vers Parsys"
 
 #: configuration.json:81
 msgid "In transit to customer"
-msgstr "Transit vers le client"
+msgstr "En transit vers le client"
 
 #: configuration.json:71
 msgid "In transit to distributor"
-msgstr "Transit vers le distributeur"
+msgstr "En transit vers le distributeur"
 
 #: views.py:134 views.py:184
 msgid "Invalid tenant."

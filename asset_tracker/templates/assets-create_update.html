@@ -73,7 +73,7 @@
                             <select class="form-control" id="event" name="event">
                                 {% if update %}<option></option>{% endif %}
                                 {% for status in statuses %}
-                                <option value="{{ status.status_id }}">{{ status.label }}</option>
+                                <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
                                 {% endfor %}
                             </select>
                         </div>
