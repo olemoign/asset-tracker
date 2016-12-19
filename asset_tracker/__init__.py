@@ -1,7 +1,7 @@
 import logging
-import pkg_resources
 from functools import partial
 
+import pkg_resources
 from parsys_utilities.authorization import add_security_headers as basic_security_headers, get_user, \
     get_effective_principals, get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.celery_app import app as celery_app

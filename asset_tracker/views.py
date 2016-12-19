@@ -1,7 +1,7 @@
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from traceback import format_exc
 
+from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import rights_without_tenants
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
