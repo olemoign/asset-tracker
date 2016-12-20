@@ -73,6 +73,8 @@ class AssetsEndPoint(object):
 
     def get_base_form_data(self):
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        for family in equipments_families:
+            family.model_translated = self.request.localizer.translate(family.model)
         statuses = self.request.db_session.query(EventStatus).all()
 
         if self.request.user['is_admin'] or not self.asset:
