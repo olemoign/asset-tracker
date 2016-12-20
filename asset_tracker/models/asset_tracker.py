@@ -63,8 +63,8 @@ class Equipment(Model):
 
 
 class EquipmentFamily(Model):
-    family_id = Field(String)
-    model = Field(String)
+    family_id = Field(String, nullable=False)
+    model = Field(String, nullable=False)
 
 
 class Event(Model, CreationDateTimeMixin):
@@ -72,14 +72,14 @@ class Event(Model, CreationDateTimeMixin):
 
     date = Field(DateTime)
 
-    creator_id = Field(String)
-    creator_alias = Field(String)
+    creator_id = Field(String, nullable=False)
+    creator_alias = Field(String, nullable=False)
 
     status_id = Field(Integer, ForeignKey('event_status.id'))
     status = relationship('EventStatus', foreign_keys=status_id)
 
 
 class EventStatus(Model):
-    status_id = Field(String)
-    position = Field(Integer)
-    label = Field(String)
+    status_id = Field(String, nullable=False)
+    position = Field(Integer, nullable=False)
+    label = Field(String, nullable=False)
