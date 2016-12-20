@@ -38,10 +38,7 @@ def get_date(value):
 
 
 class FormException(Exception):
-    def __init__(self, msg, form):
-        self.msg = msg
-        self.form = form
-        super().__init__()
+    pass
 
 
 class AssetsEndPoint(object):
@@ -71,28 +68,35 @@ class AssetsEndPoint(object):
             else:
                 return asset
 
+    def get_create_update_tenants(self):
+        if self.request.user['is_admin']:
+            return self.request.user['tenants']
+
+        else:
+            user_rights = self.request.effective_principals
+            user_tenants = self.request.user['tenants']
+            tenants_ids = {tenant['id'] for tenant in user_tenants
+                           if (tenant['id'], 'assets-create') in user_rights or
+                           (self.asset and self.asset.tenant_id == tenant['id'])}
+
+            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
+
     def get_base_form_data(self):
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
         statuses = self.request.db_session.query(EventStatus).all()
-
-        if self.request.user['is_admin'] or not self.asset:
-            tenants = self.request.user['tenants']
-        else:
-            tenants = [tenant for tenant in self.request.user['tenants']
-                       if (tenant['id'], 'assets-create') in self.request.effective_principals or
-                       tenant['id'] == self.asset.tenant_id]
+        tenants = self.get_create_update_tenants()
 
         return {'equipments_families': equipments_families, 'statuses': statuses, 'tenants': tenants}
 
-    def read_form(self, update):
+    def read_form(self):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         form['equipment-family'] = form['equipment-family'] or []
         form['equipment-serial_number'] = form['equipment-serial_number'] or []
 
-        if not form['asset_id'] or not form['tenant_id'] or (not update and not form['event']):
-            raise FormException(_('Missing mandatory data.'), form)
+        if not form['asset_id'] or not form['tenant_id'] or (not self.asset and not form['event']):
+            raise FormException(_('Missing mandatory data.'))
 
         return form
 
@@ -129,15 +133,9 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def create_post(self):
         try:
-            form_asset = self.read_form(update=False)
+            form_asset = self.read_form()
         except FormException as error:
-            return dict(error=error.msg, asset=error.form, **self.get_base_form_data())
-
-        tenants_ids = [tenant['id'] for tenant in self.request.user['tenants']]
-        admin_create_right = self.request.user['is_admin'] and form_asset['tenant_id'] in tenants_ids
-        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
-        if not admin_create_right and not user_create_right:
-            return dict(error=_('Invalid tenant.'), asset=form_asset, **self.get_base_form_data())
+            return dict(error=str(error), **self.get_base_form_data())
 
         # noinspection PyArgumentList
         asset = Asset(asset_id=form_asset['asset_id'], tenant_id=form_asset['tenant_id'], site=form_asset['site'],
@@ -178,17 +176,9 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def update_post(self):
         try:
-            form_asset = self.read_form(update=True)
+            form_asset = self.read_form()
         except FormException as error:
-            error.form.update({'id': self.asset.id, 'history': self.asset.history})
-            return dict(error=error.msg, update=True, asset=error.form, **self.get_base_form_data())
-
-        asset_tenant_did_not_change = form_asset['tenant_id'] == self.asset.tenant_id
-        admin_update_right = self.request.user['is_admin'] and form_asset['tenant_id'] in self.request.user['tenants']
-        user_create_right = (form_asset['tenant_id'], 'assets-create') in self.request.effective_principals
-        if not asset_tenant_did_not_change and not admin_update_right and not user_create_right:
-            form_asset.update({'id': self.asset.id, 'history': self.asset.history})
-            return dict(error=_('Invalid tenant.'), update=True, asset=form_asset, **self.get_base_form_data())
+            return dict(update=True, error=str(error), asset=self.asset, **self.get_base_form_data())
 
         self.asset.asset_id = form_asset['asset_id']
         self.asset.tenant_id = form_asset['tenant_id']
