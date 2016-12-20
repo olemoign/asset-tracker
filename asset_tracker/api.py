@@ -59,7 +59,10 @@ class Assets(object):
                     (asset.tenant_id, 'assets-read') in self.request.effective_principals:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
 
-            calibration_next = format_date(asset.calibration_next, self.request.locale_name) or ''
+            # Set empty calibration_next so that we don't have 'None' in dataTables.
+            calibration_next = ''
+            if asset.calibration_next:
+                calibration_next = format_date(asset.calibration_next, self.request.locale_name)
 
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
