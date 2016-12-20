@@ -72,7 +72,7 @@
                             <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
                             <select class="form-control" id="event" name="event">
                                 {% if update %}<option></option>{% endif %}
-                                {% for status in statuses %}
+                                {% for status in statuses|sort(attribute='position') %}
                                 <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
                                 {% endfor %}
                             </select>

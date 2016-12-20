@@ -80,5 +80,5 @@ class Event(Model, CreationDateTimeMixin):
 
 class EventStatus(Model):
     status_id = Field(String)
-    position = Field(String)
+    position = Field(Integer)
     label = Field(String)

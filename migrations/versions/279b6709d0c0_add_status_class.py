@@ -20,7 +20,7 @@ def upgrade():
     op.create_table('event_status',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('status_id', sa.Unicode(), nullable=True),
-                    sa.Column('position', sa.Unicode(), nullable=True),
+                    sa.Column('position', sa.Integer(), nullable=True),
                     sa.Column('label', sa.Unicode(), nullable=True),
                     sa.PrimaryKeyConstraint('id', name=op.f('pk_status'))
                     )

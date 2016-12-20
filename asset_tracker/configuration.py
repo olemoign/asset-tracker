@@ -53,7 +53,7 @@ def update_statuses(db_session, configuration):
             db_session.add(db_status)
             logger.info('Adding status {}.'.format(config_status['label']))
 
-        db_status.position = config_status['position']
+        db_status.position = int(config_status['position'])
         db_status.label = config_status['label']
 
     # Remove existing status if it was removed from the config and no equipment ever had this status.
