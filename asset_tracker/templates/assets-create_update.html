@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import input, text %}
+{% from 'macros.html' import date, input with context %}
 
 {% if update %}
     {% set title = gettext('Asset') + ' ' + asset.asset_id %}
@@ -28,8 +28,8 @@
                 <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(asset, gettext('Asset ID'), 'asset_id', required=True) }}
-                        {{ input(asset, gettext('Customer ID (Subscription ID)'), 'customer_id') }}
+                        {{ input(gettext('Asset ID'), 'asset_id', required=True) }}
+                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
@@ -38,10 +38,10 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(asset, gettext('Customer name'), 'customer_name') }}
-                        {{ input(asset, gettext('Site'), 'site') }}
-                        {{ input(asset, gettext('Current location'), 'current_location') }}
-                        {{ input(asset, gettext('Software version'), 'software_version') }}
+                        {{ input(gettext('Customer name'), 'customer_name') }}
+                        {{ input(gettext('Site'), 'site') }}
+                        {{ input(gettext('Current location'), 'current_location') }}
+                        {{ input(gettext('Software version'), 'software_version') }}
                     </div>
 
                     {% if update %}
@@ -57,11 +57,11 @@
                     </div>
 
                     <div class="row">
-                        {{ text(asset, gettext('Production'), 'production') }}
-                        {{ text(asset, gettext('Activation'), 'activation') }}
-                        {{ text(asset, gettext('Last calibration'), 'calibration_last') }}
-                        {{ text(asset, gettext('Next calibration'), 'calibration_next') }}
-                        {{ text(asset, gettext('Warranty end'), 'warranty_end') }}
+                        {{ date(gettext('Production'), 'production') }}
+                        {{ date(gettext('Activation'), 'activation') }}
+                        {{ date(gettext('Last calibration'), 'calibration_last') }}
+                        {{ date(gettext('Next calibration'), 'calibration_next') }}
+                        {{ date(gettext('Warranty end'), 'warranty_end') }}
                     </div>
                     {% endif %}
 
@@ -77,7 +77,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(asset, gettext('Date'), 'event_date', 'date') }}
+                        {{ input(gettext('Date'), 'event_date', 'date') }}
                     </div>
 
                     <hr>
@@ -144,7 +144,7 @@
                             <!-- TODO -->
                             {% for event in asset.history|sort(attribute='date') %}
                             <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=gettext(event.status.label), date=event.date.date()) }}.</p>
+                                    status=gettext(event.status.label), date=event.date|format_date(locale)) }}.</p>
                             {% endfor %}
                         </div>
                         {% endif %}

@@ -1,19 +1,19 @@
-{% macro input(object, label, field, type='text', required=False) -%}
-    <div class="col-sm-6">
+{% macro date(label, field) -%}
+    <div class="col-sm-4">
         <div class="form-group">
-            <label for="{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
-            <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
-                   {% if object and object[field] %} value="{{ object[field] }}"{% endif %}
-                   {% if required %} required{% endif %}>
+            <label>{{ label }}</label>
+            <p>{% if asset[field] %}{{ asset[field]|format_date(locale) }}{% else %}&nbsp;{% endif %}</p>
         </div>
     </div>
 {%- endmacro %}
 
-{% macro text(object, label, field) -%}
-    <div class="col-sm-4">
+{% macro input(label, field, type='text', required=False) -%}
+    <div class="col-sm-6">
         <div class="form-group">
-            <label>{{ label }}</label>
-            <p>{{ object[field] or '&nbsp;'|safe }}</p>
+            <label for="{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
+            <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
+                   {% if asset and asset[field] %} value="{{ asset[field] }}"{% endif %}
+                   {% if required %} required{% endif %}>
         </div>
     </div>
 {%- endmacro %}

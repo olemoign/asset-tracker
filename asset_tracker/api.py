@@ -1,5 +1,6 @@
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
+from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import Allow
@@ -58,10 +59,12 @@ class Assets(object):
                     (asset.tenant_id, 'assets-read') in self.request.effective_principals:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
 
+            calibration_next = format_date(asset.calibration_next, self.request.locale_name) or ''
+
             asset_output = {
                 'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
-                'status': self.request.localizer.translate(asset.status.label),
-                'calibration_next': str(asset.calibration_next or ''), 'links': [{'rel': 'self', 'href': link}]
+                'status': self.request.localizer.translate(asset.status.label), 'calibration_next': calibration_next,
+                'links': [{'rel': 'self', 'href': link}]
             }
 
             assets.append(asset_output)
