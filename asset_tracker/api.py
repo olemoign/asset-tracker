@@ -41,14 +41,11 @@ class Assets(object):
                              'full_text_search': full_text_search}
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
                                        models.Asset.current_location]
-        # noinspection PyUnresolvedReferences
-        specific_sort_attributes = {'status': models.Asset.status}
 
         try:
             # noinspection PyTypeChecker
             output = sql_search(self.request.db_session, models.Asset, full_text_search_attributes,
-                                tenanting=self.apply_tenanting_filter,
-                                specific_sort_attributes=specific_sort_attributes, search_parameters=search_parameters)
+                                tenanting=self.apply_tenanting_filter, search_parameters=search_parameters)
         except KeyError:
             return HTTPBadRequest()
 
