@@ -86,19 +86,20 @@
                         <div class="col-sm-12">
                             <label>{{ gettext('Equipments') }}</label> <a href="javascript:" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
                         </div>
-                        {% for equipment in (asset or {}).equipments %}
+                        {% for equipment in (asset or {}).equipments|sort(attribute='family.model_translated') %}
                         <div class="col-sm-4 equipment__block">
                             <div class="well well-sm">
                                 <div class="form-group">
                                     <select class="form-control" name="equipment-family">
                                         <option></option>
                                         {% for family in equipments_families|sort(attribute='model_translated') %}
-                                        <option value="{{ family.id }}"{% if equipment.family_id == family.id %} selected{% endif %}>{{ family.model_translated }}</option>
+                                        <option value="{{ family.family_id }}"{% if equipment.family_id == family.id %} selected{% endif %}>{{ family.model_translated }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N" value="{{ equipment.serial_number }}">
+                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N"
+                                            {% if equipment.serial_number %} value="{{ equipment.serial_number }}"{% endif %}>
                                     <span class="input-group-btn equipment__remove">
                                         <button class="btn btn-default" type="button">
                                             <span class="glyphicon glyphicon-remove"></span>
@@ -114,7 +115,7 @@
                                     <select class="form-control" name="equipment-family">
                                         <option></option>
                                         {% for family in equipments_families|sort(attribute='model_translated') %}
-                                        <option value="{{ family.id }}">{{ family.model_translated }}</option>
+                                        <option value="{{ family.family_id }}">{{ family.model_translated }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

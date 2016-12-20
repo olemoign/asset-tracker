@@ -83,6 +83,7 @@ class AssetsEndPoint(object):
 
     def get_base_form_data(self):
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        # Translate family models so that they can be sorted translated on the page.
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
         statuses = self.request.db_session.query(EventStatus).all()
@@ -92,8 +93,12 @@ class AssetsEndPoint(object):
 
     def read_form(self):
         form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
-        form['equipment-family'] = form['equipment-family'] or []
-        form['equipment-serial_number'] = form['equipment-serial_number'] or []
+        # If there is only add equipment, make sure to convert the variables to lists so that self.add_equipements
+        # won't behave weirdly.
+        if not isinstance(form['equipment-family'], list):
+            form['equipment-family'] = [form['equipment-family']]
+        if not isinstance(form['equipment-serial_number'], list):
+            form['equipment-serial_number'] = [form['equipment-serial_number']]
 
         if not form['asset_id'] or not form['tenant_id'] or (not self.asset and not form['event']):
             raise FormException(_('Missing mandatory data.'))
@@ -106,7 +111,11 @@ class AssetsEndPoint(object):
 
     def add_equipments(self, form_asset, asset):
         for index, value in enumerate(form_asset['equipment-family']):
-            equipment = Equipment(family_id=value, serial_number=form_asset['equipment-serial_number'][index])
+            family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=value).first()
+            # In the case where we have multiple equipments, we can get '' as serial number, I prefer to persist None.
+            if form_asset['equipment-serial_number'][index] == '':
+                form_asset['equipment-serial_number'][index] = None
+            equipment = Equipment(family=family, serial_number=form_asset['equipment-serial_number'][index])
             asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
