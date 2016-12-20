@@ -61,39 +61,39 @@
       "label": "Manufactured"
     },
     {
-      "status_id": "stock_parsys",
+      "status_id": "calibration",
       "position": "3",
+      "label": "In calibration"
+    },
+    {
+      "status_id": "stock_parsys",
+      "position": "4",
       "label": "In stock - Parsys"
     },
     {
       "status_id": "transit_distributor",
-      "position": "4",
+      "position": "5",
       "label": "In transit to distributor"
     },
     {
       "status_id": "stock_distributor",
-      "position": "5",
+      "position": "6",
       "label": "In stock - distributor"
     },
     {
       "status_id": "transit_customer",
-      "position": "6",
+      "position": "7",
       "label": "In transit to customer"
     },
     {
       "status_id": "service",
-      "position": "7",
+      "position": "8",
       "label": "In service"
     },
     {
       "status_id": "transit_parsys",
-      "position": "8",
-      "label": "In transit to Parsys"
-    },
-    {
-      "status_id": "calibration",
       "position": "9",
-      "label": "In calibration"
+      "label": "In transit to Parsys"
     },
     {
       "status_id": "repair",
