@@ -30,7 +30,8 @@ class Asset(Model, CreationDateTimeMixin):
     # noinspection PyMethodParameters
     @status.expression
     def status(cls):
-        return select([EventStatus]).select_from(join(Event, EventStatus)).where(Event.asset_id == cls.id) \
+        # IMPORTANT: As this only used for ordering at the moment, return only the position instead of the full status.
+        return select([EventStatus.position]).select_from(join(Event, EventStatus)).where(Event.asset_id == cls.id) \
             .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)
 
     @hybrid_property
@@ -44,7 +45,7 @@ class Asset(Model, CreationDateTimeMixin):
     # noinspection PyMethodParameters
     @calibration_next.expression
     def calibration_next(cls):
-        # TODO: this returns the last calibration, which works as this function is used for ordering and
+        # IMPORTANT: This returns the last calibration, which works as this function is used for ordering and
         # currently the delta between next and last calibration is the same for all assets.
         # This will need work if the delta is no longer the same for all.
         return select([Event.date]).select_from(join(Event, EventStatus)). \
@@ -80,5 +81,5 @@ class Event(Model, CreationDateTimeMixin):
 
 class EventStatus(Model):
     status_id = Field(String)
-    position = Field(String)
+    position = Field(Integer)
     label = Field(String)

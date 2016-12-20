@@ -57,6 +57,8 @@ def main(global_config, **settings):
         'jinja2.cache_size': 400,
         'jinja2.bytecode_caching': True,
         'jinja2.filters': {
+            'format_date': 'parsys_utilities.dates:format_date',
+            'format_datetime': 'parsys_utilities.dates:format_datetime',
             'route_path': 'pyramid_jinja2.filters:route_path_filter',
             'route_url': 'pyramid_jinja2.filters:route_url_filter'
         },
