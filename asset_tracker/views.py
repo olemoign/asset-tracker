@@ -240,10 +240,13 @@ def exception_view(request):
         raise request.exception
 
     else:
-        error_text = 'Method: {}\n\nUrl: {}\n\n'.format(request.method, request.url) + format_exc()
+        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
+        error_text = error_header + format_exc()
+
         subject = 'Exception on {}'.format(request.host_url)
         message = {'email': {'subject': subject, 'text': error_text}}
         request.notifier.notify(message, level='exception')
+
         request.logger_actions.error(error_text)
 
         request.response.status_int = 500
