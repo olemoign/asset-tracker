@@ -98,13 +98,10 @@ td {
 .event__delete {
   opacity: 0.5;
 
-  &:link,:visited,:hover,:active {
-    text-decoration: none;
-  }
-
   &:hover {
     transition-duration: .3s;
     transition-property: opacity;
     opacity: 1;
+    cursor: pointer;
   }
 }

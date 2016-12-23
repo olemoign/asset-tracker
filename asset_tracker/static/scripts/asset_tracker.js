@@ -14,16 +14,6 @@ $(document).ready(function() {
     firstInput.val(firstInput.val());
 });
 
-// Prompt the user to confirm navigation/closing page if ajax (removing event) isn't finished.
-window.addEventListener('beforeunload', function(event) {
-    if (jQuery.active !== 0) {
-        // Recent WebKit.
-        event.returnValue = true;
-        // Old WebKit.
-        return true;
-    }
-});
-
 //Manage equipments
 $(document).on('click', '.equipment__add', function() {
     $(this).parent().next().clone()
@@ -102,16 +92,7 @@ $(document).on('click', 'table tr', function() {
 
 //Hide events
 $(document).on('click', '.event__delete', function() {
-    const self = $(this);
-    const CSRFToken = $('input[name="csrf_token"]').val();
-
-    $.ajax({
-        url: this.href,
-        type: 'DELETE',
-        headers: {'X-CSRF-Token': CSRFToken}
-    }).done(function() {
-        self.parent().hide('fast');
-    });
-
-    return false;
+    const eventID = $(this).data('eventid');
+    $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
+    $(this).parent().hide('fast');
 });

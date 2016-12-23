@@ -51,7 +51,7 @@
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label>{{ gettext('Status') }}</label>
-                                <p>{{ gettext(asset.status.label) }}</p>
+                                <p>{% if asset.status %}{{ gettext(asset.status.label) }}{% else %}&nbsp;{% endif %}</p>
                             </div>
                         </div>
                     </div>
@@ -141,11 +141,10 @@
                         {% if update %}
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
-                            <!-- TODO -->
-                            {% for event in asset.history|sort(attribute='date') %}
+                            {% for event in asset.history('asc') %}
                             <p class="history_event">{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
                                     status=gettext(event.status.label), date=event.date|format_date(locale)) }}.
-                                <a href="{{ 'events-delete'|route_path(event_id=event.event_id) }}" class="event__delete glyphicon glyphicon-remove-circle"></a>
+                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
                             </p>
                             {% endfor %}
                         </div>
