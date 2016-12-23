@@ -143,8 +143,10 @@
                             <label for="notes">{{ gettext('History') }}</label>
                             <!-- TODO -->
                             {% for event in asset.history|sort(attribute='date') %}
-                            <p>{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=gettext(event.status.label), date=event.date|format_date(locale)) }}.</p>
+                            <p class="history_event">{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
+                                    status=gettext(event.status.label), date=event.date|format_date(locale)) }}.
+                                <a href="{{ 'events-delete'|route_path(event_id=event.event_id) }}" class="event__delete glyphicon glyphicon-remove-circle"></a>
+                            </p>
                             {% endfor %}
                         </div>
                         {% endif %}

@@ -59,10 +59,10 @@ table td a {
   color: $black;
   //even if text doesn't cover the whole td, the whole space is clickable
   display: block;
-}
 
-table td a:hover {
-  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 //prevent showing horizontal scroll bar on xs screen even if table isn't big enough
@@ -93,4 +93,18 @@ table tr[data-href] {
 td {
     overflow: hidden;
     word-break: break-all;
+}
+
+.event__delete {
+  opacity: 0.5;
+
+  &:link,:visited,:hover,:active {
+    text-decoration: none;
+  }
+
+  &:hover {
+    transition-duration: .3s;
+    transition-property: opacity;
+    opacity: 1;
+  }
 }
