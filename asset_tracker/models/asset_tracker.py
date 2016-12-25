@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.model import Boolean, CreationDateTimeMixin, DateTime, Field, ForeignKey, hybrid_method, \
+from parsys_utilities.model import and_, Boolean, CreationDateTimeMixin, DateTime, Field, ForeignKey, hybrid_method, \
     hybrid_property, Integer, join, Model, relationship, select, String
 from parsys_utilities.random import random_id
 
@@ -28,15 +28,6 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             return self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
-    # noinspection PyMethodParameters
-    @history.expression
-    def history(cls, order):
-        history = select([Event]).where(Event.asset_id == cls.id, Event.removed is False)
-        if order == 'asc':
-            return history.order_by(Event.date, Event.created_at)
-        else:
-            return history.order_by(Event.date.desc(), Event.created_at.desc())
-
     @hybrid_property
     def status(self):
         history = self.history('desc').all()
@@ -47,7 +38,9 @@ class Asset(Model, CreationDateTimeMixin):
     @status.expression
     def status(cls):
         # IMPORTANT: As this only used for ordering at the moment, return only the position instead of the full status.
-        return select([EventStatus.position]).select_from(join(Event.history('desc'), EventStatus)).limit(1)
+        return select([EventStatus.position]).select_from(join(Event, EventStatus)) \
+            .where(and_(Event.asset_id == cls.id, Event.removed == False)) \
+            .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)
 
     @hybrid_property
     def calibration_next(self):
@@ -61,8 +54,9 @@ class Asset(Model, CreationDateTimeMixin):
         # IMPORTANT: This returns the last calibration, which works as this function is used for ordering and
         # currently the delta between next and last calibration is the same for all assets.
         # This will need work if the delta is no longer the same for all.
-        return select([Event.date]).select_from(Event.history('desc')) \
-            .where(EventStatus.status_id == 'calibration').limit(1)
+        return select([Event.date]).select_from(join(Event, EventStatus)) \
+            .where(and_(Event.asset_id == cls.id, Event.removed == False, EventStatus.status_id == 'calibration')) \
+            .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)
 
 
 class Equipment(Model):
