@@ -14,7 +14,6 @@ $(document).ready(function() {
     firstInput.val(firstInput.val());
 });
 
-
 //Manage equipments
 $(document).on('click', '.equipment__add', function() {
     $(this).parent().next().clone()
@@ -89,4 +88,11 @@ $(document).on('click', 'table tr', function() {
     if (this.hasAttribute('data-href') && this.getAttribute('data-href') != 'null') {
         window.location.href = this.getAttribute('data-href');
     }
+});
+
+//Hide events
+$(document).on('click', '.event__delete', function() {
+    const eventID = $(this).data('eventid');
+    $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
+    $(this).parent().hide('fast');
 });

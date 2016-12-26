@@ -45,7 +45,7 @@ with transaction.manager:
                 # TODO: what steps should we really implement ?
                 activation = Event(date=date(2014, 1, 1), creator_id='X9A39F0g', creator_alias='Sylvain TISON',
                                    status='service')
-                kit.history.append(production)
-                kit.history.append(activation)
+                kit._history.append(production)
+                kit._history.append(activation)
 
                 db_session.add_all([kit, base, telecardia, production, activation])

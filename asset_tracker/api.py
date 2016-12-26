@@ -51,21 +51,21 @@ class Assets(object):
 
         assets = []
         for asset in output['items']:
-            link = None
+            status, calibration_next, link = '', '', None
+
             if 'g:admin' in self.request.effective_principals or \
                     (asset.tenant_id, 'assets-read') in self.request.effective_principals:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
 
-            # Set empty calibration_next so that we don't have 'None' in dataTables.
-            calibration_next = ''
+            if asset.status:
+                status = self.request.localizer.translate(asset.status.label)
+
             if asset.calibration_next:
                 calibration_next = format_date(asset.calibration_next, self.request.locale_name)
 
-            asset_output = {
-                'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name, 'site': asset.site,
-                'status': self.request.localizer.translate(asset.status.label), 'calibration_next': calibration_next,
-                'links': [{'rel': 'self', 'href': link}]
-            }
+            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name,
+                            'site': asset.site, 'status': status, 'calibration_next': calibration_next,
+                            'links': [{'rel': 'self', 'href': link}]}
 
             assets.append(asset_output)
 

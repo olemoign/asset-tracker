@@ -100,6 +100,9 @@ class AssetsEndPoint(object):
         if not isinstance(form['equipment-serial_number'], list):
             form['equipment-serial_number'] = [form['equipment-serial_number']]
 
+        if form.get('event-removed') and not isinstance(form['event-removed'], list):
+            form['event-removed'] = [form['event-removed']]
+
         if not form['asset_id'] or not form['tenant_id'] or (not self.asset and not form['event']):
             raise FormException(_('Missing mandatory data.'))
 
@@ -122,6 +125,11 @@ class AssetsEndPoint(object):
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'))
 
+        for event_id in form.get('event-removed', []):
+            event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
+            if not event or event.asset_id != self.asset.id:
+                raise FormException(_('Invalid event.'))
+
     def add_equipments(self, form, asset):
         for index, value in enumerate(form['equipment-family']):
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=value).first()
@@ -143,8 +151,17 @@ class AssetsEndPoint(object):
         # noinspection PyArgumentList
         event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
                       status=status)
-        asset.history.append(event)
+        # noinspection PyProtectedMember
+        asset._history.append(event)
         self.request.db_session.add(event)
+
+    def remove_events(self, form):
+        for event_id in form['event-removed']:
+            event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
+            event.removed = True
+            event.removed_date = datetime.utcnow()
+            event.remover_id = self.request.user['id']
+            event.remover_alias = self.request.user['alias']
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -178,16 +195,16 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        production = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'manufactured') \
-            .order_by(Event.date).first()
-        self.asset.production = production.date.date() if production else None
+        production_first = self.asset.history('asc').join(EventStatus) \
+            .filter(EventStatus.status_id == 'manufactured').first()
+        self.asset.production = production_first.date.date() if production_first else None
 
-        activation = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'service') \
-            .order_by(Event.date).first()
-        self.asset.activation = activation.date.date() if activation else None
+        activation_first = self.asset.history('asc').join(EventStatus) \
+            .filter(EventStatus.status_id == 'service').first()
+        self.asset.activation = activation_first.date.date() if activation_first else None
 
-        calibration_last = self.asset.history.join(EventStatus).filter(EventStatus.status_id == 'calibration') \
-            .order_by(Event.date.desc()).first()
+        calibration_last = self.asset.history('desc').join(EventStatus) \
+            .filter(EventStatus.status_id == 'calibration').first()
         self.asset.calibration_last = calibration_last.date.date() if calibration_last else None
 
         if self.asset.activation:
@@ -219,6 +236,9 @@ class AssetsEndPoint(object):
         if form['event']:
             self.add_event(form, self.asset)
 
+        if form.get('event-removed'):
+            self.remove_events(form)
+
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
@@ -240,10 +260,13 @@ def exception_view(request):
         raise request.exception
 
     else:
-        error_text = 'Method: {}\n\nUrl: {}\n\n'.format(request.method, request.url) + format_exc()
+        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
+        error_text = error_header + format_exc()
+
         subject = 'Exception on {}'.format(request.host_url)
         message = {'email': {'subject': subject, 'text': error_text}}
         request.notifier.notify(message, level='exception')
+
         request.logger_actions.error(error_text)
 
         request.response.status_int = 500
