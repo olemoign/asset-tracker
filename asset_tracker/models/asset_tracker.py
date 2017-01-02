@@ -19,7 +19,7 @@ class Asset(Model, CreationDateTimeMixin):
 
     software_version = Field(String)
     _history = relationship('Event', lazy='dynamic')
-    equipments = relationship('Equipment', lazy='dynamic')
+    equipments = relationship('Equipment')
 
     @hybrid_method
     def history(self, order):

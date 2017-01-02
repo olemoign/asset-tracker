@@ -1,8 +1,10 @@
 from datetime import datetime
+from operator import attrgetter
 from traceback import format_exc
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import rights_without_tenants
+from parsys_utilities.model import joinedload
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -61,12 +63,22 @@ class AssetsEndPoint(object):
 
     def get_asset(self):
         asset_id = self.request.matchdict.get('asset_id')
-        if asset_id:
-            asset = self.request.db_session.query(Asset).get(asset_id)
-            if not asset:
-                raise HTTPNotFound()
-            else:
-                return asset
+        if not asset_id:
+            return
+
+        asset = self.request.db_session.query(Asset).options(joinedload('equipments')).get(asset_id)
+        if not asset:
+            raise HTTPNotFound()
+
+        # By putting the translated family name at the equipment level, when can then sort equipments by translated
+        # family name and serial number.
+        for equipment in asset.equipments:
+            equipment.family_translated = None
+            if equipment.family:
+                equipment.family_translated = self.request.localizer.translate(equipment.family.model)
+
+        asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
+        return asset
 
     def get_create_update_tenants(self):
         if self.request.user['is_admin']:
@@ -232,7 +244,8 @@ class AssetsEndPoint(object):
         self.asset.software_version = form['software_version']
         self.asset.notes = form['notes']
 
-        self.asset.equipments.delete()
+        for equipment in self.asset.equipments:
+            self.request.db_session.delete(equipment)
         self.add_equipments(form, self.asset)
 
         if form['event']:
