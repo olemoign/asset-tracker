@@ -131,12 +131,14 @@ class AssetsEndPoint(object):
                 raise FormException(_('Invalid event.'))
 
     def add_equipments(self, form, asset):
-        for index, value in enumerate(form['equipment-family']):
-            family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=value).first()
+        for index, family_id in enumerate(form['equipment-family']):
+            if not family_id and not form['equipment-serial_number'][index]:
+                continue
+
+            family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
             # In the case where we have multiple equipments, we can get '' as serial number, I prefer to persist None.
-            if form['equipment-serial_number'][index] == '':
-                form['equipment-serial_number'][index] = None
-            equipment = Equipment(family=family, serial_number=form['equipment-serial_number'][index])
+            serial_number = form['equipment-serial_number'][index] if form['equipment-serial_number'][index] else None
+            equipment = Equipment(family=family, serial_number=serial_number)
             asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
