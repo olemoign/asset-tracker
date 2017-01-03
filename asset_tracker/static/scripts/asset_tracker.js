@@ -101,6 +101,9 @@ $(document).on('click', '.event__delete', function() {
 $(document).on('submit', 'form', function(event) {
     $('input[type="date"]').each(function() {
         const date = $(this).val();
+        if (!date) {
+            return true;
+        }
 
         const isHumanDate = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if (isHumanDate) {
