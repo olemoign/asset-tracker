@@ -15,7 +15,8 @@ $(document).ready(function() {
 });
 
 //Manage equipments
-$(document).on('click', '.equipment__add', function() {
+$(document).on('click', '.equipment__add', function(event) {
+    event.preventDefault();
     $(this).parent().next().clone()
         .find('select').val('').end()
         .find('input').val('').end()

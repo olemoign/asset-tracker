@@ -83,8 +83,9 @@
                     <hr>
 
                     <div class="row">
-                        <div class="col-sm-12">
-                            <label>{{ gettext('Equipments') }}</label> <a href="javascript:" class="equipment__add text-info"><span class="glyphicon glyphicon-plus"></span></a>
+                        <div class="col-sm-12 equipment__line">
+                            <label class="equipment__label">{{ gettext('Equipments') }}</label>
+                            <button type="button" class="equipment__add btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
                         </div>
                         {% for equipment in (asset or {}).equipments %}
                         <div class="col-sm-4 equipment__block">
@@ -101,7 +102,7 @@
                                     <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N"
                                             {% if equipment.serial_number %} value="{{ equipment.serial_number }}"{% endif %}>
                                     <span class="input-group-btn equipment__remove">
-                                        <button class="btn btn-default" type="button">
+                                        <button type="button" class="btn btn-default">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </button>
                                     </span>
@@ -122,7 +123,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
                                     <span class="input-group-btn equipment__remove">
-                                        <button class="btn btn-default" type="button">
+                                        <button type="button" class="btn btn-default">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </button>
                                     </span>

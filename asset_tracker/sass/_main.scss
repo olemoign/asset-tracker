@@ -95,6 +95,18 @@ td {
     word-break: break-all;
 }
 
+.equipment__line {
+  margin-bottom: 5px;
+}
+
+.equipment__label {
+  vertical-align: bottom;
+}
+
+.equipment__add {
+  margin: 0 0 5px 5px;
+}
+
 .event__delete {
   opacity: 0.5;
 
