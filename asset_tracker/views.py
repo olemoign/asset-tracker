@@ -73,7 +73,7 @@ class AssetsEndPoint(object):
         # By putting the translated family name at the equipment level, when can then sort equipments by translated
         # family name and serial number.
         for equipment in asset.equipments:
-            equipment.family_translated = None
+            equipment.family_translated = ''
             if equipment.family:
                 equipment.family_translated = self.request.localizer.translate(equipment.family.model)
 
