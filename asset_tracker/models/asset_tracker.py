@@ -44,9 +44,9 @@ class Asset(Model, CreationDateTimeMixin):
 
     @hybrid_property
     def calibration_next(self):
-        calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
-        if calibration_last:
-            return calibration_last.date.date() + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
+        activation_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
+        if activation_last:
+            return activation_last.date.date() + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
 
     # noinspection PyMethodParameters
     @calibration_next.expression
@@ -55,7 +55,7 @@ class Asset(Model, CreationDateTimeMixin):
         # currently the delta between next and last calibration is the same for all assets.
         # This will need work if the delta is no longer the same for all.
         return select([Event.date]).select_from(join(Event, EventStatus)) \
-            .where(and_(Event.asset_id == cls.id, Event.removed == False, EventStatus.status_id == 'calibration')) \
+            .where(and_(Event.asset_id == cls.id, Event.removed == False, EventStatus.status_id == 'service')) \
             .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)  # noqa: E712
 
 
