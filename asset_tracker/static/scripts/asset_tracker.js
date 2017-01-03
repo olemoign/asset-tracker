@@ -96,3 +96,25 @@ $(document).on('click', '.event__delete', function() {
     $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
     $(this).parent().hide('fast');
 });
+
+//Validate date format
+$(document).on('submit', 'form', function(event) {
+    $('input[type="date"]').each(function() {
+        const date = $(this).val();
+
+        const isHumanDate = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (isHumanDate) {
+            $(this).val(isHumanDate[3] + '-' + isHumanDate[2] + '-' + isHumanDate[1]);
+            return true;
+        }
+
+        const isStandardDate = date.match(/^\d{4}-\d{2}-\d{2}$/);
+        if (!isStandardDate) {
+            event.preventDefault();
+            $(this).val('');
+            $(this).parent().addClass('has-error');
+            alert('Invalid date format.');
+            return false;
+        }
+    });
+});

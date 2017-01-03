@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-12-19 14:45+0100\n"
+"POT-Creation-Date: 2017-01-03 19:32+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: templates/assets-create_update.html:146
+#: templates/assets-create_update.html:145
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr ""
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:154
+#: templates/assets-create_update.html:155
 msgid "Cancel"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgid "Customer name"
 msgstr ""
 
 #: templates/assets-create_update.html:80
-msgid "Date"
+msgid "Date DD/MM/YYYY"
 msgstr ""
 
 #: configuration.json:49
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: configuration.json:96
+#: configuration.json:66
 msgid "In calibration"
 msgstr ""
 
@@ -120,31 +120,43 @@ msgstr ""
 msgid "In repair"
 msgstr ""
 
-#: configuration.json:86
+#: configuration.json:91
 msgid "In service"
 msgstr ""
 
-#: configuration.json:66
+#: configuration.json:71
 msgid "In stock - Parsys"
 msgstr ""
 
-#: configuration.json:76
+#: configuration.json:81
 msgid "In stock - distributor"
 msgstr ""
 
-#: configuration.json:91
+#: configuration.json:96
 msgid "In transit to Parsys"
 msgstr ""
 
-#: configuration.json:81
+#: configuration.json:86
 msgid "In transit to customer"
 msgstr ""
 
-#: configuration.json:71
+#: configuration.json:76
 msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:134 views.py:184
+#: views.py:131
+msgid "Invalid asset status."
+msgstr ""
+
+#: views.py:138
+msgid "Invalid equipment family."
+msgstr ""
+
+#: views.py:143
+msgid "Invalid event."
+msgstr ""
+
+#: views.py:126
 msgid "Invalid tenant."
 msgstr ""
 
@@ -164,7 +176,7 @@ msgstr ""
 msgid "Manufactured"
 msgstr ""
 
-#: views.py:89
+#: views.py:119
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -228,7 +240,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:155
+#: templates/assets-create_update.html:156
 msgid "Submit"
 msgstr ""
 
