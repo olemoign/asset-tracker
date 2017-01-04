@@ -148,9 +148,7 @@ class AssetsEndPoint(object):
                 continue
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            # In the case where we have multiple equipments, we can get '' as serial number, I prefer to persist None.
-            serial_number = form['equipment-serial_number'][index] if form['equipment-serial_number'][index] else None
-            equipment = Equipment(family=family, serial_number=serial_number)
+            equipment = Equipment(family=family, serial_number=form['equipment-serial_number'][index])
             asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -192,7 +190,7 @@ class AssetsEndPoint(object):
             return dict(error=str(error), **self.get_base_form_data())
 
         # noinspection PyArgumentList
-        asset = Asset(asset_id=form['asset_id'], tenant_id=form['tenant_id'], site=form['site'],
+        asset = Asset(asset_id=form['asset_id'], tenant_id=form['tenant_id'], type=form['type'], site=form['site'],
                       customer_id=form['customer_id'], customer_name=form['customer_name'],
                       current_location=form['current_location'], software_version=form['software_version'],
                       notes=form['notes'])
@@ -237,6 +235,7 @@ class AssetsEndPoint(object):
 
         self.asset.asset_id = form['asset_id']
         self.asset.tenant_id = form['tenant_id']
+        self.asset.type = form['type']
         self.asset.customer_id = form['customer_id']
         self.asset.customer_name = form['customer_name']
         self.asset.site = form['site']

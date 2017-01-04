@@ -9,6 +9,7 @@ from asset_tracker.constants import CALIBRATION_FREQUENCY_YEARS
 class Asset(Model, CreationDateTimeMixin):
     tenant_id = Field(String, nullable=False)
     asset_id = Field(String, nullable=False)
+    type = Field(String)
 
     customer_id = Field(String)
     customer_name = Field(String)

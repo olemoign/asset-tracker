@@ -63,9 +63,11 @@ class Assets(object):
             if asset.calibration_next:
                 calibration_next = format_date(asset.calibration_next, self.request.locale_name)
 
-            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'customer_name': asset.customer_name,
-                            'site': asset.site, 'status': status, 'calibration_next': calibration_next,
-                            'links': [{'rel': 'self', 'href': link}]}
+            asset_type = self.request.localizer.translate(asset.type.capitalize())
+
+            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'type': asset_type,
+                            'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
+                            'calibration_next': calibration_next, 'links': [{'rel': 'self', 'href': link}]}
 
             assets.append(asset_output)
 

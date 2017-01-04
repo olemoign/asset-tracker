@@ -29,7 +29,14 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
                         {{ input(gettext('Asset ID'), 'asset_id', required=True) }}
-                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
+                        <div class="col-sm-6 form-group">
+                            <label for="type">{{ gettext('Type') }} *</label>
+                            <select class="form-control" id="type" name="type">
+                                <option value="cart"{% if asset and asset.type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
+                                <option value="station"{% if not asset or (asset and asset.type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
+                                <option value="telecardia"{% if asset and asset.type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                            </select>
+                        </div>
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
@@ -38,6 +45,7 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                         {{ input(gettext('Customer name'), 'customer_name') }}
                         {{ input(gettext('Site'), 'site') }}
                         {{ input(gettext('Current location'), 'current_location') }}

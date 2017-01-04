@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-03 19:32+0100\n"
+"POT-Creation-Date: 2017-01-04 12:10+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,16 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: templates/assets-create_update.html:145
+#: templates/assets-create_update.html:154
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr ""
 
-#: templates/assets-create_update.html:61
+#: templates/assets-create_update.html:69
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:72
+#: templates/assets-create_update.html:80
 msgid "Add Event"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:155
+#: templates/assets-create_update.html:164
 msgid "Cancel"
 msgstr ""
 
@@ -64,27 +64,31 @@ msgstr ""
 msgid "Cardialys - Parsys"
 msgstr ""
 
+#: templates/assets-create_update.html:35
+msgid "Cart"
+msgstr ""
+
 #: templates/assets-create_update.html:7
 msgid "Create asset"
 msgstr ""
 
-#: templates/assets-create_update.html:43
+#: templates/assets-create_update.html:51
 msgid "Current location"
 msgstr ""
 
-#: templates/assets-list.html:22
+#: templates/assets-list.html:23
 msgid "Customer"
 msgstr ""
 
-#: templates/assets-create_update.html:32
+#: templates/assets-create_update.html:48
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/assets-create_update.html:41
+#: templates/assets-create_update.html:49
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:80
+#: templates/assets-create_update.html:88
 msgid "Date DD/MM/YYYY"
 msgstr ""
 
@@ -92,7 +96,7 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: templates/assets-create_update.html:87
+#: templates/assets-create_update.html:95
 msgid "Equipments"
 msgstr ""
 
@@ -104,7 +108,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:143
+#: templates/assets-create_update.html:152
 msgid "History"
 msgstr ""
 
@@ -164,7 +168,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:62
+#: templates/assets-create_update.html:70
 msgid "Last calibration"
 msgstr ""
 
@@ -184,7 +188,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:63 templates/assets-list.html:24
+#: templates/assets-create_update.html:71 templates/assets-list.html:25
 msgid "Next calibration"
 msgstr ""
 
@@ -192,7 +196,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:136
+#: templates/assets-create_update.html:145
 msgid "Notes"
 msgstr ""
 
@@ -208,7 +212,7 @@ msgstr ""
 msgid "Pre-production"
 msgstr ""
 
-#: templates/assets-create_update.html:60
+#: templates/assets-create_update.html:68
 msgid "Production"
 msgstr ""
 
@@ -216,11 +220,11 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: templates/assets-create_update.html:42 templates/assets-list.html:23
+#: templates/assets-create_update.html:50 templates/assets-list.html:24
 msgid "Site"
 msgstr ""
 
-#: templates/assets-create_update.html:44
+#: templates/assets-create_update.html:52
 msgid "Software version"
 msgstr ""
 
@@ -232,7 +236,11 @@ msgstr ""
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr ""
 
-#: templates/assets-create_update.html:53 templates/assets-list.html:25
+#: templates/assets-create_update.html:36
+msgid "Station"
+msgstr ""
+
+#: templates/assets-create_update.html:61 templates/assets-list.html:26
 msgid "Status"
 msgstr ""
 
@@ -240,8 +248,12 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:156
+#: templates/assets-create_update.html:165
 msgid "Submit"
+msgstr ""
+
+#: templates/assets-create_update.html:37
+msgid "Telecardia"
 msgstr ""
 
 #: configuration.json:9
@@ -252,7 +264,7 @@ msgstr ""
 msgid "Telecardia charging base - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:34
+#: templates/assets-create_update.html:41
 msgid "Tenant"
 msgstr ""
 
@@ -264,11 +276,15 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
+#: templates/assets-create_update.html:33 templates/assets-list.html:22
+msgid "Type"
+msgstr ""
+
 #: configuration.json:29
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:64
+#: templates/assets-create_update.html:72
 msgid "Warranty end"
 msgstr ""
 
