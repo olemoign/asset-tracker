@@ -2,8 +2,8 @@ import logging
 from functools import partial
 
 import pkg_resources
-from parsys_utilities.authorization import add_security_headers as basic_security_headers, get_user, \
-    get_effective_principals, get_user_locale, OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
+    OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.celery_app import app as celery_app
 from parsys_utilities.logging import logger
 from parsys_utilities.notifications import Notifier
@@ -20,20 +20,6 @@ from asset_tracker.configuration import update_configuration
 def add_app_version_header(event):
     asset_tracker_version = pkg_resources.require(__package__)[0].version
     event.response.headers.add('X-Parsys-Version', asset_tracker_version)
-
-
-@subscriber(NewResponse)
-def add_security_headers(event):
-    """ Add https-related security and cross origin xhr headers.
-
-    Args:
-        event (pyramid.request.Request): Request.
-
-    """
-    secure_headers = not asbool(event.request.registry.settings.get('asset_tracker.dev.disable_secure_headers', False))
-    # Deactivate HTTPS-linked headers in dev.
-    if secure_headers:
-        basic_security_headers(event)
 
 
 # noinspection PyUnusedLocal
