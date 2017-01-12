@@ -211,16 +211,8 @@ class AssetsEndPoint(object):
             .filter(EventStatus.status_id == 'manufactured').first()
         self.asset.production = production_first.date.date() if production_first else None
 
-        activation_first = self.asset.history('asc').join(EventStatus) \
-            .filter(EventStatus.status_id == 'service').first()
-        self.asset.activation = activation_first.date.date() if activation_first else None
-
-        calibration_last = self.asset.history('desc').join(EventStatus) \
-            .filter(EventStatus.status_id == 'calibration').first()
-        self.asset.calibration_last = calibration_last.date.date() if calibration_last else None
-
-        if self.asset.activation:
-            self.asset.warranty_end = self.asset.activation + relativedelta(years=WARRANTY_DURATION_YEARS)
+        if self.asset.activation_first:
+            self.asset.warranty_end = self.asset.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
 
         return dict(update=True, asset=self.asset, **self.get_base_form_data())
 
