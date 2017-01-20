@@ -91,6 +91,10 @@ $(document).on('click', 'table tr', function() {
     }
 });
 
+$(document).on('click', '.paginate_button', function() {
+    $('body').animate({scrollTop: 0}, 'slow');
+});
+
 //Hide events
 $(document).on('click', '.event__delete', function() {
     const eventID = $(this).data('eventid');
