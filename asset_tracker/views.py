@@ -10,7 +10,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import asbool
-from pyramid.view import notfound_view_config, view_config
+from pyramid.view import exception_view_config, notfound_view_config, view_config
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
@@ -260,7 +260,7 @@ def not_found_get(request):
     return {}
 
 
-@view_config(context=Exception, renderer='errors/500.html')
+@exception_view_config(Exception, renderer='errors/500.html')
 def exception_view(request):
     debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
     if debug_exceptions:
