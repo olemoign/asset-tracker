@@ -25,11 +25,12 @@ def add_global_variables(event):
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
     event['csrf_token'] = event['request'].session.get_csrf_token()
 
+    event['principals'] = event['request'].effective_principals
+    event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
+    event['locale'] = event['request'].locale_name
+
     if event['request'].user:
         event['user_alias'] = event['request'].user['alias']
-        event['principals'] = event['request'].effective_principals
-        event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
-        event['locale'] = event['request'].locale_name
 
 
 def get_date(value):
