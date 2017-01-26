@@ -41,7 +41,7 @@ class Asset(Model, CreationDateTimeMixin):
         # IMPORTANT: As this only used for ordering at the moment, return only the position instead of the full status.
         return select([EventStatus.position]).select_from(join(Event, EventStatus)) \
             .where(and_(Event.asset_id == cls.id, Event.removed == False)) \
-            .order_by(Event.date.desc(), Event.created_at.desc()).limit(1)  # noqa: E712
+            .order_by(Event.date.desc(), Event.created_at.desc()).limit(1).label('asset_status')  # noqa: E712
 
     @hybrid_property
     def activation_first(self):

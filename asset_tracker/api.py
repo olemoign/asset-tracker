@@ -37,6 +37,11 @@ class Assets(object):
         except KeyError:
             return HTTPBadRequest()
 
+        filter_iterator = ((index, element) for (index, element) in enumerate(search) if element[0] == 'status')
+        index, status_filter = next(filter_iterator, (None, None))
+        if status_filter:
+            search[index] = (search[index][0], search[index][1], int(search[index][2]))
+
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,

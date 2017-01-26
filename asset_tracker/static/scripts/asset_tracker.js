@@ -7,6 +7,8 @@ $(document).ready(function() {
     var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g, '');
     favicon_link.attr('href', favicon);
 
+    createDataTables();
+
     //Auto focus first input in page
     var firstInput = $('input[type=text]').first();
     firstInput.focus();
@@ -60,34 +62,115 @@ var dataTablesTranslations = {
     }
 };
 
-$(document).ready(function() {
-    var favicon_link = $('link[rel=icon]');
-    var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g,'');
-    favicon_link.attr('href', favicon);
+function createDataTables() {
+    var table = $('table.dataTables');
+    var columns = [];
+    var customFilter = table.data('custom-filter');
+
+    // Loop through all the columns, to be able to hook the 'data-render' parameters to existing functions.
+    table.find('th').each(function() {
+        var col = {};
+        // We can't set the render functions using HTML5 data parameters so we simulate this behavior.
+        if ($(this).data('render')) {
+            col.render = window[$(this).data('render')];
+        }
+        columns.push(col);
+    });
 
     var dataTableParameters = {
-        'serverSide': true,
-        'stateSave': true,
-        'pageLength': 50,
-        'lengthChange': false,
-        'rowCallback': addHrefToDataTablesRows
+        serverSide: true,
+        ajax : {
+            url: table.data('ajax-url')
+        },
+        stateSave: true,
+        pageLength: 50,
+        lengthChange: false,
+        responsive: {
+            details: false
+        },
+        processing: true,
+        columns: columns,
+        rowCallback: addHrefToDataTablesRows
     };
 
     if (userLocale !== 'en') {
         dataTableParameters['language'] = dataTablesTranslations[userLocale];
     }
 
-    $('table.dataTables').DataTable(dataTableParameters);
-});
+    // If there is a custom filter, change the organization of the special div around the dataTable.
+    if (customFilter) {
+        dataTableParameters['dom'] = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>' +
+                                     '<"row"<"col-sm-12"tr>>' +
+                                     '<"row"<"col-sm-5"i><"col-sm-7"p>>';
+    }
 
-function addHrefToDataTablesRows(row, data) {
-    var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
-    row.setAttribute('data-href', object_link[0].href);
+    var initialisedDataTable = table.DataTable(dataTableParameters);
+
+    if (customFilter) {
+        var tableContainer = $(initialisedDataTable.table().container());
+
+        // Save the custom filter state with the other dataTables parameters.
+        initialisedDataTable.on('stateSaveParams.dt', function(event, settings, data) {
+            data.customFilter = !tableContainer.find('.custom_filter__input').is(':checked');
+        });
+
+        // Add the custom filter in the div created in the dom command above.
+        var filterLabel = table.data('custom-filter-label');
+        //noinspection JSUnresolvedFunction
+        var tableState = initialisedDataTable.state.loaded();
+        var inputIsChecked = (!tableState || !tableState.customFilter) ? ' checked' : '';
+        var filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
+        tableContainer.find('.custom_filter').html(filterHTML).css('padding', '10px 0 0 10px');
+        initialisedDataTable.state.save();
+
+        // Force a draw of the table when the filter state changes.
+        tableContainer.find('.custom_filter__input').change(function() {
+            initialisedDataTable.draw();
+        });
+    }
+
+    // If an ajax call is long, the user can browse before the response is received. As the state is by default
+    // saved after reception of the reponse, the state changes can be lost.
+    // To prevent this, save the state before making the ajax request.
+    table.on('preXhr.dt', function() {
+        initialisedDataTable.state.save();
+    });
 }
 
+/* Before table initialization, manage when to send the 'hide' query string. */
+$(document).on('preInit.dt', function(event, settings) {
+    var api = new $.fn.dataTable.Api(settings);
+    //noinspection JSUnresolvedFunction
+    var state = api.state.loaded();
+
+    // This is the table div.
+    var table = $(event.target);
+
+    var customFilter = table.data('custom-filter');
+    if (customFilter) {
+        settings.ajax.data = function(data) {
+            // This is the HTML node wrapping around the table with the special search, filter, etc.
+            var dataTableContainer = $(table.DataTable().table().container());
+            var customFilterInput = dataTableContainer.find('.custom_filter__input');
+
+            // Either visual filter has arrived and we use it, or it's the first load and we use the active storage.
+            if ((customFilterInput.length && !customFilterInput.is(':checked')) || (!customFilterInput.length && state && state.customFilter)) {
+                data.filter = customFilter;
+            }
+        };
+    }
+});
+
+/* Add on each row the link sent from the Webservices. */
+function addHrefToDataTablesRows(row, data) {
+    var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
+    row.dataset.href = object_link[0].href;
+}
+
+/* Trigger navigation to the stored link on click. */
 $(document).on('click', 'table tr', function() {
-    if (this.hasAttribute('data-href') && this.getAttribute('data-href') != 'null') {
-        window.location.href = this.getAttribute('data-href');
+    if (this.dataset.href) {
+        window.location.href = this.dataset.href;
     }
 });
 
