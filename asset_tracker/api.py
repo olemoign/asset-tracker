@@ -62,11 +62,13 @@ class Assets(object):
                     (asset.tenant_id, 'assets-read') in self.request.effective_principals:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
 
-            if asset.status:
-                status = self.request.localizer.translate(asset.status.label)
+            asset_status = asset.status
+            if asset_status:
+                status = self.request.localizer.translate(asset_status.label)
 
-            if asset.calibration_next:
-                calibration_next = format_date(asset.calibration_next, self.request.locale_name)
+            asset_calibration_next = asset.calibration_next
+            if asset_calibration_next:
+                calibration_next = format_date(asset_calibration_next, self.request.locale_name)
 
             asset_type = self.request.localizer.translate(asset.type.capitalize())
 
