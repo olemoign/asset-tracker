@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-04 12:10+0100\n"
+"POT-Creation-Date: 2017-01-30 11:02+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -39,7 +39,7 @@ msgstr "Une erreur est survenue. Veuillez réessayer dans quelques instants."
 msgid "Asset"
 msgstr "Matériel"
 
-#: templates/assets-create_update.html:31 templates/assets-list.html:21
+#: templates/assets-create_update.html:31 templates/assets-list.html:22
 msgid "Asset ID"
 msgstr "ID"
 
@@ -76,7 +76,7 @@ msgstr "Nouveau matériel"
 msgid "Current location"
 msgstr "Position actuelle"
 
-#: templates/assets-list.html:23
+#: templates/assets-list.html:24
 msgid "Customer"
 msgstr "Client"
 
@@ -148,19 +148,19 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views.py:131
+#: views.py:132
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views.py:138
+#: views.py:139
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views.py:143
+#: views.py:144
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views.py:126
+#: views.py:127
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -180,7 +180,7 @@ msgstr "Déconnexion"
 msgid "Manufactured"
 msgstr "Manufacturé"
 
-#: views.py:119
+#: views.py:120
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -188,7 +188,7 @@ msgstr "Donnée obligatoire manquante."
 msgid "New"
 msgstr "Créer"
 
-#: templates/assets-create_update.html:71 templates/assets-list.html:25
+#: templates/assets-create_update.html:71 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr "Prochaine calibration"
 
@@ -203,6 +203,10 @@ msgstr "Notes"
 #: configuration.json:45
 msgid "Otoscope - Firefly DE500A"
 msgstr "Otoscope - Firefly DE500A"
+
+#: configuration.json:106
+msgid "Out of order"
+msgstr "Hors service"
 
 #: templates/errors/404.html:5
 msgid "Page Not Found"
@@ -220,7 +224,11 @@ msgstr "Production"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: templates/assets-create_update.html:50 templates/assets-list.html:24
+#: templates/assets-list.html:19
+msgid "Show out of order assets"
+msgstr "Afficher les matériels hors service"
+
+#: templates/assets-create_update.html:50 templates/assets-list.html:25
 msgid "Site"
 msgstr "Site"
 
@@ -240,7 +248,7 @@ msgstr "Spiromètre - Spiromir MiniSpir Light"
 msgid "Station"
 msgstr "Station"
 
-#: templates/assets-create_update.html:61 templates/assets-list.html:26
+#: templates/assets-create_update.html:61 templates/assets-list.html:27
 msgid "Status"
 msgstr "Statut"
 
@@ -276,7 +284,7 @@ msgstr "Thermomètre - Foracare IR21"
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: templates/assets-create_update.html:33 templates/assets-list.html:22
+#: templates/assets-create_update.html:33 templates/assets-list.html:23
 msgid "Type"
 msgstr "Type"
 

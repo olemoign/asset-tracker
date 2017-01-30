@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-04 12:10+0100\n"
+"POT-Creation-Date: 2017-01-30 11:02+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: templates/assets-create_update.html:31 templates/assets-list.html:21
+#: templates/assets-create_update.html:31 templates/assets-list.html:22
 msgid "Asset ID"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Current location"
 msgstr ""
 
-#: templates/assets-list.html:23
+#: templates/assets-list.html:24
 msgid "Customer"
 msgstr ""
 
@@ -148,19 +148,19 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:131
+#: views.py:132
 msgid "Invalid asset status."
 msgstr ""
 
-#: views.py:138
+#: views.py:139
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views.py:143
+#: views.py:144
 msgid "Invalid event."
 msgstr ""
 
-#: views.py:126
+#: views.py:127
 msgid "Invalid tenant."
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Manufactured"
 msgstr ""
 
-#: views.py:119
+#: views.py:120
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:71 templates/assets-list.html:25
+#: templates/assets-create_update.html:71 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr ""
 
@@ -202,6 +202,10 @@ msgstr ""
 
 #: configuration.json:45
 msgid "Otoscope - Firefly DE500A"
+msgstr ""
+
+#: configuration.json:106
+msgid "Out of order"
 msgstr ""
 
 #: templates/errors/404.html:5
@@ -220,7 +224,11 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: templates/assets-create_update.html:50 templates/assets-list.html:24
+#: templates/assets-list.html:19
+msgid "Show out of order assets"
+msgstr ""
+
+#: templates/assets-create_update.html:50 templates/assets-list.html:25
 msgid "Site"
 msgstr ""
 
@@ -240,7 +248,7 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:61 templates/assets-list.html:26
+#: templates/assets-create_update.html:61 templates/assets-list.html:27
 msgid "Status"
 msgstr ""
 
@@ -276,7 +284,7 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/assets-create_update.html:33 templates/assets-list.html:22
+#: templates/assets-create_update.html:33 templates/assets-list.html:23
 msgid "Type"
 msgstr ""
 
