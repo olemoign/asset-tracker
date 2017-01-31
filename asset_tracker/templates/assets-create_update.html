@@ -30,11 +30,11 @@
                     <div class="row">
                         {{ input(gettext('Asset ID'), 'asset_id', required=True) }}
                         <div class="col-sm-6 form-group">
-                            <label for="type">{{ gettext('Type') }} *</label>
-                            <select class="form-control" id="type" name="type">
-                                <option value="cart"{% if asset and asset.type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
-                                <option value="station"{% if not asset or (asset and asset.type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                <option value="telecardia"{% if asset and asset.type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                            <label for="asset_type">{{ gettext('Type') }} *</label>
+                            <select class="form-control" id="asset_type" name="asset_type">
+                                <option value="cart"{% if asset and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
+                                <option value="station"{% if not asset or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
+                                <option value="telecardia"{% if asset and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
                             </select>
                         </div>
                         <div class="col-sm-6 form-group">

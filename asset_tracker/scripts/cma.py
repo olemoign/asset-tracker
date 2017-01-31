@@ -4,9 +4,11 @@ import sys
 from datetime import datetime, timedelta
 
 import transaction
+from dateutil.relativedelta import relativedelta
 from pyramid.paster import get_appsettings, setup_logging
 from pyramid.scripts.common import parse_vars
 
+from asset_tracker.constants import CALIBRATION_FREQUENCY_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, get_engine, \
     get_session_factory, get_tm_session
 
@@ -46,7 +48,7 @@ with transaction.manager:
 
             print('Added asset for vessel {}'.format(vessel))
             # noinspection PyArgumentList
-            kit = Asset(asset_id=kit_id, tenant_id=args.tenant_id, type='telecardia', customer_name='CMA CGM',
+            kit = Asset(asset_id=kit_id, tenant_id=args.tenant_id, asset_type='telecardia', customer_name='CMA CGM',
                         site=vessel)
 
             base = Equipment(family=family_base, serial_number=base_id)
@@ -65,5 +67,8 @@ with transaction.manager:
             kit._history.append(calibration)
             # noinspection PyProtectedMember
             kit._history.append(activation)
+
+            kit.status = activation_status
+            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
 
             db_session.add_all([kit, base, telecardia, calibration, activation])

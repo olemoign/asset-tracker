@@ -37,20 +37,20 @@ class Assets(object):
         except KeyError:
             return HTTPBadRequest()
 
-        filter_iterator = ((index, element) for (index, element) in enumerate(search) if element[0] == 'status')
-        index, status_filter = next(filter_iterator, (None, None))
-        if status_filter:
-            search[index] = (search[index][0], search[index][1], int(search[index][2]))
-
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
+        joined_tables = [models.EventStatus]
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
                                        models.Asset.current_location]
+        specific_search_attributes = {'status': models.EventStatus.status_id}
+        specific_sort_attributes = {'status': models.EventStatus.position}
 
         try:
             # noinspection PyTypeChecker
             output = sql_search(self.request.db_session, models.Asset, full_text_search_attributes,
-                                tenanting=self.apply_tenanting_filter, search_parameters=search_parameters)
+                                joined_tables=joined_tables, tenanting=self.apply_tenanting_filter,
+                                specific_search_attributes=specific_search_attributes,
+                                specific_sort_attributes=specific_sort_attributes, search_parameters=search_parameters)
         except KeyError:
             return HTTPBadRequest()
 
@@ -58,21 +58,20 @@ class Assets(object):
         for asset in output['items']:
             status, calibration_next, link = '', '', None
 
-            if 'g:admin' in self.request.effective_principals or \
-                    (asset.tenant_id, 'assets-read') in self.request.effective_principals:
+            has_admin_rights = 'g:admin' in self.request.effective_principals
+            has_manager_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
+            if has_admin_rights or has_manager_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
 
-            asset_status = asset.status
-            if asset_status:
-                status = self.request.localizer.translate(asset_status.label)
+            if asset.status:
+                status = self.request.localizer.translate(asset.status.label)
 
-            asset_calibration_next = asset.calibration_next
-            if asset_calibration_next:
-                calibration_next = format_date(asset_calibration_next, self.request.locale_name)
+            if asset.calibration_next:
+                calibration_next = format_date(asset.calibration_next, self.request.locale_name)
 
-            asset_type = self.request.localizer.translate(asset.type.capitalize())
+            asset_type = self.request.localizer.translate(asset.asset_type.capitalize())
 
-            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'type': asset_type,
+            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
                             'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
                             'calibration_next': calibration_next, 'links': [{'rel': 'self', 'href': link}]}
 

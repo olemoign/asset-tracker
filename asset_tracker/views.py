@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from operator import attrgetter
 from traceback import format_exc
 
@@ -12,7 +12,7 @@ from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import exception_view_config, notfound_view_config, view_config
 
-from asset_tracker.constants import WARRANTY_DURATION_YEARS
+from asset_tracker.constants import CALIBRATION_FREQUENCY_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
@@ -156,7 +156,7 @@ class AssetsEndPoint(object):
         if self.form['event_date']:
             event_date = get_date(self.form['event_date'])
         else:
-            event_date = datetime.utcnow().replace(microsecond=0)
+            event_date = date.today()
 
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
@@ -171,12 +171,21 @@ class AssetsEndPoint(object):
         for event_id in self.form['event-removed']:
             event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
             event.removed = True
-            event.removed_date = datetime.utcnow()
+            event.removed_at = datetime.utcnow()
             event.remover_id = self.request.user['id']
             event.remover_alias = self.request.user['alias']
 
     def update_status_and_calibration_next(self):
-        pass
+        self.asset.status = self.asset.history('desc').first().status
+
+        activation_first = self.asset.activation_first
+        calibration_last = self.asset.calibration_last
+        if activation_first and calibration_last and calibration_last > activation_first:
+            self.asset.calibration_next = calibration_last + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
+        elif activation_first:
+            self.asset.calibration_next = activation_first + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
+        else:
+            self.asset.calibration_next = None
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -193,9 +202,10 @@ class AssetsEndPoint(object):
             return dict(error=str(error), **self.get_base_form_data())
 
         # noinspection PyArgumentList
-        self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'], type=self.form['type'],
-                           site=self.form['site'], customer_id=self.form['customer_id'],
-                           customer_name=self.form['customer_name'], current_location=self.form['current_location'],
+        self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
+                           asset_type=self.form['asset_type'], site=self.form['site'],
+                           customer_id=self.form['customer_id'],  customer_name=self.form['customer_name'],
+                           current_location=self.form['current_location'],
                            software_version=self.form['software_version'], notes=self.form['notes'])
         self.request.db_session.add(self.asset)
 
@@ -205,18 +215,13 @@ class AssetsEndPoint(object):
 
         self.request.db_session.flush()
 
+        self.update_status_and_calibration_next()
+
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        production_first = self.asset.history('asc').join(EventStatus) \
-            .filter(EventStatus.status_id == 'manufactured').first()
-        self.asset.production = production_first.date.date() if production_first else None
-
-        if self.asset.activation_first:
-            self.asset.warranty_end = self.asset.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
-
         return dict(update=True, asset=self.asset, **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
@@ -230,7 +235,7 @@ class AssetsEndPoint(object):
 
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
-        self.asset.type = self.form['type']
+        self.asset.asset_type = self.form['asset_type']
         self.asset.customer_id = self.form['customer_id']
         self.asset.customer_name = self.form['customer_name']
         self.asset.site = self.form['site']
@@ -247,6 +252,8 @@ class AssetsEndPoint(object):
 
         if self.form.get('event-removed'):
             self.remove_events()
+
+        self.update_status_and_calibration_next()
 
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
