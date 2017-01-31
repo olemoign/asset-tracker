@@ -16,7 +16,7 @@
             </div>
 
             <table id="assets-list" class="dataTables table table-striped table-hover" data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
-                    data-custom-filter="status!=out_of_order" data-custom-filter-label="{{ gettext('Show out of order assets') }}" width="100%">
+                    data-custom-filter="status!=decommissioned" data-custom-filter-label="{{ gettext('Show decommissioned assets') }}" width="100%">
                 <thead>
                     <tr>
                         <th data-data="asset_id">{{ gettext('Asset ID') }}</th>

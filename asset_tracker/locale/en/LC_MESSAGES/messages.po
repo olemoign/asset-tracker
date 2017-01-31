@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-30 11:02+0100\n"
+"POT-Creation-Date: 2017-01-31 18:37+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -92,6 +92,10 @@ msgstr ""
 msgid "Date DD/MM/YYYY"
 msgstr ""
 
+#: configuration.json:106
+msgid "Decommissioned"
+msgstr ""
+
 #: configuration.json:49
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
@@ -148,19 +152,19 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:132
+#: views.py:131
 msgid "Invalid asset status."
 msgstr ""
 
-#: views.py:139
+#: views.py:138
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views.py:144
+#: views.py:143
 msgid "Invalid event."
 msgstr ""
 
-#: views.py:127
+#: views.py:126
 msgid "Invalid tenant."
 msgstr ""
 
@@ -180,7 +184,7 @@ msgstr ""
 msgid "Manufactured"
 msgstr ""
 
-#: views.py:120
+#: views.py:121
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -204,10 +208,6 @@ msgstr ""
 msgid "Otoscope - Firefly DE500A"
 msgstr ""
 
-#: configuration.json:106
-msgid "Out of order"
-msgstr ""
-
 #: templates/errors/404.html:5
 msgid "Page Not Found"
 msgstr ""
@@ -225,7 +225,7 @@ msgid "Settings"
 msgstr ""
 
 #: templates/assets-list.html:19
-msgid "Show out of order assets"
+msgid "Show decommissioned assets"
 msgstr ""
 
 #: templates/assets-create_update.html:50 templates/assets-list.html:25

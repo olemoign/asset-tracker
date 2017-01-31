@@ -101,9 +101,9 @@
       "label": "In repair"
     },
     {
-      "status_id": "out_of_order",
+      "status_id": "decommissioned",
       "position": "11",
-      "label": "Out of order"
+      "label": "Decommissioned"
     }
   ]
 }

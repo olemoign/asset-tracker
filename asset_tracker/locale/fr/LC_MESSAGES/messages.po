@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-30 11:02+0100\n"
+"POT-Creation-Date: 2017-01-31 18:37+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -92,6 +92,10 @@ msgstr "Nom du client"
 msgid "Date DD/MM/YYYY"
 msgstr "Date JJ/MM/AAAA"
 
+#: configuration.json:106
+msgid "Decommissioned"
+msgstr "Hors service"
+
 #: configuration.json:49
 msgid "Dermatoscope - Firefly DE300A"
 msgstr "Dermatoscope - Firefly DE300A"
@@ -148,19 +152,19 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views.py:132
+#: views.py:131
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views.py:139
+#: views.py:138
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views.py:144
+#: views.py:143
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views.py:127
+#: views.py:126
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -180,7 +184,7 @@ msgstr "Déconnexion"
 msgid "Manufactured"
 msgstr "Manufacturé"
 
-#: views.py:120
+#: views.py:121
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -204,10 +208,6 @@ msgstr "Notes"
 msgid "Otoscope - Firefly DE500A"
 msgstr "Otoscope - Firefly DE500A"
 
-#: configuration.json:106
-msgid "Out of order"
-msgstr "Hors service"
-
 #: templates/errors/404.html:5
 msgid "Page Not Found"
 msgstr "Page non trouvée"
@@ -225,7 +225,7 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #: templates/assets-list.html:19
-msgid "Show out of order assets"
+msgid "Show decommissioned assets"
 msgstr "Afficher les matériels hors service"
 
 #: templates/assets-create_update.html:50 templates/assets-list.html:25
