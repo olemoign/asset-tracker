@@ -4,8 +4,8 @@ from json import loads
 import pkg_resources
 import transaction
 
-from asset_tracker.models import Equipment, EquipmentFamily, get_engine, get_session_factory, get_tm_session, \
-    EventStatus
+from asset_tracker.models import Asset, Equipment, EquipmentFamily, EventStatus, get_engine, get_session_factory, \
+    get_tm_session
 
 
 logger = logging.getLogger('asset_tracker_actions')
@@ -56,12 +56,12 @@ def update_statuses(db_session, configuration):
         db_status.position = int(config_status['position'])
         db_status.label = config_status['label']
 
-    # Remove existing status if it was removed from the config and no equipment ever had this status.
+    # Remove existing status if it was removed from the config and no asset ever had this status.
     for db_status in db_statuses:
         config_status = next((x for x in config_statuses if x['status_id'] == db_status.status_id), None)
 
         if not config_status:
-            event = db_session.query(Equipment).filter_by(status=db_status).first()
+            event = db_session.query(Asset).filter_by(status=db_status).first()
             if event:
                 message = 'Status {} was removed from the configuration but can\'t be removed from the db.'
                 logger.info(message.format(db_status.label))
