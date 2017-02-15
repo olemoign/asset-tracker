@@ -2,21 +2,21 @@
 
 
 $(document).ready(function() {
-    //Set the favicon from CSS.
+    // Set the favicon from CSS.
     var favicon_link = $('link[rel=icon]');
     var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g, '');
     favicon_link.attr('href', favicon);
 
     createDataTables();
 
-    //Auto focus first input in page
+    // Auto focus first input in page.
     var firstInput = $('input[type=text]').first();
     firstInput.focus();
-    //Move cursor to the end of the input
+    // Move cursor to the end of the input.
     firstInput.val(firstInput.val());
 });
 
-//Manage equipments
+// Manage equipments.
 $(document).on('click', '.equipment__add', function(event) {
     event.preventDefault();
     $(this).parent().next().clone()
@@ -36,7 +36,7 @@ $(document).on('click', '.equipment__remove', function() {
 });
 
 
-//Datatables
+// Datatables.
 var dataTablesTranslations = {
     'fr': {
         'sProcessing':     'Traitement en cours...',
@@ -116,7 +116,7 @@ function createDataTables() {
 
         // Add the custom filter in the div created in the dom command above.
         var filterLabel = table.data('custom-filter-label');
-        //noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedFunction
         var tableState = initialisedDataTable.state.loaded();
         var inputIsChecked = (!tableState || !tableState.customFilter) ? ' checked' : '';
         var filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
@@ -137,10 +137,10 @@ function createDataTables() {
     });
 }
 
-/* Before table initialization, manage when to send the 'hide' query string. */
+//Before table initialization, manage when to send the 'hide' query string.
 $(document).on('preInit.dt', function(event, settings) {
     var api = new $.fn.dataTable.Api(settings);
-    //noinspection JSUnresolvedFunction
+    // noinspection JSUnresolvedFunction
     var state = api.state.loaded();
 
     // This is the table div.
@@ -161,7 +161,7 @@ $(document).on('preInit.dt', function(event, settings) {
     }
 });
 
-/* Add on each row the link sent from the Webservices. */
+// Add on each row the link sent from the Webservices.
 function addHrefToDataTablesRows(row, data) {
     if (data.links) {
         var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
@@ -180,14 +180,14 @@ $(document).on('click', '.paginate_button', function() {
     $('body').animate({scrollTop: 0}, 'slow');
 });
 
-//Hide events
+// Hide events.
 $(document).on('click', '.event__delete', function() {
     const eventID = $(this).data('eventid');
     $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
     $(this).parent().hide('fast');
 });
 
-//Validate date format
+// Validate date format.
 $(document).on('submit', 'form', function(event) {
     $('input[type="date"]').each(function() {
         const date = $(this).val();
