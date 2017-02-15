@@ -4,7 +4,7 @@ $black: #000;
 
 $link-color: $black;
 
-//Remove all radius
+// Remove all radius.
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
@@ -33,7 +33,7 @@ body, html {
   width: 100%;
 }
 
-//Login page
+// Login page.
 .login-container.login-container {
     max-width: 500px;
 }
@@ -57,24 +57,26 @@ body, html {
 table td a {
   text-decoration: none;
   color: $black;
-  //even if text doesn't cover the whole td, the whole space is clickable
+  // Even if text doesn't cover the whole td, the whole space is clickable.
   display: block;
 
-  &:hover {
+  margin-left: -10px;
+  padding-left: 10px;
+
+  margin-right: -10px;
+  padding-right: 10px;
+
+  &:active, &:focus, &:hover {
     text-decoration: none;
   }
 }
 
-//prevent showing horizontal scroll bar on xs screen even if table isn't big enough
+// Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
 .table-responsive {
   overflow-x: auto;
 }
 
-table tr[data-href] {
-  cursor: pointer;
-}
-
-//add padding to datatables tools in case we are in a panel
+// Add padding to datatables tools in case we are in a panel.
 .panel .dataTables_length,
 .panel .dataTables_filter {
   padding-top: 10px;

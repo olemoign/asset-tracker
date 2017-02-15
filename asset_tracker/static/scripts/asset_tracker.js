@@ -163,16 +163,18 @@ $(document).on('preInit.dt', function(event, settings) {
 
 /* Add on each row the link sent from the Webservices. */
 function addHrefToDataTablesRows(row, data) {
-    var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
-    row.dataset.href = object_link[0].href;
-}
+    if (data.links) {
+        var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
+        var rowTd = $(row).find('td');
 
-/* Trigger navigation to the stored link on click. */
-$(document).on('click', 'table tr', function() {
-    if (this.dataset.href) {
-        window.location.href = this.dataset.href;
+        rowTd.each(function() {
+            if (!$(this).text()) {
+                !$(this).html('&nbsp;');
+            }
+            $(this).wrapInner('<a href="' + object_link[0].href + '"></a>');
+        });
     }
-});
+}
 
 $(document).on('click', '.paginate_button', function() {
     $('body').animate({scrollTop: 0}, 'slow');
