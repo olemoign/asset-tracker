@@ -56,12 +56,7 @@ class Assets(object):
 
         assets = []
         for asset in output['items']:
-            status, calibration_next, link = '', '', None
-
-            has_admin_rights = 'g:admin' in self.request.effective_principals
-            has_manager_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
-            if has_admin_rights or has_manager_rights:
-                link = self.request.route_path('assets-update', asset_id=asset.id)
+            status, calibration_next = '', ''
 
             if asset.status:
                 status = self.request.localizer.translate(asset.status.label)
@@ -73,7 +68,13 @@ class Assets(object):
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
                             'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
-                            'calibration_next': calibration_next, 'links': [{'rel': 'self', 'href': link}]}
+                            'calibration_next': calibration_next}
+
+            has_admin_rights = 'g:admin' in self.request.effective_principals
+            has_read_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
+            if has_admin_rights or has_read_rights:
+                link = self.request.route_path('assets-update', asset_id=asset.id)
+                asset_output.update({'links': [{'rel': 'self', 'href': link}]})
 
             assets.append(asset_output)
 
