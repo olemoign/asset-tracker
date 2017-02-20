@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, input with context %}
 
-{% if update %}
-    {% set title = gettext('Asset') + ' ' + asset.asset_id %}
+{% if asset %}
+    {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
 {% else %}
     {% set title = gettext('Create asset') %}
 {% endif %}
