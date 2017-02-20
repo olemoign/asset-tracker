@@ -65,4 +65,3 @@ pip-selfcheck.json
 # Created by .ignore support plugin (hsz.mobi)
 
 tmp/
-asset_tracker.egg-info/
