@@ -55,8 +55,8 @@ class Asset(Model, CreationDateTimeMixin):
 
     @hybrid_property
     def warranty_end(self):
-        if self.asset.activation_first:
-            return self.asset.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
+        if self.activation_first:
+            return self.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
 
 
 class Equipment(Model):
