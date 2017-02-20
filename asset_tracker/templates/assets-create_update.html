@@ -25,7 +25,7 @@
             </div>
 
             <div class="panel-body">
-                <form role="form" action="{% if update %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
+                <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
                         {{ input(gettext('Asset ID'), 'asset_id', required=True) }}
@@ -52,7 +52,7 @@
                         {{ input(gettext('Software version'), 'software_version') }}
                     </div>
 
-                    {% if update %}
+                    {% if asset %}
                     <hr>
 
                     <div class="row">
@@ -77,9 +77,9 @@
 
                     <div class="row">
                         <div class="col-sm-6 form-group">
-                            <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
+                            <label for="event">{{ gettext('Add Event') }}{% if not asset %} *{% endif %}</label>
                             <select class="form-control" id="event" name="event">
-                                {% if update %}<option></option>{% endif %}
+                                {% if asset %}<option></option>{% endif %}
                                 {% for status in statuses|sort(attribute='position') %}
                                 <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
                                 {% endfor %}
@@ -147,7 +147,7 @@
                                 {%- if asset and asset.notes -%}{{ asset.notes }}{%- endif -%}
                             </textarea>
                         </div>
-                        {% if update %}
+                        {% if asset %}
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
                             {% for event in asset.history('asc') %}
@@ -159,7 +159,7 @@
                         </div>
                         {% endif %}
                     </div>
-                    {% if not update or 'g:admin' in principals or (asset.tenant_id, 'assets-update') in principals %}
+                    {% if not asset or 'g:admin' in principals or (asset.tenant_id, 'assets-update') in principals %}
                     <div class="btn-group pull-right">
                         <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
                         <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>

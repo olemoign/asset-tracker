@@ -222,7 +222,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        return dict(update=True, asset=self.asset, **self.get_base_form_data())
+        return dict(asset=self.asset, **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
@@ -231,7 +231,7 @@ class AssetsEndPoint(object):
             self.read_form()
             self.validate_form()
         except FormException as error:
-            return dict(update=True, error=str(error), asset=self.asset, **self.get_base_form_data())
+            return dict(error=str(error), asset=self.asset, **self.get_base_form_data())
 
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
