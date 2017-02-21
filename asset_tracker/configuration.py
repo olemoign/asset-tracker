@@ -15,17 +15,6 @@ def update_equipment_families(db_session, configuration):
     config_families = configuration['equipment_families']
     db_families = db_session.query(EquipmentFamily).all()
 
-    # Create new families and update names.
-    for config_family in config_families:
-        db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
-
-        if not db_family:
-            db_family = EquipmentFamily(family_id=config_family['family_id'])
-            db_session.add(db_family)
-            logger.info('Adding equipment family {}.'.format(config_family['model']))
-
-        db_family.model = config_family['model']
-
     # Remove existing family if it was removed from the config and no equipment is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
@@ -39,22 +28,21 @@ def update_equipment_families(db_session, configuration):
                 db_session.delete(db_family)
                 logger.info('Deleting equipment family {}.'.format(db_family.model))
 
+    # Create new families and update names.
+    for config_family in config_families:
+        db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
+
+        if not db_family:
+            db_family = EquipmentFamily(family_id=config_family['family_id'])
+            db_session.add(db_family)
+            logger.info('Adding equipment family {}.'.format(config_family['model']))
+
+        db_family.model = config_family['model']
+
 
 def update_statuses(db_session, configuration):
     config_statuses = configuration['status']
     db_statuses = db_session.query(EventStatus).all()
-
-    # Create new status and update names.
-    for config_status in config_statuses:
-        db_status = next((x for x in db_statuses if x.status_id == config_status['status_id']), None)
-
-        if not db_status:
-            db_status = EventStatus(status_id=config_status['status_id'])
-            db_session.add(db_status)
-            logger.info('Adding status {}.'.format(config_status['label']))
-
-        db_status.position = int(config_status['position'])
-        db_status.label = config_status['label']
 
     # Remove existing status if it was removed from the config and no asset ever had this status.
     for db_status in db_statuses:
@@ -68,6 +56,18 @@ def update_statuses(db_session, configuration):
             else:
                 db_session.delete(db_status)
                 logger.info('Deleting status {}.'.format(db_status.label))
+
+    # Create new status and update names.
+    for config_status in config_statuses:
+        db_status = next((x for x in db_statuses if x.status_id == config_status['status_id']), None)
+
+        if not db_status:
+            db_status = EventStatus(status_id=config_status['status_id'])
+            db_session.add(db_status)
+            logger.info('Adding status {}.'.format(config_status['label']))
+
+        db_status.position = int(config_status['position'])
+        db_status.label = config_status['label']
 
 
 def update_configuration(settings):
