@@ -168,8 +168,8 @@ function addHrefToDataTablesRows(row, data) {
         var rowTd = $(row).find('td');
 
         rowTd.each(function() {
-            if (!$(this).text()) {
-                !$(this).html('&nbsp;');
+            if (!$(this).html()) {
+                $(this).html('&nbsp;');
             }
             $(this).wrapInner('<a href="' + object_link[0].href + '"></a>');
         });
