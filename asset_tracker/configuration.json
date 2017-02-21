@@ -51,58 +51,48 @@
   ],
   "status": [
     {
-      "status_id": "pre_production",
-      "position": "1",
-      "label": "Pre-production"
-    },
-    {
-      "status_id": "manufactured",
-      "position": "2",
-      "label": "Manufactured"
-    },
-    {
-      "status_id": "calibration",
-      "position": "3",
-      "label": "In calibration"
-    },
-    {
       "status_id": "stock_parsys",
-      "position": "4",
+      "position": "1",
       "label": "In stock - Parsys"
     },
     {
       "status_id": "transit_distributor",
-      "position": "5",
+      "position": "2",
       "label": "In transit to distributor"
     },
     {
       "status_id": "stock_distributor",
-      "position": "6",
+      "position": "3",
       "label": "In stock - distributor"
     },
     {
       "status_id": "transit_customer",
-      "position": "7",
+      "position": "4",
       "label": "In transit to customer"
     },
     {
       "status_id": "service",
-      "position": "8",
+      "position": "5",
       "label": "In service"
     },
     {
       "status_id": "transit_parsys",
-      "position": "9",
+      "position": "6",
       "label": "In transit to Parsys"
     },
     {
+      "status_id": "calibration",
+      "position": "7",
+      "label": "In calibration"
+    },
+    {
       "status_id": "repair",
-      "position": "10",
+      "position": "8",
       "label": "In repair"
     },
     {
       "status_id": "decommissioned",
-      "position": "11",
+      "position": "9",
       "label": "Decommissioned"
     }
   ]
