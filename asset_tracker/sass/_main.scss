@@ -60,10 +60,10 @@ table td a {
 
   // Even if text doesn't cover the whole td, the whole space is clickable.
   display: block;
-  margin-left: -10px;
-  padding-left: 10px;
-  margin-right: -10px;
-  padding-right: 10px;
+  margin-left: -8px;
+  padding-left: 8px;
+  margin-right: -8px;
+  padding-right: 8px;
 
   &:active, &:focus, &:hover {
     text-decoration: none;
