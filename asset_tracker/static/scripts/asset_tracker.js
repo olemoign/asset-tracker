@@ -71,8 +71,9 @@ function createDataTables() {
     table.find('th').each(function() {
         var col = {};
         // We can't set the render functions using HTML5 data parameters so we simulate this behavior.
-        if ($(this).data('render')) {
-            col.render = window[$(this).data('render')];
+        var renderFunction = $(this).data('render');
+        if (renderFunction) {
+            col.render = window[renderFunction];
         }
         columns.push(col);
     });
