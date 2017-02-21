@@ -61,3 +61,7 @@ target/
 [Ll]ib
 pyvenv.cfg
 pip-selfcheck.json
+
+# Dev
+tmp/
+!.gitkeep
