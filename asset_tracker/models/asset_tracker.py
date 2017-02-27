@@ -33,6 +33,7 @@ class Asset(Model, CreationDateTimeMixin):
     status_id = Field(Integer, ForeignKey('event_status.id'))
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
+    calibration_frequency = Field(Integer)
     calibration_next = Field(Date)
 
     @hybrid_property

@@ -9,12 +9,11 @@ from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
-from pyramid.settings import asbool
+from pyramid.settings import asbool, aslist
 from pyramid.view import exception_view_config, notfound_view_config, view_config
 
-from asset_tracker.constants import CALIBRATION_FREQUENCY_YEARS
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
-
 
 DEFAULT_BRANDING = 'parsys_cloud'
 
@@ -23,6 +22,7 @@ DEFAULT_BRANDING = 'parsys_cloud'
 def add_global_variables(event):
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
+    event['client_specific'] = aslist(event['request'].registry.settings.get('asset_tracker.client_specific', []))
     event['csrf_token'] = event['request'].session.get_csrf_token()
 
     event['principals'] = event['request'].effective_principals
@@ -61,6 +61,7 @@ class AssetsEndPoint(object):
     def __init__(self, request):
         self.request = request
         self.asset = self.get_asset()
+        self.client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
         self.form = None
 
     def get_asset(self):
@@ -100,10 +101,13 @@ class AssetsEndPoint(object):
         # Translate family models so that they can be sorted translated on the page.
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
+
         statuses = self.request.db_session.query(EventStatus).all()
+
         tenants = self.get_create_update_tenants()
 
-        return {'equipments_families': equipments_families, 'statuses': statuses, 'tenants': tenants}
+        return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
+                'statuses': statuses, 'tenants': tenants}
 
     def read_form(self):
         self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
@@ -127,7 +131,10 @@ class AssetsEndPoint(object):
         else:
             self.form['event-removed'] = []
 
-        if not self.form['asset_id'] or not self.form['tenant_id'] or (not self.asset and not self.form['event']):
+        has_creation_event = self.asset or self.form.get('event')
+        has_calibration_frequency = 'marlink' in self.client_specific or self.form.get('calibration_frequency')
+        if not self.form.get('asset_id') or not self.form.get('tenant_id') or not self.form.get('asset_type') \
+                or not has_creation_event or not has_calibration_frequency:
             raise FormException(_('Missing mandatory data.'))
 
     def validate_form(self):
@@ -188,14 +195,9 @@ class AssetsEndPoint(object):
     def update_status_and_calibration_next(self):
         self.asset.status = self.asset.history('desc').first().status
 
-        activation_first = self.asset.activation_first
         calibration_last = self.asset.calibration_last
-        if activation_first and calibration_last and calibration_last > activation_first:
-            self.asset.calibration_next = calibration_last + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
-        elif activation_first:
-            self.asset.calibration_next = activation_first + relativedelta(years=CALIBRATION_FREQUENCY_YEARS)
-        else:
-            self.asset.calibration_next = None
+        if calibration_last:
+            self.asset.calibration_next = calibration_last + relativedelta(years=self.asset.calibration_frequency)
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -211,12 +213,18 @@ class AssetsEndPoint(object):
         except FormException as error:
             return dict(error=str(error), **self.get_base_form_data())
 
+        if 'marlink' in self.client_specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            calibration_frequency = self.form['calibration_frequency']
+
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
                            asset_type=self.form['asset_type'], site=self.form.get('site') or None,
                            customer_id=self.form.get('customer_id') or None,
                            customer_name=self.form.get('customer_name') or None,
                            current_location=self.form.get('current_location') or None,
+                           calibration_frequency=calibration_frequency,
                            software_version=self.form.get('software_version') or None,
                            notes=self.form.get('notes') or None)
         self.request.db_session.add(self.asset)
@@ -250,10 +258,17 @@ class AssetsEndPoint(object):
         self.asset.asset_type = self.form['asset_type']
         self.asset.customer_id = self.form.get('customer_id') or None
         self.asset.customer_name = self.form.get('customer_name') or None
+
         self.asset.site = self.form.get('site') or None
         self.asset.current_location = self.form.get('current_location') or None
         self.asset.software_version = self.form.get('software_version') or None
+
         self.asset.notes = self.form.get('notes') or None
+
+        if 'marlink' in self.client_specific:
+            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            self.asset.calibration_frequency = self.form['calibration_frequency']
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)

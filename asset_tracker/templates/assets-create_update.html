@@ -45,10 +45,26 @@
                                 {% endfor %}
                             </select>
                         </div>
+
+                        {% if 'marlink' in client_specific %}
                         {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
+                        {% endif %}
+
                         {{ input(gettext('Customer name'), 'customer_name') }}
                         {{ input(gettext('Site'), 'site') }}
                         {{ input(gettext('Current location'), 'current_location') }}
+
+                        {% if not 'marlink' in client_specific %}
+                        <div class="col-sm-6 form-group">
+                            <label for="calibration_frequency">{{ gettext('Calibration frequency') }}{% if not asset %} *{% endif %}</label>
+                            <select class="form-control" id="calibration_frequency" name="calibration_frequency">
+                                {% for type, frequency in calibration_frequencies.items() %}
+                                <option value="{{ frequency }}">{{ frequency ~ ' ' ~ gettext('years') }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
                         {{ input(gettext('Software version'), 'software_version') }}
                     </div>
 
