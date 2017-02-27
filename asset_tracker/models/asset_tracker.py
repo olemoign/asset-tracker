@@ -44,12 +44,16 @@ class Asset(Model, CreationDateTimeMixin):
     @hybrid_property
     def calibration_last(self):
         calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
-        if calibration_last:
+        if self.production and calibration_last:
+            return max(self.production, calibration_last.date)
+        elif calibration_last:
             return calibration_last.date
+        elif self.production:
+            return self.production
 
     @hybrid_property
     def production(self):
-        production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'manufactured').first()
+        production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
             return production.date
 
