@@ -56,8 +56,8 @@ def main(global_config, **settings):
     config.add_translation_dirs('asset_tracker:locale')
 
     cookie_signature = settings['asset_tracker.cookie_signature']
-    authentication_policy = \
-        OpenIDConnectAuthenticationPolicy(callback=partial(get_effective_principals, allow_admins=True))
+    authentication_callback = partial(get_effective_principals, allow_admins=True)
+    authentication_policy = OpenIDConnectAuthenticationPolicy(callback=authentication_callback)
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
@@ -92,7 +92,7 @@ def main(global_config, **settings):
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=3600)
 
     asset_tracker_version = pkg_resources.require(__package__)[0].version
-    logging.getLogger('asset_tracker_actions').info('Starting rta version %s', asset_tracker_version)
+    logging.getLogger('asset_tracker_actions').info('Starting asset tracker version %s', asset_tracker_version)
 
     log_requests = asbool(settings.get('asset_tracker.dev.log_requests', False))
     if log_requests:
