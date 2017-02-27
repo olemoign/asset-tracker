@@ -109,13 +109,20 @@ class AssetsEndPoint(object):
         self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
         # doesn't behave weirdly.
-        if not isinstance(self.form['equipment-family'], list):
+        if self.form.get('equipment-family') and not isinstance(self.form['equipment-family'], list):
             self.form['equipment-family'] = [self.form['equipment-family']]
-        if not isinstance(self.form['equipment-serial_number'], list):
+        else:
+            self.form['equipment-family'] = []
+
+        if self.form.get('equipment-serial_number') and not isinstance(self.form['equipment-serial_number'], list):
             self.form['equipment-serial_number'] = [self.form['equipment-serial_number']]
+        else:
+            self.form['equipment-serial_number'] = []
 
         if self.form.get('event-removed') and not isinstance(self.form['event-removed'], list):
             self.form['event-removed'] = [self.form['event-removed']]
+        else:
+            self.form['event-removed'] = []
 
         if not self.form['asset_id'] or not self.form['tenant_id'] or (not self.asset and not self.form['event']):
             raise FormException(_('Missing mandatory data.'))
@@ -137,7 +144,7 @@ class AssetsEndPoint(object):
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'))
 
-        for event_id in self.form.get('event-removed', []):
+        for event_id in self.form['event-removed']:
             event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
             if not event or event.asset_id != self.asset.id:
                 raise FormException(_('Invalid event.'))
@@ -153,7 +160,7 @@ class AssetsEndPoint(object):
             self.request.db_session.add(equipment)
 
     def add_event(self):
-        if self.form['event_date']:
+        if self.form.get('event_date'):
             event_date = get_date(self.form['event_date'])
         else:
             event_date = date.today()
@@ -204,7 +211,7 @@ class AssetsEndPoint(object):
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
                            asset_type=self.form['asset_type'], site=self.form['site'],
-                           customer_id=self.form['customer_id'],  customer_name=self.form['customer_name'],
+                           customer_id=self.form['customer_id'], customer_name=self.form['customer_name'],
                            current_location=self.form['current_location'],
                            software_version=self.form['software_version'], notes=self.form['notes'])
         self.request.db_session.add(self.asset)
@@ -236,18 +243,18 @@ class AssetsEndPoint(object):
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
         self.asset.asset_type = self.form['asset_type']
-        self.asset.customer_id = self.form['customer_id']
-        self.asset.customer_name = self.form['customer_name']
-        self.asset.site = self.form['site']
-        self.asset.current_location = self.form['current_location']
-        self.asset.software_version = self.form['software_version']
-        self.asset.notes = self.form['notes']
+        self.asset.customer_id = self.form.get('customer_id') or None
+        self.asset.customer_name = self.form.get('customer_name') or None
+        self.asset.site = self.form.get('site') or None
+        self.asset.current_location = self.form.get('current_location') or None
+        self.asset.software_version = self.form.get('software_version') or None
+        self.asset.notes = self.form.get('notes') or None
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)
         self.add_equipments()
 
-        if self.form['event']:
+        if self.form.get('event'):
             self.add_event()
 
         if self.form.get('event-removed'):
