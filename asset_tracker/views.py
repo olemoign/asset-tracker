@@ -119,6 +119,9 @@ class AssetsEndPoint(object):
         else:
             self.form['equipment-serial_number'] = []
 
+        if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
+            raise FormException(_('Invalid equipments.'))
+
         if self.form.get('event-removed') and not isinstance(self.form['event-removed'], list):
             self.form['event-removed'] = [self.form['event-removed']]
         else:
@@ -210,10 +213,12 @@ class AssetsEndPoint(object):
 
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
-                           asset_type=self.form['asset_type'], site=self.form['site'],
-                           customer_id=self.form['customer_id'], customer_name=self.form['customer_name'],
-                           current_location=self.form['current_location'],
-                           software_version=self.form['software_version'], notes=self.form['notes'])
+                           asset_type=self.form['asset_type'], site=self.form.get('site') or None,
+                           customer_id=self.form.get('customer_id') or None,
+                           customer_name=self.form.get('customer_name') or None,
+                           current_location=self.form.get('current_location') or None,
+                           software_version=self.form.get('software_version') or None,
+                           notes=self.form.get('notes') or None)
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
