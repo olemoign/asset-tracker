@@ -195,9 +195,30 @@ class AssetsEndPoint(object):
     def update_status_and_calibration_next(self):
         self.asset.status = self.asset.history('desc').first().status
 
-        calibration_last = self.asset.calibration_last
-        if calibration_last:
-            self.asset.calibration_next = calibration_last + relativedelta(years=self.asset.calibration_frequency)
+        if 'marlink' in self.client_specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+            calibration_last = self.asset.calibration_last
+
+            # If station was calibrated (it should be, as production is considered a calibration).
+            if calibration_last:
+                activation_next = self.asset.history('asc').filter(Event.date > calibration_last) \
+                    .join(EventStatus).filter(EventStatus.status_id == 'service').first()
+                if activation_next:
+                    self.asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
+                else:
+                    self.asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
+
+            # If station wasn't calibrated.
+            else:
+                activation_first = self.asset.history('asc').join(EventStatus) \
+                    .filter(EventStatus.status_id == 'service').first()
+                if activation_first:
+                    self.asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
+
+        else:
+            calibration_last = self.asset.calibration_last
+            if calibration_last:
+                self.asset.calibration_next = calibration_last + relativedelta(years=self.asset.calibration_frequency)
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
