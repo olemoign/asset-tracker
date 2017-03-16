@@ -168,7 +168,7 @@
                         {% if asset %}
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
-                            {% for event in asset.history('asc').all() %}
+                            {% for event in asset.history('asc') %}
                             <p class="history_event">{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
                                     status=gettext(event.status.label), date=event.date|format_date(locale)) }}.
                                 <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
