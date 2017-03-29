@@ -113,23 +113,26 @@ class AssetsEndPoint(object):
         self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
         # doesn't behave weirdly.
-        if self.form.get('equipment-family') and not isinstance(self.form['equipment-family'], list):
-            self.form['equipment-family'] = [self.form['equipment-family']]
-        else:
-            self.form['equipment-family'] = []
+        equipment_families = self.form.get('equipment-family')
+        if not equipment_families:
+            self.form['equipment-family'] = ['']
+        elif not isinstance(equipment_families, list):
+            self.form['equipment-family'] = [equipment_families]
 
-        if self.form.get('equipment-serial_number') and not isinstance(self.form['equipment-serial_number'], list):
+        equipment_serial_numbers = self.form.get('equipment-serial_number')
+        if not equipment_serial_numbers:
+            self.form['equipment-serial_number'] = ['']
+        elif not isinstance(equipment_serial_numbers, list):
             self.form['equipment-serial_number'] = [self.form['equipment-serial_number']]
-        else:
-            self.form['equipment-serial_number'] = []
 
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
             raise FormException(_('Invalid equipments.'))
 
-        if self.form.get('event-removed') and not isinstance(self.form['event-removed'], list):
-            self.form['event-removed'] = [self.form['event-removed']]
-        else:
+        events_removed = self.form.get('event-removed')
+        if not events_removed:
             self.form['event-removed'] = []
+        elif not isinstance(events_removed, list):
+            self.form['event-removed'] = [self.form['event-removed']]
 
         has_creation_event = self.asset or self.form.get('event')
         has_calibration_frequency = 'marlink' in self.client_specific or self.form.get('calibration_frequency')
@@ -289,7 +292,7 @@ class AssetsEndPoint(object):
         if 'marlink' in self.client_specific:
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
-            self.asset.calibration_frequency = self.form['calibration_frequency']
+            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)
