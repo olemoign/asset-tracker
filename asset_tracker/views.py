@@ -66,10 +66,9 @@ class AssetsEndPoint(object):
 
     def get_asset(self):
         asset_id = self.request.matchdict.get('asset_id')
-        if not asset_id:
-            return
+        asset = self.request.db_session.query(Asset).options(joinedload('equipments')) \
+            .filter_by(id=asset_id).first() if asset_id else None
 
-        asset = self.request.db_session.query(Asset).options(joinedload('equipments')).get(asset_id)
         if not asset:
             raise HTTPNotFound()
 
