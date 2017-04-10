@@ -54,9 +54,18 @@ release-image:
 
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
-    - docker pull $CONTAINER_TEST_IMAGE
+    - docker push $CONTAINER_TEST_IMAGE
+
+release-latest-image:
+  stage: release
+  tags:
+    - docker-builder
+
+  script:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
     - docker push $CONTAINER_RELEASE_IMAGE
+
   only:
     - master
 
