@@ -59,7 +59,7 @@
                             <label for="calibration_frequency">{{ gettext('Calibration frequency') }}{% if not asset %} *{% endif %}</label>
                             <select class="form-control" id="calibration_frequency" name="calibration_frequency">
                                 {% for type, frequency in calibration_frequencies.items() %}
-                                <option value="{{ frequency }}">{{ frequency ~ ' ' ~ gettext('years') }}</option>
+                                <option value="{{ frequency }}"{% if asset and asset.calbration_frequency == frequency %} selected{% endif %}>>{{ frequency ~ ' ' ~ gettext('years') }}</option>
                                 {% endfor %}
                             </select>
                         </div>

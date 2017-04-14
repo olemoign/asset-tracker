@@ -1,6 +1,6 @@
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.model import Boolean, CreationDateTimeMixin, Date, DateTime, Field, ForeignKey, hybrid_method, \
-    hybrid_property, Integer, Model, relationship, String
+from parsys_utilities.model import Boolean, CreationDateTimeMixin, Date, DateTime, Field, ForeignKey, Integer, Model, \
+    relationship, String
 from parsys_utilities.random import random_id
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
@@ -23,7 +23,6 @@ class Asset(Model, CreationDateTimeMixin):
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
-    @hybrid_method
     def history(self, order):
         if order == 'asc':
             return self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
@@ -36,13 +35,13 @@ class Asset(Model, CreationDateTimeMixin):
     calibration_frequency = Field(Integer)
     calibration_next = Field(Date)
 
-    @hybrid_property
+    @property
     def activation_first(self):
         activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
         if activation_first:
             return activation_first.date
 
-    @hybrid_property
+    @property
     def calibration_last(self):
         calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
         if self.production and calibration_last:
@@ -52,13 +51,13 @@ class Asset(Model, CreationDateTimeMixin):
         elif self.production:
             return self.production
 
-    @hybrid_property
+    @property
     def production(self):
         production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
             return production.date
 
-    @hybrid_property
+    @property
     def warranty_end(self):
         if self.activation_first:
             return self.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
@@ -66,7 +65,7 @@ class Asset(Model, CreationDateTimeMixin):
 
 class Equipment(Model):
     family_id = Field(Integer, ForeignKey('equipment_family.id'))
-    family = relationship('EquipmentFamily', foreign_keys=family_id)
+    family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
 
     asset_id = Field(Integer, ForeignKey('asset.id'), nullable=False)
 
@@ -94,7 +93,7 @@ class Event(Model, CreationDateTimeMixin):
     remover_alias = Field(String)
 
     status_id = Field(Integer, ForeignKey('event_status.id'), nullable=False)
-    status = relationship('EventStatus', foreign_keys=status_id)
+    status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
 
 class EventStatus(Model):
