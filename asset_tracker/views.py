@@ -141,6 +141,10 @@ class AssetsEndPoint(object):
             raise FormException(_('Missing mandatory data.'))
 
     def validate_form(self):
+        calibration_frequency = self.form.get('calibration_frequency')
+        if calibration_frequency and not calibration_frequency.isdigit():
+            raise FormException(_('Invalid calibration frequency.'))
+
         tenants_ids = [tenant['id'] for tenant in self.get_create_update_tenants()]
         if self.form['tenant_id'] not in tenants_ids:
             raise FormException(_('Invalid tenant.'))
@@ -240,7 +244,7 @@ class AssetsEndPoint(object):
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
-            calibration_frequency = self.form['calibration_frequency']
+            calibration_frequency = int(self.form['calibration_frequency'])
 
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
