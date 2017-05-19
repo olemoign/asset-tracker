@@ -1,10 +1,10 @@
 import logging
 from functools import partial
 
+import parsys_utilities.celery_app as celery
 import pkg_resources
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
-from parsys_utilities.celery_app import app as celery_app
 from parsys_utilities.logging import logger
 from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
@@ -73,9 +73,8 @@ def main(global_config, **settings):
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
 
-    celery_broker_url = settings.get('celery.broker_url')
-    if celery_broker_url:
-        celery_app.conf.update(BROKER_URL=celery_broker_url)
+    config_file = global_config['__file__']
+    celery.configure_celery_app(config_file)
 
     config.include('asset_tracker.models')
     config.include('asset_tracker.api', route_prefix='api')
