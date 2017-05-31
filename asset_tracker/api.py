@@ -1,6 +1,5 @@
 import os
 from collections import OrderedDict
-from copy import deepcopy
 
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
@@ -138,13 +137,15 @@ class Software(object):
             return {}
 
         # Create a new OrderedDict for the output so that we can mutate the dict while looping on it.
-        channel_versions = deepcopy(product_versions)
+        channel_versions = OrderedDict()
 
         channel = self.request.GET.get('channel', 'stable')
-        if channel not in ['alpha', 'beta', 'dev', 'rc']:
-            for version, file in product_versions.items():
-                if 'alpha' in version or 'beta' in version:
-                    channel_versions.pop(version)
+        for version, file in product_versions.items():
+            alpha = 'alpha' in version and channel in ['alpha', 'dev']
+            beta = 'beta' in version and channel in ['beta', 'dev']
+            stable = 'alpha' not in version and 'beta' not in version and channel not in ['alpha', 'beta']
+            if alpha or beta or stable:
+                channel_versions[version] = file
 
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
