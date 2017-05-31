@@ -152,5 +152,5 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
-    config.add_route(pattern='download/{file}/', name='api-software-download')
+    config.add_route(pattern='download/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
