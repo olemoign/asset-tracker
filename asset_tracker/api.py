@@ -131,7 +131,8 @@ class Software(object):
 
         version = self.request.GET.get('version')
         if version and version in product_versions.keys():
-            download_url = self.request.route_url('api-software-download', file=product_versions[version])
+            file = product_versions[version]
+            download_url = self.request.route_url('api-software-download', product=self.product, file=file)
             return {'version': version, 'url': download_url}
         elif version:
             return {}
@@ -146,11 +147,11 @@ class Software(object):
                     channel_versions.pop(version)
 
         channel_version = channel_versions.popitem(last=True)
-        download_url = self.request.route_url('api-software-download', file=channel_version[1])
+        download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return {'version': channel_version[0], 'url': download_url}
 
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
-    config.add_route(pattern='download/{file}', name='api-software-download')
+    config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
