@@ -57,7 +57,7 @@ def main(global_config, **settings):
 
     cookie_signature = settings['asset_tracker.cookie_signature']
     authentication_callback = partial(get_effective_principals, allow_admins=True)
-    authentication_policy = OpenIDConnectAuthenticationPolicy(callback=authentication_callback)
+    authentication_policy = OpenIDConnectAuthenticationPolicy(callback=authentication_callback, authorize_services=True)
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)

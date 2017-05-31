@@ -1,8 +1,11 @@
+import os
+from collections import OrderedDict
+
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -56,15 +59,13 @@ class Assets(object):
 
         assets = []
         for asset in output['items']:
-            status, calibration_next = '', ''
-
-            if asset.status:
-                status = self.request.localizer.translate(asset.status.label)
-
             if asset.calibration_next:
                 calibration_next = format_date(asset.calibration_next, self.request.locale_name)
+            else:
+                calibration_next = None
 
             asset_type = self.request.localizer.translate(asset.asset_type.capitalize())
+            status = self.request.localizer.translate(asset.status.label)
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
                             'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
@@ -74,7 +75,7 @@ class Assets(object):
             has_read_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
             if has_admin_rights or has_read_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
-                asset_output.update({'links': [{'rel': 'self', 'href': link}]})
+                asset_output['links'] = [{'rel': 'self', 'href': link}]
 
             assets.append(asset_output)
 
@@ -82,5 +83,76 @@ class Assets(object):
                 'data': assets}
 
 
+class Software(object):
+    __acl__ = [
+        (Allow, None, 'software-update', 'software-update'),
+        (Allow, None, 'g:admin', 'software-update'),
+    ]
+
+    def __init__(self, request):
+        self.request = request
+        self.product = None
+
+    def get_version_from_file(self, file_name):
+        # Remove file extension
+        file_name = os.path.splitext(file_name)[0]
+        file_name = file_name.lstrip(self.product)
+        file_name = file_name.lstrip('-')
+        return file_name
+
+    @view_config(route_name='api-software-update', request_method='GET', permission='software-update', renderer='json')
+    def software_update_get(self):
+        self.product = self.request.GET.get('product')
+        if not self.product:
+            return HTTPBadRequest(json={'error': 'Missing product.'})
+
+        # If storage folder wasn't set up, can't return link.
+        storage = self.request.registry.settings.get('asset_tracker.software_storage')
+        if not storage:
+            return {}
+
+        # Products are stored in sub-folders in the storage path.
+        # As os.walk is recursive, we need to work the results a bit.
+        products = next(os.walk(storage), [])
+        products = products[1] if products else []
+        if self.product not in products:
+            return HTTPNotFound(json={'error': 'Unknown product.'})
+
+        product_folder = os.path.join(storage, self.product)
+        product_files = next(os.walk(product_folder))[2]
+
+        product_versions = {}
+        for product_file in product_files:
+            version = self.get_version_from_file(product_file)
+            product_versions[version] = product_file
+        # Sort dictionary by version (which are the keys of the dict).
+        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: k[0]))
+
+        version = self.request.GET.get('version')
+        if version and version in product_versions.keys():
+            file = product_versions[version]
+            download_url = self.request.route_url('api-software-download', product=self.product, file=file)
+            return {'version': version, 'url': download_url}
+        elif version:
+            return {}
+
+        # Create a new OrderedDict for the output so that we can mutate the dict while looping on it.
+        channel_versions = OrderedDict()
+
+        channel = self.request.GET.get('channel', 'stable')
+        for version, file in product_versions.items():
+            alpha = 'alpha' in version and channel in ['alpha', 'dev']
+            beta = 'beta' in version and channel in ['beta', 'dev']
+            stable = 'alpha' not in version and 'beta' not in version and channel not in ['alpha', 'beta']
+            if alpha or beta or stable:
+                channel_versions[version] = file
+
+        channel_version = channel_versions.popitem(last=True)
+        download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
+        return {'version': channel_version[0], 'url': download_url}
+
+
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
+    config.add_route(pattern='download/{product}/{file}', name='api-software-download')
+    config.add_route(pattern='update/', name='api-software-update', factory=Software)
