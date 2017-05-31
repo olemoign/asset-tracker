@@ -101,8 +101,7 @@ class Software(object):
         file_name = file_name.lstrip('-')
         return file_name
 
-    # @view_config(route_name='api-software_update', request_method='GET', permission='software-update', renderer='json')
-    @view_config(route_name='api-software_update', request_method='GET', renderer='json')
+    @view_config(route_name='api-software-update', request_method='GET', permission='software-update', renderer='json')
     def software_update_get(self):
         self.product = self.request.GET.get('product')
         if not self.product:
@@ -132,7 +131,8 @@ class Software(object):
 
         version = self.request.GET.get('version')
         if version and version in product_versions.keys():
-            return {'version': version, 'url': product_versions[version]}
+            download_url = self.request.route_url('api-software-download', file=product_versions[version])
+            return {'version': version, 'url': download_url}
         elif version:
             return {}
 
@@ -146,9 +146,11 @@ class Software(object):
                     channel_versions.pop(version)
 
         channel_version = channel_versions.popitem(last=True)
-        return {'version': channel_version[0], 'url': channel_version[1]}
+        download_url = self.request.route_url('api-software-download', file=channel_version[1])
+        return {'version': channel_version[0], 'url': download_url}
 
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
-    config.add_route(pattern='update/', name='api-software_update', factory=Software)
+    config.add_route(pattern='download/{file}/', name='api-software-download')
+    config.add_route(pattern='update/', name='api-software-update', factory=Software)
