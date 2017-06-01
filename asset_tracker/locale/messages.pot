@@ -8,34 +8,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-31 18:37+0100\n"
+"POT-Creation-Date: 2017-06-01 11:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
-#: templates/assets-create_update.html:154
+#: templates/assets-create_update.html:172
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr ""
 
-#: templates/assets-create_update.html:69
+#: templates/assets-create_update.html:87
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:80
+#: templates/assets-create_update.html:98
 msgid "Add Event"
 msgstr ""
 
 #: templates/errors/500.html:9
 msgid "An error occured. Please retry later."
-msgstr ""
-
-#: templates/assets-create_update.html:5
-msgid "Asset"
 msgstr ""
 
 #: templates/assets-create_update.html:31 templates/assets-list.html:22
@@ -55,7 +51,11 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:164
+#: templates/assets-create_update.html:59
+msgid "Calibration frequency"
+msgstr ""
+
+#: templates/assets-create_update.html:182
 msgid "Cancel"
 msgstr ""
 
@@ -71,7 +71,7 @@ msgstr ""
 msgid "Create asset"
 msgstr ""
 
-#: templates/assets-create_update.html:51
+#: templates/assets-create_update.html:55
 msgid "Current location"
 msgstr ""
 
@@ -79,19 +79,19 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: templates/assets-create_update.html:48
+#: templates/assets-create_update.html:50
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/assets-create_update.html:49
+#: templates/assets-create_update.html:53
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:88
+#: templates/assets-create_update.html:106
 msgid "Date DD/MM/YYYY"
 msgstr ""
 
-#: configuration.json:106
+#: configuration.json:96
 msgid "Decommissioned"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: templates/assets-create_update.html:95
+#: templates/assets-create_update.html:113
 msgid "Equipments"
 msgstr ""
 
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:152
+#: templates/assets-create_update.html:170
 msgid "History"
 msgstr ""
 
@@ -119,51 +119,59 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: configuration.json:66
+#: configuration.json:86
 msgid "In calibration"
 msgstr ""
 
-#: configuration.json:101
+#: configuration.json:91
 msgid "In repair"
 msgstr ""
 
-#: configuration.json:91
+#: configuration.json:76
 msgid "In service"
 msgstr ""
 
-#: configuration.json:71
+#: configuration.json:56
 msgid "In stock - Parsys"
 msgstr ""
 
-#: configuration.json:81
+#: configuration.json:66
 msgid "In stock - distributor"
 msgstr ""
 
-#: configuration.json:96
+#: configuration.json:81
 msgid "In transit to Parsys"
 msgstr ""
 
-#: configuration.json:86
+#: configuration.json:71
 msgid "In transit to customer"
 msgstr ""
 
-#: configuration.json:76
+#: configuration.json:61
 msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:131
+#: views.py:155
 msgid "Invalid asset status."
 msgstr ""
 
-#: views.py:138
+#: views.py:146
+msgid "Invalid calibration frequency."
+msgstr ""
+
+#: views.py:162
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views.py:143
+#: views.py:129
+msgid "Invalid equipments."
+msgstr ""
+
+#: views.py:167
 msgid "Invalid event."
 msgstr ""
 
-#: views.py:126
+#: views.py:150
 msgid "Invalid tenant."
 msgstr ""
 
@@ -171,7 +179,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:70
+#: templates/assets-create_update.html:88
 msgid "Last calibration"
 msgstr ""
 
@@ -179,11 +187,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: configuration.json:61
-msgid "Manufactured"
-msgstr ""
-
-#: views.py:121
+#: views.py:141
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -191,7 +195,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:71 templates/assets-list.html:26
+#: templates/assets-create_update.html:89 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr ""
 
@@ -199,7 +203,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:145
+#: templates/assets-create_update.html:163
 msgid "Notes"
 msgstr ""
 
@@ -211,11 +215,7 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: configuration.json:56
-msgid "Pre-production"
-msgstr ""
-
-#: templates/assets-create_update.html:68
+#: templates/assets-create_update.html:86
 msgid "Production"
 msgstr ""
 
@@ -227,11 +227,11 @@ msgstr ""
 msgid "Show decommissioned assets"
 msgstr ""
 
-#: templates/assets-create_update.html:50 templates/assets-list.html:25
+#: templates/assets-create_update.html:54 templates/assets-list.html:25
 msgid "Site"
 msgstr ""
 
-#: templates/assets-create_update.html:52
+#: templates/assets-create_update.html:68
 msgid "Software version"
 msgstr ""
 
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:61 templates/assets-list.html:27
+#: templates/assets-create_update.html:77 templates/assets-list.html:27
 msgid "Status"
 msgstr ""
 
@@ -255,7 +255,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:165
+#: templates/assets-create_update.html:183
 msgid "Submit"
 msgstr ""
 
@@ -291,7 +291,7 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:72
+#: templates/assets-create_update.html:90
 msgid "Warranty end"
 msgstr ""
 
@@ -305,5 +305,9 @@ msgstr ""
 
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
+msgstr ""
+
+#: templates/assets-create_update.html:62
+msgid "years"
 msgstr ""
 
