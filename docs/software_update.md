@@ -1,0 +1,1 @@
+When uploading a software, place it in /srv/{site_domain}/data/software/{product_name}/.
