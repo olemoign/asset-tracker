@@ -104,6 +104,8 @@ class Software(object):
         self.product = self.request.GET.get('product')
         if not self.product:
             return HTTPBadRequest(json={'error': 'Missing product.'})
+        else:
+            self.product = self.product.lower()
 
         # If storage folder wasn't set up, can't return link.
         storage = self.request.registry.settings.get('asset_tracker.software_storage')
