@@ -1,4 +1,5 @@
 import os
+import re
 from collections import OrderedDict
 
 from parsys_utilities.api import manage_datatables_queries
@@ -96,9 +97,7 @@ class Software(object):
     def get_version_from_file(self, file_name):
         # Remove file extension
         file_name = os.path.splitext(file_name)[0]
-        file_name = file_name.lstrip(self.product)
-        file_name = file_name.lstrip('-')
-        return file_name
+        return re.search('[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
 
     @view_config(route_name='api-software-update', request_method='GET', permission='software-update', renderer='json')
     def software_update_get(self):
