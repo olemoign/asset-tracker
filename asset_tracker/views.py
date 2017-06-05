@@ -2,6 +2,7 @@ from datetime import date, datetime
 from operator import attrgetter
 from traceback import format_exc
 
+import raven
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import rights_without_tenants
 from parsys_utilities.model import joinedload
@@ -326,11 +327,30 @@ def not_found_get(request):
 
 @exception_view_config(Exception, renderer='errors/500.html')
 def exception_view(request):
-    error = 'Time: {}\nUrl: {}\nMethod: {}\n{}'.format(datetime.utcnow(), request.url, request.method, format_exc())
-    request.logger_actions.error(error)
+    """
+    Catch exceptions.
+    In dev reraise them to be caught by pyramid_debugtoolbar.
+    In production log them, send them to Sentry then return a 500 page to the user.
 
-    request.response.status_int = 500
-    return {}
+    :return: 500 page
+    """
+    # In dev.
+    debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
+    if debug_exceptions:
+        raise request.exception
+
+    # In production.
+    else:
+        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
+        error_text = error_header + format_exc()
+        request.logger_technical.error(error_text)
+
+        sentry_dsn = request.registry.settings['asset_tracker.sentry_dsn']
+        sentry_client = raven.Client(sentry_dsn)
+        sentry_client.captureException()
+
+        request.response.status_int = 500
+        return {}
 
 
 def includeme(config):

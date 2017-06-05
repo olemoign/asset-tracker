@@ -1,7 +1,6 @@
 import logging
 from functools import partial
 
-import parsys_utilities.celery_app as celery
 import pkg_resources
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
@@ -70,11 +69,9 @@ def main(global_config, **settings):
 
     config.add_request_method(get_user, 'user', reify=True)
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
+    config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
-
-    config_file = global_config['__file__']
-    celery.configure_celery_app(config_file)
 
     config.include('asset_tracker.models')
     config.include('asset_tracker.api', route_prefix='api')
