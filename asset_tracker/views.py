@@ -326,22 +326,11 @@ def not_found_get(request):
 
 @exception_view_config(Exception, renderer='errors/500.html')
 def exception_view(request):
-    debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
-    if debug_exceptions:
-        raise request.exception
+    error = 'Time: {}\nUrl: {}\nMethod: {}\n{}'.format(datetime.utcnow(), request.url, request.method, format_exc())
+    request.logger_actions.error(error)
 
-    else:
-        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
-        error_text = error_header + format_exc()
-
-        subject = 'Exception on {}'.format(request.host_url)
-        message = {'email': {'subject': subject, 'text': error_text}}
-        request.notifier.notify(message, level='exception')
-
-        request.logger_actions.error(error_text)
-
-        request.response.status_int = 500
-        return {}
+    request.response.status_int = 500
+    return {}
 
 
 def includeme(config):
