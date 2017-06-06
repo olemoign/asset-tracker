@@ -2,11 +2,6 @@
 
 
 $(document).ready(function() {
-    // Set the favicon from CSS.
-    var favicon_link = $('link[rel=icon]');
-    var favicon = favicon_link.css('backgroundImage').match(/\((.*?)\)/)[1].replace(/('|")/g, '');
-    favicon_link.attr('href', favicon);
-
     createDataTables();
 
     // Auto focus first input in page.
@@ -165,7 +160,7 @@ $(document).on('preInit.dt', function(event, settings) {
 // Add on each row the link sent from the Webservices.
 function addHrefToDataTablesRows(row, data) {
     if (data.links) {
-        var object_link = jQuery.grep(data.links, function(n) {return n.rel == 'self';});
+        var object_link = jQuery.grep(data.links, function(n) {return n.rel === 'self';});
         var rowTd = $(row).find('td');
 
         rowTd.each(function() {
