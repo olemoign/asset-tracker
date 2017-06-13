@@ -143,10 +143,13 @@ class Software(object):
         channel = self.request.GET.get('channel', 'stable')
         for version, file in product_versions.items():
             alpha = 'alpha' in version and channel in ['alpha', 'dev']
-            beta = 'beta' in version and channel in ['beta', 'dev']
-            stable = 'alpha' not in version and 'beta' not in version and channel not in ['alpha', 'beta']
+            beta = 'beta' in version and channel in ['beta', 'alpha', 'dev']
+            stable = 'alpha' not in version and 'beta' not in version
             if alpha or beta or stable:
                 channel_versions[version] = file
+
+        if not channel_versions:
+            return {}
 
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
