@@ -1,24 +1,25 @@
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.model import Boolean, CreationDateTimeMixin, Date, DateTime, Field, ForeignKey, Integer, Model, \
-    relationship, String
+from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
+from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
+from sqlalchemy.orm import relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
-    tenant_id = Field(String, nullable=False)
-    asset_id = Field(String, nullable=False)
-    asset_type = Field(String, nullable=False)
+    tenant_id = Column(String, nullable=False)
+    asset_id = Column(String, nullable=False)
+    asset_type = Column(String, nullable=False)
 
-    customer_id = Field(String)
-    customer_name = Field(String)
+    customer_id = Column(String)
+    customer_name = Column(String)
 
-    site = Field(String)
-    current_location = Field(String)
-    notes = Field(String)
+    site = Column(String)
+    current_location = Column(String)
+    notes = Column(String)
 
-    software_version = Field(String)
+    software_version = Column(String)
     equipments = relationship('Equipment')
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
@@ -29,11 +30,11 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             return self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
-    status_id = Field(Integer, ForeignKey('event_status.id'))
+    status_id = Column(Integer, ForeignKey('event_status.id'))
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
-    calibration_frequency = Field(Integer)
-    calibration_next = Field(Date)
+    calibration_frequency = Column(Integer)
+    calibration_next = Column(Date)
 
     @property
     def activation_first(self):
@@ -64,39 +65,39 @@ class Asset(Model, CreationDateTimeMixin):
 
 
 class Equipment(Model):
-    family_id = Field(Integer, ForeignKey('equipment_family.id'))
+    family_id = Column(Integer, ForeignKey('equipment_family.id'))
     family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
 
-    asset_id = Field(Integer, ForeignKey('asset.id'), nullable=False)
+    asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
 
-    serial_number = Field(String)
+    serial_number = Column(String)
 
 
 class EquipmentFamily(Model):
-    family_id = Field(String, nullable=False, unique=True)
-    model = Field(String, nullable=False, unique=True)
+    family_id = Column(String, nullable=False, unique=True)
+    model = Column(String, nullable=False, unique=True)
 
 
 class Event(Model, CreationDateTimeMixin):
-    event_id = Field(String, nullable=False, unique=True, default=random_id)
+    event_id = Column(String, nullable=False, unique=True, default=random_id)
 
-    asset_id = Field(Integer, ForeignKey('asset.id'), nullable=False)
+    asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
 
-    date = Field(Date, nullable=False)
+    date = Column(Date, nullable=False)
 
-    creator_id = Field(String, nullable=False)
-    creator_alias = Field(String, nullable=False)
+    creator_id = Column(String, nullable=False)
+    creator_alias = Column(String, nullable=False)
 
-    removed = Field(Boolean, nullable=False, default=False)
-    removed_at = Field(DateTime)
-    remover_id = Field(String)
-    remover_alias = Field(String)
+    removed = Column(Boolean, nullable=False, default=False)
+    removed_at = Column(DateTime)
+    remover_id = Column(String)
+    remover_alias = Column(String)
 
-    status_id = Field(Integer, ForeignKey('event_status.id'), nullable=False)
+    status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
 
 class EventStatus(Model):
-    status_id = Field(String, nullable=False, unique=True)
-    position = Field(Integer, nullable=False, unique=True)
-    label = Field(String, nullable=False, unique=True)
+    status_id = Column(String, nullable=False, unique=True)
+    position = Column(Integer, nullable=False, unique=True)
+    label = Column(String, nullable=False, unique=True)

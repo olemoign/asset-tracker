@@ -5,13 +5,13 @@ from traceback import format_exc
 import raven
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import rights_without_tenants
-from parsys_utilities.model import joinedload
 from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import exception_view_config, notfound_view_config, view_config
+from sqlalchemy.orm import joinedload
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
