@@ -65,7 +65,7 @@ class Asset(Model, CreationDateTimeMixin):
 
 
 class Equipment(Model):
-    family_id = Column(Integer, ForeignKey('equipment_family.id'))
+    family_id = Column(Integer, ForeignKey('equipment_family.id'), nullable=False)
     family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
