@@ -1,5 +1,4 @@
-"""empty message
-
+"""
 Revision ID: 843bfa914d35
 Revises: 02e734fff014
 Create Date: 2017-07-12 19:18:40.155472
