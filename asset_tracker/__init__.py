@@ -76,6 +76,7 @@ def main(global_config, **settings):
     config.include('asset_tracker.models')
     config.include('asset_tracker.api', route_prefix='api')
     config.include('asset_tracker.views')
+    config.include('asset_tracker.views_utilities')
     config.scan()
 
     config.include('parsys_utilities.openid_client')
