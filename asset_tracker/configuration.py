@@ -7,7 +7,6 @@ import transaction
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, EventStatus, get_engine, get_session_factory, \
     get_tm_session
 
-
 logger = logging.getLogger('asset_tracker_actions')
 
 

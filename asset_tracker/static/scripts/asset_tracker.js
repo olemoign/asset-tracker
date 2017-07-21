@@ -25,8 +25,8 @@ $(document).on('click', '.equipment__remove', function() {
         $(this).parents('.equipment__block').remove();
     } else {
         $(this).parents('.equipment__block')
-        .find('[name="asset-equipment-family"]').val('').end()
-        .find('[name="asset-equipment-serial_number"]').val('').focus();
+            .find('[name="asset-equipment-family"]').val('').end()
+            .find('[name="asset-equipment-serial_number"]').val('').focus();
     }
 });
 
@@ -75,7 +75,7 @@ function createDataTables() {
 
     var dataTableParameters = {
         serverSide: true,
-        ajax : {
+        ajax: {
             url: table.data('ajax-url')
         },
         stateSave: true,
@@ -95,9 +95,9 @@ function createDataTables() {
 
     // If there is a custom filter, change the organization of the special div around the dataTable.
     if (customFilter) {
-        dataTableParameters['dom'] = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>' +
-                                     '<"row"<"col-sm-12"tr>>' +
-                                     '<"row"<"col-sm-5"i><"col-sm-7"p>>';
+        dataTableParameters['dom'] = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>\
+                                      <"row"<"col-sm-12"tr>>\
+                                      <"row"<"col-sm-5"i><"col-sm-7"p>>';
     }
 
     var initialisedDataTable = table.DataTable(dataTableParameters);

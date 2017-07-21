@@ -17,8 +17,8 @@ $navbar-margin-bottom: 9px;
 @import 'bootstrap';
 
 body, html {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .img-background-fixed {
@@ -31,7 +31,7 @@ body, html {
 }
 
 .root-container {
-  width: 100%;
+    width: 100%;
 }
 
 // Login page.
@@ -54,40 +54,40 @@ body, html {
 }
 
 table td a {
-  text-decoration: none;
-  color: $black;
-
-  // Even if text doesn't cover the whole td, the whole space is clickable.
-  display: block;
-  margin-left: -8px;
-  padding-left: 8px;
-  margin-right: -8px;
-  padding-right: 8px;
-
-  &:active, &:focus, &:hover {
     text-decoration: none;
-  }
+    color: $black;
+
+    // Even if text doesn't cover the whole td, the whole space is clickable.
+    display: block;
+    margin-left: -8px;
+    padding-left: 8px;
+    margin-right: -8px;
+    padding-right: 8px;
+
+    &:active, &:focus, &:hover {
+        text-decoration: none;
+    }
 }
 
 // Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
 .table-responsive {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 // Add padding to datatables tools in case we are in a panel.
 .panel .dataTables_length,
 .panel .dataTables_filter {
-  padding-top: 10px;
+    padding-top: 10px;
 }
 
 .panel .dataTables_length,
 .panel .dataTables_info {
-  padding-left: 10px;
+    padding-left: 10px;
 }
 
 .panel .dataTables_filter,
 .panel .dataTables_paginate {
-  padding-right: 10px;
+    padding-right: 10px;
 }
 
 div.dataTables_wrapper div.dataTables_processing {
@@ -114,24 +114,24 @@ td {
 }
 
 .equipment__line {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .equipment__label {
-  vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 .equipment__add {
-  margin: 0 0 5px 5px;
+    margin: 0 0 5px 5px;
 }
 
 .event__delete {
-  opacity: 0.5;
+    opacity: 0.5;
 
-  &:hover {
-    transition-duration: .3s;
-    transition-property: opacity;
-    opacity: 1;
-    cursor: pointer;
-  }
+    &:hover {
+        transition-duration: .3s;
+        transition-property: opacity;
+        opacity: 1;
+        cursor: pointer;
+    }
 }
