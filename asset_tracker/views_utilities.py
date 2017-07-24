@@ -47,7 +47,6 @@ def status_get(request):
         caller_package=__package__,
         caller_model=models.Asset,
         check_rta=True,
-        check_celery=False
     )
 
 
