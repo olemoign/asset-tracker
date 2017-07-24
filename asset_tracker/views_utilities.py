@@ -35,13 +35,13 @@ def add_global_variables(event):
         event['user_alias'] = event['request'].user['alias']
 
 
-@view_config(route_name='status-endpoint', request_method='GET', renderer='json')
+@view_config(route_name='status', request_method='GET', renderer='json')
 def status_get(request):
-    """Check current status of asset_tracker service.
-    Choose a local model to be queried by status api for availability testing.
+    """Check status of service.
+    Choose a db table to be queried by status api for availability testing.
 
     """
-
+    # noinspection PyTypeChecker
     return status_endpoint(
         request=request,
         caller_package=__package__,
@@ -60,8 +60,9 @@ def not_found_get(request):
 @exception_view_config(Exception, renderer='errors/500.html')
 def exception_view(request):
     """Catch exceptions.
+    In all cases, send them to Sentry if the configuration exists.
     In dev reraise them to be caught by pyramid_debugtoolbar.
-    In production log them, send them to Sentry then return a 500 page to the user.
+    In production log them then return a 500 page to the user.
 
     """
     # In dev.
@@ -84,4 +85,4 @@ def exception_view(request):
 
 
 def includeme(config):
-    config.add_route(pattern='status/', name='status-endpoint')
+    config.add_route(pattern='status/', name='status')
