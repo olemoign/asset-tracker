@@ -65,7 +65,7 @@ def exception_view(request):
 
     """
     sentry_capture_exception(request)
-    
+
     # In dev.
     debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
     if debug_exceptions:
