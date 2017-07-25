@@ -2,8 +2,8 @@ from datetime import datetime
 from traceback import format_exc
 
 import pkg_resources
-import raven
 from parsys_utilities.authorization import rights_without_tenants
+from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.status import status_endpoint
 from pyramid.events import BeforeRender, NewResponse, subscriber
 from pyramid.settings import asbool, aslist
@@ -64,6 +64,8 @@ def exception_view(request):
     In production log them then return a 500 page to the user.
 
     """
+    sentry_capture_exception(request)
+    
     # In dev.
     debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
     if debug_exceptions:
@@ -74,10 +76,6 @@ def exception_view(request):
         error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
         error_text = error_header + format_exc()
         request.logger_technical.error(error_text)
-
-        sentry_dsn = request.registry.settings['asset_tracker.sentry_dsn']
-        sentry_client = raven.Client(sentry_dsn)
-        sentry_client.captureException()
 
         request.response.status_int = 500
         return {}
