@@ -8,17 +8,10 @@ from parsys_utilities.logging import logger
 from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
-from pyramid.events import NewResponse, subscriber
 from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
 from asset_tracker.configuration import update_configuration
-
-
-@subscriber(NewResponse)
-def add_app_version_header(event):
-    asset_tracker_version = pkg_resources.require(__package__)[0].version
-    event.response.headers.add('X-Parsys-Version', asset_tracker_version)
 
 
 # noinspection PyUnusedLocal
@@ -75,7 +68,8 @@ def main(global_config, **settings):
 
     config.include('asset_tracker.models')
     config.include('asset_tracker.api', route_prefix='api')
-    config.include('asset_tracker.views')
+    config.include('asset_tracker.views_asset')
+    config.include('asset_tracker.views_utilities')
     config.scan()
 
     config.include('parsys_utilities.openid_client')

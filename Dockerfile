@@ -14,7 +14,7 @@ RUN pip -q install /opt/* \
 # Copy config files.
 COPY production.ini /opt/files
 COPY supervisord.conf /opt/files
-COPY migrations /opt/migrations
+COPY alembic /opt/alembic
 
 WORKDIR /srv
 

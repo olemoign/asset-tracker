@@ -1,37 +1,16 @@
 from datetime import date, datetime
 from operator import attrgetter
-from traceback import format_exc
 
-import raven
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.authorization import rights_without_tenants
-from pyramid.events import BeforeRender, subscriber
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
-from pyramid.settings import asbool, aslist
-from pyramid.view import exception_view_config, notfound_view_config, view_config
+from pyramid.settings import aslist
+from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
-
-DEFAULT_BRANDING = 'parsys_cloud'
-
-
-@subscriber(BeforeRender)
-def add_global_variables(event):
-    event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
-    event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
-    event['client_specific'] = aslist(event['request'].registry.settings.get('asset_tracker.client_specific', []))
-    event['csrf_token'] = event['request'].session.get_csrf_token()
-
-    event['principals'] = event['request'].effective_principals
-    event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
-    event['locale'] = event['request'].locale_name
-
-    if event['request'].user:
-        event['user_alias'] = event['request'].user['alias']
 
 
 def get_date(value):
@@ -316,40 +295,6 @@ class AssetsEndPoint(object):
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
     def list_get(self):
-        return {}
-
-
-@notfound_view_config(append_slash=True, renderer='errors/404.html')
-def not_found_get(request):
-    request.response.status_int = 404
-    return {}
-
-
-@exception_view_config(Exception, renderer='errors/500.html')
-def exception_view(request):
-    """
-    Catch exceptions.
-    In dev reraise them to be caught by pyramid_debugtoolbar.
-    In production log them, send them to Sentry then return a 500 page to the user.
-
-    :return: 500 page
-    """
-    # In dev.
-    debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))
-    if debug_exceptions:
-        raise request.exception
-
-    # In production.
-    else:
-        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
-        error_text = error_header + format_exc()
-        request.logger_technical.error(error_text)
-
-        sentry_dsn = request.registry.settings['asset_tracker.sentry_dsn']
-        sentry_client = raven.Client(sentry_dsn)
-        sentry_client.captureException()
-
-        request.response.status_int = 500
         return {}
 
 
