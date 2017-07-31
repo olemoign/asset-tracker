@@ -146,13 +146,23 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
-                                    <span class="input-group-btn equipment__remove">
-                                        <button type="button" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                      <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
+                                      <span class="input-group-btn equipment__remove">
+                                          <button type="button" class="btn btn-default">
+                                              <span class="glyphicon glyphicon-remove"></span>
+                                          </button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="equipment-expiration_date_1">date d'expiration 1</label>
+                                    <input type="date" class="form-control" name="equipment-expiration_date_1" placeholder="date1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="equipment-expiration_date_2">date d'expiration 2</label>
+                                    <input type="date" class="form-control" name="equipment-expiration_date_2" placeholder="date2">
                                 </div>
                             </div>
                         </div>
