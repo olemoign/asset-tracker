@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-27 18:00+0200\n"
+"POT-Creation-Date: 2017-08-01 18:01+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -256,6 +256,10 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
+#: views_asset.py:292
+msgid "Status not removed, an asset cannot have no status."
+msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
+
 #: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
@@ -315,4 +319,3 @@ msgstr "d'un lien obsolète"
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr "ans"
-

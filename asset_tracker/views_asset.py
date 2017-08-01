@@ -286,6 +286,12 @@ class AssetsEndPoint(object):
             self.add_event()
 
         if self.form.get('event-removed'):
+            nb_removed_event = len(self.form.get('event-removed'))
+            nb_active_event = self.asset.history('asc').count()
+            if nb_removed_event >= nb_active_event:
+                error = _('Status not removed, an asset cannot have no status.')
+                return dict(error=error, asset=self.asset, **self.get_base_form_data())
+
             self.remove_events()
 
         self.update_status_and_calibration_next()
