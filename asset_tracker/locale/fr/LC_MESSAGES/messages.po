@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-06-01 11:35+0200\n"
+"POT-Creation-Date: 2017-08-01 18:01+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -68,6 +68,10 @@ msgstr "Cardialys - Parsys"
 msgid "Cart"
 msgstr "Chariot"
 
+#: configuration.json:53
+msgid "Consumables case VCS - Parsys"
+msgstr "Valise de consommables station - Parsys"
+
 #: templates/assets-create_update.html:7
 msgid "Create asset"
 msgstr "Nouveau matériel"
@@ -92,7 +96,7 @@ msgstr "Nom du client"
 msgid "Date DD/MM/YYYY"
 msgstr "Date JJ/MM/AAAA"
 
-#: configuration.json:96
+#: configuration.json:100
 msgid "Decommissioned"
 msgstr "Hors service"
 
@@ -120,59 +124,59 @@ msgstr "Historique"
 msgid "Home"
 msgstr "Accueil"
 
-#: configuration.json:86
+#: configuration.json:90
 msgid "In calibration"
 msgstr "En calibration"
 
-#: configuration.json:91
+#: configuration.json:95
 msgid "In repair"
 msgstr "En réparation"
 
-#: configuration.json:76
+#: configuration.json:80
 msgid "In service"
 msgstr "En service"
 
-#: configuration.json:56
+#: configuration.json:60
 msgid "In stock - Parsys"
 msgstr "En stock - Parsys"
 
-#: configuration.json:66
+#: configuration.json:70
 msgid "In stock - distributor"
 msgstr "En stock - distributeur"
 
-#: configuration.json:81
+#: configuration.json:85
 msgid "In transit to Parsys"
 msgstr "En transit vers Parsys"
 
-#: configuration.json:71
+#: configuration.json:75
 msgid "In transit to customer"
 msgstr "En transit vers le client"
 
-#: configuration.json:61
+#: configuration.json:65
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views.py:155
+#: views_asset.py:135
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views.py:146
+#: views_asset.py:126
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views.py:162
+#: views_asset.py:142
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views.py:129
+#: views_asset.py:109
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views.py:167
+#: views_asset.py:147
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views.py:150
+#: views_asset.py:130
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -188,7 +192,7 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views.py:141
+#: views_asset.py:121
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -252,6 +256,10 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
+#: views_asset.py:292
+msgid "Status not removed, an asset cannot have no status."
+msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
+
 #: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
@@ -311,4 +319,3 @@ msgstr "d'un lien obsolète"
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr "ans"
-

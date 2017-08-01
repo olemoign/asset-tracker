@@ -21,7 +21,7 @@ $(document).on('click', '.equipment__add', function(event) {
 });
 
 $(document).on('click', '.equipment__remove', function() {
-    if ($('.equipment__block').size() > 1) {
+    if ($('.equipment__block').length > 1) {
         $(this).parents('.equipment__block').remove();
     } else {
         $(this).parents('.equipment__block')

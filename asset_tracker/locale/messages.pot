@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-06-01 11:35+0200\n"
+"POT-Creation-Date: 2017-08-01 18:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,10 @@ msgstr ""
 msgid "Cart"
 msgstr ""
 
+#: configuration.json:53
+msgid "Consumables case VCS - Parsys"
+msgstr ""
+
 #: templates/assets-create_update.html:7
 msgid "Create asset"
 msgstr ""
@@ -91,7 +95,7 @@ msgstr ""
 msgid "Date DD/MM/YYYY"
 msgstr ""
 
-#: configuration.json:96
+#: configuration.json:100
 msgid "Decommissioned"
 msgstr ""
 
@@ -119,59 +123,59 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: configuration.json:86
+#: configuration.json:90
 msgid "In calibration"
 msgstr ""
 
-#: configuration.json:91
+#: configuration.json:95
 msgid "In repair"
 msgstr ""
 
-#: configuration.json:76
+#: configuration.json:80
 msgid "In service"
 msgstr ""
 
-#: configuration.json:56
+#: configuration.json:60
 msgid "In stock - Parsys"
 msgstr ""
 
-#: configuration.json:66
+#: configuration.json:70
 msgid "In stock - distributor"
 msgstr ""
 
-#: configuration.json:81
+#: configuration.json:85
 msgid "In transit to Parsys"
 msgstr ""
 
-#: configuration.json:71
+#: configuration.json:75
 msgid "In transit to customer"
 msgstr ""
 
-#: configuration.json:61
+#: configuration.json:65
 msgid "In transit to distributor"
 msgstr ""
 
-#: views.py:155
+#: views_asset.py:135
 msgid "Invalid asset status."
 msgstr ""
 
-#: views.py:146
+#: views_asset.py:126
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views.py:162
+#: views_asset.py:142
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views.py:129
+#: views_asset.py:109
 msgid "Invalid equipments."
 msgstr ""
 
-#: views.py:167
+#: views_asset.py:147
 msgid "Invalid event."
 msgstr ""
 
-#: views.py:150
+#: views_asset.py:130
 msgid "Invalid tenant."
 msgstr ""
 
@@ -187,7 +191,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views.py:141
+#: views_asset.py:121
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -251,6 +255,10 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: views_asset.py:292
+msgid "Status not removed, an asset cannot have no status."
+msgstr ""
+
 #: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
@@ -310,4 +318,3 @@ msgstr ""
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr ""
-
