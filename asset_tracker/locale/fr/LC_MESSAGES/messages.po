@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-31 15:36+0200\n"
+"POT-Creation-Date: 2017-08-01 18:01+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -111,10 +111,6 @@ msgstr "Équipements"
 #: templates/errors/403.html:3 templates/errors/500.html:3
 msgid "Error"
 msgstr "Erreur"
-
-#: views_asset.py:292
-msgid "Event list need at least one element."
-msgstr "La liste des évènements doit contenir au moins un élément."
 
 #: configuration.json:21
 msgid "Glucometer - Beurer GL50"
@@ -259,6 +255,10 @@ msgstr "Station"
 #: templates/assets-create_update.html:77 templates/assets-list.html:27
 msgid "Status"
 msgstr "Statut"
+
+#: views_asset.py:292
+msgid "Status not removed, an asset cannot have no status."
+msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
 #: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"

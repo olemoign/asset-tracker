@@ -287,11 +287,10 @@ class AssetsEndPoint(object):
 
         if self.form.get('event-removed'):
             nb_removed_event = len(self.form.get('event-removed'))
-            nb_active_event = self.asset._history.filter_by(removed=False).count()
+            nb_active_event = self.asset.history('asc').count()
             if nb_removed_event >= nb_active_event:
-                return dict(error=_('Event list need at least one element.'),
-                            asset=self.asset,
-                            **self.get_base_form_data())
+                error = _('Status not removed, an asset cannot have no status.')
+                return dict(error=error, asset=self.asset, **self.get_base_form_data())
 
             self.remove_events()
 
