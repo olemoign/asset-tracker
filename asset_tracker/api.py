@@ -153,7 +153,7 @@ class Software(object):
 
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
-        return {'version': channel_version[0], 'url': download_url}
+        return OrderedDict(version=channel_version[0], url=download_url)
 
 
 def includeme(config):
