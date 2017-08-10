@@ -5,34 +5,45 @@ $(document).ready(function() {
     createDataTables();
 
     // Auto focus first input in page.
-    var firstInput = $('input[type=text]').first();
+    const firstInput = $('input[type=text]').first();
     firstInput.focus();
     // Move cursor to the end of the input.
     firstInput.val(firstInput.val());
 });
 
-// Manage equipments.
 $(document).on('click', '.equipment__add', function(event) {
+    /**
+     * Add a new equipment when the user clicks the '+' sign.
+     */
     event.preventDefault();
-    $(this).parent().next().clone()
+
+    const equipmentsList = $('.equipments__list');
+    // Clone an equipment, empty the inputs, then append it to the list.
+    $('.equipment__block').first().clone()
         .find('select').val('').end()
         .find('input').val('').end()
-        .appendTo($(this).parents().eq(1));
+        .appendTo(equipmentsList);
 });
 
 $(document).on('click', '.equipment__remove', function() {
-    if ($('.equipment__block').length > 1) {
-        $(this).parents('.equipment__block').remove();
+    /**
+     * Remove an equipment when the user clicks the 'x' sign.
+     */
+    const equipmentsCount = $('.equipment__block').length;
+    const equipmentBlock = $(this).parents('.equipment__block');
+
+    // If there are multiple equipments, remove this block.
+    if (equipmentsCount > 1) {
+        equipmentBlock.remove();
     } else {
-        $(this).parents('.equipment__block')
-            .find('[name="asset-equipment-family"]').val('').end()
-            .find('[name="asset-equipment-serial_number"]').val('').focus();
+        // If it's the only equipment, just empty its input.
+        equipmentBlock
+            .find('select').val('').end()
+            .find('input').val('');
     }
 });
 
-
-// Datatables.
-var dataTablesTranslations = {
+const dataTablesTranslations = {
     'fr': {
         'sProcessing':     'Traitement en cours...',
         'sSearch':         'Rechercher&nbsp;:',
@@ -58,22 +69,29 @@ var dataTablesTranslations = {
 };
 
 function createDataTables() {
-    var table = $('table.dataTables');
-    var columns = [];
-    var customFilter = table.data('custom-filter');
+    /**
+     * Create the dataTable.
+     */
+    const table = $('table.dataTables');
+    if (!table) {
+        return
+    }
+
+    const columns = [];
+    const customFilter = table.data('custom-filter');
 
     // Loop through all the columns, to be able to hook the 'data-render' parameters to existing functions.
     table.find('th').each(function() {
-        var col = {};
+        const col = {};
         // We can't set the render functions using HTML5 data parameters so we simulate this behavior.
-        var renderFunction = $(this).data('render');
+        const renderFunction = $(this).data('render');
         if (renderFunction) {
             col.render = window[renderFunction];
         }
         columns.push(col);
     });
 
-    var dataTableParameters = {
+    const dataTableParameters = {
         serverSide: true,
         ajax: {
             url: table.data('ajax-url')
@@ -81,29 +99,33 @@ function createDataTables() {
         stateSave: true,
         pageLength: 50,
         lengthChange: false,
+        // Remove annoying dataTables responsive behavior when some columns are hidden.
         responsive: {
             details: false
         },
+        // Show 'processing' message.
         processing: true,
         columns: columns,
-        rowCallback: addHrefToDataTablesRows
+        rowCallback: addHref
     };
 
     if (userLocale !== 'en') {
         dataTableParameters['language'] = dataTablesTranslations[userLocale];
     }
 
-    // If there is a custom filter, change the organization of the special div around the dataTable.
+    // If there is a custom filter, change the organization of the special divs around the dataTable (page size to
+    // the bottom).
     if (customFilter) {
         dataTableParameters['dom'] = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>\
                                       <"row"<"col-sm-12"tr>>\
                                       <"row"<"col-sm-5"i><"col-sm-7"p>>';
     }
 
-    var initialisedDataTable = table.DataTable(dataTableParameters);
+    const initialisedDataTable = table.DataTable(dataTableParameters);
 
+    // Manage the custom filter.
     if (customFilter) {
-        var tableContainer = $(initialisedDataTable.table().container());
+        const tableContainer = $(initialisedDataTable.table().container());
 
         // Save the custom filter state with the other dataTables parameters.
         initialisedDataTable.on('stateSaveParams.dt', function(event, settings, data) {
@@ -111,11 +133,14 @@ function createDataTables() {
         });
 
         // Add the custom filter in the div created in the dom command above.
-        var filterLabel = table.data('custom-filter-label');
-        // noinspection JSUnresolvedFunction
-        var tableState = initialisedDataTable.state.loaded();
-        var inputIsChecked = (!tableState || !tableState.customFilter) ? ' checked' : '';
-        var filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
+        const filterLabel = table.data('custom-filter-label');
+        const tableState = initialisedDataTable.state.loaded();
+
+        const filterInit = table.data('custom-filter-default') === true;
+        // If table didn't yet store state in local storage, take default value, otherwise, use local storage.
+        const inputIsChecked = (!tableState && !filterInit) || (tableState && !tableState.customFilter) ? ' checked' : '';
+
+        const filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
         tableContainer.find('.custom_filter').html(filterHTML).css('padding', '10px 0 0 10px');
         initialisedDataTable.state.save();
 
@@ -133,37 +158,46 @@ function createDataTables() {
     });
 }
 
-//Before table initialization, manage when to send the 'hide' query string.
 $(document).on('preInit.dt', function(event, settings) {
-    var api = new $.fn.dataTable.Api(settings);
-    // noinspection JSUnresolvedFunction
-    var state = api.state.loaded();
+    /**
+     * Before dataTable initialization, manage when to send the 'hide' query string for the custon filter.
+     */
+    const api = new $.fn.dataTable.Api(settings);
+    const state = api.state.loaded();
 
     // This is the table div.
-    var table = $(event.target);
+    const table = $(event.target);
 
-    var customFilter = table.data('custom-filter');
+    const customFilter = table.data('custom-filter');
     if (customFilter) {
         settings.ajax.data = function(data) {
             // This is the HTML node wrapping around the table with the special search, filter, etc.
-            var dataTableContainer = $(table.DataTable().table().container());
-            var customFilterInput = dataTableContainer.find('.custom_filter__input');
+            const dataTableContainer = $(table.DataTable().table().container());
+            const customFilterInput = dataTableContainer.find('.custom_filter__input');
+            const filterInit = table.data('custom-filter-default') === true;
 
-            // Either visual filter has arrived and we use it, or it's the first load and we use the active storage.
-            if ((customFilterInput.length && !customFilterInput.is(':checked')) || (!customFilterInput.length && state && state.customFilter)) {
+            // 1: the filter checkbox is visible.
+            if ((customFilterInput.length && !customFilterInput.is(':checked'))
+            // 2: the table isn't visible yet but a filter value is present in the local storage.
+            || (!customFilterInput.length && state && state.customFilter)
+            // 3: this is the first time we load the table, use the default value.
+            || (!customFilterInput.length && !state && filterInit)) {
                 data.filter = customFilter;
             }
         };
     }
 });
 
-// Add on each row the link sent from the Webservices.
-function addHrefToDataTablesRows(row, data) {
+function addHref(row, data) {
+    /**
+     * Add on each row the link sent from the WebServices.
+     */
     if (data.links) {
-        var object_link = jQuery.grep(data.links, function(n) {return n.rel === 'self';});
-        var rowTd = $(row).find('td');
+        const object_link = $.grep(data.links, function(n) {return n.rel === 'self';});
+        const rowTd = $(row).find('td');
 
         rowTd.each(function() {
+            // If cell is empty, add a space character so that the cell will be clickable.
             if (!$(this).html()) {
                 $(this).html('&nbsp;');
             }
@@ -173,24 +207,33 @@ function addHrefToDataTablesRows(row, data) {
 }
 
 $(document).on('click', '.paginate_button', function() {
+    /**
+     * Scroll to top of dataTable when changing page.
+     */
     $('body').animate({scrollTop: 0}, 'slow');
 });
 
-// Hide events.
 $(document).on('click', '.event__delete', function() {
+    /**
+     * When the user removes an event, store this action in the form then hide the event.
+     */
     const eventID = $(this).data('eventid');
     $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
     $(this).parent().hide('fast');
 });
 
-// Validate date format.
 $(document).on('submit', 'form', function(event) {
+    /**
+     * Validate dates formats on form submit.
+     */
     $('input[type="date"]').each(function() {
         const date = $(this).val();
+        // If date in put is empty.
         if (!date) {
             return true;
         }
 
+        // If date is in the format DD/MM/YYYY, transform it in the ISO format YY-MM-DD.
         const isHumanDate = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if (isHumanDate) {
             $(this).val(isHumanDate[3] + '-' + isHumanDate[2] + '-' + isHumanDate[1]);
@@ -198,6 +241,7 @@ $(document).on('submit', 'form', function(event) {
         }
 
         const isStandardDate = date.match(/^\d{4}-\d{2}-\d{2}$/);
+        // If date format hasn't been recognized (neither DD/MM/YYYY nor YY-MM-DD), stop submit and show error to the user.
         if (!isStandardDate) {
             event.preventDefault();
             $(this).val('');
