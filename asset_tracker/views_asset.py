@@ -255,7 +255,7 @@ class AssetsEndPoint(object):
             sentry_capture_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
-        # Marlink has only one calibration frequency so they don't want to see it.
+        # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
@@ -273,8 +273,6 @@ class AssetsEndPoint(object):
         self.add_equipments()
 
         self.add_event()
-
-        self.request.db_session.flush()
 
         self.update_status_and_calibration_next()
 
@@ -309,7 +307,7 @@ class AssetsEndPoint(object):
 
         self.asset.notes = self.form.get('notes')
 
-        # Marlink has only one calibration frequency so they don't want to see it.
+        # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
