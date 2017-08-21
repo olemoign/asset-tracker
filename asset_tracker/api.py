@@ -1,3 +1,8 @@
+"""Asset tracker API
+
+List assets for dataTables and asset update WS (declare software version/get last software version).
+"""
+
 import os
 import re
 from collections import OrderedDict
@@ -14,7 +19,23 @@ from pyramid.view import view_config
 from asset_tracker import models
 
 
+def get_version_from_file(file_name):
+    """Get software version from file name.
+
+    Args:
+        file_name (str): file name.
+
+    Returns:
+        str: software version.
+
+    """
+    # Remove file extension
+    file_name = os.path.splitext(file_name)[0]
+    return re.search('[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
+
+
 class Assets(object):
+    """List assets for dataTables."""
     __acl__ = [
         (Allow, None, 'assets-list', 'assets-list'),
         (Allow, None, 'g:admin', 'assets-list'),
@@ -24,6 +45,16 @@ class Assets(object):
         self.request = request
 
     def apply_tenanting_filter(self, q):
+        """Filter assets according to user's rights/tenants.
+        Admins get access to all asssets.
+
+        Args:
+            q (sqlalchemy.orm.query.Query): current query.
+
+        Returns:
+            sqlalchemy.orm.query.Query: filtered query.
+
+        """
         if 'g:admin' in self.request.effective_principals:
             return q
         else:
@@ -33,6 +64,8 @@ class Assets(object):
 
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
+        """List assets and format output according to dataTables requirements."""
+        # Return if API is called by somebdy other than dataTables.
         if not asbool(self.request.GET.get('datatables')):
             return []
 
@@ -58,6 +91,7 @@ class Assets(object):
         except KeyError:
             return HTTPBadRequest()
 
+        # Format db return for dataTables.
         assets = []
         for asset in output['items']:
             if asset.calibration_next:
@@ -72,6 +106,7 @@ class Assets(object):
                             'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
                             'calibration_next': calibration_next}
 
+            # Append link to output if the user is an admin or has the right to read the asset info.
             has_admin_rights = 'g:admin' in self.request.effective_principals
             has_read_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
             if has_admin_rights or has_read_rights:
@@ -85,6 +120,8 @@ class Assets(object):
 
 
 class Software(object):
+    """Software update WebServices: tell to the assets what is the latest version and url of a given product +
+    store what software versions a given asset is using."""
     __acl__ = [
         (Allow, None, 'software-update', 'software-update'),
         (Allow, None, 'g:admin', 'software-update'),
@@ -94,18 +131,22 @@ class Software(object):
         self.request = request
         self.product = None
 
-    def get_version_from_file(self, file_name):
-        # Remove file extension
-        file_name = os.path.splitext(file_name)[0]
-        return re.search('[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
-
     @view_config(route_name='api-software-update', request_method='GET', permission='software-update', renderer='json')
     def software_update_get(self):
-        self.product = self.request.GET.get('product')
-        if not self.product:
+        """Return what is the lastest version of a product in a given branch (alpha/beta/dev/stable) and the url
+        where to download the package.
+
+        QueryString:
+            product (mandatory)
+            channel (optional): product channel (in 'alpha', 'beta', 'dev', 'stable').
+            version (optional): if we want the url of one specific version.
+
+        """
+        product = self.request.GET.get('product')
+        if not product:
             return HTTPBadRequest(json={'error': 'Missing product.'})
         else:
-            self.product = self.product.lower()
+            self.product = product.lower()
 
         # If storage folder wasn't set up, can't return link.
         storage = self.request.registry.settings.get('asset_tracker.software_storage')
@@ -124,7 +165,7 @@ class Software(object):
 
         product_versions = {}
         for product_file in product_files:
-            version = self.get_version_from_file(product_file)
+            version = get_version_from_file(product_file)
             product_versions[version] = product_file
         # Sort dictionary by version (which are the keys of the dict).
         product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: k[0]))
@@ -148,9 +189,11 @@ class Software(object):
             if alpha or beta or stable:
                 channel_versions[version] = file
 
+        # If no version was found for the requested parameters.
         if not channel_versions:
             return {}
 
+        # We return only the latest version.
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return OrderedDict(version=channel_version[0], url=download_url)
