@@ -121,7 +121,9 @@ class Assets(object):
 
 class Software(object):
     """Software update WebServices: tell to the assets what is the latest version and url of a given product +
-    store what software versions a given asset is using."""
+    store what software versions a given asset is using.
+
+    """
     __acl__ = [
         (Allow, None, 'software-update', 'software-update'),
         (Allow, None, 'g:admin', 'software-update'),

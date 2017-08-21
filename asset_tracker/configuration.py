@@ -1,3 +1,10 @@
+"""Equipments families and assets statuses configuration.
+
+These functions are run during each function startup to make sure families and statuses in the db are up to date with
+the content of configuration.json.
+
+"""
+
 import logging
 from json import loads
 
@@ -11,6 +18,13 @@ logger = logging.getLogger('asset_tracker_actions')
 
 
 def update_equipment_families(db_session, configuration):
+    """Update equipments families in the db according to configuration.json.
+
+    Args:
+        db_session (sqlalchemy.orm.session.Session).
+        configuration (dict).
+
+    """
     config_families = configuration['equipment_families']
     db_families = db_session.query(EquipmentFamily).all()
 
@@ -40,6 +54,13 @@ def update_equipment_families(db_session, configuration):
 
 
 def update_statuses(db_session, configuration):
+    """Update assets statuses in the db according to configuration.json.
+
+    Args:
+        db_session (sqlalchemy.orm.session.Session).
+        configuration (dict).
+
+    """
     config_statuses = configuration['status']
     db_statuses = db_session.query(EventStatus).all()
 
@@ -70,11 +91,14 @@ def update_statuses(db_session, configuration):
 
 
 def update_configuration(settings):
+    """Run the update."""
     with transaction.manager:
+        # Connect to the db.
         engine = get_engine(settings)
         db_session_factory = get_session_factory(engine)
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
+        # Read configuration.json.
         configuration = pkg_resources.resource_string(__name__, 'configuration.json').decode('utf-8')
         configuration = loads(configuration)
 
