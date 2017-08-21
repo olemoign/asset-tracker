@@ -1,3 +1,5 @@
+"""Generic views (status, 404, 500) + views tools (headers and templates global variables)."""
+
 from datetime import datetime
 from traceback import format_exc
 
@@ -16,12 +18,14 @@ DEFAULT_BRANDING = 'parsys_cloud'
 
 @subscriber(NewResponse)
 def add_app_version_header(event):
+    """App version header is added to all responses."""
     asset_tracker_version = pkg_resources.require(__package__)[0].version
     event.response.headers.add('X-Parsys-Version', asset_tracker_version)
 
 
 @subscriber(BeforeRender)
 def add_global_variables(event):
+    """Templating global variables: these variables are added to all render() calls."""
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
     event['client_specific'] = aslist(event['request'].registry.settings.get('asset_tracker.client_specific', []))

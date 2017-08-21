@@ -12,8 +12,8 @@
         <div class="form-group">
             <label for="{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
             <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
-                   {% if asset and asset[field] %} value="{{ asset[field] }}"{% endif %}
-                   {% if required %} required{% endif %}>
+                {% if asset and asset[field] %} value="{{ asset[field] }}"{% endif %}
+                {% if required %} required{% endif %}>
         </div>
     </div>
 {%- endmacro %}

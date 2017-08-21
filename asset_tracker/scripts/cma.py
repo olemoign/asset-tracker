@@ -11,7 +11,6 @@ from pyramid.scripts.common import parse_vars
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('config_uri')
 parser.add_argument('csv_file')

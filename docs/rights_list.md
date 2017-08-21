@@ -2,7 +2,7 @@ Rights list
 -----------
 
 - assets-create
+- assets-list
 - assets-read
 - assets-update
-- assets-list
 - software-update
