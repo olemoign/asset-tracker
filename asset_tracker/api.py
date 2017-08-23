@@ -10,6 +10,7 @@ from collections import OrderedDict
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
+from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 from pyramid.security import Allow
@@ -72,6 +73,7 @@ class Assets(object):
         try:
             draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
         except KeyError:
+            sentry_capture_exception(self.request, level='info')
             return HTTPBadRequest()
 
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
@@ -89,6 +91,7 @@ class Assets(object):
                                 specific_search_attributes=specific_search_attributes,
                                 specific_sort_attributes=specific_sort_attributes, search_parameters=search_parameters)
         except KeyError:
+            sentry_capture_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
 
         # Format db return for dataTables.
