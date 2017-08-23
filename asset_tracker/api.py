@@ -1,12 +1,14 @@
 import os
 import re
 from collections import OrderedDict
+from json import JSONDecodeError, loads, dumps
+from datetime import date
 
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound, HTTPCreated, HTTPNoContent
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -154,6 +156,59 @@ class Software(object):
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return {'version': channel_version[0], 'url': download_url}
+
+    @view_config(route_name='api-software-update', request_method='POST', permission='software-update',
+                 require_csrf=False)
+    def software_update_post(self):
+        """Receive software(s) version
+
+        """
+        # get product name (medcapture, camagent)
+        if not self.request.GET.get('product'):
+            return HTTPBadRequest(json={'error': 'Missing product.'})
+        else:
+            self.product = self.request.GET.get('product')
+
+        # make sure the JSON provided is valid.
+        try:
+            json = loads(self.request.POST.get('json').file.read().decode('utf-8'))
+        except (JSONDecodeError, AttributeError) as error:
+            return HTTPBadRequest(json={'error': error})
+
+        # check if asset exists (cart, station, telecardia)
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=json.get('assetID')) \
+            .first()
+        if not asset:
+            return HTTPNotFound(json={'error': 'Unknown product.'})
+
+        software_version = json.get('version')
+        if software_version:
+            last_event = self.request.db_session.query(models.Event) \
+                .filter_by(
+                    asset_id=asset.id,
+                    status_id=10  # software update event, see [configuration.json]
+                ) \
+                .filter(models.Event.data.like('%'+self.product+'%')) \
+                .order_by(models.Event.id.desc()) \
+                .first()
+
+            if not last_event or last_event.data_json['software_version'] != software_version:
+                # noinspection PyArgumentList
+                new_event = models.Event(
+                    asset_id=asset.id,
+                    date=date.today(),
+                    creator_id='',
+                    creator_alias='',
+                    status_id=10,
+                    data=dumps({'software_name': self.product,
+                                'software_version': software_version})
+                )
+                self.request.db_session.add(new_event)
+
+                return HTTPCreated(detail='Information received.')  # or HTTPOk ?
+
+        return HTTPNoContent(detail='No change.')
 
 
 def includeme(config):

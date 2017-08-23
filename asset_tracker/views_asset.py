@@ -63,6 +63,29 @@ class AssetsEndPoint(object):
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
 
+    def get_latest_softwares(self):
+        """Get last version of every softwares
+
+        """
+        event_query = self.request.db_session.query(Event) \
+            .filter_by(
+                asset_id=self.asset.id,
+                status_id=10  # software update event, see [configuration.json]
+            ) \
+            .order_by(Event.id.desc())
+
+        softwares = {}
+        for e in event_query.all():
+            try:
+                name, version = e.data_json['software_name'], e.data_json['software_version']
+            except KeyError:
+                continue
+            else:
+                if name not in softwares:
+                    softwares[name] = version
+
+        return softwares
+
     def get_create_update_tenants(self):
         if self.request.user['is_admin']:
             return self.request.user['tenants']
@@ -233,7 +256,6 @@ class AssetsEndPoint(object):
                            customer_name=self.form.get('customer_name') or None,
                            current_location=self.form.get('current_location') or None,
                            calibration_frequency=calibration_frequency,
-                           software_version=self.form.get('software_version') or None,
                            notes=self.form.get('notes') or None)
         self.request.db_session.add(self.asset)
 
@@ -250,7 +272,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
-        return dict(asset=self.asset, **self.get_base_form_data())
+        return dict(asset=self.asset, softwares=self.get_latest_softwares(), **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
@@ -269,7 +291,6 @@ class AssetsEndPoint(object):
 
         self.asset.site = self.form.get('site') or None
         self.asset.current_location = self.form.get('current_location') or None
-        self.asset.software_version = self.form.get('software_version') or None
 
         self.asset.notes = self.form.get('notes') or None
 

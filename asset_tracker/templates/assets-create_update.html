@@ -64,11 +64,24 @@
                             </select>
                         </div>
                         {% endif %}
-
-                        {{ input(gettext('Software version'), 'software_version') }}
                     </div>
 
                     {% if asset %}
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>{{ gettext('Software version') }}</label>
+                                <p>
+                                {% for software, version in softwares|dictsort %} {# sorted by key #}
+                                    {{ software }} {{ version }} {% if not loop.last %}<br />{% endif %}
+                                {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr>
 
                     <div class="row">
@@ -169,10 +182,24 @@
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
                             {% for event in asset.history('asc') %}
-                            <p class="history_event">{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=gettext(event.status.label), date=event.date|format_date(locale)) }}.
-                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
-                            </p>
+                                {% if event.status_id != 10 or event.data_json %}
+                                    {# 10 = software update event, see [configuration.json] #}
+                                    <p class="history_event">
+                                    {% if event.status_id == 10 %}
+                                        {{ gettext('%(soft)s - <b>%(status)s</b> to %(version)s on %(date)s.',
+                                            soft=event.data_json.get('software_name'),
+                                            status=gettext(event.status.label),
+                                            version=event.data_json.get('software_version'),
+                                            date=event.date|format_date(locale)) }}
+                                    {% else %}
+                                        {{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s.',
+                                            creator=event.creator_alias,
+                                            status=gettext(event.status.label),
+                                            date=event.date|format_date(locale)) }}
+                                    {% endif %}
+                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                    </p>
+                                {% endif %}
                             {% endfor %}
                         </div>
                         {% endif %}
