@@ -106,7 +106,7 @@ function createDataTables() {
         // Show 'processing' message.
         processing: true,
         columns: columns,
-        rowCallback: addHref
+        rowCallback: assetTrackerCallback
     };
 
     if (userLocale !== 'en') {
@@ -188,6 +188,11 @@ $(document).on('preInit.dt', function(event, settings) {
     }
 });
 
+function assetTrackerCallback(row, data) {
+    addHref(row, data);
+    styleInactiveObjects(row, data);
+}
+
 function addHref(row, data) {
     /**
      * Add on each row the link sent from the WebServices.
@@ -203,6 +208,13 @@ function addHref(row, data) {
             }
             $(this).wrapInner('<a href="' + object_link[0].href + '"></a>');
         });
+    }
+}
+
+function styleInactiveObjects(row, data) {
+    // noinspection JSUnresolvedVariable
+    if (data.hasOwnProperty('is_active') && !data.is_active) {
+        $(row).addClass('warning');
     }
 }
 

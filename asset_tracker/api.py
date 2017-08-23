@@ -101,10 +101,11 @@ class Assets(object):
 
             asset_type = self.request.localizer.translate(asset.asset_type.capitalize())
             status = self.request.localizer.translate(asset.status.label)
+            is_active = asset.status.status_id != 'decommissioned'
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
                             'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
-                            'calibration_next': calibration_next}
+                            'calibration_next': calibration_next, 'is_active': is_active}
 
             # Append link to output if the user is an admin or has the right to read the asset info.
             has_admin_rights = 'g:admin' in self.request.effective_principals
