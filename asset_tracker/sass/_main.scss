@@ -135,3 +135,7 @@ td {
     cursor: pointer;
   }
 }
+
+@media (min-width: $screen-sm-min){  // 768px
+    .row.auto-clear .col-sm-4:nth-child(3n+1){clear:left;}
+}

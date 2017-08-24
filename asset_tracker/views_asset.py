@@ -151,8 +151,21 @@ class AssetsEndPoint(object):
             if not family_id and not self.form['equipment-serial_number'][index]:
                 continue
 
+            if self.form['equipment-expiration_date_1'][index]:
+                expiration_date_1 = get_date(self.form['equipment-expiration_date_1'][index])
+            else:
+                expiration_date_1 = None
+
+            if self.form['equipment-expiration_date_2'][index]:
+                expiration_date_2 = get_date(self.form['equipment-expiration_date_2'][index])
+            else:
+                expiration_date_2 = None
+
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            equipment = Equipment(family=family, serial_number=self.form['equipment-serial_number'][index])
+            equipment = Equipment(family=family,
+                                  serial_number=self.form['equipment-serial_number'][index],
+                                  expiration_date_1=expiration_date_1,
+                                  expiration_date_2=expiration_date_2)
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 

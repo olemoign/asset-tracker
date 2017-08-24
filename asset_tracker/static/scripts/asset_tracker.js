@@ -12,24 +12,27 @@ $(document).ready(function() {
 });
 
 // Manage equipments.
-$(document).on('click', '.equipment__add', function(event) {
-    event.preventDefault();
-    $(this).parent().next().clone()
-        .find('select').val('').end()
-        .find('input').val('').end()
-        .appendTo($(this).parents().eq(1));
+$(document).on('click', '.equipment__add', function() {
+    $(this).parent().siblings( '.equipment__block' )
+        .clone().show().appendTo( '#equipment__list' );
 });
 
 $(document).on('click', '.equipment__remove', function() {
-    if ($('.equipment__block').length > 1) {
-        $(this).parents('.equipment__block').remove();
-    } else {
-        $(this).parents('.equipment__block')
-        .find('[name="asset-equipment-family"]').val('').end()
-        .find('[name="asset-equipment-serial_number"]').val('').focus();
-    }
+    $(this).parents('.equipment__block').remove();
 });
 
+// add expiration dates for Glucometer equipment
+$(document).on('change','.my__select',function(){
+    const expiration_date_fields = $(this).parents('.equipment__block').find('.expiration_date_fields');
+    const glucometer_family_id = '2YUEMLmH';
+
+    if($(this).val() === glucometer_family_id) {
+        expiration_date_fields.show();
+    }
+    else {
+        expiration_date_fields.hide();
+    }
+});
 
 // Datatables.
 var dataTablesTranslations = {
