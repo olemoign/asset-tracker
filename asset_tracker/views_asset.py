@@ -1,7 +1,10 @@
+"""Asset tracker views: assets lists and read/update."""
+
 from datetime import date, datetime
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
+from parsys_utilities.sentry import sentry_capture_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
@@ -13,18 +16,12 @@ from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
-def get_date(value):
-    try:
-        return datetime.strptime(value, '%Y-%m-%d').date()
-    except (TypeError, ValueError):
-        return None
-
-
 class FormException(Exception):
     pass
 
 
 class AssetsEndPoint(object):
+    """List, read and update assets."""
     def __acl__(self):
         acl = [
             (Allow, None, 'assets-create', 'assets-create'),
@@ -41,11 +38,14 @@ class AssetsEndPoint(object):
     def __init__(self, request):
         self.request = request
         self.asset = self.get_asset()
+        # Manage Marlink specifics.
         self.client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
         self.form = None
 
     def get_asset(self):
+        """Get in db the asset being read/updated."""
         asset_id = self.request.matchdict.get('asset_id')
+        # In the list page, asset_id will be None and it's ok.
         if not asset_id:
             return
 
@@ -56,6 +56,7 @@ class AssetsEndPoint(object):
         # By putting the translated family name at the equipment level, when can then sort equipments by translated
         # family name and serial number.
         for equipment in asset.equipments:
+            # Don't put None here or we won't be able to sort later.
             equipment.family_translated = ''
             if equipment.family:
                 equipment.family_translated = self.request.localizer.translate(equipment.family.model)
@@ -63,7 +64,9 @@ class AssetsEndPoint(object):
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
 
-    def get_create_update_tenants(self):
+    def get_create_read_tenants(self):
+        """Get for which tenants the current user can create/read assets."""
+        # Admins have access to all tenants.
         if self.request.user['is_admin']:
             return self.request.user['tenants']
 
@@ -77,6 +80,7 @@ class AssetsEndPoint(object):
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
     def get_base_form_data(self):
+        """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
         # Translate family models so that they can be sorted translated on the page.
         for family in equipments_families:
@@ -84,12 +88,16 @@ class AssetsEndPoint(object):
 
         statuses = self.request.db_session.query(EventStatus).all()
 
-        tenants = self.get_create_update_tenants()
+        tenants = self.get_create_read_tenants()
 
         return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
                 'statuses': statuses, 'tenants': tenants}
 
     def read_form(self):
+        """Format form content according to our needs.
+        In particular, make sure that inputs which can be list are lists in all cases, even if no data was inputed.
+
+        """
         self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
         # doesn't behave weirdly.
@@ -121,18 +129,26 @@ class AssetsEndPoint(object):
             raise FormException(_('Missing mandatory data.'))
 
     def validate_form(self):
+        """Validate form data."""
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
             raise FormException(_('Invalid calibration frequency.'))
 
-        tenants_ids = [tenant['id'] for tenant in self.get_create_update_tenants()]
-        if self.form['tenant_id'] not in tenants_ids:
+        tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
+        tenant_id = self.form.get('tenant_id')
+        if not tenant_id or tenant_id not in tenants_ids:
             raise FormException(_('Invalid tenant.'))
 
-        if self.form['event']:
+        if self.form.get('event'):
             status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
             if not status:
                 raise FormException(_('Invalid asset status.'))
+
+        if self.form.get('event_date'):
+            try:
+                datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
+            except (TypeError, ValueError):
+                raise FormException(_('Invalid event date.'))
 
         for form_family in self.form['equipment-family']:
             # form['equipment-family'] can be ['', '']
@@ -147,6 +163,8 @@ class AssetsEndPoint(object):
                 raise FormException(_('Invalid event.'))
 
     def add_equipments(self):
+        """Add asset's equipments."""
+        # Equipment box can be completely empty.
         for index, family_id in enumerate(self.form['equipment-family']):
             if not family_id and not self.form['equipment-serial_number'][index]:
                 continue
@@ -162,16 +180,18 @@ class AssetsEndPoint(object):
                 expiration_date_2 = None
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
+            serial_number = self.form['equipment-serial_number'][index] or None
             equipment = Equipment(family=family,
-                                  serial_number=self.form['equipment-serial_number'][index],
+                                  serial_number=serial_number,
                                   expiration_date_1=expiration_date_1,
                                   expiration_date_2=expiration_date_2)
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
     def add_event(self):
+        """Add asset event."""
         if self.form.get('event_date'):
-            event_date = get_date(self.form['event_date'])
+            event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
             event_date = date.today()
 
@@ -185,6 +205,10 @@ class AssetsEndPoint(object):
         self.request.db_session.add(event)
 
     def remove_events(self):
+        """Remove events.
+        Actually, events are not removed but marked as removed in the db, so that they can be filtered later.
+
+        """
         for event_id in self.form['event-removed']:
             event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
             event.removed = True
@@ -193,22 +217,27 @@ class AssetsEndPoint(object):
             event.remover_alias = self.request.user['alias']
 
     def update_status_and_calibration_next(self):
+        """Update asset status and next calibration date according to functional rules."""
         self.asset.status = self.asset.history('desc').first().status
 
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
             calibration_last = self.asset.calibration_last
 
-            # If station was calibrated (it should be, as production is considered a calibration).
+            # If asset was calibrated (it should be, as production is considered a calibration).
+            # Marlink rule: next calibration = activation date + calibration frequency.
             if calibration_last:
                 activation_next = self.asset.history('asc').filter(Event.date > calibration_last) \
                     .join(EventStatus).filter(EventStatus.status_id == 'service').first()
                 if activation_next:
                     self.asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
                 else:
+                    # If asset was never activated, we consider it still should be calibrated.
+                    # So calibration next = calibration last + calibration frequency.
                     self.asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
 
-            # If station wasn't calibrated.
+            # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
+            # set as "produced").
             else:
                 activation_first = self.asset.history('asc').join(EventStatus) \
                     .filter(EventStatus.status_id == 'service').first()
@@ -216,6 +245,8 @@ class AssetsEndPoint(object):
                     self.asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
 
         else:
+            # Parsys rule is straightforward: next calibration = last calibration + asset calibration frequency.
+            # Calibration last is simple to get, it's just that we consider the production date as a calibration.
             calibration_last = self.asset.calibration_last
             if calibration_last:
                 self.asset.calibration_next = calibration_last + relativedelta(years=self.asset.calibration_frequency)
@@ -223,17 +254,21 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_get(self):
+        """Get asset create form: we only need the base form data."""
         return self.get_base_form_data()
 
     @view_config(route_name='assets-create', request_method='POST', permission='assets-create',
                  renderer='assets-create_update.html')
     def create_post(self):
+        """Post asset create form."""
         try:
             self.read_form()
             self.validate_form()
         except FormException as error:
+            sentry_capture_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
+        # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
@@ -241,20 +276,16 @@ class AssetsEndPoint(object):
 
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
-                           asset_type=self.form['asset_type'], site=self.form.get('site') or None,
-                           customer_id=self.form.get('customer_id') or None,
-                           customer_name=self.form.get('customer_name') or None,
-                           current_location=self.form.get('current_location') or None,
+                           asset_type=self.form['asset_type'], site=self.form.get('site'),
+                           customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
+                           current_location=self.form.get('current_location'),
                            calibration_frequency=calibration_frequency,
-                           software_version=self.form.get('software_version') or None,
-                           notes=self.form.get('notes') or None)
+                           software_version=self.form.get('software_version'), notes=self.form.get('notes'))
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
 
         self.add_event()
-
-        self.request.db_session.flush()
 
         self.update_status_and_calibration_next()
 
@@ -263,29 +294,33 @@ class AssetsEndPoint(object):
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
     def update_get(self):
+        """Get asset update form: we need the base form data + the asset data."""
         return dict(asset=self.asset, **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
     def update_post(self):
+        """Post asset update form."""
         try:
             self.read_form()
             self.validate_form()
         except FormException as error:
+            sentry_capture_exception(self.request, level='info')
             return dict(error=str(error), asset=self.asset, **self.get_base_form_data())
 
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
         self.asset.asset_type = self.form['asset_type']
-        self.asset.customer_id = self.form.get('customer_id') or None
-        self.asset.customer_name = self.form.get('customer_name') or None
+        self.asset.customer_id = self.form.get('customer_id')
+        self.asset.customer_name = self.form.get('customer_name')
 
-        self.asset.site = self.form.get('site') or None
-        self.asset.current_location = self.form.get('current_location') or None
-        self.asset.software_version = self.form.get('software_version') or None
+        self.asset.site = self.form.get('site')
+        self.asset.current_location = self.form.get('current_location')
+        self.asset.software_version = self.form.get('software_version')
 
-        self.asset.notes = self.form.get('notes') or None
+        self.asset.notes = self.form.get('notes')
 
+        # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
@@ -298,7 +333,16 @@ class AssetsEndPoint(object):
         if self.form.get('event'):
             self.add_event()
 
+        # This should be done during validation but it's slightly easier here.
+        # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
+        # are.
         if self.form.get('event-removed'):
+            nb_removed_event = len(self.form.get('event-removed'))
+            nb_active_event = self.asset.history('asc').count()
+            if nb_removed_event >= nb_active_event:
+                error = _('Status not removed, an asset cannot have no status.')
+                return dict(error=error, asset=self.asset, **self.get_base_form_data())
+
             self.remove_events()
 
         self.update_status_and_calibration_next()
@@ -308,6 +352,7 @@ class AssetsEndPoint(object):
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
     def list_get(self):
+        """List assets. No work done here as dataTables will call the API to get the assets list."""
         return {}
 
 

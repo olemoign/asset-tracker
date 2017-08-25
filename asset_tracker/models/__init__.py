@@ -25,8 +25,7 @@ def get_session_factory(engine):
 
 
 def get_tm_session(session_factory, transaction_manager):
-    """
-    Get a ``sqlalchemy.orm.Session`` instance backed by a transaction.
+    """Get a ``sqlalchemy.orm.Session`` instance backed by a transaction.
 
     This function will hook the session to the transaction manager which
     will take care of committing any changes.
@@ -51,10 +50,7 @@ def get_tm_session(session_factory, transaction_manager):
 
 
 def includeme(config):
-    """
-    Initialize the model for a Pyramid app.
-
-    """
+    """Initialize the model for a Pyramid app."""
     settings = config.get_settings()
 
     # use pyramid_tm to hook the transaction lifecycle to the request

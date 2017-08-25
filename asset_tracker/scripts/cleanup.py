@@ -7,7 +7,6 @@ from pyramid.scripts.common import parse_vars
 
 from asset_tracker import models
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('config_uri')
 args, extras = parser.parse_known_args()

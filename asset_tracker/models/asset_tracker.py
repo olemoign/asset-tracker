@@ -25,6 +25,7 @@ class Asset(Model, CreationDateTimeMixin):
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
     def history(self, order):
+        """Filter removed events from history."""
         if order == 'asc':
             return self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
         else:
@@ -38,15 +39,18 @@ class Asset(Model, CreationDateTimeMixin):
 
     @property
     def activation_first(self):
+        """Get the date of the asset first activation."""
         activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
         if activation_first:
             return activation_first.date
 
     @property
     def calibration_last(self):
+        """Get the date of the asset last calibration."""
         calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
         if self.production and calibration_last:
             return max(self.production, calibration_last.date)
+        # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.
         elif calibration_last:
             return calibration_last.date
         elif self.production:
@@ -54,18 +58,20 @@ class Asset(Model, CreationDateTimeMixin):
 
     @property
     def production(self):
+        """Get the date of the asset production."""
         production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
             return production.date
 
     @property
     def warranty_end(self):
+        """Get the date of the end of the asset warranty."""
         if self.activation_first:
             return self.activation_first + relativedelta(years=WARRANTY_DURATION_YEARS)
 
 
 class Equipment(Model):
-    family_id = Column(Integer, ForeignKey('equipment_family.id'), nullable=False)
+    family_id = Column(Integer, ForeignKey('equipment_family.id'))
     family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)

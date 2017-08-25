@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-25 14:23+0200\n"
+"POT-Creation-Date: 2017-08-25 15:58+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -92,7 +92,7 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/macros.html:58 templates/macros.html:67
+#: templates/macros.html:58 templates/macros.html:66
 msgid "DD/MM/YYYY"
 msgstr ""
 
@@ -160,27 +160,31 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views_asset.py:135
+#: views_asset.py:145
 msgid "Invalid asset status."
 msgstr ""
 
-#: views_asset.py:126
+#: views_asset.py:135
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:142
+#: views_asset.py:158
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views_asset.py:109
+#: views_asset.py:117
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:147
+#: views_asset.py:151
+msgid "Invalid event date."
+msgstr ""
+
+#: views_asset.py:163
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:130
+#: views_asset.py:140
 msgid "Invalid tenant."
 msgstr ""
 
@@ -196,7 +200,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views_asset.py:121
+#: views_asset.py:129
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -260,6 +264,10 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: views_asset.py:343
+msgid "Status not removed, an asset cannot have no status."
+msgstr ""
+
 #: configuration.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
@@ -320,7 +328,7 @@ msgstr ""
 msgid "expiration date - lancets"
 msgstr ""
 
-#: templates/macros.html:65
+#: templates/macros.html:64
 msgid "expiration date - test strips"
 msgstr ""
 
