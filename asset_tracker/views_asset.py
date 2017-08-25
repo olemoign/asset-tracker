@@ -162,6 +162,13 @@ class AssetsEndPoint(object):
             if not event or event.asset_id != self.asset.id:
                 raise FormException(_('Invalid event.'))
 
+    @staticmethod
+    def get_date(value):
+        try:
+            return datetime.strptime(value, '%Y-%m-%d').date()
+        except (TypeError, ValueError):
+            return None
+
     def add_equipments(self):
         """Add asset's equipments."""
         # Equipment box can be completely empty.
@@ -170,12 +177,12 @@ class AssetsEndPoint(object):
                 continue
 
             if self.form['equipment-expiration_date_1'][index]:
-                expiration_date_1 = get_date(self.form['equipment-expiration_date_1'][index])
+                expiration_date_1 = self.get_date(self.form['equipment-expiration_date_1'][index])
             else:
                 expiration_date_1 = None
 
             if self.form['equipment-expiration_date_2'][index]:
-                expiration_date_2 = get_date(self.form['equipment-expiration_date_2'][index])
+                expiration_date_2 = self.get_date(self.form['equipment-expiration_date_2'][index])
             else:
                 expiration_date_2 = None
 
