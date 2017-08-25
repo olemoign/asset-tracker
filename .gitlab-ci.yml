@@ -76,7 +76,7 @@ deploy_dev:
     - docker-builder
 
   script:
-    - ssh at.dev.parsys.com parsys upgrade at.dev.parsys.com
+    - ssh root@at.dev.parsys.com parsys upgrade at.dev.parsys.com
 
   environment:
     name: dev
@@ -91,7 +91,7 @@ deploy_demo:
     - docker-builder
 
   script:
-    - ssh at.demo.parsys.com parsys upgrade at.demo.parsys.com
+    - ssh root@at.demo.parsys.com parsys upgrade at.demo.parsys.com
 
   environment:
     name: demo
