@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-27 18:00+0200\n"
+"POT-Creation-Date: 2017-08-25 14:23+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: templates/assets-create_update.html:172
+#: templates/assets-create_update.html:139
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr ""
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:182
+#: templates/assets-create_update.html:149
 msgid "Cancel"
 msgstr ""
 
@@ -92,6 +92,10 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
+#: templates/macros.html:58 templates/macros.html:67
+msgid "DD/MM/YYYY"
+msgstr ""
+
 #: templates/assets-create_update.html:106
 msgid "Date DD/MM/YYYY"
 msgstr ""
@@ -116,7 +120,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:170
+#: templates/assets-create_update.html:137
 msgid "History"
 msgstr ""
 
@@ -208,7 +212,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:163
+#: templates/assets-create_update.html:130
 msgid "Notes"
 msgstr ""
 
@@ -260,7 +264,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:183
+#: templates/assets-create_update.html:150
 msgid "Submit"
 msgstr ""
 
@@ -312,6 +316,15 @@ msgstr ""
 msgid "an out-of-date link"
 msgstr ""
 
+#: templates/macros.html:56
+msgid "expiration date - lancets"
+msgstr ""
+
+#: templates/macros.html:65
+msgid "expiration date - test strips"
+msgstr ""
+
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr ""
+

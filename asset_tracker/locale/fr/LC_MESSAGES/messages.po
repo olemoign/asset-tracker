@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-27 18:00+0200\n"
+"POT-Creation-Date: 2017-08-25 14:23+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: templates/assets-create_update.html:172
+#: templates/assets-create_update.html:139
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr "%(creator)s a défini le statut <b>%(status)s</b> le %(date)s"
@@ -56,7 +56,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:182
+#: templates/assets-create_update.html:149
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -92,6 +92,10 @@ msgstr "ID Client (Souscription)"
 msgid "Customer name"
 msgstr "Nom du client"
 
+#: templates/macros.html:58 templates/macros.html:67
+msgid "DD/MM/YYYY"
+msgstr "JJ/MM/AAAA"
+
 #: templates/assets-create_update.html:106
 msgid "Date DD/MM/YYYY"
 msgstr "Date JJ/MM/AAAA"
@@ -116,7 +120,7 @@ msgstr "Erreur"
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
-#: templates/assets-create_update.html:170
+#: templates/assets-create_update.html:137
 msgid "History"
 msgstr "Historique"
 
@@ -208,7 +212,7 @@ msgstr "Prochaine calibration"
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:163
+#: templates/assets-create_update.html:130
 msgid "Notes"
 msgstr "Notes"
 
@@ -260,7 +264,7 @@ msgstr "Statut"
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:183
+#: templates/assets-create_update.html:150
 msgid "Submit"
 msgstr "Valider"
 
@@ -311,6 +315,14 @@ msgstr "d'une adresse incorrecte"
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
+
+#: templates/macros.html:56
+msgid "expiration date - lancets"
+msgstr "date d'expiration - lancettes"
+
+#: templates/macros.html:65
+msgid "expiration date - test strips"
+msgstr "date d'expiration - bandelettes"
 
 #: templates/assets-create_update.html:62
 msgid "years"
