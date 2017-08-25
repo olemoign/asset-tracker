@@ -136,6 +136,10 @@ td {
   }
 }
 
-@media (min-width: $screen-sm-min){  // 768px
-    .row.auto-clear .col-sm-4:nth-child(3n+1){clear:left;}
+// to avoid equipment block "overlap" when they have a different height
+@media (min-width:992px){
+    .auto-clear .col-md-4:nth-child(3n+1){clear:left;}
+}
+@media (min-width:768px) and (max-width:991px){
+    .auto-clear .col-sm-6:nth-child(odd){clear:left;}
 }

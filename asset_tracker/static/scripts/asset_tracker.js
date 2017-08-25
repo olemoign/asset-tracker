@@ -22,7 +22,7 @@ $(document).on('click', '.equipment__remove', function() {
 });
 
 // add expiration dates for Glucometer equipment
-$(document).on('change','.my__select',function(){
+$(document).on('change', '.equipment__select', function() {
     const expiration_date_fields = $(this).parents('.equipment__block').find('.expiration_date_fields');
     const glucometer_family_id = '2YUEMLmH';
 
@@ -31,6 +31,7 @@ $(document).on('change','.my__select',function(){
     }
     else {
         expiration_date_fields.hide();
+        expiration_date_fields.find('input').val('');
     }
 });
 

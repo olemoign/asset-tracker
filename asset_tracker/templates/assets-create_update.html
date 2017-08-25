@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import date, input with context %}
+{% from 'macros.html' import date, equipment_box, input with context %}
 
 {% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
@@ -114,98 +114,14 @@
                         <button type="button" class="equipment__add btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
                     </div>
 
-                    {# equipment model - its purpose is to be cloned in equipment_list #}
-                    <div class="col-sm-4 equipment__block" style="display: none;">
-                        <div class="well well-sm">
+                    {# (macro) its purpose is to be cloned in equipment_list #}
+                    {{ equipment_box(hide=True) }}
 
-                            {# select equipment #}
-                            <div class="form-group">
-                                <select class="form-control my__select" name="equipment-family">
-                                    <option></option>
-                                    {% for family in equipments_families|sort(attribute='model_translated') %}
-                                    <option value="{{ family.family_id }}">
-                                        {{ family.model_translated }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            {# serial number & remove button #}
-                            <div class=form-group"">
-                                <div class="input-group">
-                                  <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N">
-                                  <span class="input-group-btn equipment__remove">
-                                      <button type="button" class="btn btn-default">
-                                          <span class="glyphicon glyphicon-remove"></span>
-                                      </button>
-                                  </span>
-                                </div>
-                            </div>
-
-                            {# expiration date fields - for glucometer only #}
-                            <div class="form-group expiration_date_fields" style="display: none;">
-                                <div>
-                                    <label for="equipment-expiration_date_1">{{ gettext('expiration date 1') }}</label>
-                                    <input type="date" class="form-control" name="equipment-expiration_date_1" placeholder="date1">
-                                </div>
-                                <br />
-                                <div>
-                                    <label for="equipment-expiration_date_2">{{ gettext('expiration date 2') }}</label>
-                                    <input type="date" class="form-control" name="equipment-expiration_date_2" placeholder="date2">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    {# start of equipment list #}
                     <div id="equipment__list" class="row auto-clear">
                         {% for equipment in (asset or {}).equipments %}
-                        <div class="col-sm-4 equipment__block">
-                            <div class="well well-sm">
-
-                                {# select equipment #}
-                                <div class="form-group">
-                                    <select class="form-control my__select" name="equipment-family">
-                                        <option></option>
-                                        {% for family in equipments_families|sort(attribute='model_translated') %}
-                                        <option value="{{ family.family_id }}" {% if equipment.family_id == family.id %}selected{% endif %}>
-                                            {{ family.model_translated }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                {# serial number & remove button #}
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N"
-                                            {% if equipment.serial_number %} value="{{ equipment.serial_number }}"{% endif %}>
-                                    <span class="input-group-btn equipment__remove">
-                                        <button type="button" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
-                                </div>
-
-                                {# expiration date fields - for glucometer only (family_id == 5) #}
-                                <div class="form-group expiration_date_fields" {% if equipment.family_id != 5 %}style="display: none;"{% endif %}>
-                                    <div>
-                                        <label for="equipment-expiration_date_1">{{ gettext('expiration date 1') }}</label>
-                                        <input type="date" class="form-control" name="equipment-expiration_date_1"
-                                               {% if equipment.expiration_date_1 %}value="{{ equipment.expiration_date_1 }}"{% endif %}>
-                                    </div>
-                                    <br />
-                                    <div>
-                                        <label for="equipment-expiration_date_2">{{ gettext('expiration date 2') }}</label>
-                                        <input type="date" class="form-control" name="equipment-expiration_date_2"
-                                               {% if equipment.expiration_date_2 %}value="{{ equipment.expiration_date_2 }}"{% endif %}>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                            {{ equipment_box(equipment) }}
                         {% endfor %}
                     </div>
-                    {# end of equipment list #}
 
                     <hr>
 

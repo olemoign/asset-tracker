@@ -17,3 +17,59 @@
         </div>
     </div>
 {%- endmacro %}
+
+{% macro equipment_box(equipment=None, hide=False) -%}
+    <div class="col-sm-6 col-md-4 equipment__block" {% if hide %}style="display: none;"{% endif %}>
+        <div class="well well-sm">
+
+            {# select equipment #}
+            <div class="form-group">
+                <select class="form-control equipment__select" name="equipment-family">
+                    <option></option>
+                {% for family in equipments_families|sort(attribute='model_translated') %}
+                    <option value="{{ family.family_id }}" {% if equipment and equipment.family_id == family.id %}selected{% endif %}>
+                        {{ family.model_translated }}
+                    </option>
+                {% endfor %}
+                </select>
+            </div>
+
+            {# serial number & remove button #}
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="equipment-serial_number" placeholder="S/N"
+                            {% if equipment and equipment.serial_number %}
+                                value="{{ equipment.serial_number }}"
+                            {% endif %}>
+                    <span class="input-group-btn equipment__remove">
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+
+            {# expiration date fields - for glucometer #}
+            <div class="form-group expiration_date_fields"
+                 {% if hide or equipment and equipment.family_id != 5 %}style="display: none;"{% endif %}>
+                <div class="form-group" >
+                    <label for="equipment-expiration_date_1">{{ gettext('expiration date - lancets') }}</label>
+                    <input type="date" class="form-control" name="equipment-expiration_date_1"
+                           placeholder="{{ gettext('DD/MM/YYYY') }}"
+                           {% if equipment and equipment.expiration_date_1 %}
+                                value="{{ equipment.expiration_date_1|format_date(locale, date_format='dd/MM/yyyy') }}"
+                           {% endif %}>
+                </div>
+                <div class="form-group" >
+                    <label for="equipment-expiration_date_2">{{ gettext('expiration date - test strips') }}</label>
+                    <input type="date" class="form-control" name="equipment-expiration_date_2"
+                           placeholder="{{ gettext('DD/MM/YYYY') }}"
+                           {% if equipment and equipment.expiration_date_2 %}
+                                value="{{ equipment.expiration_date_2|format_date(locale, date_format='dd/MM/yyyy') }}"
+                           {% endif %}>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{%- endmacro %}
