@@ -74,6 +74,8 @@ deploy_dev:
   stage: deploy
 
   script:
+    - apt update
+    - apt install -y ssh
     - ssh at.dev.parsys.com parsys upgrade at.dev.parsys.com
 
   environment:
@@ -87,6 +89,8 @@ deploy_demo:
   stage: deploy
 
   script:
+    - apt update
+    - apt install -y ssh
     - ssh at.demo.parsys.com parsys upgrade at.demo.parsys.com
 
   environment:
