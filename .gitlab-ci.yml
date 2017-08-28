@@ -3,6 +3,7 @@ stages:
  - build
  - dist
  - release
+ - deploy
 
 variables:
   CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
@@ -68,6 +69,36 @@ release-latest-image:
 
   only:
     - master
+
+deploy_dev:
+  stage: deploy
+  tags:
+    - docker-builder
+
+  script:
+    - ssh root@at.dev.parsys.com parsys upgrade at.dev.parsys.com
+
+  environment:
+    name: dev
+    url: https://at.dev.parsys.com
+
+  only:
+  - develop
+
+deploy_demo:
+  stage: deploy
+  tags:
+    - docker-builder
+
+  script:
+    - ssh root@at.demo.parsys.com parsys upgrade at.demo.parsys.com
+
+  environment:
+    name: demo
+    url: https://at.demo.parsys.com
+
+  only:
+  - master
 
 
 # TODO : run tests

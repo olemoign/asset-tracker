@@ -15,8 +15,8 @@
     <div class="container">
     {% if error %}
         <div class="alert alert-danger alert-dismissible">
-            {{ gettext(error) }}
             <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            {{ gettext(error) }}
         </div>
     {% endif %}
         <div class="panel panel-default">
@@ -121,8 +121,8 @@
 
                     <hr>
 
-                    <div class="row">
-                        <div class="col-sm-12 equipment__line">
+                    <div class="row equipments__list">
+                        <div class="col-sm-12 equipments__header">
                             <label class="equipment__label">{{ gettext('Equipments') }}</label>
                             <button type="button" class="equipment__add btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
                         </div>
