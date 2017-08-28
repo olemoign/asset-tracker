@@ -150,22 +150,22 @@ class AssetsEndPoint(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        for family_id, *expiration_date in zip(self.form['equipment-family'],
-                                               self.form['equipment-expiration_date_1'],
-                                               self.form['equipment-expiration_date_2']):
+        for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
+                                                                   self.form['equipment-expiration_date_1'],
+                                                                   self.form['equipment-expiration_date_2']):
             # form['equipment-family'] can be ['', '']
             if family_id:
                 db_family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'))
-                if expiration_date[0]:
+                if expiration_date_1:
                     try:
-                        datetime.strptime(expiration_date[0], '%Y-%m-%d').date()
+                        datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
                         raise FormException(_('Invalid expiration date.'))
-                if expiration_date[1]:
+                if expiration_date_2:
                     try:
-                        datetime.strptime(expiration_date[1], '%Y-%m-%d').date()
+                        datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
                         raise FormException(_('Invalid expiration date.'))
 
@@ -177,20 +177,21 @@ class AssetsEndPoint(object):
     def add_equipments(self):
         """Add asset's equipments."""
         # Equipment box can be completely empty.
-        for family_id, serial_number, *expiration_date in zip(self.form['equipment-family'],
-                                                              self.form['equipment-serial_number'],
-                                                              self.form['equipment-expiration_date_1'],
-                                                              self.form['equipment-expiration_date_2']):
+        zip_equipment = zip(self.form['equipment-family'],
+                            self.form['equipment-serial_number'],
+                            self.form['equipment-expiration_date_1'],
+                            self.form['equipment-expiration_date_2'])
+        for family_id, serial_number, expiration_date_1, expiration_date_2 in zip_equipment:
             if not family_id and not serial_number:
                 continue
 
-            if expiration_date[0]:
-                expiration_date_1 = datetime.strptime(expiration_date[0], '%Y-%m-%d').date()
+            if expiration_date_1:
+                expiration_date_1 = datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
             else:
                 expiration_date_1 = None
 
-            if expiration_date[1]:
-                expiration_date_2 = datetime.strptime(expiration_date[1], '%Y-%m-%d').date()
+            if expiration_date_2:
+                expiration_date_2 = datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
             else:
                 expiration_date_2 = None
 
