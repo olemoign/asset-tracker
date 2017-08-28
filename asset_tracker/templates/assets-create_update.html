@@ -72,10 +72,10 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>{{ gettext('Software version') }}</label>
+                                <label>{{ gettext('Softwares versions') }}</label>
                                 <p>
                                 {% for software, version in softwares|dictsort %} {# sorted by key #}
-                                    {{ software }} {{ version }} {% if not loop.last %}<br />{% endif %}
+                                    {{ software }}: {{ version }} {% if not loop.last %}<br />{% endif %}
                                 {% endfor %}
                                 </p>
                             </div>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-28 17:02+0200\n"
+"POT-Creation-Date: 2017-08-28 17:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -249,7 +249,7 @@ msgid "Software update"
 msgstr ""
 
 #: templates/assets-create_update.html:75
-msgid "Software version"
+msgid "Softwares versions"
 msgstr ""
 
 #: templates/errors/404.html:145

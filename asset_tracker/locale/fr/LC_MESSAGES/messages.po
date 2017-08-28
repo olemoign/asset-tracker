@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-28 17:02+0200\n"
+"POT-Creation-Date: 2017-08-28 17:10+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -250,8 +250,8 @@ msgid "Software update"
 msgstr "MAJ logicielle"
 
 #: templates/assets-create_update.html:75
-msgid "Software version"
-msgstr "Version logicielle"
+msgid "Softwares versions"
+msgstr "Versions logicielles"
 
 #: templates/errors/404.html:145
 msgid "Sorry, but the page you were trying to view does not exist."
