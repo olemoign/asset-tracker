@@ -20,8 +20,12 @@ def upgrade():
         batch_op.add_column(sa.Column('expiration_date_1', sa.Date(), nullable=True))
         batch_op.add_column(sa.Column('expiration_date_2', sa.Date(), nullable=True))
 
+        batch_op.alter_column('family_id', existing_type=sa.Integer(), nullable=True)
+
 
 def downgrade():
     with op.batch_alter_table('equipment', schema=None) as batch_op:
         batch_op.drop_column('expiration_date_2')
         batch_op.drop_column('expiration_date_1')
+
+        batch_op.alter_column('family_id', existing_type=sa.Integer(), nullable=False)
