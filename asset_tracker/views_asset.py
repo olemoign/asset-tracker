@@ -116,6 +116,18 @@ class AssetsEndPoint(object):
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
             raise FormException(_('Invalid equipments.'))
 
+        expiration_date_1 = self.form['equipment-expiration_date_1']
+        if not expiration_date_1:
+            self.form['equipment-expiration_date_1'] = ['']
+        elif not isinstance(expiration_date_1, list):
+            self.form['equipment-expiration_date_1'] = [expiration_date_1]
+
+        expiration_date_2 = self.form['equipment-expiration_date_2']
+        if not expiration_date_2:
+            self.form['equipment-expiration_date_2'] = ['']
+        elif not isinstance(expiration_date_2, list):
+            self.form['equipment-expiration_date_2'] = [expiration_date_2]
+
         events_removed = self.form.get('event-removed')
         if not events_removed:
             self.form['event-removed'] = []
