@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-23 12:45+0200\n"
+"POT-Creation-Date: 2017-08-28 17:02+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,17 +16,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:193
+#: templates/assets-create_update.html:195
 #, python-format
-msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s."
-msgstr "%(creator)s a défini le statut <b>%(status)s</b> le %(date)s."
+msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
+msgstr "%(date)s: %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:187
+#: templates/assets-create_update.html:189
 #, python-format
-msgid "%(soft)s - <b>%(status)s</b> to %(version)s on %(date)s."
-msgstr "%(soft)s - <b>%(status)s</b> en %(version)s le %(date)s."
+msgid "%(date)s: %(soft)s updated to version %(version)s."
+msgstr "%(date)s: %(soft)s mis à jour en version %(version)s."
 
 #: templates/assets-create_update.html:100
 msgid "Activation"
@@ -61,7 +61,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:206
+#: templates/assets-create_update.html:209
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -161,27 +161,31 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views_asset.py:154
+#: views_asset.py:168
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views_asset.py:145
+#: views_asset.py:158
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views_asset.py:161
+#: views_asset.py:181
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views_asset.py:128
+#: views_asset.py:140
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views_asset.py:166
+#: views_asset.py:174
+msgid "Invalid event date."
+msgstr ""
+
+#: views_asset.py:186
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views_asset.py:149
+#: views_asset.py:163
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -197,7 +201,7 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views_asset.py:140
+#: views_asset.py:152
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -242,8 +246,8 @@ msgid "Site"
 msgstr "Site"
 
 #: configuration.json:105
-msgid "Software has been updated"
-msgstr "Le logiciel a été mis à jour"
+msgid "Software update"
+msgstr "MAJ logicielle"
 
 #: templates/assets-create_update.html:75
 msgid "Software version"
@@ -265,7 +269,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:309
+#: views_asset.py:353
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -273,7 +277,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:207
+#: templates/assets-create_update.html:210
 msgid "Submit"
 msgstr "Valider"
 
@@ -328,3 +332,4 @@ msgstr "d'un lien obsolète"
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr "ans"
+
