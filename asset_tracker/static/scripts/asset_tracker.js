@@ -9,6 +9,26 @@ $(document).ready(function() {
     firstInput.focus();
     // Move cursor to the end of the input.
     firstInput.val(firstInput.val());
+
+    // update date format if browser doesn't manage date input types.
+    // noinspection JSUnresolvedVariable
+    if (!Modernizr.inputtypes.date) {
+        $('input[type="date"]').each(function() {
+            const date = $(this).val();
+
+            // If date input is empty.
+            if (!date) {
+                return true;
+            }
+
+            // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
+            const isStandardDate = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (isStandardDate) {
+                $(this).val(isStandardDate[3] + '/' + isStandardDate[2] + '/' + isStandardDate[1]);
+                return true;
+            }
+        });
+    }
 });
 
 // Manage equipments.
