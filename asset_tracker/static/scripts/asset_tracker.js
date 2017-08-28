@@ -241,7 +241,7 @@ $(document).on('submit', 'form', function(event) {
      */
     $('input[type="date"]').each(function() {
         const date = $(this).val();
-        // If date in put is empty.
+        // If date input is empty.
         if (!date) {
             return true;
         }

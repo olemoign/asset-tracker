@@ -1,17 +1,18 @@
 {% macro date(label, field) -%}
     <div class="col-sm-4">
         <div class="form-group">
-            <label>{{ label }}</label>
+            <label>{{ gettext(label) }}</label>
             <p>{% if asset[field] %}{{ asset[field]|format_date(locale) }}{% else %}&nbsp;{% endif %}</p>
         </div>
     </div>
 {%- endmacro %}
 
-{% macro input(label, field, type='text', required=False) -%}
+{% macro input(label, field, type='text', required=False, placeholder=None) -%}
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="{{ field }}">{{ label }}{% if required %} *{% endif %}</label>
+            <label for="{{ field }}">{{ gettext(label) }}{% if required %} *{% endif %}</label>
             <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
+                {% if placeholder %} placeholder="{{ gettext(placeholder) }}"{% endif %}
                 {% if asset and asset[field] %} value="{{ asset[field] }}"{% endif %}
                 {% if required %} required{% endif %}>
         </div>

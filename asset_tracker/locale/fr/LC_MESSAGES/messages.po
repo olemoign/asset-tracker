@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-25 15:58+0200\n"
+"POT-Creation-Date: 2017-08-28 13:44+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
 #: templates/assets-create_update.html:139
 #, python-format
@@ -92,13 +92,14 @@ msgstr "ID Client (Souscription)"
 msgid "Customer name"
 msgstr "Nom du client"
 
-#: templates/macros.html:58 templates/macros.html:66
+#: templates/assets-create_update.html:106 templates/macros.html:59
+#: templates/macros.html:67
 msgid "DD/MM/YYYY"
 msgstr "JJ/MM/AAAA"
 
 #: templates/assets-create_update.html:106
-msgid "Date DD/MM/YYYY"
-msgstr "Date JJ/MM/AAAA"
+msgid "Date"
+msgstr "Date"
 
 #: configuration.json:100
 msgid "Decommissioned"
@@ -115,6 +116,14 @@ msgstr "Équipements"
 #: templates/errors/403.html:3 templates/errors/500.html:3
 msgid "Error"
 msgstr "Erreur"
+
+#: templates/macros.html:57
+msgid "Expiration date - lancets"
+msgstr "Date d'expiration - lancettes"
+
+#: templates/macros.html:65
+msgid "Expiration date - test strips"
+msgstr "Date d'expiration - bandelettes"
 
 #: configuration.json:21
 msgid "Glucometer - Beurer GL50"
@@ -264,7 +273,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:343
+#: views_asset.py:350
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -323,14 +332,6 @@ msgstr "d'une adresse incorrecte"
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
-
-#: templates/macros.html:56
-msgid "Expiration date - lancets"
-msgstr "Date d'expiration - lancettes"
-
-#: templates/macros.html:64
-msgid "Expiration date - test strips"
-msgstr "Date d'expiration - bandelettes"
 
 #: templates/assets-create_update.html:62
 msgid "years"

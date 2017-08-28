@@ -28,7 +28,7 @@
                 <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(gettext('Asset ID'), 'asset_id', required=True) }}
+                        {{ input(_('Asset ID'), 'asset_id', required=True) }}
                         <div class="col-sm-6 form-group">
                             <label for="asset_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="asset_type" name="asset_type">
@@ -47,12 +47,12 @@
                         </div>
 
                         {% if 'marlink' in client_specific %}
-                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
+                        {{ input(_('Customer ID (Subscription ID)'), 'customer_id') }}
                         {% endif %}
 
-                        {{ input(gettext('Customer name'), 'customer_name') }}
-                        {{ input(gettext('Site'), 'site') }}
-                        {{ input(gettext('Current location'), 'current_location') }}
+                        {{ input(_('Customer name'), 'customer_name') }}
+                        {{ input(_('Site'), 'site') }}
+                        {{ input(_('Current location'), 'current_location') }}
 
                         {% if not 'marlink' in client_specific %}
                         <div class="col-sm-6 form-group">
@@ -65,7 +65,7 @@
                         </div>
                         {% endif %}
 
-                        {{ input(gettext('Software version'), 'software_version') }}
+                        {{ input(_('Software version'), 'software_version') }}
                     </div>
 
                     {% if asset %}
@@ -83,11 +83,11 @@
                     <hr>
 
                     <div class="row">
-                        {{ date(gettext('Production'), 'production') }}
-                        {{ date(gettext('Activation'), 'activation_first') }}
-                        {{ date(gettext('Last calibration'), 'calibration_last') }}
-                        {{ date(gettext('Next calibration'), 'calibration_next') }}
-                        {{ date(gettext('Warranty end'), 'warranty_end') }}
+                        {{ date(_('Production'), 'production') }}
+                        {{ date(_('Activation'), 'activation_first') }}
+                        {{ date(_('Last calibration'), 'calibration_last') }}
+                        {{ date(_('Next calibration'), 'calibration_next') }}
+                        {{ date(_('Warranty end'), 'warranty_end') }}
                     </div>
                     {% endif %}
 
@@ -103,7 +103,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(gettext('Date DD/MM/YYYY'), 'event_date', 'date') }}
+                        {{ input(_('Date'), 'event_date', 'date', placeholder=_('DD/MM/YYYY')) }}
                     </div>
 
                     <hr>
