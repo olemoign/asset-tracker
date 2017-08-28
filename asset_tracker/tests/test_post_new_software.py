@@ -10,7 +10,7 @@ print(r)
 
 consultation_url = asset + '/api/update/?product=MedCapture'
 headers = {'authorization': 'Bearer ' + r.json()['access_token']}
-position = {'accuracy': 119, 'altitude': None,'latitude': 48.844806399999996,'longitude': 2.4333515}
+position = {'accuracy': 119, 'altitude': None, 'latitude': 48.844806399999996, 'longitude': 2.4333515}
 json = {'version': '2.6.4-rc1', 'position': position}
 r = requests.post(consultation_url, headers=headers, json=json)
 print(r)
