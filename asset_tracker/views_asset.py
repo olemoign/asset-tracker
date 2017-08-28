@@ -150,46 +150,53 @@ class AssetsEndPoint(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        for form_family in self.form['equipment-family']:
+        for family_id, *expiration_date in zip(self.form['equipment-family'],
+                                               self.form['equipment-expiration_date_1'],
+                                               self.form['equipment-expiration_date_2']):
             # form['equipment-family'] can be ['', '']
-            if form_family:
-                db_family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=form_family).first()
+            if family_id:
+                db_family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'))
+                if expiration_date[0]:
+                    try:
+                        datetime.strptime(expiration_date[0], '%Y-%m-%d').date()
+                    except (TypeError, ValueError):
+                        raise FormException(_('Invalid expiration date.'))
+                if expiration_date[1]:
+                    try:
+                        datetime.strptime(expiration_date[1], '%Y-%m-%d').date()
+                    except (TypeError, ValueError):
+                        raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
             event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
             if not event or event.asset_id != self.asset.id:
                 raise FormException(_('Invalid event.'))
 
-    @staticmethod
-    def get_date(value):
-        try:
-            return datetime.strptime(value, '%Y-%m-%d').date()
-        except (TypeError, ValueError):
-            return None
-
     def add_equipments(self):
         """Add asset's equipments."""
         # Equipment box can be completely empty.
-        for index, family_id in enumerate(self.form['equipment-family']):
-            if not family_id and not self.form['equipment-serial_number'][index]:
+        for family_id, serial_number, *expiration_date in zip(self.form['equipment-family'],
+                                                              self.form['equipment-serial_number'],
+                                                              self.form['equipment-expiration_date_1'],
+                                                              self.form['equipment-expiration_date_2']):
+            if not family_id and not serial_number:
                 continue
 
-            if self.form['equipment-expiration_date_1'][index]:
-                expiration_date_1 = self.get_date(self.form['equipment-expiration_date_1'][index])
+            if expiration_date[0]:
+                expiration_date_1 = datetime.strptime(expiration_date[0], '%Y-%m-%d').date()
             else:
                 expiration_date_1 = None
 
-            if self.form['equipment-expiration_date_2'][index]:
-                expiration_date_2 = self.get_date(self.form['equipment-expiration_date_2'][index])
+            if expiration_date[1]:
+                expiration_date_2 = datetime.strptime(expiration_date[1], '%Y-%m-%d').date()
             else:
                 expiration_date_2 = None
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            serial_number = self.form['equipment-serial_number'][index] or None
             equipment = Equipment(family=family,
-                                  serial_number=serial_number,
+                                  serial_number=serial_number or None,
                                   expiration_date_1=expiration_date_1,
                                   expiration_date_2=expiration_date_2)
             self.asset.equipments.append(equipment)
