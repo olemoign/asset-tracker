@@ -115,7 +115,7 @@
                     </div>
 
                     {# (macro) its purpose is to be cloned in equipment_list #}
-                    {{ equipment_box(hide=True) }}
+                    {{ equipment_box(reference=True) }}
 
                     <div id="equipment__list" class="row auto-clear">
                         {% for equipment in (asset or {}).equipments %}

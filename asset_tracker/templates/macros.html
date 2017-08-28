@@ -19,8 +19,8 @@
     </div>
 {%- endmacro %}
 
-{% macro equipment_box(equipment=None, hide=False) -%}
-    <div {% if hide %}id="equipment__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block" {% if hide %}style="display: none;"{% endif %}>
+{% macro equipment_box(equipment=None, reference=False) -%}
+    <div {% if reference %}id="equipment__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block" {% if reference %}style="display: none;"{% endif %}>
         <div class="well well-sm">
 
             {# select equipment #}
@@ -52,7 +52,7 @@
 
             {# expiration date fields - for glucometer #}
             <div class="form-group expiration_date_fields"
-                 {% if hide or equipment and equipment.family_id != 5 %}style="display: none;"{% endif %}>
+                 {% if reference or equipment and equipment.family_id != 5 %}style="display: none;"{% endif %}>
                 <div class="form-group" >
                     <label for="equipment-expiration_date_1">{{ gettext('Expiration date - lancets') }}</label>
                     <input type="date" class="form-control" name="equipment-expiration_date_1"
