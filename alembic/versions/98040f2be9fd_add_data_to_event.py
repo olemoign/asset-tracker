@@ -28,4 +28,4 @@ def downgrade():
         batch_op.drop_column('data')
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('software_version', sa.VARCHAR(), nullable=True))
+        batch_op.add_column(sa.Column('software_version', sa.Unicode(), nullable=True))

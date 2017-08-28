@@ -75,7 +75,7 @@
                                 <label>{{ gettext('Softwares versions') }}</label>
                                 <p>
                                 {% for software, version in softwares|dictsort %} {# sorted by key #}
-                                    {{ software }}: {{ version }} {% if not loop.last %}<br />{% endif %}
+                                    {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
                                 {% endfor %}
                                 </p>
                             </div>
@@ -186,8 +186,8 @@
                                     {# 10 = software update event, see [configuration.json] #}
                                     <p class="history_event">
                                     {% if event.status_id == 10 %}
-                                        {{ gettext('%(date)s: %(soft)s updated to version %(version)s.',
-                                            soft=event.data_json.get('software_name'),
+                                        {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
+                                            software=event.data_json.get('software_name')|capitalize,
                                             status=gettext(event.status.label),
                                             version=event.data_json.get('software_version'),
                                             date=event.date|format_date(locale)) }}

@@ -65,9 +65,7 @@ class AssetsEndPoint(object):
         return asset
 
     def get_latest_softwares(self):
-        """Get last version of every softwares
-
-        """
+        """Get last version of every softwares."""
         event_query = self.request.db_session.query(Event) \
             .filter_by(
                 asset_id=self.asset.id,
@@ -76,9 +74,9 @@ class AssetsEndPoint(object):
             .order_by(Event.id.desc())
 
         softwares = {}
-        for e in event_query.all():
+        for event in event_query.all():
             try:
-                name, version = e.data_json['software_name'], e.data_json['software_version']
+                name, version = event.data_json['software_name'], event.data_json['software_version']
             except KeyError:
                 continue
             else:

@@ -24,7 +24,7 @@ msgstr ""
 
 #: templates/assets-create_update.html:189
 #, python-format
-msgid "%(date)s: %(soft)s updated to version %(version)s."
+msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr ""
 
 #: templates/assets-create_update.html:100

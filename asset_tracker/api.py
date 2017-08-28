@@ -6,15 +6,15 @@ List assets for dataTables and asset update WS (declare software version/get las
 import os
 import re
 from collections import OrderedDict
-from json import JSONDecodeError, loads, dumps
 from datetime import date
+from json import dumps, JSONDecodeError
 
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound, HTTPCreated, HTTPNoContent
+from pyramid.httpexceptions import HTTPBadRequest, HTTPCreated, HTTPNoContent, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -145,7 +145,7 @@ class Software(object):
         where to download the package.
 
         QueryString:
-            product (mandatory)
+            product (mandatory).
             channel (optional): product channel (in 'alpha', 'beta', 'dev', 'stable').
             version (optional): if we want the url of one specific version.
 
@@ -207,38 +207,47 @@ class Software(object):
         return OrderedDict(version=channel_version[0], url=download_url)
 
     @view_config(route_name='api-software-update', request_method='POST', permission='software-update',
-                 require_csrf=False)
+                 require_csrf=False, renderer='json')
     def software_update_post(self):
-        """Receive software(s) version
+        """Receive software(s) version.
+
+        QueryString:
+            product (mandatory).
+
+        Body (json):
+            version (mandatory).
+            position (optional).
 
         """
         # get product name (medcapture, camagent)
         if not self.request.GET.get('product'):
             return HTTPBadRequest(json={'error': 'Missing product.'})
         else:
-            self.product = self.request.GET.get('product')
+            self.product = self.request.GET['product'].lower()
 
         # make sure the JSON provided is valid.
         try:
-            json = loads(self.request.POST.get('json').file.read().decode('utf-8'))
-        except (JSONDecodeError, AttributeError) as error:
+            json = self.request.json
+        except JSONDecodeError as error:
             return HTTPBadRequest(json={'error': error})
 
         # check if asset exists (cart, station, telecardia)
+        try:
+            station_login = self.request.user['login']
+        except KeyError:
+            return HTTPBadRequest(json={'error': 'Invalid authentication.'})
+
         asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=json.get('assetID')) \
+            .filter_by(asset_id=station_login) \
             .first()
         if not asset:
-            return HTTPNotFound(json={'error': 'Unknown product.'})
+            return HTTPNotFound(json={'error': 'Unknown asset.'})
 
         software_version = json.get('version')
         if software_version:
             last_event = self.request.db_session.query(models.Event) \
-                .filter_by(
-                    asset_id=asset.id,
-                    status_id=10  # software update event, see [configuration.json]
-                ) \
-                .filter(models.Event.data.like('%'+self.product+'%')) \
+                .filter_by(asset_id=asset.id, status_id=10) \
+                .filter(models.Event.data.like('%' + self.product + '%')) \
                 .order_by(models.Event.id.desc()) \
                 .first()
 
@@ -255,9 +264,9 @@ class Software(object):
                 )
                 self.request.db_session.add(new_event)
 
-                return HTTPCreated(detail='Information received.')  # or HTTPOk ?
+                return HTTPCreated(json='Information received.')  # or HTTPOk ?
 
-        return HTTPNoContent(detail='No change.')
+        return HTTPNoContent(json='No change.')
 
 
 def includeme(config):
