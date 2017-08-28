@@ -324,11 +324,11 @@ msgid "an out-of-date link"
 msgstr ""
 
 #: templates/macros.html:56
-msgid "expiration date - lancets"
+msgid "Expiration date - lancets"
 msgstr ""
 
 #: templates/macros.html:64
-msgid "expiration date - test strips"
+msgid "Expiration date - test strips"
 msgstr ""
 
 #: templates/assets-create_update.html:62

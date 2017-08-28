@@ -53,7 +53,7 @@
             <div class="form-group expiration_date_fields"
                  {% if hide or equipment and equipment.family_id != 5 %}style="display: none;"{% endif %}>
                 <div class="form-group" >
-                    <label for="equipment-expiration_date_1">{{ gettext('expiration date - lancets') }}</label>
+                    <label for="equipment-expiration_date_1">{{ gettext('Expiration date - lancets') }}</label>
                     <input type="date" class="form-control" name="equipment-expiration_date_1"
                            placeholder="{{ gettext('DD/MM/YYYY') }}"
                            {% if equipment and equipment.expiration_date_1 %}
@@ -61,7 +61,7 @@
                            {% endif %}>
                 </div>
                 <div class="form-group" >
-                    <label for="equipment-expiration_date_2">{{ gettext('expiration date - test strips') }}</label>
+                    <label for="equipment-expiration_date_2">{{ gettext('Expiration date - test strips') }}</label>
                     <input type="date" class="form-control" name="equipment-expiration_date_2"
                            placeholder="{{ gettext('DD/MM/YYYY') }}"
                            {% if equipment and equipment.expiration_date_2 %}

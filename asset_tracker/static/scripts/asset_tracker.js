@@ -16,8 +16,8 @@ $(document).on('click', '.equipment__add', function() {
     /**
      * Add a new equipment when the user clicks the '+' sign.
      */
-    $(this).parent().siblings( '.equipment__block' )
-        .clone().show().appendTo( '#equipment__list' );
+    $(this).parent().siblings('.equipment__block')
+        .clone().show().appendTo('#equipment__list');
 });
 
 $(document).on('click', '.equipment__remove', function() {
