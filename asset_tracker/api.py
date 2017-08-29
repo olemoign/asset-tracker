@@ -245,11 +245,13 @@ class Software(object):
 
         software_version = json.get('version')
         if software_version:
-            last_event = self.request.db_session.query(models.Event) \
-                .filter_by(asset_id=asset.id, status_id=10) \
-                .filter(models.Event.data.like('%' + self.product + '%')) \
-                .order_by(models.Event.id.desc()) \
-                .first()
+            latest_events = self.request.db_session.query(models.Event).join(models.EventStatus) \
+                .filter(models.Event.asset_id == asset.id,
+                        models.EventStatus.status_id == 'software_update') \
+                .order_by(models.Event.id.desc())
+
+            last_event_generator = (e for e in latest_events if e.data_json['software_name'] == self.product)
+            last_event = next(last_event_generator, None)
 
             if not last_event or last_event.data_json['software_version'] != software_version:
                 # noinspection PyArgumentList

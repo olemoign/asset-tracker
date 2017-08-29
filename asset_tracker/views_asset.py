@@ -64,14 +64,16 @@ class AssetsEndPoint(object):
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
 
-    def get_latest_softwares(self):
+    def get_latest_softwares_version(self):
         """Get last version of every softwares."""
-        event_query = self.request.db_session.query(Event) \
-            .filter_by(
-                asset_id=self.asset.id,
-                status_id=10  # software update event, see [configuration.json]
-            ) \
-            .order_by(Event.id.desc())
+        try:
+            software_updates = self.request.db_session.query(Event).join(EventStatus)\
+                .filter(Event.asset_id == self.asset.id,
+                        EventStatus.status_id == 'software_update') \
+                .order_by(Event.id.desc())
+
+        except AttributeError:  # no software for new Asset
+            return None
 
         softwares = {}
         for event in event_query.all():

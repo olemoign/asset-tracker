@@ -182,24 +182,22 @@
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
                             {% for event in asset.history('asc') %}
-                                {% if event.status_id != 10 or event.data_json %}
-                                    {# 10 = software update event, see [configuration.json] #}
-                                    <p class="history_event">
-                                    {% if event.status_id == 10 %}
-                                        {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
-                                            software=event.data_json.get('software_name')|capitalize,
-                                            status=gettext(event.status.label),
-                                            version=event.data_json.get('software_version'),
-                                            date=event.date|format_date(locale)) }}
-                                    {% else %}
-                                        {{ gettext('%(date)s: %(creator)s set status to <b>%(status)s</b>.',
-                                            creator=event.creator_alias,
-                                            status=gettext(event.status.label),
-                                            date=event.date|format_date(locale)) }}
-                                    {% endif %}
-                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
-                                    </p>
+
+                                <p class="history_event">
+                                {% if event.status.status_id == 'software_update' %}
+                                    {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
+                                        software=event.data_json.get('software_name')|capitalize,
+                                        version=event.data_json.get('software_version'),
+                                        date=event.date|format_date(locale)) }}
+                                {% else %}
+                                    {{ gettext('%(date)s: %(creator)s set status to <b>%(status)s</b>.',
+                                        creator=event.creator_alias,
+                                        status=gettext(event.status.label),
+                                        date=event.date|format_date(locale)) }}
                                 {% endif %}
+                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                </p>
+
                             {% endfor %}
                         </div>
                         {% endif %}
