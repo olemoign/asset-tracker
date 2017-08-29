@@ -14,7 +14,7 @@ from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPCreated, HTTPNoContent, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -266,9 +266,9 @@ class Software(object):
                 )
                 self.request.db_session.add(new_event)
 
-                return HTTPCreated(json='Information received.')  # or HTTPOk ?
+            return HTTPOk(json='Information received.')
 
-        return HTTPNoContent(json='No change.')
+        return HTTPBadRequest(json='No usable information was transmitted.')
 
 
 def includeme(config):
