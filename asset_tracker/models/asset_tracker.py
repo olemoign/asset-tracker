@@ -78,6 +78,9 @@ class Equipment(Model):
 
     serial_number = Column(String)
 
+    expiration_date_1 = Column(Date)
+    expiration_date_2 = Column(Date)
+
 
 class EquipmentFamily(Model):
     family_id = Column(String, nullable=False, unique=True)

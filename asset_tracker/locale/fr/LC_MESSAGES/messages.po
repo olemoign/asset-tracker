@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-01 18:01+0200\n"
+"POT-Creation-Date: 2017-08-28 13:44+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:172
+#: templates/assets-create_update.html:139
 #, python-format
 msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
 msgstr "%(creator)s a défini le statut <b>%(status)s</b> le %(date)s"
@@ -56,7 +56,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:182
+#: templates/assets-create_update.html:149
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -92,9 +92,14 @@ msgstr "ID Client (Souscription)"
 msgid "Customer name"
 msgstr "Nom du client"
 
+#: templates/assets-create_update.html:106 templates/macros.html:59
+#: templates/macros.html:67
+msgid "DD/MM/YYYY"
+msgstr "JJ/MM/AAAA"
+
 #: templates/assets-create_update.html:106
-msgid "Date DD/MM/YYYY"
-msgstr "Date JJ/MM/AAAA"
+msgid "Date"
+msgstr "Date"
 
 #: configuration.json:100
 msgid "Decommissioned"
@@ -112,11 +117,19 @@ msgstr "Équipements"
 msgid "Error"
 msgstr "Erreur"
 
+#: templates/macros.html:57
+msgid "Expiration date - lancets"
+msgstr "Date d'expiration - lancettes"
+
+#: templates/macros.html:65
+msgid "Expiration date - test strips"
+msgstr "Date d'expiration - bandelettes"
+
 #: configuration.json:21
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
-#: templates/assets-create_update.html:170
+#: templates/assets-create_update.html:137
 msgid "History"
 msgstr "Historique"
 
@@ -156,27 +169,31 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views_asset.py:135
+#: views_asset.py:145
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views_asset.py:126
+#: views_asset.py:135
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views_asset.py:142
+#: views_asset.py:158
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views_asset.py:109
+#: views_asset.py:117
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views_asset.py:147
+#: views_asset.py:151
+msgid "Invalid event date."
+msgstr "Date d'événement invalide."
+
+#: views_asset.py:163
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views_asset.py:130
+#: views_asset.py:140
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -192,7 +209,7 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views_asset.py:121
+#: views_asset.py:129
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -208,7 +225,7 @@ msgstr "Prochaine calibration"
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:163
+#: templates/assets-create_update.html:130
 msgid "Notes"
 msgstr "Notes"
 
@@ -256,7 +273,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:292
+#: views_asset.py:350
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -264,7 +281,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:183
+#: templates/assets-create_update.html:150
 msgid "Submit"
 msgstr "Valider"
 
@@ -319,3 +336,4 @@ msgstr "d'un lien obsolète"
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr "ans"
+
