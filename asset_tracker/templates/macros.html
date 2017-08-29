@@ -25,7 +25,7 @@
 
             {# select equipment #}
             <div class="form-group">
-                <select class="form-control equipment__select" name="equipment-family">
+                <select class="form-control equipment__select" name="equipment-family" title="equipment-family">
                     <option></option>
                 {% for family in equipments_families|sort(attribute='model_translated') %}
                     <option value="{{ family.family_id }}" {% if equipment and equipment.family_id == family.id %}selected{% endif %}>
@@ -50,9 +50,9 @@
                 </div>
             </div>
 
-            {# expiration date fields (2YUEMLmH == glucometer) #}
+            {# expiration date fields #}
             <div class="form-group expiration_date_fields"
-                 {% if reference or equipment and equipment.family.family_id != '2YUEMLmH' %}style="display: none;"{% endif %}>
+                 {% if reference or (equipment and equipment.family.family_id != GLUCOMETER_ID) %}style="display: none;"{% endif %}>
                 <div class="form-group" >
                     <label for="equipment-expiration_date_1">{{ gettext('Expiration date - lancets') }}</label>
                     <input type="date" class="form-control" name="equipment-expiration_date_1"

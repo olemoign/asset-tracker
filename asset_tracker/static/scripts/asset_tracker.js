@@ -1,5 +1,7 @@
 'use strict';
 
+const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
+
 
 $(document).ready(function() {
     createDataTables();
@@ -51,9 +53,8 @@ $(document).on('change', '.equipment__select', function() {
      * Add expiration dates for Glucometer equipment
      */
     const expiration_date_fields = $(this).parents('.equipment__block').find('.expiration_date_fields');
-    const glucometer_family_id = '2YUEMLmH';
 
-    if($(this).val() === glucometer_family_id) {
+    if($(this).val() === GLUCOMETER_FAMILY_ID) {
         expiration_date_fields.show();
     }
     else {
