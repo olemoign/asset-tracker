@@ -153,8 +153,8 @@
                                 <p class="history_event">
                                 {% if event.status.status_id == 'software_update' %}
                                     {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
-                                        software=event.data_json.get('software_name')|capitalize,
-                                        version=event.data_json.get('software_version'),
+                                        software=event.extra_json.get('software_name')|capitalize,
+                                        version=event.extra_json.get('software_version'),
                                         date=event.date|format_date(locale)) }}
                                 {% else %}
                                     {{ gettext('%(date)s: %(creator)s set status to <b>%(status)s</b>.',

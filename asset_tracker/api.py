@@ -250,10 +250,10 @@ class Software(object):
                         models.EventStatus.status_id == 'software_update') \
                 .order_by(models.Event.id.desc())
 
-            last_event_generator = (e for e in latest_events if e.data_json['software_name'] == self.product)
+            last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
             last_event = next(last_event_generator, None)
 
-            if not last_event or last_event.data_json['software_version'] != software_version:
+            if not last_event or last_event.extra_json['software_version'] != software_version:
                 # noinspection PyArgumentList
                 new_event = models.Event(
                     asset_id=asset.id,
