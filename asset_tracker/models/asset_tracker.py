@@ -104,12 +104,13 @@ class Event(Model, CreationDateTimeMixin):
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
-    data = Column(String)
+    extra = Column(String)
 
     @hybrid_property
-    def data_json(self):
+    def extra_json(self):
+        """Return dictionary from extra."""
         try:
-            return loads(self.data)  # convert from string to dictionary
+            return loads(self.extra)
         except TypeError:
             return {}
 

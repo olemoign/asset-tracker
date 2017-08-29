@@ -76,9 +76,10 @@ class AssetsEndPoint(object):
             return None
 
         softwares = {}
-        for event in event_query.all():
+        for event in software_updates.all():
+            extra = event.extra_json
             try:
-                name, version = event.data_json['software_name'], event.data_json['software_version']
+                name, version = extra['software_name'], extra['software_version']
             except KeyError:
                 continue
             else:

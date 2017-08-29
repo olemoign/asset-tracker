@@ -261,8 +261,8 @@ class Software(object):
                     creator_id='',
                     creator_alias='',
                     status_id=10,
-                    data=dumps({'software_name': self.product,
-                                'software_version': software_version})
+                    extra=dumps({'software_name': self.product,
+                                 'software_version': software_version})
                 )
                 self.request.db_session.add(new_event)
 

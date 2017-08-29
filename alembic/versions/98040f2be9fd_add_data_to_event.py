@@ -20,12 +20,12 @@ def upgrade():
         batch_op.drop_column('software_version')
 
     with op.batch_alter_table('event', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('data', sa.Unicode(), nullable=True))
+        batch_op.add_column(sa.Column('extra', sa.Unicode(), nullable=True))
 
 
 def downgrade():
     with op.batch_alter_table('event', schema=None) as batch_op:
-        batch_op.drop_column('data')
+        batch_op.drop_column('extra')
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
         batch_op.add_column(sa.Column('software_version', sa.Unicode(), nullable=True))
