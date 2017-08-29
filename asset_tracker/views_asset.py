@@ -288,7 +288,7 @@ class AssetsEndPoint(object):
                            customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
                            current_location=self.form.get('current_location'),
                            calibration_frequency=calibration_frequency,
-                           software_version=self.form.get('software_version'), notes=self.form.get('notes'))
+                           notes=self.form.get('notes'))
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
@@ -324,7 +324,6 @@ class AssetsEndPoint(object):
 
         self.asset.site = self.form.get('site')
         self.asset.current_location = self.form.get('current_location')
-        self.asset.software_version = self.form.get('software_version')
 
         self.asset.notes = self.form.get('notes')
 
