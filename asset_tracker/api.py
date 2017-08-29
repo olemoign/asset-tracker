@@ -260,10 +260,12 @@ class Software(object):
                     date=date.today(),
                     creator_id=self.request.user['id'],
                     creator_alias=self.request.user['alias'],
-                    status_id=10,
                     extra=dumps({'software_name': self.product,
                                  'software_version': software_version})
                 )
+                new_event.status = self.request.db_session.query(models.EventStatus)\
+                    .filter(models.EventStatus.status_id == 'software_update').one()
+
                 self.request.db_session.add(new_event)
 
             return HTTPOk(json='Information received.')
