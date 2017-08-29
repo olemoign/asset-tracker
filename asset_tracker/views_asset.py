@@ -116,17 +116,17 @@ class AssetsEndPoint(object):
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
             raise FormException(_('Invalid equipments.'))
 
-        expiration_date_1 = self.form['equipment-expiration_date_1']
-        if not expiration_date_1:
+        expiration_dates_1 = self.form.get('equipment-expiration_date_1')
+        if not expiration_dates_1:
             self.form['equipment-expiration_date_1'] = ['']
-        elif not isinstance(expiration_date_1, list):
-            self.form['equipment-expiration_date_1'] = [expiration_date_1]
+        elif not isinstance(expiration_dates_1, list):
+            self.form['equipment-expiration_date_1'] = [expiration_dates_1]
 
-        expiration_date_2 = self.form['equipment-expiration_date_2']
-        if not expiration_date_2:
+        expiration_dates_2 = self.form.get('equipment-expiration_date_2')
+        if not expiration_dates_2:
             self.form['equipment-expiration_date_2'] = ['']
-        elif not isinstance(expiration_date_2, list):
-            self.form['equipment-expiration_date_2'] = [expiration_date_2]
+        elif not isinstance(expiration_dates_2, list):
+            self.form['equipment-expiration_date_2'] = [expiration_dates_2]
 
         events_removed = self.form.get('event-removed')
         if not events_removed:
@@ -209,7 +209,7 @@ class AssetsEndPoint(object):
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
             equipment = Equipment(family=family,
-                                  serial_number=serial_number or None,
+                                  serial_number=serial_number,
                                   expiration_date_1=expiration_date_1,
                                   expiration_date_2=expiration_date_2)
             self.asset.equipments.append(equipment)
