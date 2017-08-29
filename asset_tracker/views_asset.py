@@ -81,6 +81,7 @@ class AssetsEndPoint(object):
             try:
                 name, version = extra['software_name'], extra['software_version']
             except KeyError:
+                sentry_capture_exception(self.request, level='info')
                 continue
             else:
                 if name not in softwares:
