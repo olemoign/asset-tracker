@@ -1,5 +1,7 @@
 'use strict';
 
+const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
+
 
 $(document).ready(function() {
     createDataTables();
@@ -9,40 +11,59 @@ $(document).ready(function() {
     firstInput.focus();
     // Move cursor to the end of the input.
     firstInput.val(firstInput.val());
+
+    // update date format if browser doesn't manage date input types.
+    // noinspection JSUnresolvedVariable
+    if (!Modernizr.inputtypes.date) {
+        $('input[type="date"]').each(function() {
+            const date = $(this).val();
+
+            // If date input is empty.
+            if (!date) {
+                return true;
+            }
+
+            // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
+            const isStandardDate = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (isStandardDate) {
+                $(this).val(isStandardDate[3] + '/' + isStandardDate[2] + '/' + isStandardDate[1]);
+                return true;
+            }
+        });
+    }
 });
 
-$(document).on('click', '.equipment__add', function(event) {
+// Manage equipments.
+$(document).on('click', '.equipment__add', function() {
     /**
      * Add a new equipment when the user clicks the '+' sign.
      */
-    event.preventDefault();
-
-    const equipmentsList = $('.equipments__list');
-    // Clone an equipment, empty the inputs, then append it to the list.
-    $('.equipment__block').first().clone()
-        .find('select').val('').end()
-        .find('input').val('').end()
-        .appendTo(equipmentsList);
+    $('#equipment__reference').clone().removeAttr('id').show().appendTo('#equipment__list');
 });
 
 $(document).on('click', '.equipment__remove', function() {
     /**
      * Remove an equipment when the user clicks the 'x' sign.
      */
-    const equipmentsCount = $('.equipment__block').length;
-    const equipmentBlock = $(this).parents('.equipment__block');
+    $(this).parents('.equipment__block').remove();
+});
 
-    // If there are multiple equipments, remove this block.
-    if (equipmentsCount > 1) {
-        equipmentBlock.remove();
-    } else {
-        // If it's the only equipment, just empty its input.
-        equipmentBlock
-            .find('select').val('').end()
-            .find('input').val('');
+$(document).on('change', '.equipment__select', function() {
+    /**
+     * Add expiration dates for Glucometer equipment
+     */
+    const expiration_date_fields = $(this).parents('.equipment__block').find('.expiration_date_fields');
+
+    if($(this).val() === GLUCOMETER_FAMILY_ID) {
+        expiration_date_fields.show();
+    }
+    else {
+        expiration_date_fields.hide();
+        expiration_date_fields.find('input').val('');
     }
 });
 
+// Datatables.
 const dataTablesTranslations = {
     'fr': {
         'sProcessing':     'Traitement en cours...',
@@ -240,7 +261,7 @@ $(document).on('submit', 'form', function(event) {
      */
     $('input[type="date"]').each(function() {
         const date = $(this).val();
-        // If date in put is empty.
+        // If date input is empty.
         if (!date) {
             return true;
         }

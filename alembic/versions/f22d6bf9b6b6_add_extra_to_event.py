@@ -1,16 +1,17 @@
-"""add data to Event
+"""add extra to Event
 
-Revision ID: 98040f2be9fd
-Revises: 843bfa914d35
-Create Date: 2017-08-23 13:17:56.629772
+Revision ID: f22d6bf9b6b6
+Revises: cd58dc1487e1
+Create Date: 2017-08-29 19:21:41.214271
 
 """
 from alembic import op
 import sqlalchemy as sa
 
+
 # revision identifiers, used by Alembic.
-revision = '98040f2be9fd'
-down_revision = '843bfa914d35'
+revision = 'f22d6bf9b6b6'
+down_revision = 'cd58dc1487e1'
 branch_labels = None
 depends_on = None
 
@@ -28,4 +29,4 @@ def downgrade():
         batch_op.drop_column('extra')
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('software_version', sa.Unicode(), nullable=True))
+        batch_op.add_column(sa.Column('software_version', sa.VARCHAR(), nullable=True))

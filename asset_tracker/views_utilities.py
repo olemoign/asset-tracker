@@ -12,6 +12,7 @@ from pyramid.settings import asbool, aslist
 from pyramid.view import exception_view_config, notfound_view_config, view_config
 
 from asset_tracker import models
+from asset_tracker.constants import GLUCOMETER_ID
 
 DEFAULT_BRANDING = 'parsys_cloud'
 
@@ -34,6 +35,8 @@ def add_global_variables(event):
     event['principals'] = event['request'].effective_principals
     event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
+
+    event['GLUCOMETER_ID'] = GLUCOMETER_ID
 
     if event['request'].user:
         event['user_alias'] = event['request'].user['alias']
