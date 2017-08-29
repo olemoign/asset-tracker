@@ -232,7 +232,9 @@ class AssetsEndPoint(object):
 
     def update_status_and_calibration_next(self):
         """Update asset status and next calibration date according to functional rules."""
-        self.asset.status = self.asset.history('desc').first().status
+        self.asset.status = self.asset.history('desc')\
+            .join(EventStatus).filter(EventStatus.status_id != 'software_update')\
+            .first().status
 
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
@@ -350,9 +352,10 @@ class AssetsEndPoint(object):
         # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
         # are.
         if self.form.get('event-removed'):
-            nb_removed_event = len(self.form.get('event-removed'))
-            nb_active_event = self.asset.history('asc').count()
-            if nb_removed_event >= nb_active_event:
+            nb_active_event = self.asset.history('asc')\
+                .join(EventStatus).filter(EventStatus.status_id != 'software_update')\
+                .count()
+            if nb_active_event <= len(self.form['event-removed']):
                 error = _('Status not removed, an asset cannot have no status.')
                 return dict(error=error, asset=self.asset, **self.get_base_form_data())
 
