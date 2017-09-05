@@ -70,12 +70,14 @@
                     <hr>
 
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label>{{ gettext('Softwares versions') }}</label>
                                 <p>
                                 {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
                                     {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
+                                {% else %}
+                                    {{ gettext('There is no available information.') }}
                                 {% endfor %}
                                 </p>
                             </div>

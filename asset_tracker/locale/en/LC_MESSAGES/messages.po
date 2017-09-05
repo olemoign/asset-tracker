@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-29 19:11+0200\n"
+"POT-Creation-Date: 2017-09-05 18:12+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,23 +16,23 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-#: templates/assets-create_update.html:160
+#: templates/assets-create_update.html:162
 #, python-format
 msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:155
+#: templates/assets-create_update.html:157
 #, python-format
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:100
+#: templates/assets-create_update.html:102
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:111
+#: templates/assets-create_update.html:113
 msgid "Add Event"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:174
+#: templates/assets-create_update.html:176
 msgid "Cancel"
 msgstr ""
 
@@ -97,12 +97,12 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:119 templates/macros.html:59
+#: templates/assets-create_update.html:121 templates/macros.html:59
 #: templates/macros.html:67
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/assets-create_update.html:119
+#: templates/assets-create_update.html:121
 msgid "Date"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: templates/assets-create_update.html:126
+#: templates/assets-create_update.html:128
 msgid "Equipments"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:150
+#: templates/assets-create_update.html:152
 msgid "History"
 msgstr ""
 
@@ -174,35 +174,35 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views_asset.py:184
+#: views_asset.py:181
 msgid "Invalid asset status."
 msgstr ""
 
-#: views_asset.py:174
+#: views_asset.py:171
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:199
+#: views_asset.py:196
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views_asset.py:144
+#: views_asset.py:141
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:190
+#: views_asset.py:187
 msgid "Invalid event date."
 msgstr ""
 
-#: views_asset.py:214
+#: views_asset.py:212
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:204 views_asset.py:209
+#: views_asset.py:201 views_asset.py:206
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views_asset.py:179
+#: views_asset.py:176
 msgid "Invalid tenant."
 msgstr ""
 
@@ -210,7 +210,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:101
+#: templates/assets-create_update.html:103
 msgid "Last calibration"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views_asset.py:168
+#: views_asset.py:165
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:102 templates/assets-list.html:26
+#: templates/assets-create_update.html:104 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr ""
 
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:143
+#: templates/assets-create_update.html:145
 msgid "Notes"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: templates/assets-create_update.html:99
+#: templates/assets-create_update.html:101
 msgid "Production"
 msgstr ""
 
@@ -282,11 +282,11 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:90 templates/assets-list.html:27
+#: templates/assets-create_update.html:92 templates/assets-list.html:27
 msgid "Status"
 msgstr ""
 
-#: views_asset.py:399
+#: views_asset.py:395
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -294,7 +294,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:175
+#: templates/assets-create_update.html:177
 msgid "Submit"
 msgstr ""
 
@@ -314,6 +314,10 @@ msgstr ""
 msgid "Tenant"
 msgstr ""
 
+#: templates/assets-create_update.html:80
+msgid "There is no available information."
+msgstr ""
+
 #: configuration.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr ""
@@ -330,7 +334,7 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:103
+#: templates/assets-create_update.html:105
 msgid "Warranty end"
 msgstr ""
 
@@ -349,3 +353,4 @@ msgstr ""
 #: templates/assets-create_update.html:62
 msgid "years"
 msgstr ""
+
