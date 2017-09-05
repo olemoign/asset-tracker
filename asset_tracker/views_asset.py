@@ -75,7 +75,7 @@ class AssetsEndPoint(object):
             .order_by(Event.id.desc())
 
         softwares = {}
-        for event in software_updates.all():
+        for event in software_updates:
             extra = event.extra_json
             try:
                 name, version = extra['software_name'], extra['software_version']
