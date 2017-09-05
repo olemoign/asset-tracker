@@ -74,7 +74,7 @@
                             <div class="form-group">
                                 <label>{{ gettext('Softwares versions') }}</label>
                                 <p>
-                                {% for software, version in softwares|dictsort %} {# sorted by key #}
+                                {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
                                     {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
                                 {% endfor %}
                                 </p>

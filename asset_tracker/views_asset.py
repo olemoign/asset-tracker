@@ -115,10 +115,8 @@ class AssetsEndPoint(object):
 
         tenants = self.get_create_read_tenants()
 
-        softwares = self.get_latest_softwares_version()
-
         return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
-                'statuses': statuses, 'tenants': tenants, 'softwares': softwares}
+                'statuses': statuses, 'tenants': tenants}
 
     def read_form(self):
         """Format form content according to our needs.
@@ -351,7 +349,7 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
-        return dict(asset=self.asset, **self.get_base_form_data())
+        return dict(asset=self.asset, asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
