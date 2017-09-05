@@ -161,8 +161,8 @@
                                         creator=event.creator_alias,
                                         status=gettext(event.status.label),
                                         date=event.date|format_date(locale)) }}
+                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
                                 {% endif %}
-                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
                                 </p>
 
                             {% endfor %}

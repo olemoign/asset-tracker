@@ -208,7 +208,8 @@ class AssetsEndPoint(object):
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
-            event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
+            event = self.request.db_session.query(Event).filter_by(event_id=event_id)\
+                .join(EventStatus).filter(EventStatus.status_id != 'software_update').first()
             if not event or event.asset_id != self.asset.id:
                 raise FormException(_('Invalid event.'))
 
@@ -359,7 +360,8 @@ class AssetsEndPoint(object):
             self.validate_form()
         except FormException as error:
             sentry_capture_exception(self.request, level='info')
-            return dict(error=str(error), asset=self.asset, **self.get_base_form_data())
+            return dict(error=str(error), asset=self.asset,
+                        asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
@@ -393,7 +395,8 @@ class AssetsEndPoint(object):
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
                 error = _('Status not removed, an asset cannot have no status.')
-                return dict(error=error, asset=self.asset, **self.get_base_form_data())
+                return dict(error=error, asset=self.asset,
+                            asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
             self.remove_events()
 
