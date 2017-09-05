@@ -66,15 +66,13 @@ class AssetsEndPoint(object):
 
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
-        try:
-            # TODO
-            software_updates = self.request.db_session.query(Event).join(EventStatus) \
-                .filter(Event.asset_id == self.asset.id,
-                        EventStatus.status_id == 'software_update') \
-                .order_by(Event.id.desc())
+        if not self.asset.id:
+            return None  # no available software for new Asset
 
-        except AttributeError:  # no software for new Asset
-            return None
+        software_updates = self.request.db_session.query(Event).join(EventStatus) \
+            .filter(Event.asset_id == self.asset.id,
+                    EventStatus.status_id == 'software_update') \
+            .order_by(Event.id.desc())
 
         softwares = {}
         for event in software_updates.all():
