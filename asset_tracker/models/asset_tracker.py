@@ -26,12 +26,17 @@ class Asset(Model, CreationDateTimeMixin):
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
-    def history(self, order):
+    def history(self, order, filter_software=False):
         """Filter removed events from history."""
         if order == 'asc':
-            return self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
+            history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
         else:
-            return self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+            history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+
+        if filter_software:
+            history = history.join(EventStatus).filter(EventStatus.status_id != 'software_update')
+
+        return history
 
     status_id = Column(Integer, ForeignKey('event_status.id'))
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)

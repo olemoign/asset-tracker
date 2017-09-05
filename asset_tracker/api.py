@@ -6,7 +6,7 @@ List assets for dataTables and asset update WS (declare software version/get las
 import os
 import re
 from collections import OrderedDict
-from datetime import date
+from datetime import datetime
 from json import dumps, JSONDecodeError
 
 from parsys_utilities.api import manage_datatables_queries
@@ -254,17 +254,20 @@ class Software(object):
             last_event = next(last_event_generator, None)
 
             if not last_event or last_event.extra_json['software_version'] != software_version:
+                software_status = self.request.db_session.query(models.EventStatus) \
+                    .filter(models.EventStatus.status_id == 'software_update').one()
                 # noinspection PyArgumentList
                 new_event = models.Event(
-                    asset_id=asset.id,
-                    date=date.today(),
+                    status=software_status,
+                    date=datetime.utcnow().date(),
                     creator_id=self.request.user['id'],
                     creator_alias=self.request.user['alias'],
                     extra=dumps({'software_name': self.product,
                                  'software_version': software_version})
                 )
-                new_event.status = self.request.db_session.query(models.EventStatus) \
-                    .filter(models.EventStatus.status_id == 'software_update').one()
+
+                # noinspection PyProtectedMember
+                asset._history.append(new_event)
 
                 self.request.db_session.add(new_event)
 

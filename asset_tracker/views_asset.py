@@ -1,6 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
 
-from datetime import date, datetime
+from datetime import datetime
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
@@ -67,6 +67,7 @@ class AssetsEndPoint(object):
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
         try:
+            # TODO
             software_updates = self.request.db_session.query(Event).join(EventStatus) \
                 .filter(Event.asset_id == self.asset.id,
                         EventStatus.status_id == 'software_update') \
@@ -245,7 +246,7 @@ class AssetsEndPoint(object):
         if self.form.get('event_date'):
             event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
-            event_date = date.today()
+            event_date = datetime.utcnow().date()
 
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
@@ -270,9 +271,7 @@ class AssetsEndPoint(object):
 
     def update_status_and_calibration_next(self):
         """Update asset status and next calibration date according to functional rules."""
-        self.asset.status = self.asset.history('desc')\
-            .join(EventStatus).filter(EventStatus.status_id != 'software_update')\
-            .first().status
+        self.asset.status = self.asset.history('desc').first().status
 
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
@@ -390,10 +389,9 @@ class AssetsEndPoint(object):
         # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
         # are.
         if self.form.get('event-removed'):
-            nb_active_event = self.asset.history('asc') \
-                .join(EventStatus).filter(EventStatus.status_id != 'software_update') \
-                .count()
-            if nb_active_event <= len(self.form['event-removed']):
+            nb_removed_event = len(self.form['event-removed'])
+            nb_active_event = self.asset.history('asc', filter_software=True).count()
+            if nb_active_event <= nb_removed_event:
                 error = _('Status not removed, an asset cannot have no status.')
                 return dict(error=error, asset=self.asset, **self.get_base_form_data())
 
