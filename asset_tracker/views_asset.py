@@ -67,7 +67,7 @@ class AssetsEndPoint(object):
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
         try:
-            software_updates = self.request.db_session.query(Event).join(EventStatus)\
+            software_updates = self.request.db_session.query(Event).join(EventStatus) \
                 .filter(Event.asset_id == self.asset.id,
                         EventStatus.status_id == 'software_update') \
                 .order_by(Event.id.desc())
@@ -392,8 +392,8 @@ class AssetsEndPoint(object):
         # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
         # are.
         if self.form.get('event-removed'):
-            nb_active_event = self.asset.history('asc')\
-                .join(EventStatus).filter(EventStatus.status_id != 'software_update')\
+            nb_active_event = self.asset.history('asc') \
+                .join(EventStatus).filter(EventStatus.status_id != 'software_update') \
                 .count()
             if nb_active_event <= len(self.form['event-removed']):
                 error = _('Status not removed, an asset cannot have no status.')

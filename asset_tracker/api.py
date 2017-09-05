@@ -263,14 +263,14 @@ class Software(object):
                     extra=dumps({'software_name': self.product,
                                  'software_version': software_version})
                 )
-                new_event.status = self.request.db_session.query(models.EventStatus)\
+                new_event.status = self.request.db_session.query(models.EventStatus) \
                     .filter(models.EventStatus.status_id == 'software_update').one()
 
                 self.request.db_session.add(new_event)
 
             return HTTPOk(json='Information received.')
 
-        return HTTPBadRequest(json='No usable information was transmitted.')
+        return HTTPBadRequest(json='Missing software version.')
 
 
 def includeme(config):
