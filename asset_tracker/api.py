@@ -245,10 +245,8 @@ class Software(object):
 
         software_version = json.get('version')
         if software_version:
-            latest_events = self.request.db_session.query(models.Event).join(models.EventStatus) \
-                .filter(models.Event.asset_id == asset.id,
-                        models.EventStatus.status_id == 'software_update') \
-                .order_by(models.Event.id.desc())
+            latest_events = asset.history(order='desc')\
+                .join(models.EventStatus).filter_by(status_id='software_update')
 
             last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
             last_event = next(last_event_generator, None)
