@@ -270,7 +270,7 @@ class AssetsEndPoint(object):
 
     def update_status_and_calibration_next(self):
         """Update asset status and next calibration date according to functional rules."""
-        self.asset.status = self.asset.history('desc').first().status
+        self.asset.status = self.asset.history('desc', filter_software=True).first().status
 
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
