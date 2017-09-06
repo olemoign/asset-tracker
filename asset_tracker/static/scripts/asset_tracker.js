@@ -38,7 +38,7 @@ $(document).on('click', '.equipment__add', function() {
     /**
      * Add a new equipment when the user clicks the '+' sign.
      */
-    $('#equipment__reference').clone().removeAttr('id').show().appendTo('#equipment__list');
+    $('#equipment__reference').clone().removeAttr('id').show().appendTo('#equipments__list');
 });
 
 $(document).on('click', '.equipment__remove', function() {

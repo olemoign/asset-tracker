@@ -124,18 +124,22 @@
                     <hr>
 
                     {# Equipment management - clone the model below in equipment_list #}
-                    <div class="col-sm-12 equipments__header">
-                        <label class="equipment__label">{{ gettext('Equipments') }}</label>
-                        <button type="button" class="equipment__add btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
-                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 equipments__header">
+                            <label class="equipments__label">{{ gettext('Equipments') }}</label>
+                            <button type="button" class="equipment__add btn btn-default">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </div>
 
-                    {# (macro) its purpose is to be cloned in equipment_list #}
-                    {{ equipment_box(reference=True) }}
+                        {# (macro) its purpose is to be cloned in equipment_list #}
+                        {{ equipment_box(reference=True) }}
 
-                    <div id="equipment__list" class="row auto-clear">
-                        {% for equipment in (asset or {}).equipments %}
-                            {{ equipment_box(equipment) }}
-                        {% endfor %}
+                        <div id="equipments__list" class="auto-clear">
+                            {% for equipment in (asset or {}).equipments %}
+                                {{ equipment_box(equipment) }}
+                            {% endfor %}
+                        </div>
                     </div>
 
                     <hr>
