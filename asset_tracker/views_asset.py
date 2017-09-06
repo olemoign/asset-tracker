@@ -1,6 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
 
-from datetime import date, datetime
+from datetime import datetime
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
@@ -63,6 +63,28 @@ class AssetsEndPoint(object):
 
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
+
+    def get_latest_softwares_version(self):
+        """Get last version of every softwares."""
+        if not self.asset.id:
+            return None  # no available software for new Asset
+
+        software_updates = self.asset.history('desc') \
+            .join(EventStatus).filter_by(status_id='software_update')
+
+        softwares = {}
+        for event in software_updates:
+            extra = event.extra_json
+            try:
+                name, version = extra['software_name'], extra['software_version']
+            except KeyError:
+                sentry_capture_exception(self.request, level='info')
+                continue
+            else:
+                if name not in softwares:
+                    softwares[name] = version
+
+        return softwares
 
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read assets."""
@@ -182,8 +204,8 @@ class AssetsEndPoint(object):
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
-            event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
-            if not event or event.asset_id != self.asset.id:
+            event = self.asset.history('asc', filter_software=True).filter_by(event_id=event_id).first()
+            if not event:
                 raise FormException(_('Invalid event.'))
 
     def add_equipments(self):
@@ -220,7 +242,7 @@ class AssetsEndPoint(object):
         if self.form.get('event_date'):
             event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
-            event_date = date.today()
+            event_date = datetime.utcnow().date()
 
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
@@ -245,7 +267,7 @@ class AssetsEndPoint(object):
 
     def update_status_and_calibration_next(self):
         """Update asset status and next calibration date according to functional rules."""
-        self.asset.status = self.asset.history('desc').first().status
+        self.asset.status = self.asset.history('desc', filter_software=True).first().status
 
         if 'marlink' in self.client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
@@ -307,7 +329,7 @@ class AssetsEndPoint(object):
                            customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
                            current_location=self.form.get('current_location'),
                            calibration_frequency=calibration_frequency,
-                           software_version=self.form.get('software_version'), notes=self.form.get('notes'))
+                           notes=self.form.get('notes'))
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
@@ -322,7 +344,7 @@ class AssetsEndPoint(object):
                  renderer='assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
-        return dict(asset=self.asset, **self.get_base_form_data())
+        return dict(asset=self.asset, asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
@@ -333,7 +355,8 @@ class AssetsEndPoint(object):
             self.validate_form()
         except FormException as error:
             sentry_capture_exception(self.request, level='info')
-            return dict(error=str(error), asset=self.asset, **self.get_base_form_data())
+            return dict(error=str(error), asset=self.asset,
+                        asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
         self.asset.asset_id = self.form['asset_id']
         self.asset.tenant_id = self.form['tenant_id']
@@ -343,7 +366,6 @@ class AssetsEndPoint(object):
 
         self.asset.site = self.form.get('site')
         self.asset.current_location = self.form.get('current_location')
-        self.asset.software_version = self.form.get('software_version')
 
         self.asset.notes = self.form.get('notes')
 
@@ -364,11 +386,12 @@ class AssetsEndPoint(object):
         # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
         # are.
         if self.form.get('event-removed'):
-            nb_removed_event = len(self.form.get('event-removed'))
-            nb_active_event = self.asset.history('asc').count()
-            if nb_removed_event >= nb_active_event:
+            nb_removed_event = len(self.form['event-removed'])
+            nb_active_event = self.asset.history('asc', filter_software=True).count()
+            if nb_active_event <= nb_removed_event:
                 error = _('Status not removed, an asset cannot have no status.')
-                return dict(error=error, asset=self.asset, **self.get_base_form_data())
+                return dict(error=error, asset=self.asset,
+                            asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
             self.remove_events()
 

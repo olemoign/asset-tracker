@@ -64,11 +64,26 @@
                             </select>
                         </div>
                         {% endif %}
-
-                        {{ input(_('Software version'), 'software_version') }}
                     </div>
 
                     {% if asset %}
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{ gettext('Softwares versions') }}</label>
+                                <p>
+                                {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
+                                    {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
+                                {% else %}
+                                    {{ gettext('No software registered.') }}
+                                {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr>
 
                     <div class="row">
@@ -109,18 +124,22 @@
                     <hr>
 
                     {# Equipment management - clone the model below in equipment_list #}
-                    <div class="col-sm-12 equipments__header">
-                        <label class="equipment__label">{{ gettext('Equipments') }}</label>
-                        <button type="button" class="equipment__add btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
-                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 equipments__header">
+                            <label class="equipments__label">{{ gettext('Equipments') }}</label>
+                            <button type="button" class="equipment__add btn btn-default">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </div>
 
-                    {# (macro) its purpose is to be cloned in equipment_list #}
-                    {{ equipment_box(reference=True) }}
+                        {# (macro) its purpose is to be cloned in equipment_list #}
+                        {{ equipment_box(reference=True) }}
 
-                    <div id="equipment__list" class="row auto-clear">
-                        {% for equipment in (asset or {}).equipments %}
-                            {{ equipment_box(equipment) }}
-                        {% endfor %}
+                        <div id="equipments__list" class="auto-clear">
+                            {% for equipment in (asset or {}).equipments %}
+                                {{ equipment_box(equipment) }}
+                            {% endfor %}
+                        </div>
                     </div>
 
                     <hr>
@@ -136,10 +155,22 @@
                         <div class="col-sm-12 form-group">
                             <label for="notes">{{ gettext('History') }}</label>
                             {% for event in asset.history('asc') %}
-                            <p class="history_event">{{ gettext('%(creator)s changed status to <b>%(status)s</b> on %(date)s', creator=event.creator_alias,
-                                    status=gettext(event.status.label), date=event.date|format_date(locale)) }}.
-                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
-                            </p>
+
+                                <p class="history_event">
+                                {% if event.status.status_id == 'software_update' %}
+                                    {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
+                                        software=event.extra_json.get('software_name')|capitalize,
+                                        version=event.extra_json.get('software_version'),
+                                        date=event.date|format_date(locale)) }}
+                                {% else %}
+                                    {{ gettext('%(date)s: %(creator)s set status to <b>%(status)s</b>.',
+                                        creator=event.creator_alias,
+                                        status=gettext(event.status.label),
+                                        date=event.date|format_date(locale)) }}
+                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                {% endif %}
+                                </p>
+
                             {% endfor %}
                         </div>
                         {% endif %}

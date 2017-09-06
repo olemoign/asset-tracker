@@ -6,13 +6,15 @@ List assets for dataTables and asset update WS (declare software version/get las
 import os
 import re
 from collections import OrderedDict
+from datetime import datetime
+from json import dumps, JSONDecodeError
 
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -143,7 +145,7 @@ class Software(object):
         where to download the package.
 
         QueryString:
-            product (mandatory)
+            product (mandatory).
             channel (optional): product channel (in 'alpha', 'beta', 'dev', 'stable').
             version (optional): if we want the url of one specific version.
 
@@ -203,6 +205,73 @@ class Software(object):
         channel_version = channel_versions.popitem(last=True)
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return OrderedDict(version=channel_version[0], url=download_url)
+
+    @view_config(route_name='api-software-update', request_method='POST', permission='software-update',
+                 require_csrf=False, renderer='json')
+    def software_update_post(self):
+        """Receive software(s) version.
+
+        QueryString:
+            product (mandatory).
+
+        Body (json):
+            version (mandatory).
+            position (optional).
+
+        """
+        # get product name (medcapture, camagent)
+        if not self.request.GET.get('product'):
+            return HTTPBadRequest(json={'error': 'Missing product.'})
+        else:
+            self.product = self.request.GET['product'].lower()
+
+        # make sure the JSON provided is valid.
+        try:
+            json = self.request.json
+        except JSONDecodeError as error:
+            return HTTPBadRequest(json={'error': error})
+
+        # check if asset exists (cart, station, telecardia)
+        try:
+            station_login = self.request.user['login']
+        except KeyError:
+            return HTTPBadRequest(json={'error': 'Invalid authentication.'})
+
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=station_login) \
+            .first()
+        if not asset:
+            return HTTPNotFound(json={'error': 'Unknown asset.'})
+
+        software_version = json.get('version')
+        if software_version:
+            latest_events = asset.history(order='desc') \
+                .join(models.EventStatus).filter_by(status_id='software_update')
+
+            last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
+            last_event = next(last_event_generator, None)
+
+            if not last_event or last_event.extra_json['software_version'] != software_version:
+                software_status = self.request.db_session.query(models.EventStatus) \
+                    .filter(models.EventStatus.status_id == 'software_update').one()
+                # noinspection PyArgumentList
+                new_event = models.Event(
+                    status=software_status,
+                    date=datetime.utcnow().date(),
+                    creator_id=self.request.user['id'],
+                    creator_alias=self.request.user['alias'],
+                    extra=dumps({'software_name': self.product,
+                                 'software_version': software_version})
+                )
+
+                # noinspection PyProtectedMember
+                asset._history.append(new_event)
+
+                self.request.db_session.add(new_event)
+
+            return HTTPOk(json='Information received.')
+
+        return HTTPBadRequest(json='Missing software version.')
 
 
 def includeme(config):

@@ -1,8 +1,11 @@
+from json import loads
+
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
@@ -19,17 +22,21 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Column(String)
     notes = Column(String)
 
-    software_version = Column(String)
     equipments = relationship('Equipment')
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
-    def history(self, order):
+    def history(self, order, filter_software=False):
         """Filter removed events from history."""
         if order == 'asc':
-            return self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
+            history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
         else:
-            return self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+            history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+
+        if filter_software:
+            history = history.join(EventStatus).filter(EventStatus.status_id != 'software_update')
+
+        return history
 
     status_id = Column(Integer, ForeignKey('event_status.id'))
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
@@ -104,6 +111,16 @@ class Event(Model, CreationDateTimeMixin):
 
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
+
+    extra = Column(String)
+
+    @hybrid_property
+    def extra_json(self):
+        """Return dictionary from extra."""
+        try:
+            return loads(self.extra)
+        except TypeError:
+            return {}
 
 
 class EventStatus(Model):

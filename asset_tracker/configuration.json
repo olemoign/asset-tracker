@@ -98,6 +98,11 @@
       "status_id": "decommissioned",
       "position": "9",
       "label": "Decommissioned"
+    },
+    {
+      "status_id": "software_update",
+      "position": "10",
+      "label": "Software update"
     }
   ]
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-28 13:44+0200\n"
+"POT-Creation-Date: 2017-09-06 14:08+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,16 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:139
+#: templates/assets-create_update.html:162
 #, python-format
-msgid "%(creator)s changed status to <b>%(status)s</b> on %(date)s"
-msgstr "%(creator)s a défini le statut <b>%(status)s</b> le %(date)s"
+msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
+msgstr "%(date)s: %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:87
+#: templates/assets-create_update.html:157
+#, python-format
+msgid "%(date)s: %(software)s updated to version %(version)s."
+msgstr "%(date)s: %(software)s mis à jour en version %(version)s."
+
+#: templates/assets-create_update.html:102
 msgid "Activation"
 msgstr "Mise en service"
 
-#: templates/assets-create_update.html:98
+#: templates/assets-create_update.html:113
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
@@ -56,7 +61,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:149
+#: templates/assets-create_update.html:176
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -92,12 +97,12 @@ msgstr "ID Client (Souscription)"
 msgid "Customer name"
 msgstr "Nom du client"
 
-#: templates/assets-create_update.html:106 templates/macros.html:59
+#: templates/assets-create_update.html:121 templates/macros.html:59
 #: templates/macros.html:67
 msgid "DD/MM/YYYY"
 msgstr "JJ/MM/AAAA"
 
-#: templates/assets-create_update.html:106
+#: templates/assets-create_update.html:121
 msgid "Date"
 msgstr "Date"
 
@@ -109,7 +114,7 @@ msgstr "Hors service"
 msgid "Dermatoscope - Firefly DE300A"
 msgstr "Dermatoscope - Firefly DE300A"
 
-#: templates/assets-create_update.html:113
+#: templates/assets-create_update.html:128
 msgid "Equipments"
 msgstr "Équipements"
 
@@ -129,7 +134,7 @@ msgstr "Date d'expiration - bandelettes"
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
-#: templates/assets-create_update.html:137
+#: templates/assets-create_update.html:152
 msgid "History"
 msgstr "Historique"
 
@@ -169,31 +174,35 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views_asset.py:145
+#: views_asset.py:179
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views_asset.py:135
+#: views_asset.py:169
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views_asset.py:158
+#: views_asset.py:194
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views_asset.py:117
+#: views_asset.py:139
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views_asset.py:151
+#: views_asset.py:185
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views_asset.py:163
+#: views_asset.py:210
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views_asset.py:140
+#: views_asset.py:199 views_asset.py:204
+msgid "Invalid expiration date."
+msgstr "Date d'expiration invalide."
+
+#: views_asset.py:174
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -201,7 +210,7 @@ msgstr "Tenant invalide."
 msgid "It looks like this was the result of either:"
 msgstr "Cela peut être le résultat:"
 
-#: templates/assets-create_update.html:88
+#: templates/assets-create_update.html:103
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
@@ -209,7 +218,7 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views_asset.py:129
+#: views_asset.py:163
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -217,15 +226,19 @@ msgstr "Donnée obligatoire manquante."
 msgid "New"
 msgstr "Créer"
 
-#: templates/assets-create_update.html:89 templates/assets-list.html:26
+#: templates/assets-create_update.html:104 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr "Prochaine calibration"
+
+#: templates/assets-create_update.html:80
+msgid "No software registered."
+msgstr "Aucun logiciel enregistré."
 
 #: templates/errors/404.html:144
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:130
+#: templates/assets-create_update.html:145
 msgid "Notes"
 msgstr "Notes"
 
@@ -237,7 +250,7 @@ msgstr "Otoscope - Firefly DE500A"
 msgid "Page Not Found"
 msgstr "Page non trouvée"
 
-#: templates/assets-create_update.html:86
+#: templates/assets-create_update.html:101
 msgid "Production"
 msgstr "Production"
 
@@ -253,9 +266,13 @@ msgstr "Afficher les matériels hors service"
 msgid "Site"
 msgstr "Site"
 
-#: templates/assets-create_update.html:68
-msgid "Software version"
-msgstr "Version logicielle"
+#: configuration.json:105
+msgid "Software update"
+msgstr "MAJ logicielle"
+
+#: templates/assets-create_update.html:75
+msgid "Softwares versions"
+msgstr "Versions logicielles"
 
 #: templates/errors/404.html:145
 msgid "Sorry, but the page you were trying to view does not exist."
@@ -269,11 +286,11 @@ msgstr "Spiromètre - Spiromir MiniSpir Light"
 msgid "Station"
 msgstr "Station"
 
-#: templates/assets-create_update.html:77 templates/assets-list.html:27
+#: templates/assets-create_update.html:92 templates/assets-list.html:27
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:350
+#: views_asset.py:393
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -281,7 +298,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:150
+#: templates/assets-create_update.html:177
 msgid "Submit"
 msgstr "Valider"
 
@@ -317,7 +334,7 @@ msgstr "Type"
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
-#: templates/assets-create_update.html:90
+#: templates/assets-create_update.html:105
 msgid "Warranty end"
 msgstr "Fin de garantie"
 
