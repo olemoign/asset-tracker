@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-05 18:12+0200\n"
+"POT-Creation-Date: 2017-09-06 14:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
 #: templates/assets-create_update.html:162
 #, python-format
@@ -173,35 +173,35 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views_asset.py:181
+#: views_asset.py:179
 msgid "Invalid asset status."
 msgstr ""
 
-#: views_asset.py:171
+#: views_asset.py:169
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:196
+#: views_asset.py:194
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views_asset.py:141
+#: views_asset.py:139
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:187
+#: views_asset.py:185
 msgid "Invalid event date."
 msgstr ""
 
-#: views_asset.py:212
+#: views_asset.py:210
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:201 views_asset.py:206
+#: views_asset.py:199 views_asset.py:204
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views_asset.py:176
+#: views_asset.py:174
 msgid "Invalid tenant."
 msgstr ""
 
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views_asset.py:165
+#: views_asset.py:163
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -227,6 +227,10 @@ msgstr ""
 
 #: templates/assets-create_update.html:104 templates/assets-list.html:26
 msgid "Next calibration"
+msgstr ""
+
+#: templates/assets-create_update.html:80
+msgid "No software registered."
 msgstr ""
 
 #: templates/errors/404.html:144
@@ -285,7 +289,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: views_asset.py:395
+#: views_asset.py:393
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -311,10 +315,6 @@ msgstr ""
 
 #: templates/assets-create_update.html:41
 msgid "Tenant"
-msgstr ""
-
-#: templates/assets-create_update.html:80
-msgid "There is no available information."
 msgstr ""
 
 #: configuration.json:17

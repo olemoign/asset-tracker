@@ -77,7 +77,7 @@
                                 {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
                                     {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
                                 {% else %}
-                                    {{ gettext('There is no available information.') }}
+                                    {{ gettext('No software registered.') }}
                                 {% endfor %}
                                 </p>
                             </div>
