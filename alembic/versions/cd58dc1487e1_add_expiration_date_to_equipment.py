@@ -1,12 +1,12 @@
-"""add expiration_date to Equipment
+"""Add expiration_date to Equipment
 
 Revision ID: cd58dc1487e1
 Revises: 843bfa914d35
 Create Date: 2017-08-24 19:28:05.959882
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'cd58dc1487e1'

@@ -5,9 +5,8 @@ Revises: cd58dc1487e1
 Create Date: 2017-08-29 19:21:41.214271
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'f22d6bf9b6b6'
@@ -29,4 +28,4 @@ def downgrade():
         batch_op.drop_column('extra')
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('software_version', sa.VARCHAR(), nullable=True))
+        batch_op.add_column(sa.Column('software_version', sa.Unicode(), nullable=True))
