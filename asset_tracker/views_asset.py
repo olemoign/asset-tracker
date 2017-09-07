@@ -70,7 +70,7 @@ class AssetsEndPoint(object):
             return None  # no available software for new Asset
 
         software_updates = self.asset.history('desc') \
-            .join(EventStatus).filter_by(status_id='software_update')
+            .join(EventStatus).filter(EventStatus.status_id == 'software_update')
 
         softwares = {}
         for event in software_updates:
@@ -204,7 +204,7 @@ class AssetsEndPoint(object):
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
-            event = self.asset.history('asc', filter_software=True).filter_by(event_id=event_id).first()
+            event = self.asset.history('asc', filter_software=True).filter(Event.event_id == event_id).first()
             if not event:
                 raise FormException(_('Invalid event.'))
 
