@@ -49,7 +49,7 @@ class Assets(object):
 
     def apply_tenanting_filter(self, q):
         """Filter assets according to user's rights/tenants.
-        Admins get access to all asssets.
+        Admins get access to all assets.
 
         Args:
             q (sqlalchemy.orm.query.Query): current query.
@@ -68,7 +68,7 @@ class Assets(object):
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
         """List assets and format output according to dataTables requirements."""
-        # Return if API is called by somebdy other than dataTables.
+        # Return if API is called by somebody other than dataTables.
         if not asbool(self.request.GET.get('datatables')):
             return []
 
