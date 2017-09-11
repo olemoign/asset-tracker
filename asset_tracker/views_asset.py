@@ -108,7 +108,8 @@ class AssetsEndPoint(object):
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
 
-        statuses = self.request.db_session.query(EventStatus).all()
+        statuses = self.request.db_session.query(EventStatus) \
+            .filter(EventStatus.status_id != 'software_update')
 
         tenants = self.get_create_read_tenants()
 
