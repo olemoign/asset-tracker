@@ -2,6 +2,8 @@
 
 from datetime import datetime
 from operator import attrgetter
+from itertools import groupby
+from collections import namedtuple
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.sentry import sentry_capture_exception
@@ -13,7 +15,7 @@ from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
+from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
 
 
 class FormException(Exception):
@@ -101,6 +103,23 @@ class AssetsEndPoint(object):
 
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
+    def get_site_data(self, tenants):
+        """Get all sites corresponding to current tenants, result will be filtered in front/js"""
+
+        sites_query = self.request.db_session.query(Site)\
+            .filter(Site.tenant_id.in_(tenant['id'] for tenant in tenants))\
+            .order_by(Site.tenant_id, Site.type)
+
+        # dict to find tenant name from tenant id
+        tenant_names = {tenant['id']: tenant['name'] for tenant in tenants}
+
+        # groupBy tenant name to make optGroup easier to manage
+        groupBy_tenant = namedtuple('groupBy_tenant', ['tenant_name', 'sites_list'])
+        sites = (groupBy_tenant(tenant_names[tenant_id], list(group_of_sites))
+                 for tenant_id, group_of_sites in groupby(sites_query, key=lambda site: site.tenant_id))
+
+        return sites
+
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
@@ -112,8 +131,10 @@ class AssetsEndPoint(object):
 
         tenants = self.get_create_read_tenants()
 
+        sites = self.get_site_data(tenants)
+
         return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
-                'statuses': statuses, 'tenants': tenants}
+                'statuses': statuses, 'tenants': tenants, 'sites': sites}
 
     def read_form(self):
         """Format form content according to our needs.
@@ -172,6 +193,10 @@ class AssetsEndPoint(object):
         tenant_id = self.form.get('tenant_id')
         if not tenant_id or tenant_id not in tenants_ids:
             raise FormException(_('Invalid tenant.'))
+
+        site_id = self.form.get('site_id')
+        if not site_id or not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
+            raise FormException(_('Invalid site.'))
 
         if self.form.get('event'):
             status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
@@ -325,7 +350,7 @@ class AssetsEndPoint(object):
 
         # noinspection PyArgumentList
         self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
-                           asset_type=self.form['asset_type'], site=self.form.get('site'),
+                           asset_type=self.form['asset_type'], site_id=self.form.get('site_id'),
                            customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
                            current_location=self.form.get('current_location'),
                            calibration_frequency=calibration_frequency,
@@ -364,7 +389,7 @@ class AssetsEndPoint(object):
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
-        self.asset.site = self.form.get('site')
+        self.asset.site_id = self.form.get('site_id')
         self.asset.current_location = self.form.get('current_location')
 
         self.asset.notes = self.form.get('notes')
