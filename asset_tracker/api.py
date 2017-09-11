@@ -13,7 +13,7 @@ from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
-from parsys_utilities.sql import sql_search
+from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
@@ -80,11 +80,13 @@ class Assets(object):
 
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
-        joined_tables = [models.EventStatus]
-        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
-                                       models.Asset.current_location]
-        specific_search_attributes = {'status': models.EventStatus.status_id}
-        specific_sort_attributes = {'status': models.EventStatus.position}
+        joined_tables = [models.EventStatus, models.Site]
+        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name,
+                                       models.Asset.current_location, models.Site.type]
+        specific_search_attributes = {'status': models.EventStatus.status_id,
+                                      'site': models.Site.type}
+        specific_sort_attributes = {'status': models.EventStatus.position,
+                                    'site': models.Site.type}
 
         try:
             # noinspection PyTypeChecker
@@ -109,7 +111,7 @@ class Assets(object):
             is_active = asset.status.status_id != 'decommissioned'
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
-                            'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
+                            'customer_name': asset.customer_name, 'site': asset.site.type, 'status': status,
                             'calibration_next': calibration_next, 'is_active': is_active}
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -123,6 +125,121 @@ class Assets(object):
 
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
+
+
+class Sites(object):
+    """List sites for dataTables."""
+    __acl__ = [
+        (Allow, None, 'sites-list', 'sites-list'),
+        (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
+    ]
+
+    def __init__(self, request):
+        self.request = request
+
+    def apply_tenanting_filter(self, q):
+        """Filter sites according to user's rights/tenants.
+        Admins get access to all sites.
+
+        Args:
+            q (sqlalchemy.orm.query.Query): current query.
+
+        Returns:
+            sqlalchemy.orm.query.Query: filtered query.
+
+        """
+        if 'g:admin' in self.request.effective_principals:
+            return q
+        else:
+            authorized_tenants = {right.tenant for right in self.request.effective_principals
+                                  if isinstance(right, Right) and right.name == 'sites-list'}
+            return q.filter(models.Site.tenant_id.in_(authorized_tenants))
+
+    @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
+    def list_get(self):
+        """List sites and format output according to dataTables requirements."""
+        # Return if API is called by somebody other than dataTables.
+        if not asbool(self.request.GET.get('datatables')):
+            return []
+
+        # Parse data from datatables
+        try:
+            draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
+        except KeyError:
+            sentry_capture_exception(self.request, level='info')
+            return HTTPBadRequest()
+
+        # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
+        tenants = table_from_dict('tenant', self.request.user['tenants'])
+
+        # SQL query parameters
+        full_text_search_attributes = [models.Site.type, tenants.c.tenant_name]
+        joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
+        specific_sort_attributes = OrderedDict(tenant_name=tenants.c.tenant_name,
+                                               type=models.Site.type)
+        search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
+                             'full_text_search': full_text_search}
+        try:
+            # noinspection PyTypeChecker
+            output = sql_search(db_session=self.request.db_session,
+                                searched_object=models.Site,
+                                full_text_search_attributes=full_text_search_attributes,
+                                joined_tables=joined_tables,
+                                tenanting=self.apply_tenanting_filter,
+                                specific_sort_attributes=specific_sort_attributes,
+                                search_parameters=search_parameters)
+        except KeyError:
+            sentry_capture_exception(self.request, get_tb=True, level='info')
+            return HTTPBadRequest()
+
+        # dict to get tenant name from tenant id
+        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user['tenants']}
+
+        # Format db return for dataTables.
+        sites = []
+        for site in output['items']:
+            site_output = {
+                'site_id': site.id,
+                'type': site.type.capitalize(),
+                'tenant_name': tenant_names[site.tenant_id]
+            }
+
+            # Append link to output if the user is an admin or has the right to read the site info.
+            has_admin_rights = 'g:admin' in self.request.effective_principals
+            has_read_rights = (site.tenant_id, 'sites-read') in self.request.effective_principals
+
+            if has_admin_rights or has_read_rights:
+                link = self.request.route_path('sites-update', site_id=site.id)
+                site_output['links'] = [{'rel': 'self', 'href': link}]
+
+            sites.append(site_output)
+
+        return {'draw': draw,
+                'recordsTotal': output.get('recordsTotal'),
+                'recordsFiltered': output['recordsFiltered'],
+                'data': sites}
+
+    @view_config(route_name='api-site', request_method='GET', permission='sites-read', renderer='json')
+    def site_get(self):
+        """Get site information for consultation."""
+
+        site_id = self.request.matchdict.get('site_id')
+
+        if not site_id:
+            return HTTPBadRequest(json={'error': 'Missing site.'})
+
+        site = self.request.db_session.query(models.Site).filter_by(id=site_id).first()
+
+        if not site:
+            return HTTPNotFound(json={'error': 'Unknown site.'})
+        else:
+            return {
+                'tenant': site.tenant_id,
+                'type': site.type,
+                'phone': site.phone,
+                'contact': site.contact,
+                'email': site.email,
+            }
 
 
 class Software(object):
@@ -276,5 +393,7 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
+    config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
+    config.add_route(pattern='site/{site_id:\d+}/', name='api-site', factory=Sites)  # for consultation
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
