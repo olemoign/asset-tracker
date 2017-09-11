@@ -13,7 +13,8 @@
             <label for="{{ field }}">{{ gettext(label) }}{% if required %} *{% endif %}</label>
             <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
                 {% if placeholder %} placeholder="{{ gettext(placeholder) }}"{% endif %}
-                {% if asset and asset[field] %} value="{{ asset[field] }}"{% endif %}
+                {% if asset and asset[field] %} value="{{ asset[field] }}"
+                {% elif site and site[field] %} value="{{ site[field] }}"{% endif %}
                 {% if required %} required{% endif %}>
         </div>
     </div>

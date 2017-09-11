@@ -51,7 +51,23 @@
                         {% endif %}
 
                         {{ input(_('Customer name'), 'customer_name') }}
-                        {{ input(_('Site'), 'site') }}
+
+                        <div class="col-sm-6 form-group">
+                            <label for="site_id">{{ gettext('Site') }} *</label>
+                            <select class="form-control" id="site_id" name="site_id">
+                            {% for s in sites|sort(attribute='tenant_name') %}
+                                <optgroup label="{{ s.tenant_name }}">
+                                {% for site in s.sites_list %}
+                                    <option value="{{ site.id }}"
+                                            {% if asset and asset.site_id == site.id %} selected{% endif %}>
+                                        {{ site.type }}
+                                    </option>
+                                {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                            </select>
+                        </div>
+
                         {{ input(_('Current location'), 'current_location') }}
 
                         {% if not 'marlink' in client_specific %}
