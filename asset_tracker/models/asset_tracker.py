@@ -14,6 +14,7 @@ class Asset(Model, CreationDateTimeMixin):
     tenant_id = Column(String, nullable=False)
     asset_id = Column(String, nullable=False)
     asset_type = Column(String, nullable=False)
+    user_id = Column(String)
 
     customer_id = Column(String)
     customer_name = Column(String)
@@ -21,6 +22,8 @@ class Asset(Model, CreationDateTimeMixin):
     site = Column(String)
     current_location = Column(String)
     notes = Column(String)
+
+    is_linked = Column(Boolean, nullable=False, default=False)
 
     equipments = relationship('Equipment')
 
