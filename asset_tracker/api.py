@@ -9,6 +9,8 @@ from collections import OrderedDict
 from datetime import datetime
 from json import dumps, JSONDecodeError
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
@@ -16,10 +18,12 @@ from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
 from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
-from pyramid.settings import asbool
+from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 
 from asset_tracker import models
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.views_asset import AssetsEndPoint
 
 
 def get_version_from_file(file_name):
@@ -123,6 +127,109 @@ class Assets(object):
 
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
+
+    def upsert_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
+        """Create/Update an asset.
+
+        Find and update asset information if asset exists in AssetTracker or create it.
+
+        Args:
+            user_id (str): unique id to identify the station
+            login (str): serial number or station login/ID
+            tenant_id (str): unique id to identify the tenant
+            creator_id (str): unique id to identify the user
+            creator_alias (str): '{first_name} {last_name}'
+
+        Returns:
+            flash (dict): information to be displayed in RTA session.flash
+
+        """
+        # If asset exists only in Asset Tracker...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=login, user_id=None) \
+            .first()
+
+        if asset:
+            asset.user_id = user_id
+            asset.tenant_id = tenant_id
+            asset.is_linked = True
+
+            return {'info': 'Asset has been linked.'}
+
+        # Else if asset exists in both Asset Tracker and RTA...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .first()
+
+        if asset:
+            asset.asset_id = login
+            asset.tenant_id = tenant_id
+            asset.is_linked = True
+
+            return {'info': 'Asset has been updated.'}
+
+        # Else create a new Asset
+        status = self.request.db_session.query(models.EventStatus)\
+            .filter_by(status_id='stock_parsys')\
+            .one()
+
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
+        if 'marlink' in client_specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            calibration_frequency = 2
+
+        # noinspection PyArgumentList
+        asset = models.Asset(asset_type='station', asset_id=login, status=status,
+                             user_id=user_id, is_linked=True,
+                             tenant_id=tenant_id, calibration_frequency=calibration_frequency)
+        self.request.db_session.add(asset)
+        # self.request.db_session.flush()
+
+        # Add Event
+        # noinspection PyArgumentList
+        event = models.Event(status=status, date=datetime.utcnow().date(),
+                             creator_id=creator_id, creator_alias=creator_alias)
+        # noinspection PyProtectedMember
+        asset._history.append(event)
+        self.request.db_session.add(event)
+        # self.request.db_session.flush()
+
+        # Update status and calibration
+        AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
+
+        return {'info': 'Asset has been created.'}
+
+    @view_config(route_name='api-asset', request_method='POST', require_csrf=False)
+    def asset_get(self):
+        """Link Station (RTA) and Asset (AssetTracker).
+
+        Receive information from RTA about station to create/update Asset.
+
+        """
+        header_keys = ('sharedSecret', 'userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
+        data = {k: self.request.headers.get(k) for k in header_keys}
+
+        # Secret validation
+        shared_secret = self.request.registry.settings.get('asset_tracker.shared_secret')
+        if data['sharedSecret'] != shared_secret:
+            return HTTPBadRequest(json={'error': 'Credential is missing.'})
+
+        # Check information availability
+        if not all(data.values()):
+            return HTTPBadRequest(json={'error': 'Missing data to link with AssetTracker.'})
+
+        # Create or update Asset
+        try:
+            flash = self.upsert_asset(data['userId'], data['logIn'], data['tenantId'],
+                                      data['creatorID'], data['creatorAlias'])
+
+        except SQLAlchemyError:
+            return HTTPBadRequest(json={'error': 'AssetTracker database error.'})
+
+        else:
+            return HTTPOk(json=flash)
 
 
 class Software(object):
@@ -275,6 +382,7 @@ class Software(object):
 
 
 def includeme(config):
+    config.add_route(pattern='asset/', name='api-asset', factory=Assets)
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)

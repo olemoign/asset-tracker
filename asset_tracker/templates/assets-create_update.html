@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
+{% set read_only = False %}
 {% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
+    {% if asset.is_linked %}
+        {% set title = title + ' ' + gettext('is linked to rta') %}
+        {% set read_only = True %}
+    {% endif %}
 {% else %}
     {% set title = gettext('Create asset') %}
 {% endif %}
@@ -28,20 +33,37 @@
                 <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(_('Asset ID'), 'asset_id', required=True) }}
+                        {{ input(_('Asset ID'), 'asset_id', required=True, readonly=read_only) }}
                         <div class="col-sm-6 form-group">
                             <label for="asset_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="asset_type" name="asset_type">
-                                <option value="cart"{% if asset and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
+                                <option value="cart"
+                                        {% if asset %}
+                                            {% if asset.asset_type == 'cart' %} selected
+                                            {% elif asset.is_linked %} disabled
+                                            {% endif %}
+                                        {% endif %}>{{ gettext('Cart') }}</option>
                                 <option value="station"{% if not asset or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                <option value="telecardia"{% if asset and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                                <option value="telecardia"
+                                        {% if asset %}
+                                            {% if asset.asset_type == 'telecardia' %} selected
+                                            {% elif asset.is_linked %} disabled
+                                            {% endif %}
+                                        {% endif %}>{{ gettext('Telecardia') }}</option>
                             </select>
                         </div>
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
                                 {% for tenant in tenants|sort(attribute='name') %}
-                                <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
+                                <option value="{{ tenant.id }}"
+                                        {% if asset %}
+                                            {% if asset.tenant_id == tenant.id %} selected
+                                            {% elif asset.is_linked %} disabled
+                                            {% endif %}
+                                        {% endif %}>
+                                    {{ tenant.name }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
