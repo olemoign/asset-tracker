@@ -164,11 +164,12 @@ class Assets(object):
         if asset:
             asset.asset_id = login
             asset.tenant_id = tenant_id
-            asset.is_linked = True
+            asset.is_linked = True  # optional because asset has already been linked
 
             return {'info': 'Asset has been updated.'}
 
         # Else create a new Asset
+        # status selection for new Asset
         status = self.request.db_session.query(models.EventStatus)\
             .filter_by(status_id='stock_parsys')\
             .one()
@@ -185,7 +186,6 @@ class Assets(object):
                              user_id=user_id, is_linked=True,
                              tenant_id=tenant_id, calibration_frequency=calibration_frequency)
         self.request.db_session.add(asset)
-        # self.request.db_session.flush()
 
         # Add Event
         # noinspection PyArgumentList
@@ -194,27 +194,34 @@ class Assets(object):
         # noinspection PyProtectedMember
         asset._history.append(event)
         self.request.db_session.add(event)
-        # self.request.db_session.flush()
 
         # Update status and calibration
         AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
 
         return {'info': 'Asset has been created.'}
 
-    @view_config(route_name='api-asset', request_method='POST', require_csrf=False)
+    @view_config(route_name='api-asset', request_method='POST', require_csrf=False, renderer='json')
     def asset_get(self):
         """Link Station (RTA) and Asset (AssetTracker).
 
         Receive information from RTA about station to create/update Asset.
 
         """
-        header_keys = ('sharedSecret', 'userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
-        data = {k: self.request.headers.get(k) for k in header_keys}
-
         # Secret validation
         shared_secret = self.request.registry.settings.get('asset_tracker.shared_secret')
-        if data['sharedSecret'] != shared_secret:
+        if not shared_secret or shared_secret != self.request.headers.get('sharedSecret'):
             return HTTPBadRequest(json={'error': 'Credential is missing.'})
+
+        # make sure the JSON provided is valid.
+        try:
+            json = self.request.json
+
+        except JSONDecodeError as error:
+            return HTTPBadRequest(json={'error': error})
+
+        else:
+            asset_keys = ('userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
+            data = {k: json.get(k) for k in asset_keys}
 
         # Check information availability
         if not all(data.values()):
