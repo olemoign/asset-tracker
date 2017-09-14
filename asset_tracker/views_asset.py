@@ -359,9 +359,12 @@ class AssetsEndPoint(object):
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
-        self.asset.asset_id = self.form['asset_id']
-        self.asset.tenant_id = self.form['tenant_id']
-        self.asset.asset_type = self.form['asset_type']
+        # no manual update if asset is linked with RTA
+        if not self.asset.is_linked:
+            self.asset.asset_id = self.form['asset_id']
+            self.asset.tenant_id = self.form['tenant_id']
+            self.asset.asset_type = self.form['asset_type']
+
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
