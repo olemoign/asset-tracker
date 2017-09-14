@@ -219,27 +219,40 @@ class Sites(object):
                 'recordsFiltered': output['recordsFiltered'],
                 'data': sites}
 
-    @view_config(route_name='api-site', request_method='GET', permission='sites-read', renderer='json')
+    @view_config(route_name='api-site', request_method='GET', renderer='json')
     def site_get(self):
         """Get site information for consultation."""
 
-        site_id = self.request.matchdict.get('site_id')
+        user_id = self.request.matchdict.get('user_id')
 
-        if not site_id:
-            return HTTPBadRequest(json={'error': 'Missing site.'})
+        if user_id:
+            asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id)\
+                .join(models.Site).first()
 
-        site = self.request.db_session.query(models.Site).filter_by(id=site_id).first()
+            if asset:
+                site_information = {
+                    'tenant': asset.site.tenant_id,
+                    'type': asset.site.type,
+                    'phone': asset.site.phone,
+                    'contact': asset.site.contact,
+                    'email': asset.site.email,
+                }
+                res = HTTPOk(json=site_information)
 
-        if not site:
-            return HTTPNotFound(json={'error': 'Unknown site.'})
+            else:
+                res = HTTPNotFound(json={'error': 'Unknown site.'})
+
         else:
-            return {
-                'tenant': site.tenant_id,
-                'type': site.type,
-                'phone': site.phone,
-                'contact': site.contact,
-                'email': site.email,
-            }
+            res = HTTPBadRequest(json={'error': 'Missing id.'})
+
+        # https://stackoverflow.com/a/19656435
+        res.headerlist.append(('Access-Control-Allow-Origin', '*'))
+        return res
+
+    # https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/webob.html#dealing-with-a-json-encoded-request-body
+    # @view_config(route_name='api-site', request_method='OPTIONS')
+    # def set_header(self):
+    #     pass
 
 
 class Software(object):
@@ -394,6 +407,6 @@ class Software(object):
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
-    config.add_route(pattern='site/{site_id:\d+}/', name='api-site', factory=Sites)  # for consultation
+    config.add_route(pattern='site/{user_id:\w{8}}/', name='api-site', factory=Sites)  # for consultation
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
