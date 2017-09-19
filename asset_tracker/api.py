@@ -198,7 +198,7 @@ class Assets(object):
 
         return {'info': '(AT) Asset has been created.'}
 
-    @view_config(route_name='api-asset', request_method='POST', require_csrf=False, renderer='json')
+    @view_config(route_name='api-assets', request_method='POST', require_csrf=False, renderer='json')
     def asset_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
 
@@ -387,7 +387,6 @@ class Software(object):
 
 
 def includeme(config):
-    config.add_route(pattern='asset/', name='api-asset', factory=Assets)
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
