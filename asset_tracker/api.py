@@ -152,9 +152,8 @@ class Assets(object):
         if asset:
             asset.user_id = user_id
             asset.tenant_id = tenant_id
-            asset.is_linked = True
 
-            return {'info': 'Asset has been linked.'}
+            return {'info': '(AT) Asset has been linked.'}
 
         # Else if asset exists in both Asset Tracker and RTA...
         asset = self.request.db_session.query(models.Asset) \
@@ -164,9 +163,8 @@ class Assets(object):
         if asset:
             asset.asset_id = login
             asset.tenant_id = tenant_id
-            asset.is_linked = True  # optional because asset has already been linked
 
-            return {'info': 'Asset has been updated.'}
+            return {'info': '(AT) Asset has been updated.'}
 
         # Else create a new Asset
         # status selection for new Asset
@@ -183,7 +181,7 @@ class Assets(object):
 
         # noinspection PyArgumentList
         asset = models.Asset(asset_type='station', asset_id=login, status=status,
-                             user_id=user_id, is_linked=True,
+                             user_id=user_id,
                              tenant_id=tenant_id, calibration_frequency=calibration_frequency)
         self.request.db_session.add(asset)
 
@@ -198,10 +196,10 @@ class Assets(object):
         # Update status and calibration
         AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
 
-        return {'info': 'Asset has been created.'}
+        return {'info': '(AT) Asset has been created.'}
 
     @view_config(route_name='api-asset', request_method='POST', require_csrf=False, renderer='json')
-    def asset_get(self):
+    def asset_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
 
         Receive information from RTA about station to create/update Asset.
@@ -210,7 +208,7 @@ class Assets(object):
         # Secret validation
         shared_secret = self.request.registry.settings.get('asset_tracker.shared_secret')
         if not shared_secret or shared_secret != self.request.headers.get('sharedSecret'):
-            return HTTPBadRequest(json={'error': 'Credential is missing.'})
+            return HTTPBadRequest(json={'error': '(AT) Credential is missing.'})
 
         # make sure the JSON provided is valid.
         try:
@@ -225,7 +223,7 @@ class Assets(object):
 
         # Check information availability
         if not all(data.values()):
-            return HTTPBadRequest(json={'error': 'Missing data to link with AssetTracker.'})
+            return HTTPBadRequest(json={'error': '(AT) Missing data to link with AssetTracker.'})
 
         # Create or update Asset
         try:
@@ -233,7 +231,7 @@ class Assets(object):
                                       data['creatorID'], data['creatorAlias'])
 
         except SQLAlchemyError:
-            return HTTPBadRequest(json={'error': 'AssetTracker database error.'})
+            return HTTPBadRequest(json={'error': '(AT) Database error.'})
 
         else:
             return HTTPOk(json=flash)
