@@ -14,7 +14,8 @@ from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
+from pyramid.authentication import extract_http_basic_credentials
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
@@ -128,7 +129,18 @@ class Assets(object):
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
 
-    def upsert_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
+    def authenticate_rta(self):
+        """Authenticate RTA using "reversed" authentication: the asset tracker has credentials to authenticate on RTA
+        (client_id/secret). Make RTA use those same credentials to link assets.
+
+        """
+        rta_auth = extract_http_basic_credentials(self.request)
+        client_id = self.request.registry.settings['rta.client_id']
+        secret = self.request.registry.settings['rta.secret']
+
+        return client_id == rta_auth.client_id and secret == rta_auth.secret
+
+    def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
         """Create/Update an asset based on information from RTA.
         Find and update asset information if asset exists in AssetTracker or create it.
 
@@ -151,8 +163,7 @@ class Assets(object):
         if asset:
             asset.user_id = user_id
             asset.tenant_id = tenant_id
-
-            return {'info': '(AT) Asset has been linked.'}
+            return
 
         # Else if asset exists in both Asset Tracker and RTA...
         asset = self.request.db_session.query(models.Asset) \
@@ -162,8 +173,7 @@ class Assets(object):
         if asset:
             asset.asset_id = login
             asset.tenant_id = tenant_id
-
-            return {'info': '(AT) Asset has been updated.'}
+            return
 
         # Else create a new Asset
         # status selection for new Asset
@@ -200,6 +210,10 @@ class Assets(object):
         Receive information from RTA about station to create/update Asset.
 
         """
+        # Authentify RTA using HTTP Basic Auth.
+        if not self.authenticate_rta():
+            return HTTPForbidden()
+
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
@@ -220,7 +234,7 @@ class Assets(object):
 
         # Create or update Asset
         try:
-            self.upsert_asset(data['userId'], data['logIn'], data['tenantId'], data['creatorID'], data['creatorAlias'])
+            self.link_asset(data['userId'], data['logIn'], data['tenantId'], data['creatorID'], data['creatorAlias'])
 
         except SQLAlchemyError:
             self.request.logger_technical.info('Asset linking: db error.')
