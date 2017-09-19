@@ -9,8 +9,6 @@ from collections import OrderedDict
 from datetime import datetime
 from json import dumps, JSONDecodeError
 
-from sqlalchemy.exc import SQLAlchemyError
-
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
@@ -20,6 +18,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
+from sqlalchemy.exc import SQLAlchemyError
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
@@ -129,8 +128,7 @@ class Assets(object):
                 'data': assets}
 
     def upsert_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
-        """Create/Update an asset.
-
+        """Create/Update an asset based on information from RTA.
         Find and update asset information if asset exists in AssetTracker or create it.
 
         Args:
@@ -168,8 +166,8 @@ class Assets(object):
 
         # Else create a new Asset
         # status selection for new Asset
-        status = self.request.db_session.query(models.EventStatus)\
-            .filter_by(status_id='stock_parsys')\
+        status = self.request.db_session.query(models.EventStatus) \
+            .filter_by(status_id='stock_parsys') \
             .one()
 
         # Marlink has only one calibration frequency so they don't want to see the input.
@@ -180,9 +178,8 @@ class Assets(object):
             calibration_frequency = 2
 
         # noinspection PyArgumentList
-        asset = models.Asset(asset_type='station', asset_id=login, status=status,
-                             user_id=user_id,
-                             tenant_id=tenant_id, calibration_frequency=calibration_frequency)
+        asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
+                             calibration_frequency=calibration_frequency)
         self.request.db_session.add(asset)
 
         # Add Event
@@ -198,10 +195,9 @@ class Assets(object):
 
         return {'info': '(AT) Asset has been created.'}
 
-    @view_config(route_name='api-asset', request_method='POST', require_csrf=False, renderer='json')
-    def asset_post(self):
+    @view_config(route_name='api-assets', request_method='POST', require_csrf=False, renderer='json')
+    def rta_link_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
-
         Receive information from RTA about station to create/update Asset.
 
         """
@@ -387,7 +383,6 @@ class Software(object):
 
 
 def includeme(config):
-    config.add_route(pattern='asset/', name='api-asset', factory=Assets)
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
