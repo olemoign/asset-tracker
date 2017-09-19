@@ -194,28 +194,20 @@ class Assets(object):
         # Update status and calibration
         AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
 
-        return {'info': '(AT) Asset has been created.'}
-
-    @view_config(route_name='api-assets', request_method='POST', require_csrf=False, renderer='json')
+    @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
     def rta_link_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
         Receive information from RTA about station to create/update Asset.
 
         """
-        # Secret validation
-        shared_secret = self.request.registry.settings.get('asset_tracker.shared_secret')
-        if not shared_secret or shared_secret != self.request.headers.get('sharedSecret'):
-            self.request.logger_technical.info('shared_secret is missing between RTA and AssetTracker.')
-            return HTTPBadRequest(json={'error': '(AT) Credential is missing.'})
-
-        # make sure the JSON provided is valid.
+        # Make sure the JSON provided is valid.
         try:
             json = self.request.json
 
-        except JSONDecodeError as error:
-            self.request.logger_technical.info('JSON file provided by RTA to create/update Asset is invalid.')
+        except JSONDecodeError:
+            self.request.logger_technical.info('Asset linking: invalid JSON.')
             sentry_capture_exception(self.request, level='info')
-            return HTTPBadRequest(json={'error': error})
+            return HTTPBadRequest()
 
         else:
             asset_keys = ('userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
@@ -223,21 +215,20 @@ class Assets(object):
 
         # Check information availability
         if not all(data.values()):
-            self.request.logger_technical.info('Values provided by RTA to create/update Asset are invalid.')
-            return HTTPBadRequest(json={'error': '(AT) Missing data to link with AssetTracker.'})
+            self.request.logger_technical.info('Asset linking: missing values.')
+            return HTTPBadRequest()
 
         # Create or update Asset
         try:
-            flash = self.upsert_asset(data['userId'], data['logIn'], data['tenantId'],
-                                      data['creatorID'], data['creatorAlias'])
+            self.upsert_asset(data['userId'], data['logIn'], data['tenantId'], data['creatorID'], data['creatorAlias'])
 
         except SQLAlchemyError:
-            self.request.logger_technical.info('AssetTracker database raise Exception during creation/update of Asset.')
+            self.request.logger_technical.info('Asset linking: db error.')
             sentry_capture_exception(self.request, level='info')
-            return HTTPBadRequest(json={'error': '(AT) Database error.'})
+            return HTTPBadRequest()
 
         else:
-            return HTTPOk(json=flash)
+            return HTTPOk()
 
 
 class Software(object):
