@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
+        <style>
+            html, body, p {
+                margin: 0;
+            }
+            hr {
+                margin: 5px;
+            }
+            div {
+                padding: 0 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <p>Type: {% if type %}{{ type }}{% else %}Ø{% endif %}</p>
+            <hr>
+            <p>Contact: {% if contact %}{{ contact }}{% else %}Ø{% endif %}</p>
+            <p>Phone: {% if phone %}{{ phone }}{% else %}Ø{% endif %}</p>
+            <p>Email: {% if email %}{{ email }}{% else %}Ø{% endif %}</p>
+        </div>
+    </body>
+</html>
+

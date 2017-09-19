@@ -16,16 +16,16 @@ class FormException(Exception):
 class SitesEndPoint(object):
     """List, read and update sites."""
 
-    def __acl__(self):  # TODO update asset
+    def __acl__(self):
         acl = [
-            (Allow, None, 'assets-create', 'assets-create'),
-            (Allow, None, 'assets-list', 'assets-list'),
+            (Allow, None, 'sites-create', 'sites-create'),
+            (Allow, None, 'sites-list', 'sites-list'),
             (Allow, None, 'g:admin', ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
         ]
 
         if self.site:
-            acl.append((Allow, self.site.tenant_id, 'assets-read', 'assets-read'))
-            acl.append((Allow, self.site.tenant_id, 'assets-update', 'assets-update'))
+            acl.append((Allow, self.site.tenant_id, 'sites-read', 'sites-read'))
+            acl.append((Allow, self.site.tenant_id, 'sites-update', 'sites-update'))
 
         return acl
 
@@ -80,8 +80,6 @@ class SitesEndPoint(object):
             raise FormException(_('Type is required.'))
         elif not self.site and self.request.db_session.query(models.Site).filter_by(type=site_type).first():
             raise FormException(_('Type already exist.'))
-
-        # TODO validate contact / phone / email ?
 
     def get_base_form_data(self):
         """Get base form input data (tenants)."""

@@ -18,6 +18,8 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
 from pyramid.security import Allow
 from pyramid.settings import asbool
 from pyramid.view import view_config
+from pyramid.renderers import render
+from pyramid.response import Response
 
 from asset_tracker import models
 
@@ -156,7 +158,7 @@ class Sites(object):
             return q.filter(models.Site.tenant_id.in_(authorized_tenants))
 
     @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
-    def list_get(self):
+    def sites_get(self):
         """List sites and format output according to dataTables requirements."""
         # Return if API is called by somebody other than dataTables.
         if not asbool(self.request.GET.get('datatables')):
@@ -219,40 +221,32 @@ class Sites(object):
                 'recordsFiltered': output['recordsFiltered'],
                 'data': sites}
 
-    @view_config(route_name='api-site', request_method='GET', renderer='json')
+    @view_config(route_name='api-sites-information', request_method='GET')
     def site_get(self):
         """Get site information for consultation."""
-
         user_id = self.request.matchdict.get('user_id')
 
-        if user_id:
-            asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id)\
-                .join(models.Site).first()
+        asset = self.request.db_session.query(models.Asset)\
+            .filter_by(user_id=user_id)\
+            .join(models.Site)\
+            .first()
 
-            if asset:
-                site_information = {
-                    'tenant': asset.site.tenant_id,
-                    'type': asset.site.type,
-                    'phone': asset.site.phone,
-                    'contact': asset.site.contact,
-                    'email': asset.site.email,
-                }
-                res = HTTPOk(json=site_information)
-
-            else:
-                res = HTTPNotFound(json={'error': 'Unknown site.'})
-
+        if asset:
+            site_information = dict(
+                type=asset.site.type,
+                contact=asset.site.contact,
+                phone=asset.site.phone,
+                email=asset.site.email,
+            )
         else:
-            res = HTTPBadRequest(json={'error': 'Missing id.'})
+            site_information = {}
 
-        # https://stackoverflow.com/a/19656435
-        res.headerlist.append(('Access-Control-Allow-Origin', '*'))
-        return res
+        rendered_html = render('sites-information.html', site_information, request=self.request)
+        response = Response(rendered_html)
+        # response.content_type = 'text/html'
+        # response.status_int = 200
 
-    # https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/webob.html#dealing-with-a-json-encoded-request-body
-    # @view_config(route_name='api-site', request_method='OPTIONS')
-    # def set_header(self):
-    #     pass
+        return response
 
 
 class Software(object):
@@ -407,6 +401,6 @@ class Software(object):
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
-    config.add_route(pattern='site/{user_id:\w{8}}/', name='api-site', factory=Sites)  # for consultation
+    config.add_route(pattern='sites/{user_id:\w{8}}/', name='api-sites-information', factory=Sites)  # for consultation
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)

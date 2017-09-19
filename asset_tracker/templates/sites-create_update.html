@@ -31,7 +31,6 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                     <div class="row">
-{# TODO réafficher??, si possible, la donnée quand il y a eu une erreur sur le formulaire #}
                         {{ input(_('Type'), 'type', required=True) }}
                         {{ input(_('Contact'), 'contact') }}
                         {{ input(_('Phone'), 'phone') }}

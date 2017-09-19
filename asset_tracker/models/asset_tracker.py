@@ -18,7 +18,6 @@ class Asset(Model, CreationDateTimeMixin):
     customer_id = Column(String)
     customer_name = Column(String)
 
-    # TODO site = Column(String) <-- delete me
     site_id = Column(Integer, ForeignKey('site.id'))
     site = relationship('Site', foreign_keys=site_id, uselist=False)
 
