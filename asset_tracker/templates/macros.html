@@ -7,14 +7,16 @@
     </div>
 {%- endmacro %}
 
-{% macro input(label, field, type='text', required=False, placeholder=None) -%}
+{% macro input(label, field, type='text', required=False, placeholder=None, readonly=False) -%}
     <div class="col-sm-6">
         <div class="form-group">
             <label for="{{ field }}">{{ gettext(label) }}{% if required %} *{% endif %}</label>
             <input type="{{ type }}" class="form-control" id="{{ field }}" name="{{ field }}"
                 {% if placeholder %} placeholder="{{ gettext(placeholder) }}"{% endif %}
-                {% if asset and asset[field] %} value="{{ asset[field] }}"
-                {% elif site and site[field] %} value="{{ site[field] }}"{% endif %}
+                {% if asset %}
+                    {% if asset[field] %} value="{{ asset[field] }}"{% endif %}
+                    {% if readonly %} readonly{% endif %}
+                {% endif %}
                 {% if required %} required{% endif %}>
         </div>
     </div>

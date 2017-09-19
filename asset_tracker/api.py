@@ -14,14 +14,20 @@ from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search, table_from_dict
-from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
+from pyramid.authentication import extract_http_basic_credentials
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
-from pyramid.settings import asbool
+from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 from pyramid.renderers import render
 from pyramid.response import Response
 
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+
 from asset_tracker import models
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.views_asset import AssetsEndPoint
 
 
 def get_version_from_file(file_name):
@@ -127,6 +133,121 @@ class Assets(object):
 
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
+
+    def authenticate_rta(self):
+        """Authenticate RTA using "reversed" authentication: the asset tracker has credentials to authenticate on RTA
+        (client_id/secret). Make RTA use those same credentials to link assets.
+
+        """
+        rta_auth = extract_http_basic_credentials(self.request)
+        client_id = self.request.registry.settings['rta.client_id']
+        secret = self.request.registry.settings['rta.secret']
+
+        return client_id == rta_auth.username and secret == rta_auth.password
+
+    def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
+        """Create/Update an asset based on information from RTA.
+        Find and update asset information if asset exists in AssetTracker or create it.
+
+        Args:
+            user_id (str): unique id to identify the station
+            login (str): serial number or station login/ID
+            tenant_id (str): unique id to identify the tenant
+            creator_id (str): unique id to identify the user
+            creator_alias (str): '{first_name} {last_name}'
+
+        Returns:
+            flash (dict): information to be displayed in RTA session.flash
+
+        """
+        # If asset exists only in Asset Tracker...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=login, user_id=None) \
+            .first()
+
+        if asset:
+            asset.user_id = user_id
+            asset.tenant_id = tenant_id
+            return
+
+        # Else if asset exists in both Asset Tracker and RTA...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .first()
+
+        if asset:
+            asset.asset_id = login
+            asset.tenant_id = tenant_id
+            return
+
+        # Else create a new Asset
+        # status selection for new Asset
+        status = self.request.db_session.query(models.EventStatus) \
+            .filter_by(status_id='stock_parsys') \
+            .one()
+
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
+        if 'marlink' in client_specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            calibration_frequency = 2
+
+        # noinspection PyArgumentList
+        asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
+                             calibration_frequency=calibration_frequency)
+        self.request.db_session.add(asset)
+
+        # Add Event
+        # noinspection PyArgumentList
+        event = models.Event(status=status, date=datetime.utcnow().date(),
+                             creator_id=creator_id, creator_alias=creator_alias)
+        # noinspection PyProtectedMember
+        asset._history.append(event)
+        self.request.db_session.add(event)
+
+        # Update status and calibration
+        AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
+
+    @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
+    def rta_link_post(self):
+        """Link Station (RTA) and Asset (AssetTracker).
+        Receive information from RTA about station to create/update Asset.
+
+        """
+        # Authentify RTA using HTTP Basic Auth.
+        if not self.authenticate_rta():
+            return HTTPForbidden()
+
+        # Make sure the JSON provided is valid.
+        try:
+            json = self.request.json
+
+        except JSONDecodeError:
+            self.request.logger_technical.info('Asset linking: invalid JSON.')
+            sentry_capture_exception(self.request, level='info')
+            return HTTPBadRequest()
+
+        else:
+            asset_keys = ('userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
+            data = {k: json.get(k) for k in asset_keys}
+
+        # Check information availability
+        if not all(data.values()):
+            self.request.logger_technical.info('Asset linking: missing values.')
+            return HTTPBadRequest()
+
+        # Create or update Asset
+        try:
+            self.link_asset(data['userId'], data['logIn'], data['tenantId'], data['creatorID'], data['creatorAlias'])
+
+        except SQLAlchemyError:
+            self.request.logger_technical.info('Asset linking: db error.')
+            sentry_capture_exception(self.request, level='info')
+            return HTTPBadRequest()
+
+        else:
+            return HTTPOk()
 
 
 class Sites(object):
@@ -376,8 +497,14 @@ class Software(object):
             last_event = next(last_event_generator, None)
 
             if not last_event or last_event.extra_json['software_version'] != software_version:
-                software_status = self.request.db_session.query(models.EventStatus) \
-                    .filter(models.EventStatus.status_id == 'software_update').one()
+                try:
+                    software_status = self.request.db_session.query(models.EventStatus) \
+                        .filter(models.EventStatus.status_id == 'software_update').one()
+                except (MultipleResultsFound, NoResultFound):
+                    sentry_capture_exception(self.request, level='info')
+                    self.request.logger_technical.info('asset status error')
+                    return HTTPInternalServerError(json={'error': 'Internal server error.'})
+
                 # noinspection PyArgumentList
                 new_event = models.Event(
                     status=software_status,

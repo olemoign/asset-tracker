@@ -24,6 +24,7 @@ class FormException(Exception):
 
 class AssetsEndPoint(object):
     """List, read and update assets."""
+
     def __acl__(self):
         acl = [
             (Allow, None, 'assets-create', 'assets-create'),
@@ -127,7 +128,8 @@ class AssetsEndPoint(object):
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
 
-        statuses = self.request.db_session.query(EventStatus).all()
+        statuses = self.request.db_session.query(EventStatus) \
+            .filter(EventStatus.status_id != 'software_update')
 
         tenants = self.get_create_read_tenants()
 
@@ -290,40 +292,41 @@ class AssetsEndPoint(object):
             event.remover_id = self.request.user['id']
             event.remover_alias = self.request.user['alias']
 
-    def update_status_and_calibration_next(self):
+    @staticmethod
+    def update_status_and_calibration_next(asset, client_specific):
         """Update asset status and next calibration date according to functional rules."""
-        self.asset.status = self.asset.history('desc', filter_software=True).first().status
+        asset.status = asset.history('desc', filter_software=True).first().status
 
-        if 'marlink' in self.client_specific:
+        if 'marlink' in client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
-            calibration_last = self.asset.calibration_last
+            calibration_last = asset.calibration_last
 
             # If asset was calibrated (it should be, as production is considered a calibration).
             # Marlink rule: next calibration = activation date + calibration frequency.
             if calibration_last:
-                activation_next = self.asset.history('asc').filter(Event.date > calibration_last) \
+                activation_next = asset.history('asc').filter(Event.date > calibration_last) \
                     .join(EventStatus).filter(EventStatus.status_id == 'service').first()
                 if activation_next:
-                    self.asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
+                    asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
                 else:
                     # If asset was never activated, we consider it still should be calibrated.
                     # So calibration next = calibration last + calibration frequency.
-                    self.asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
+                    asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
 
             # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
             # set as "produced").
             else:
-                activation_first = self.asset.history('asc').join(EventStatus) \
+                activation_first = asset.history('asc').join(EventStatus) \
                     .filter(EventStatus.status_id == 'service').first()
                 if activation_first:
-                    self.asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
+                    asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
 
         else:
             # Parsys rule is straightforward: next calibration = last calibration + asset calibration frequency.
             # Calibration last is simple to get, it's just that we consider the production date as a calibration.
-            calibration_last = self.asset.calibration_last
+            calibration_last = asset.calibration_last
             if calibration_last:
-                self.asset.calibration_next = calibration_last + relativedelta(years=self.asset.calibration_frequency)
+                asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -361,7 +364,7 @@ class AssetsEndPoint(object):
 
         self.add_event()
 
-        self.update_status_and_calibration_next()
+        self.update_status_and_calibration_next(self.asset, self.client_specific)
 
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
@@ -383,9 +386,13 @@ class AssetsEndPoint(object):
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
-        self.asset.asset_id = self.form['asset_id']
-        self.asset.tenant_id = self.form['tenant_id']
+        # no manual update if asset is linked with RTA
+        if not self.asset.is_linked:
+            self.asset.asset_id = self.form['asset_id']
+            self.asset.tenant_id = self.form['tenant_id']
+
         self.asset.asset_type = self.form['asset_type']
+
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
@@ -420,7 +427,7 @@ class AssetsEndPoint(object):
 
             self.remove_events()
 
-        self.update_status_and_calibration_next()
+        self.update_status_and_calibration_next(self.asset, self.client_specific)
 
         return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
 
