@@ -14,11 +14,12 @@ from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search
-from pyramid.httpexceptions import HTTPBadRequest, HTTPOk, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
@@ -360,8 +361,14 @@ class Software(object):
             last_event = next(last_event_generator, None)
 
             if not last_event or last_event.extra_json['software_version'] != software_version:
-                software_status = self.request.db_session.query(models.EventStatus) \
-                    .filter(models.EventStatus.status_id == 'software_update').one()
+                try:
+                    software_status = self.request.db_session.query(models.EventStatus) \
+                        .filter(models.EventStatus.status_id == 'software_update').one()
+                except (MultipleResultsFound, NoResultFound):
+                    sentry_capture_exception(self.request, level='info')
+                    self.request.logger_technical.info('asset status error')
+                    return HTTPInternalServerError(json={'error': 'Internal server error.'})
+
                 # noinspection PyArgumentList
                 new_event = models.Event(
                     status=software_status,
