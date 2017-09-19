@@ -1,8 +1,9 @@
 """add Site object
+Informations about devices localisation and people in charge
 
-Revision ID: 759b7ea9cbb1
-Revises: f22d6bf9b6b6
-Create Date: 2017-09-07 19:54:29.102511
+Revision ID: 49e3635c66c5
+Revises: b53983edfa7a
+Create Date: 2017-09-19 19:35:16.105873
 
 """
 
@@ -11,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '759b7ea9cbb1'
-down_revision = 'f22d6bf9b6b6'
+revision = '49e3635c66c5'
+down_revision = 'b53983edfa7a'
 branch_labels = None
 depends_on = None
 
