@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-19 17:30+0200\n"
+"POT-Creation-Date: 2017-09-19 18:04+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:178
+#: templates/assets-create_update.html:174
 #, python-format
 msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
 msgstr "%(date)s: %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:173
+#: templates/assets-create_update.html:169
 #, python-format
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr "%(date)s: %(software)s mis à jour en version %(version)s."
@@ -32,7 +32,7 @@ msgstr "%(date)s: %(software)s mis à jour en version %(version)s."
 msgid "Activation"
 msgstr "Mise en service"
 
-#: templates/assets-create_update.html:125
+#: templates/assets-create_update.html:121
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
@@ -40,7 +40,7 @@ msgstr "Ajouter Événement"
 msgid "An error occured. Please retry later."
 msgstr "Une erreur est survenue. Veuillez réessayer dans quelques instants."
 
-#: templates/assets-create_update.html:36 templates/assets-list.html:22
+#: templates/assets-create_update.html:32 templates/assets-list.html:22
 msgid "Asset ID"
 msgstr "ID"
 
@@ -57,11 +57,11 @@ msgstr "Biosys - Parsys"
 msgid "Blood analyser - PTS Cardiochek"
 msgstr "Analyseur sanguin - PTS Cardiochek"
 
-#: templates/assets-create_update.html:71
+#: templates/assets-create_update.html:67
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:192
+#: templates/assets-create_update.html:188
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -69,7 +69,7 @@ msgstr "Annuler"
 msgid "Cardialys - Parsys"
 msgstr "Cardialys - Parsys"
 
-#: templates/assets-create_update.html:40
+#: templates/assets-create_update.html:36
 msgid "Cart"
 msgstr "Chariot"
 
@@ -77,11 +77,11 @@ msgstr "Chariot"
 msgid "Consumables case VCS - Parsys"
 msgstr "Valise de consommables station - Parsys"
 
-#: templates/assets-create_update.html:11
+#: templates/assets-create_update.html:8
 msgid "Create asset"
 msgstr "Nouveau matériel"
 
-#: templates/assets-create_update.html:67
+#: templates/assets-create_update.html:63
 msgid "Current location"
 msgstr "Position actuelle"
 
@@ -89,20 +89,20 @@ msgstr "Position actuelle"
 msgid "Customer"
 msgstr "Client"
 
-#: templates/assets-create_update.html:62
+#: templates/assets-create_update.html:58
 msgid "Customer ID (Subscription ID)"
 msgstr "ID Client (Souscription)"
 
-#: templates/assets-create_update.html:65
+#: templates/assets-create_update.html:61
 msgid "Customer name"
 msgstr "Nom du client"
 
-#: templates/assets-create_update.html:133 templates/macros.html:62
+#: templates/assets-create_update.html:129 templates/macros.html:62
 #: templates/macros.html:70
 msgid "DD/MM/YYYY"
 msgstr "JJ/MM/AAAA"
 
-#: templates/assets-create_update.html:133
+#: templates/assets-create_update.html:129
 msgid "Date"
 msgstr "Date"
 
@@ -114,7 +114,7 @@ msgstr "Hors service"
 msgid "Dermatoscope - Firefly DE300A"
 msgstr "Dermatoscope - Firefly DE300A"
 
-#: templates/assets-create_update.html:141
+#: templates/assets-create_update.html:137
 msgid "Equipments"
 msgstr "Équipements"
 
@@ -134,7 +134,7 @@ msgstr "Date d'expiration - bandelettes"
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
-#: templates/assets-create_update.html:168
+#: templates/assets-create_update.html:164
 msgid "History"
 msgstr "Historique"
 
@@ -210,7 +210,7 @@ msgstr "Tenant invalide."
 msgid "It looks like this was the result of either:"
 msgstr "Cela peut être le résultat:"
 
-#: templates/assets-create_update.html:115
+#: templates/assets-create_update.html:111
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
@@ -226,11 +226,11 @@ msgstr "Donnée obligatoire manquante."
 msgid "New"
 msgstr "Créer"
 
-#: templates/assets-create_update.html:116 templates/assets-list.html:26
+#: templates/assets-create_update.html:112 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr "Prochaine calibration"
 
-#: templates/assets-create_update.html:92
+#: templates/assets-create_update.html:88
 msgid "No software registered."
 msgstr "Aucun logiciel enregistré."
 
@@ -238,7 +238,7 @@ msgstr "Aucun logiciel enregistré."
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:161
+#: templates/assets-create_update.html:157
 msgid "Notes"
 msgstr "Notes"
 
@@ -250,7 +250,7 @@ msgstr "Otoscope - Firefly DE500A"
 msgid "Page Not Found"
 msgstr "Page non trouvée"
 
-#: templates/assets-create_update.html:113
+#: templates/assets-create_update.html:109
 msgid "Production"
 msgstr "Production"
 
@@ -262,7 +262,7 @@ msgstr "Paramètres"
 msgid "Show decommissioned assets"
 msgstr "Afficher les matériels hors service"
 
-#: templates/assets-create_update.html:66 templates/assets-list.html:25
+#: templates/assets-create_update.html:62 templates/assets-list.html:25
 msgid "Site"
 msgstr "Site"
 
@@ -270,7 +270,7 @@ msgstr "Site"
 msgid "Software update"
 msgstr "MAJ logicielle"
 
-#: templates/assets-create_update.html:87
+#: templates/assets-create_update.html:83
 msgid "Softwares versions"
 msgstr "Versions logicielles"
 
@@ -282,11 +282,11 @@ msgstr "La page que vous avez demandée n'existe pas."
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr "Spiromètre - Spiromir MiniSpir Light"
 
-#: templates/assets-create_update.html:41
+#: templates/assets-create_update.html:37
 msgid "Station"
 msgstr "Station"
 
-#: templates/assets-create_update.html:104 templates/assets-list.html:27
+#: templates/assets-create_update.html:100 templates/assets-list.html:27
 msgid "Status"
 msgstr "Statut"
 
@@ -298,7 +298,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:193
+#: templates/assets-create_update.html:189
 msgid "Submit"
 msgstr "Valider"
 
@@ -314,7 +314,7 @@ msgstr "Télécardia - Parsys"
 msgid "Telecardia charging base - Parsys"
 msgstr "Base de chargement Télécardia - Parsys"
 
-#: templates/assets-create_update.html:46
+#: templates/assets-create_update.html:42
 msgid "Tenant"
 msgstr "Tenant"
 
@@ -326,7 +326,7 @@ msgstr "Thermomètre - Foracare IR21"
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: templates/assets-create_update.html:38 templates/assets-list.html:23
+#: templates/assets-create_update.html:34 templates/assets-list.html:23
 msgid "Type"
 msgstr "Type"
 
@@ -350,11 +350,7 @@ msgstr "d'une adresse incorrecte"
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
 
-#: templates/assets-create_update.html:5
-msgid "linked"
-msgstr "lié(e)"
-
-#: templates/assets-create_update.html:74
+#: templates/assets-create_update.html:70
 msgid "years"
 msgstr "ans"
 

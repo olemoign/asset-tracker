@@ -138,7 +138,7 @@ class Assets(object):
         client_id = self.request.registry.settings['rta.client_id']
         secret = self.request.registry.settings['rta.secret']
 
-        return client_id == rta_auth.client_id and secret == rta_auth.secret
+        return client_id == rta_auth.username and secret == rta_auth.password
 
     def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
         """Create/Update an asset based on information from RTA.

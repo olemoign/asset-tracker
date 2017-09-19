@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-19 17:30+0200\n"
+"POT-Creation-Date: 2017-09-19 18:04+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:178
+#: templates/assets-create_update.html:174
 #, python-format
 msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:173
+#: templates/assets-create_update.html:169
 #, python-format
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr ""
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:125
+#: templates/assets-create_update.html:121
 msgid "Add Event"
 msgstr ""
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "An error occured. Please retry later."
 msgstr ""
 
-#: templates/assets-create_update.html:36 templates/assets-list.html:22
+#: templates/assets-create_update.html:32 templates/assets-list.html:22
 msgid "Asset ID"
 msgstr ""
 
@@ -57,11 +57,11 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:71
+#: templates/assets-create_update.html:67
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:192
+#: templates/assets-create_update.html:188
 msgid "Cancel"
 msgstr ""
 
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Cardialys - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:40
+#: templates/assets-create_update.html:36
 msgid "Cart"
 msgstr ""
 
@@ -77,11 +77,11 @@ msgstr ""
 msgid "Consumables case VCS - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:11
+#: templates/assets-create_update.html:8
 msgid "Create asset"
 msgstr ""
 
-#: templates/assets-create_update.html:67
+#: templates/assets-create_update.html:63
 msgid "Current location"
 msgstr ""
 
@@ -89,20 +89,20 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: templates/assets-create_update.html:62
+#: templates/assets-create_update.html:58
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/assets-create_update.html:65
+#: templates/assets-create_update.html:61
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:133 templates/macros.html:62
+#: templates/assets-create_update.html:129 templates/macros.html:62
 #: templates/macros.html:70
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/assets-create_update.html:133
+#: templates/assets-create_update.html:129
 msgid "Date"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: templates/assets-create_update.html:141
+#: templates/assets-create_update.html:137
 msgid "Equipments"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:168
+#: templates/assets-create_update.html:164
 msgid "History"
 msgstr ""
 
@@ -210,7 +210,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:115
+#: templates/assets-create_update.html:111
 msgid "Last calibration"
 msgstr ""
 
@@ -226,11 +226,11 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:116 templates/assets-list.html:26
+#: templates/assets-create_update.html:112 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr ""
 
-#: templates/assets-create_update.html:92
+#: templates/assets-create_update.html:88
 msgid "No software registered."
 msgstr ""
 
@@ -238,7 +238,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:161
+#: templates/assets-create_update.html:157
 msgid "Notes"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: templates/assets-create_update.html:113
+#: templates/assets-create_update.html:109
 msgid "Production"
 msgstr ""
 
@@ -262,7 +262,7 @@ msgstr ""
 msgid "Show decommissioned assets"
 msgstr ""
 
-#: templates/assets-create_update.html:66 templates/assets-list.html:25
+#: templates/assets-create_update.html:62 templates/assets-list.html:25
 msgid "Site"
 msgstr ""
 
@@ -270,7 +270,7 @@ msgstr ""
 msgid "Software update"
 msgstr ""
 
-#: templates/assets-create_update.html:87
+#: templates/assets-create_update.html:83
 msgid "Softwares versions"
 msgstr ""
 
@@ -282,11 +282,11 @@ msgstr ""
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr ""
 
-#: templates/assets-create_update.html:41
+#: templates/assets-create_update.html:37
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:104 templates/assets-list.html:27
+#: templates/assets-create_update.html:100 templates/assets-list.html:27
 msgid "Status"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:193
+#: templates/assets-create_update.html:189
 msgid "Submit"
 msgstr ""
 
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Telecardia charging base - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:46
+#: templates/assets-create_update.html:42
 msgid "Tenant"
 msgstr ""
 
@@ -326,7 +326,7 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/assets-create_update.html:38 templates/assets-list.html:23
+#: templates/assets-create_update.html:34 templates/assets-list.html:23
 msgid "Type"
 msgstr ""
 
@@ -350,11 +350,7 @@ msgstr ""
 msgid "an out-of-date link"
 msgstr ""
 
-#: templates/assets-create_update.html:5
-msgid "linked"
-msgstr ""
-
-#: templates/assets-create_update.html:74
+#: templates/assets-create_update.html:70
 msgid "years"
 msgstr ""
 

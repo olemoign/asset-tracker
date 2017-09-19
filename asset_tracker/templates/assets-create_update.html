@@ -1,15 +1,11 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
-{% if asset and asset.is_linked %}
-    {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id + ' (' + gettext('linked') + ')' %}
-    {% set read_only = True %}
-{% elif asset %}
+{% set read_only = asset and asset.is_linked %}
+{% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
-    {% set read_only = False %}
 {% else %}
     {% set title = gettext('Create asset') %}
-    {% set read_only = False %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -26,7 +22,7 @@
     {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel__title">{{ title }}</h3>
+                <h3 class="panel__title">{{ title }}{% if asset and asset.is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}</h3>
             </div>
 
             <div class="panel-body">
