@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
-{% set read_only = False %}
-{% if asset %}
+{% if asset and asset.is_linked %}
+    {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id + ' ' + gettext('is linked to rta') %}
+    {% set read_only = True %}
+{% elif asset and not asset.is_linked %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
-    {% if asset.is_linked %}
-        {% set title = title + ' ' + gettext('is linked to rta') %}
-        {% set read_only = True %}
-    {% endif %}
+    {% set read_only = False %}
 {% else %}
     {% set title = gettext('Create asset') %}
+    {% set read_only = False %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
