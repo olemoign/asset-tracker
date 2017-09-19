@@ -20,10 +20,7 @@ class Asset(Model, CreationDateTimeMixin):
     @property
     def is_linked(self):
         """Asset is_linked if it received user_id from RTA."""
-        if self.user_id:
-            return True
-        else:
-            return False
+        return bool(self.user_id)
 
     customer_id = Column(String)
     customer_name = Column(String)
