@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
+{% set read_only = asset and asset.is_linked %}
 {% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
 {% else %}
@@ -21,14 +22,14 @@
     {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel__title">{{ title }}</h3>
+                <h3 class="panel__title">{{ title }}{% if asset and asset.is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}</h3>
             </div>
 
             <div class="panel-body">
                 <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(_('Asset ID'), 'asset_id', required=True) }}
+                        {{ input(_('Asset ID'), 'asset_id', required=True, readonly=read_only) }}
                         <div class="col-sm-6 form-group">
                             <label for="asset_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="asset_type" name="asset_type">
@@ -41,7 +42,14 @@
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
                                 {% for tenant in tenants|sort(attribute='name') %}
-                                <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
+                                <option value="{{ tenant.id }}"
+                                        {% if asset %}
+                                            {% if asset.tenant_id == tenant.id %} selected
+                                            {% elif asset.is_linked %} disabled
+                                            {% endif %}
+                                        {% endif %}>
+                                    {{ tenant.name }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
