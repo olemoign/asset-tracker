@@ -204,6 +204,7 @@ class Assets(object):
         # Secret validation
         shared_secret = self.request.registry.settings.get('asset_tracker.shared_secret')
         if not shared_secret or shared_secret != self.request.headers.get('sharedSecret'):
+            self.request.logger_technical.info('shared_secret is missing between RTA and AssetTracker.')
             return HTTPBadRequest(json={'error': '(AT) Credential is missing.'})
 
         # make sure the JSON provided is valid.
@@ -211,6 +212,8 @@ class Assets(object):
             json = self.request.json
 
         except JSONDecodeError as error:
+            self.request.logger_technical.info('JSON file provided by RTA to create/update Asset is invalid.')
+            sentry_capture_exception(self.request, level='info')
             return HTTPBadRequest(json={'error': error})
 
         else:
@@ -219,6 +222,7 @@ class Assets(object):
 
         # Check information availability
         if not all(data.values()):
+            self.request.logger_technical.info('Values provided by RTA to create/update Asset are invalid.')
             return HTTPBadRequest(json={'error': '(AT) Missing data to link with AssetTracker.'})
 
         # Create or update Asset
@@ -227,6 +231,8 @@ class Assets(object):
                                       data['creatorID'], data['creatorAlias'])
 
         except SQLAlchemyError:
+            self.request.logger_technical.info('AssetTracker database raise Exception during creation/update of Asset.')
+            sentry_capture_exception(self.request, level='info')
             return HTTPBadRequest(json={'error': '(AT) Database error.'})
 
         else:
