@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-06 14:08+0200\n"
+"POT-Creation-Date: 2017-09-19 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.0\n"
 
-#: templates/assets-create_update.html:162
+#: templates/assets-create_update.html:178
 #, python-format
 msgid "%(date)s: %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:157
+#: templates/assets-create_update.html:173
 #, python-format
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:102
+#: templates/assets-create_update.html:114
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:113
+#: templates/assets-create_update.html:125
 msgid "Add Event"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 msgid "An error occured. Please retry later."
 msgstr ""
 
-#: templates/assets-create_update.html:31 templates/assets-list.html:22
+#: templates/assets-create_update.html:36 templates/assets-list.html:22
 msgid "Asset ID"
 msgstr ""
 
@@ -56,11 +56,11 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:59
+#: templates/assets-create_update.html:71
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:176
+#: templates/assets-create_update.html:192
 msgid "Cancel"
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Cardialys - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:35
+#: templates/assets-create_update.html:40
 msgid "Cart"
 msgstr ""
 
@@ -76,11 +76,11 @@ msgstr ""
 msgid "Consumables case VCS - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:7
+#: templates/assets-create_update.html:11
 msgid "Create asset"
 msgstr ""
 
-#: templates/assets-create_update.html:55
+#: templates/assets-create_update.html:67
 msgid "Current location"
 msgstr ""
 
@@ -88,20 +88,20 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: templates/assets-create_update.html:50
+#: templates/assets-create_update.html:62
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/assets-create_update.html:53
+#: templates/assets-create_update.html:65
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:121 templates/macros.html:59
-#: templates/macros.html:67
+#: templates/assets-create_update.html:133 templates/macros.html:62
+#: templates/macros.html:70
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/assets-create_update.html:121
+#: templates/assets-create_update.html:133
 msgid "Date"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: templates/assets-create_update.html:128
+#: templates/assets-create_update.html:141
 msgid "Equipments"
 msgstr ""
 
@@ -121,11 +121,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: templates/macros.html:57
+#: templates/macros.html:60
 msgid "Expiration date - lancets"
 msgstr ""
 
-#: templates/macros.html:65
+#: templates/macros.html:68
 msgid "Expiration date - test strips"
 msgstr ""
 
@@ -133,7 +133,7 @@ msgstr ""
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:152
+#: templates/assets-create_update.html:168
 msgid "History"
 msgstr ""
 
@@ -173,23 +173,23 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views_asset.py:179
+#: views_asset.py:180
 msgid "Invalid asset status."
 msgstr ""
 
-#: views_asset.py:169
+#: views_asset.py:170
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:194
+#: views_asset.py:195
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views_asset.py:139
+#: views_asset.py:140
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:185
+#: views_asset.py:186
 msgid "Invalid event date."
 msgstr ""
 
@@ -197,11 +197,11 @@ msgstr ""
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:199 views_asset.py:204
+#: views_asset.py:200 views_asset.py:205
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views_asset.py:174
+#: views_asset.py:175
 msgid "Invalid tenant."
 msgstr ""
 
@@ -209,7 +209,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:103
+#: templates/assets-create_update.html:115
 msgid "Last calibration"
 msgstr ""
 
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views_asset.py:163
+#: views_asset.py:164
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -225,11 +225,11 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: templates/assets-create_update.html:104 templates/assets-list.html:26
+#: templates/assets-create_update.html:116 templates/assets-list.html:26
 msgid "Next calibration"
 msgstr ""
 
-#: templates/assets-create_update.html:80
+#: templates/assets-create_update.html:92
 msgid "No software registered."
 msgstr ""
 
@@ -237,7 +237,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:145
+#: templates/assets-create_update.html:161
 msgid "Notes"
 msgstr ""
 
@@ -249,7 +249,7 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: templates/assets-create_update.html:101
+#: templates/assets-create_update.html:113
 msgid "Production"
 msgstr ""
 
@@ -261,7 +261,7 @@ msgstr ""
 msgid "Show decommissioned assets"
 msgstr ""
 
-#: templates/assets-create_update.html:54 templates/assets-list.html:25
+#: templates/assets-create_update.html:66 templates/assets-list.html:25
 msgid "Site"
 msgstr ""
 
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Software update"
 msgstr ""
 
-#: templates/assets-create_update.html:75
+#: templates/assets-create_update.html:87
 msgid "Softwares versions"
 msgstr ""
 
@@ -281,15 +281,15 @@ msgstr ""
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr ""
 
-#: templates/assets-create_update.html:36
+#: templates/assets-create_update.html:41
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:92 templates/assets-list.html:27
+#: templates/assets-create_update.html:104 templates/assets-list.html:27
 msgid "Status"
 msgstr ""
 
-#: views_asset.py:393
+#: views_asset.py:398
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -297,11 +297,11 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:177
+#: templates/assets-create_update.html:193
 msgid "Submit"
 msgstr ""
 
-#: templates/assets-create_update.html:37
+#: templates/assets-create_update.html:42
 msgid "Telecardia"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgstr ""
 msgid "Telecardia charging base - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:41
+#: templates/assets-create_update.html:46
 msgid "Tenant"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/assets-create_update.html:33 templates/assets-list.html:23
+#: templates/assets-create_update.html:38 templates/assets-list.html:23
 msgid "Type"
 msgstr ""
 
@@ -333,7 +333,7 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:105
+#: templates/assets-create_update.html:117
 msgid "Warranty end"
 msgstr ""
 
@@ -349,7 +349,11 @@ msgstr ""
 msgid "an out-of-date link"
 msgstr ""
 
-#: templates/assets-create_update.html:62
+#: templates/assets-create_update.html:5
+msgid "linked"
+msgstr ""
+
+#: templates/assets-create_update.html:74
 msgid "years"
 msgstr ""
 

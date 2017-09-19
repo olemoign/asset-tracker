@@ -2,9 +2,9 @@
 {% from 'macros.html' import date, equipment_box, input with context %}
 
 {% if asset and asset.is_linked %}
-    {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id + ' ' + gettext('is linked to rta') %}
+    {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id + ' (' + gettext('linked') + ')' %}
     {% set read_only = True %}
-{% elif asset and not asset.is_linked %}
+{% elif asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
     {% set read_only = False %}
 {% else %}
