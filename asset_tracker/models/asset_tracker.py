@@ -34,7 +34,13 @@ class Asset(Model, CreationDateTimeMixin):
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
     def history(self, order, filter_software=False):
-        """Filter removed events from history."""
+        """Filter removed events from history.
+
+        Args:
+            order (str): asc/desc.
+            filter_software (bool): should we get software update or not ?
+
+        """
         if order == 'asc':
             history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
         else:
