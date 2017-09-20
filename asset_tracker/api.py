@@ -119,7 +119,9 @@ class Assets(object):
             is_active = asset.status.status_id != 'decommissioned'
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
-                            'customer_name': asset.customer_name, 'site': asset.site.type, 'status': status,
+                            'customer_name': asset.customer_name,
+                            'site': asset.site.type if asset.site else None,
+                            'status': status,
                             'calibration_next': calibration_next, 'is_active': is_active}
 
             # Append link to output if the user is an admin or has the right to read the asset info.
