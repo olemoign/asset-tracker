@@ -301,7 +301,7 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user['tenants'])
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.type, tenants.c.tenant_name]
+        full_text_search_attributes = [models.Site.type, tenants.c.tenant_name, models.Site.contact, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_sort_attributes = OrderedDict(tenant_name=tenants.c.tenant_name,
                                                type=models.Site.type)
@@ -327,9 +327,12 @@ class Sites(object):
         sites = []
         for site in output['items']:
             site_output = {
-                'site_id': site.id,
+                # 'site_id': site.id,
                 'type': site.type.capitalize(),
-                'tenant_name': tenant_names[site.tenant_id]
+                'tenant_name': tenant_names[site.tenant_id],
+                'contact': site.contact,
+                'phone': site.phone,
+                'email': site.email,
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
