@@ -197,7 +197,7 @@ class AssetsEndPoint(object):
             raise FormException(_('Invalid tenant.'))
 
         site_id = self.form.get('site_id')
-        if not site_id or not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
+        if site_id and not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
             raise FormException(_('Invalid site.'))
 
         if self.form.get('event'):
