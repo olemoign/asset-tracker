@@ -65,7 +65,8 @@ class SitesEndPoint(object):
 
     def read_form(self):
         """Format form content."""
-        self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
+        self.form = {key: (value.strip() if value.strip() != '' else None)
+                     for key, value in self.request.POST.mixed().items()}
 
     def validate_form(self):
         """Validate form data."""
