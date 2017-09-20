@@ -50,7 +50,7 @@ function manageSites() {
      */
     const tenantId_selected = $('#tenant_id option:selected').text();
 
-    $('#site_id').children().each(function() {
+    $('#site_id').children('optgroup').each(function() {
         if ($(this).attr('label') !== tenantId_selected) {
             $(this).prop('disabled', true);
         }
