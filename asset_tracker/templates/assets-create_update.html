@@ -42,14 +42,13 @@
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                             <select class="form-control" id="tenant_id" name="tenant_id">
                                 {% for tenant in tenants|sort(attribute='name') %}
+                                    {# !template whitespaces! the content (tenant.name) must be directly between bracket #}
                                 <option value="{{ tenant.id }}"
                                         {% if asset %}
                                             {% if asset.tenant_id == tenant.id %} selected
                                             {% elif asset.is_linked %} disabled
                                             {% endif %}
-                                        {% endif %}>
-                                    {{ tenant.name }}
-                                </option>
+                                        {% endif %}>{{ tenant.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -68,9 +67,8 @@
                                 <optgroup label="{{ s.tenant_name }}">
                                 {% for site in s.sites_list %}
                                     <option value="{{ site.id }}"
-                                            {% if asset and asset.site_id == site.id %} selected{% endif %}>
-                                        {{ site.type }}
-                                    </option>
+                                            {% if asset and asset.site_id == site.id %} selected
+                                            {% endif %}>{{ site.type }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
