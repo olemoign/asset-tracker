@@ -135,6 +135,9 @@ class Assets(object):
 
         """
         rta_auth = extract_http_basic_credentials(self.request)
+        if not rta_auth:
+            return False
+
         client_id = self.request.registry.settings['rta.client_id']
         secret = self.request.registry.settings['rta.secret']
 
