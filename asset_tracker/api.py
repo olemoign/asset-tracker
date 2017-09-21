@@ -352,7 +352,11 @@ class Sites(object):
 
     @view_config(route_name='api-sites-information', request_method='GET')
     def site_get(self):
-        """Get site information for consultation."""
+        """Get site information for consultation.
+
+        Html response to insert directly into the consultation.
+
+        """
         user_id = self.request.matchdict.get('user_id')
 
         asset = self.request.db_session.query(models.Asset)\
@@ -367,15 +371,15 @@ class Sites(object):
                 phone=asset.site.phone,
                 email=asset.site.email,
             )
+            rendered_html = render('sites-information.html', site_information, request=self.request)
+
+            response = Response(rendered_html)
+            response.content_type = 'text/html'
+            response.status_int = 200
+            return response
+
         else:
-            site_information = {}
-
-        rendered_html = render('sites-information.html', site_information, request=self.request)
-        response = Response(rendered_html)
-        # response.content_type = 'text/html'
-        # response.status_int = 200
-
-        return response
+            return HTTPNotFound()
 
 
 class Software(object):

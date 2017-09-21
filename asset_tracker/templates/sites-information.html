@@ -5,22 +5,25 @@
             html, body, p {
                 margin: 0;
             }
-            hr {
-                margin: 5px;
-            }
-            div {
+            div > div {
                 padding: 0 15px;
+            }
+            .panel-heading { /* override to cancel border on right/left side */
+                border-width: 1px 0;
             }
         </style>
     </head>
     <body>
-        <div>
-            <p>Type: {% if type %}{{ type }}{% else %}Ø{% endif %}</p>
-            <hr>
-            <p>Contact: {% if contact %}{{ contact }}{% else %}Ø{% endif %}</p>
-            <p>Phone: {% if phone %}{{ phone }}{% else %}Ø{% endif %}</p>
-            <p>Email: {% if email %}{{ email }}{% else %}Ø{% endif %}</p>
+    <div class="panel-default">
+        <div class="panel panel-heading">
+            <h3 class="panel-title">{{ type }}</h3>
         </div>
+        <div>
+            <p><span class="glyphicon glyphicon-user"></span> {% if contact %}{{ contact }}{% else %}Ø{% endif %}</p>
+            <p><span class="glyphicon glyphicon-earphone"></span> {% if phone %}{{ phone }}{% else %}Ø{% endif %}</p>
+            <p><span class="glyphicon glyphicon-send"></span> {% if email %}{{ email }}{% else %}Ø{% endif %}</p>
+        </div>
+    </div>
     </body>
 </html>
 
