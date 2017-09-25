@@ -40,6 +40,7 @@ def add_global_variables(event):
 
     if event['request'].user:
         event['user_alias'] = event['request'].user['alias']
+        event['rta_access'] = event['request'].user['rta_access']
 
 
 @view_config(route_name='status', request_method='GET', renderer='json')

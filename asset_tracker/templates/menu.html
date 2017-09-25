@@ -15,6 +15,9 @@
 
         <nav class="collapse navbar-collapse" id="asset_tracker-navbar-collapse" role="navigation">
             <ul id="menu-main" class="nav navbar-nav">
+            {% for item in rta_access %}
+                <li><a href="{{ item['url'] }}">{{ item['label'] }}</a></li>
+            {% endfor %}
                 <li class="active"><a href="{{ 'assets-list'|route_path }}">{{ gettext('Assets') }}</a></li>
             </ul>
             <ul id="menu-settings" class="nav navbar-nav navbar-right">
