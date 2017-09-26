@@ -165,17 +165,7 @@ class Assets(object):
             flash (dict): information to be displayed in RTA session.flash
 
         """
-        # If asset exists only in Asset Tracker...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=login, user_id=None) \
-            .first()
-
-        if asset:
-            asset.user_id = user_id
-            asset.tenant_id = tenant_id
-            return
-
-        # Else if asset exists in both Asset Tracker and RTA...
+        # IF asset exists in both Asset Tracker and RTA...
         asset = self.request.db_session.query(models.Asset) \
             .filter_by(user_id=user_id) \
             .first()
@@ -185,7 +175,17 @@ class Assets(object):
             asset.tenant_id = tenant_id
             return
 
-        # Else create a new Asset
+        # ...ELSE IF asset exists only in Asset Tracker...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=login, user_id=None) \
+            .first()
+
+        if asset:
+            asset.user_id = user_id
+            asset.tenant_id = tenant_id
+            return
+
+        # ...ELSE create a new Asset
         # status selection for new Asset
         status = self.request.db_session.query(models.EventStatus) \
             .filter_by(status_id='stock_parsys') \
