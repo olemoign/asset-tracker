@@ -24,7 +24,6 @@ class FormException(Exception):
 
 class AssetsEndPoint(object):
     """List, read and update assets."""
-
     def __acl__(self):
         acl = [
             (Allow, None, 'assets-create', 'assets-create'),
