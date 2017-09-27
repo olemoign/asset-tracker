@@ -271,7 +271,7 @@ msgid "Software update"
 msgstr ""
 
 #: templates/assets-create_update.html:83
-msgid "Softwares versions"
+msgid "Software versions"
 msgstr ""
 
 #: templates/errors/404.html:145
