@@ -3,6 +3,7 @@ from json import loads
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
+from parsys_utilities.sentry import sentry_capture_exception
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -135,6 +136,7 @@ class Event(Model, CreationDateTimeMixin):
         try:
             return loads(self.extra)
         except TypeError:
+            sentry_capture_exception(self.request, get_tb=True, level='info')
             return {}
 
 

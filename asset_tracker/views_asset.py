@@ -208,6 +208,7 @@ class AssetsEndPoint(object):
             try:
                 datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
             except (TypeError, ValueError):
+                sentry_capture_exception(self.request, level='info')
                 raise FormException(_('Invalid event date.'))
 
         for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
@@ -222,11 +223,13 @@ class AssetsEndPoint(object):
                     try:
                         datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
+                        sentry_capture_exception(self.request, level='info')
                         raise FormException(_('Invalid expiration date.'))
                 if expiration_date_2:
                     try:
                         datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
+                        sentry_capture_exception(self.request, level='info')
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:

@@ -485,8 +485,9 @@ class Software(object):
         # make sure the JSON provided is valid.
         try:
             json = self.request.json
-        except JSONDecodeError as error:
-            return HTTPBadRequest(json={'error': error})
+        except JSONDecodeError:
+            sentry_capture_exception(self.request, level='info')
+            return HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
         # check if asset exists (cart, station, telecardia)
         try:
