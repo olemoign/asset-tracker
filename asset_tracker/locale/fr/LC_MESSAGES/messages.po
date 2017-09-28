@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-19 18:04+0200\n"
+"POT-Creation-Date: 2017-09-28 13:59+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.0\n"
+"Generated-By: Babel 2.5.1\n"
 
 #: templates/assets-create_update.html:174
 #, python-format
@@ -28,7 +28,7 @@ msgstr "%(date)s: %(creator)s a défini le statut <b>%(status)s</b>."
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr "%(date)s: %(software)s mis à jour en version %(version)s."
 
-#: templates/assets-create_update.html:114
+#: templates/assets-create_update.html:110
 msgid "Activation"
 msgstr "Mise en service"
 
@@ -45,7 +45,7 @@ msgid "Asset ID"
 msgstr "ID"
 
 #: templates/assets-list.html:3 templates/assets-list.html:12
-#: templates/menu.html:18
+#: templates/menu.html:21
 msgid "Assets"
 msgstr "Matériels"
 
@@ -182,7 +182,7 @@ msgstr "Statut invalide."
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views_asset.py:195
+#: views_asset.py:196
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
@@ -190,15 +190,15 @@ msgstr "Équipement invalide."
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views_asset.py:186
+#: views_asset.py:187
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views_asset.py:210
+#: views_asset.py:213
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views_asset.py:200 views_asset.py:205
+#: views_asset.py:202 views_asset.py:208
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
@@ -214,7 +214,7 @@ msgstr "Cela peut être le résultat:"
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
-#: templates/errors/403.html:10 templates/menu.html:25
+#: templates/errors/403.html:11 templates/menu.html:28
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -254,7 +254,7 @@ msgstr "Page non trouvée"
 msgid "Production"
 msgstr "Production"
 
-#: templates/menu.html:24
+#: templates/menu.html:27
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -290,7 +290,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:398
+#: views_asset.py:401
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -302,7 +302,7 @@ msgstr "Stéthoscope - RNK PCP-USB"
 msgid "Submit"
 msgstr "Valider"
 
-#: templates/assets-create_update.html:42
+#: templates/assets-create_update.html:38
 msgid "Telecardia"
 msgstr "Télécardia"
 
@@ -334,13 +334,9 @@ msgstr "Type"
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
-#: templates/assets-create_update.html:117
+#: templates/assets-create_update.html:113
 msgid "Warranty end"
 msgstr "Fin de garantie"
-
-#: templates/errors/403.html:9
-msgid "You are not authorized to access this page."
-msgstr "Vous n'êtes pas authorisé à accéder à cette page."
 
 #: templates/errors/404.html:148
 msgid "a mistyped address"
@@ -350,7 +346,18 @@ msgstr "d'une adresse incorrecte"
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
 
+#: templates/errors/403.html:9
+msgid "is not authorized to access this page."
+msgstr "n'est pas autorisé à accéder à cette page."
+
+#: templates/errors/403.html:11
+msgid "or go to"
+msgstr "ou accéder à"
+
 #: templates/assets-create_update.html:70
 msgid "years"
 msgstr "ans"
+
+#~ msgid "You are not authorized to access this page."
+#~ msgstr "Vous n'êtes pas authorisé à accéder à cette page."
 

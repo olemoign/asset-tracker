@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-19 18:04+0200\n"
+"POT-Creation-Date: 2017-09-28 13:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.0\n"
+"Generated-By: Babel 2.5.1\n"
 
 #: templates/assets-create_update.html:174
 #, python-format
@@ -27,7 +27,7 @@ msgstr ""
 msgid "%(date)s: %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:114
+#: templates/assets-create_update.html:110
 msgid "Activation"
 msgstr ""
 
@@ -44,7 +44,7 @@ msgid "Asset ID"
 msgstr ""
 
 #: templates/assets-list.html:3 templates/assets-list.html:12
-#: templates/menu.html:18
+#: templates/menu.html:21
 msgid "Assets"
 msgstr ""
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:195
+#: views_asset.py:196
 msgid "Invalid equipment family."
 msgstr ""
 
@@ -189,15 +189,15 @@ msgstr ""
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:186
+#: views_asset.py:187
 msgid "Invalid event date."
 msgstr ""
 
-#: views_asset.py:210
+#: views_asset.py:213
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:200 views_asset.py:205
+#: views_asset.py:202 views_asset.py:208
 msgid "Invalid expiration date."
 msgstr ""
 
@@ -213,7 +213,7 @@ msgstr ""
 msgid "Last calibration"
 msgstr ""
 
-#: templates/errors/403.html:10 templates/menu.html:25
+#: templates/errors/403.html:11 templates/menu.html:28
 msgid "Logout"
 msgstr ""
 
@@ -253,7 +253,7 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: templates/menu.html:24
+#: templates/menu.html:27
 msgid "Settings"
 msgstr ""
 
@@ -289,7 +289,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: views_asset.py:398
+#: views_asset.py:401
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -301,7 +301,7 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: templates/assets-create_update.html:42
+#: templates/assets-create_update.html:38
 msgid "Telecardia"
 msgstr ""
 
@@ -333,12 +333,8 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:117
+#: templates/assets-create_update.html:113
 msgid "Warranty end"
-msgstr ""
-
-#: templates/errors/403.html:9
-msgid "You are not authorized to access this page."
 msgstr ""
 
 #: templates/errors/404.html:148
@@ -347,6 +343,14 @@ msgstr ""
 
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
+msgstr ""
+
+#: templates/errors/403.html:9
+msgid "is not authorized to access this page."
+msgstr ""
+
+#: templates/errors/403.html:11
+msgid "or go to"
 msgstr ""
 
 #: templates/assets-create_update.html:70

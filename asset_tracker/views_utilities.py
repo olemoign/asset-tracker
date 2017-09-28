@@ -42,6 +42,14 @@ def add_global_variables(event):
         event['user_alias'] = event['request'].user['alias']
         event['rta_access'] = event['request'].user['rta_access']
 
+        rta_server_url = event['request'].registry.settings.get('rta.server_url')
+        if rta_server_url:
+            event['rta_server_url'] = rta_server_url
+
+        cloud_server_url = event['request'].registry.settings.get('cloud.server_url')
+        if cloud_server_url:
+            event['cloud_server_url'] = cloud_server_url
+
 
 @view_config(route_name='status', request_method='GET', renderer='json')
 def status_get(request):
