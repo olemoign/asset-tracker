@@ -299,7 +299,8 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user['tenants'])
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact, models.Site.email]
+        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
+                                       models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
@@ -323,8 +324,13 @@ class Sites(object):
         # Format db return for dataTables.
         sites = []
         for site in output['items']:
+            site_type = None
+            if site.site_type:
+                site_type = self.request.localizer.translate(site.site_type.capitalize())
+
             site_output = {
                 'name': site.name,
+                'type': site_type,
                 'tenant_name': tenant_names[site.tenant_id],
                 'contact': site.contact,
                 'phone': site.phone,
@@ -364,8 +370,13 @@ class Sites(object):
         if not asset:
             return HTTPNotFound()
 
+        site_type = None
+        if asset.site.site_type:
+            site_type = self.request.localizer.translate(site.site_type.capitalize())
+
         site_information = dict(
             name=asset.site.name,
+            type=site_type,
             contact=asset.site.contact,
             phone=asset.site.phone,
             email=asset.site.email,

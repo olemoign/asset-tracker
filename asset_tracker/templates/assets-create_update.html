@@ -5,7 +5,7 @@
 {% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
 {% else %}
-    {% set title = gettext('Create asset') %}
+    {% set title = gettext('New asset') %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}

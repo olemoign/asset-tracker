@@ -106,6 +106,7 @@ class SitesEndPoint(object):
             # required
             tenant_id=self.form['tenant_id'],
             name=self.form['name'],
+            site_type=self.form['site_type'],
 
             # optional
             contact=self.form.get('contact'),
@@ -139,6 +140,7 @@ class SitesEndPoint(object):
         # required
         self.site.tenant_id = self.form['tenant_id']
         self.site.name = self.form['name']
+        self.site.site_type = self.form['site_type']
 
         # optional
         self.site.contact = self.form.get('contact')

@@ -23,6 +23,7 @@ def upgrade():
                     sa.Column('created_at', sa.DateTime(), nullable=False),
                     sa.Column('tenant_id', sa.Unicode(), nullable=False),
                     sa.Column('name', sa.Unicode(), nullable=False),
+                    sa.Column('site_type', sa.Unicode(), nullable=True),
                     sa.Column('contact', sa.Unicode(), nullable=True),
                     sa.Column('phone', sa.Unicode(), nullable=True),
                     sa.Column('email', sa.Unicode(), nullable=True),

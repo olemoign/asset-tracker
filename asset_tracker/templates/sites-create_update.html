@@ -4,7 +4,7 @@
 {% if site %}
     {% set title = site.name %}
 {% else %}
-    {% set title = gettext('Create site') %}
+    {% set title = gettext('New site') %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -42,10 +42,21 @@
                             </select>
                         </div>
 
+                        <div class="col-sm-6 form-group">
+                            <label for="site_type">{{ gettext('Type') }} *</label>
+                            <select class="form-control" id="site_type" name="site_type">
+                                <option></option>
+                                <option value="ship"{% if site and site.site_type == 'ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
+                                <option value="nursing"{% if site and site.site_type == 'nursing' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
+                                <option value="hospital"{% if site and site.site_type == 'hospital' %} selected{% endif %}>{{ gettext('Hospital') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         {{ input(_('Contact'), 'contact') }}
                         {{ input(_('Phone'), 'phone') }}
                         {{ input(_('Email'), 'email') }}
-
                     </div>
 
                 {% if not site or 'g:admin' in principals or (site.tenant_id, 'sites-update') in principals %}
