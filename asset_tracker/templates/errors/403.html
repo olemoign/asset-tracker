@@ -9,11 +9,7 @@
         {{ request.user.login }} {{ gettext('is not authorized to access this page.') }}
         <br>
         <a href="{{ 'users-logout'|route_path }}">{{ gettext('Logout') }}</a> {{ gettext('or go to') }}
-        {% if request.user.is_admin %}
-            <a href="{{ rta_server_url }}">RTA</a>
-        {% else %}
-            <a href="{{ cloud_server_url }}">Parsys Cloud</a>
-        {% endif %}
+        <a href="{{ request.user.default_app[1] }}">{{ request.user.default_app[0] }}</a>
     </div>
 </div>
 {% endblock %}
