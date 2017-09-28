@@ -2,7 +2,7 @@
 {% from 'macros.html' import input with context %}
 
 {% if site %}
-    {% set title = site.type|capitalize %}
+    {% set title = site.name %}
 {% else %}
     {% set title = gettext('Create site') %}
 {% endif %}
@@ -31,7 +31,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                     <div class="row">
-                        {{ input(_('Type'), 'type', required=True) }}
+                        {{ input(_('Name'), 'name', required=True) }}
                         {{ input(_('Contact'), 'contact') }}
                         {{ input(_('Phone'), 'phone') }}
                         {{ input(_('Email'), 'email') }}

@@ -148,7 +148,7 @@ class EventStatus(Model):
 
 class Site(Model, CreationDateTimeMixin):
     tenant_id = Column(String, nullable=False)
-    type = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False, unique=True)
     contact = Column(String)
     phone = Column(String)
     email = Column(String)

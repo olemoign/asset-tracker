@@ -76,11 +76,11 @@ class SitesEndPoint(object):
         if not tenant_id or tenant_id not in tenants_ids:
             raise FormException(_('Invalid tenant.'))
 
-        site_type = self.form.get('type')
-        if not site_type:
-            raise FormException(_('Type is required.'))
-        elif not self.site and self.request.db_session.query(models.Site).filter_by(type=site_type).first():
-            raise FormException(_('Type already exist.'))
+        site_name = self.form.get('name')
+        if not site_name:
+            raise FormException(_('Name is required.'))
+        elif not self.site and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
+            raise FormException(_('Name already exists.'))
 
     def get_base_form_data(self):
         """Get base form input data (tenants)."""

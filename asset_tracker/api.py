@@ -90,11 +90,11 @@ class Assets(object):
                              'full_text_search': full_text_search}
         joined_tables = [models.EventStatus, models.Site]
         full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name,
-                                       models.Asset.current_location, models.Site.type]
+                                       models.Asset.current_location, models.Site.name]
         specific_search_attributes = {'status': models.EventStatus.status_id,
-                                      'site': models.Site.type}
+                                      'site': models.Site.name}
         specific_sort_attributes = {'status': models.EventStatus.position,
-                                    'site': models.Site.type}
+                                    'site': models.Site.name}
 
         try:
             # noinspection PyTypeChecker
@@ -120,7 +120,7 @@ class Assets(object):
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
                             'customer_name': asset.customer_name,
-                            'site': asset.site.type if asset.site else None,
+                            'site': asset.site.name if asset.site else None,
                             'status': status,
                             'calibration_next': calibration_next, 'is_active': is_active}
 
@@ -301,10 +301,9 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user['tenants'])
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.type, tenants.c.tenant_name, models.Site.contact, models.Site.email]
+        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
-        specific_sort_attributes = OrderedDict(tenant_name=tenants.c.tenant_name,
-                                               type=models.Site.type)
+        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
         try:
@@ -327,8 +326,7 @@ class Sites(object):
         sites = []
         for site in output['items']:
             site_output = {
-                # 'site_id': site.id,
-                'type': site.type.capitalize(),
+                'name': site.name,
                 'tenant_name': tenant_names[site.tenant_id],
                 'contact': site.contact,
                 'phone': site.phone,
@@ -366,7 +364,7 @@ class Sites(object):
 
         if asset:
             site_information = dict(
-                type=asset.site.type,
+                name=asset.site.name,
                 contact=asset.site.contact,
                 phone=asset.site.phone,
                 email=asset.site.email,

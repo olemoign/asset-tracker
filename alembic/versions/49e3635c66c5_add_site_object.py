@@ -7,9 +7,8 @@ Create Date: 2017-09-19 19:35:16.105873
 
 """
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '49e3635c66c5'
@@ -23,7 +22,7 @@ def upgrade():
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('created_at', sa.DateTime(), nullable=False),
                     sa.Column('tenant_id', sa.Unicode(), nullable=False),
-                    sa.Column('type', sa.Unicode(), nullable=False),
+                    sa.Column('name', sa.Unicode(), nullable=False),
                     sa.Column('contact', sa.Unicode(), nullable=True),
                     sa.Column('phone', sa.Unicode(), nullable=True),
                     sa.Column('email', sa.Unicode(), nullable=True),
@@ -38,7 +37,7 @@ def upgrade():
 
 def downgrade():
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('site', sa.VARCHAR(), nullable=True))
+        batch_op.add_column(sa.Column('site', sa.Unicode(), nullable=True))
         batch_op.drop_constraint(batch_op.f('fk_asset_site_id_site'), type_='foreignkey')
         batch_op.drop_column('site_id')
 

@@ -1,9 +1,9 @@
 """Asset tracker views: assets lists and read/update."""
 
-from datetime import datetime
-from operator import attrgetter
-from itertools import groupby
 from collections import namedtuple
+from datetime import datetime
+from itertools import groupby
+from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.sentry import sentry_capture_exception
@@ -106,9 +106,9 @@ class AssetsEndPoint(object):
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants, result will be filtered in front/js"""
 
-        sites_query = self.request.db_session.query(Site)\
-            .filter(Site.tenant_id.in_(tenant['id'] for tenant in tenants))\
-            .order_by(Site.tenant_id, Site.type)
+        sites_query = self.request.db_session.query(Site) \
+            .filter(Site.tenant_id.in_(tenant['id'] for tenant in tenants)) \
+            .order_by(Site.tenant_id, Site.name)
 
         # dict to find tenant name from tenant id
         tenant_names = {tenant['id']: tenant['name'] for tenant in tenants}

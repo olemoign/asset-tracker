@@ -68,7 +68,7 @@
                                 {% for site in s.sites_list %}
                                     <option value="{{ site.id }}"
                                             {% if asset and asset.site_id == site.id %} selected
-                                            {% endif %}>{{ site.type }}</option>
+                                            {% endif %}>{{ site.name }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
