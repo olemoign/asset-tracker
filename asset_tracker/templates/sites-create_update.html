@@ -32,9 +32,6 @@
 
                     <div class="row">
                         {{ input(_('Name'), 'name', required=True) }}
-                        {{ input(_('Contact'), 'contact') }}
-                        {{ input(_('Phone'), 'phone') }}
-                        {{ input(_('Email'), 'email') }}
 
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
@@ -44,6 +41,10 @@
                                 {% endfor %}
                             </select>
                         </div>
+
+                        {{ input(_('Contact'), 'contact') }}
+                        {{ input(_('Phone'), 'phone') }}
+                        {{ input(_('Email'), 'email') }}
 
                     </div>
 

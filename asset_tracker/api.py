@@ -16,12 +16,11 @@ from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
+from pyramid.renderers import render
+from pyramid.response import Response
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
-from pyramid.renderers import render
-from pyramid.response import Response
-
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
@@ -258,6 +257,7 @@ class Assets(object):
 class Sites(object):
     """List sites for dataTables."""
     __acl__ = [
+        (Allow, None, 'sites-read', 'sites-read'),
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
     ]
@@ -348,7 +348,8 @@ class Sites(object):
                 'recordsFiltered': output['recordsFiltered'],
                 'data': sites}
 
-    @view_config(route_name='api-sites-information', request_method='GET')
+    @view_config(route_name='api-sites-information', request_method='GET', permission='sites-read',
+                 renderer='sites-information.html')
     def site_get(self):
         """Get site information for consultation.
 
@@ -357,27 +358,21 @@ class Sites(object):
         """
         user_id = self.request.matchdict.get('user_id')
 
-        asset = self.request.db_session.query(models.Asset)\
-            .filter_by(user_id=user_id)\
-            .join(models.Site)\
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .join(models.Site) \
             .first()
 
-        if asset:
-            site_information = dict(
-                name=asset.site.name,
-                contact=asset.site.contact,
-                phone=asset.site.phone,
-                email=asset.site.email,
-            )
-            rendered_html = render('sites-information.html', site_information, request=self.request)
-
-            response = Response(rendered_html)
-            response.content_type = 'text/html'
-            response.status_int = 200
-            return response
-
-        else:
+        if not asset:
             return HTTPNotFound()
+
+        site_information = dict(
+            name=asset.site.name,
+            contact=asset.site.contact,
+            phone=asset.site.phone,
+            email=asset.site.email,
+        )
+        return site_information
 
 
 class Software(object):

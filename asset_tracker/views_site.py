@@ -1,10 +1,9 @@
 """Site tracker views: sites lists and read/update."""
-from pyramid.security import Allow
-from pyramid.view import view_config
+from parsys_utilities.sentry import sentry_capture_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
-
-from parsys_utilities.sentry import sentry_capture_exception
+from pyramid.security import Allow
+from pyramid.view import view_config
 
 from asset_tracker import models
 
@@ -15,7 +14,6 @@ class FormException(Exception):
 
 class SitesEndPoint(object):
     """List, read and update sites."""
-
     def __acl__(self):
         acl = [
             (Allow, None, 'sites-create', 'sites-create'),
@@ -36,7 +34,6 @@ class SitesEndPoint(object):
 
     def get_site(self):
         """Get in db the site being read/updated."""
-
         site_id = self.request.matchdict.get('site_id')
         if not site_id:
             return None  # In the list page, site_id will be None and it's ok.
@@ -49,7 +46,6 @@ class SitesEndPoint(object):
 
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read sites."""
-
         # Admins have access to all tenants.
         if self.request.user['is_admin']:
             return self.request.user['tenants']
@@ -70,7 +66,6 @@ class SitesEndPoint(object):
 
     def validate_form(self):
         """Validate form data."""
-
         tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
         tenant_id = self.form.get('tenant_id')
         if not tenant_id or tenant_id not in tenants_ids:
@@ -84,7 +79,6 @@ class SitesEndPoint(object):
 
     def get_base_form_data(self):
         """Get base form input data (tenants)."""
-
         return {
             'tenants': self.get_create_read_tenants(),
         }
@@ -93,14 +87,12 @@ class SitesEndPoint(object):
                  renderer='sites-create_update.html')
     def create_get(self):
         """Get site create form."""
-
-        return dict(**self.get_base_form_data())
+        return self.get_base_form_data()
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
                  renderer='sites-create_update.html')
     def create_post(self):
         """Post site create form."""
-
         try:
             self.read_form()
             self.validate_form()
@@ -130,14 +122,12 @@ class SitesEndPoint(object):
                  renderer='sites-create_update.html')
     def update_get(self):
         """Get site update form: we need the site data."""
-
         return dict(site=self.site, **self.get_base_form_data())
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
                  renderer='sites-create_update.html')
     def update_post(self):
         """Post site update form."""
-
         try:
             self.read_form()
             self.validate_form()
@@ -161,8 +151,7 @@ class SitesEndPoint(object):
                  renderer='sites-list.html')
     def list_get(self):
         """List sites. No work done here as dataTables will call the API to get the sites list."""
-
-        return dict()
+        return {}
 
 
 def includeme(config):

@@ -48,14 +48,14 @@ function manageSites() {
     /**
      * Enable the sites corresponding to the selected tenant.
      */
-    const tenantId_selected = $('#tenant_id option:selected').text();
+    const tenantId_selected = $('#tenant_id').find('option:selected').text();
 
     $('#site_id').children('optgroup').each(function() {
         if ($(this).attr('label') !== tenantId_selected) {
-            $(this).prop('disabled', true);
+            $(this).hide();
         }
         else {
-            $(this).prop('disabled', false);
+            $(this).show();
         }
     });
 }
