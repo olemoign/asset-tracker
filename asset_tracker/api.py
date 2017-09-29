@@ -1,8 +1,8 @@
-"""Asset tracker API
+"""Asset tracker API.
 
 List assets for dataTables and asset update WS (declare software version/get last software version).
-"""
 
+"""
 import os
 import re
 from collections import OrderedDict

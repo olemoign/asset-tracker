@@ -1,5 +1,4 @@
 """Asset tracker views: assets lists and read/update."""
-
 from collections import namedtuple
 from datetime import datetime
 from itertools import groupby

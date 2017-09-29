@@ -4,7 +4,6 @@ These functions are run during each function startup to make sure families and s
 the content of configuration.json.
 
 """
-
 import logging
 from json import loads
 
