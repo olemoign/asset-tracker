@@ -372,7 +372,7 @@ class Sites(object):
 
         site_type = None
         if asset.site.site_type:
-            site_type = self.request.localizer.translate(site.site_type.capitalize())
+            site_type = self.request.localizer.translate(asset.site.site_type.capitalize())
 
         site_information = dict(
             name=asset.site.name,
