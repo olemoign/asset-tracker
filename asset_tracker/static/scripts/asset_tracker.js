@@ -31,7 +31,34 @@ $(document).ready(function() {
             }
         });
     }
+
+    // call the filter when page is ready
+    manageSites();
 });
+
+// Manage site display
+$(document).on('change', '#tenant_id', function() {
+    /**
+     * Call the filter when a new tenant is selected.
+     */
+    manageSites();
+});
+
+function manageSites() {
+    /**
+     * Enable the sites corresponding to the selected tenant.
+     */
+    const tenantId_selected = $('#tenant_id').find('option:selected').text();
+
+    $('#site_id').children('optgroup').each(function() {
+        if ($(this).attr('label') !== tenantId_selected) {
+            $(this).hide();
+        }
+        else {
+            $(this).show();
+        }
+    });
+}
 
 // Manage equipments.
 $(document).on('click', '.equipment__add', function() {

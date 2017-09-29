@@ -26,7 +26,9 @@ class Asset(Model, CreationDateTimeMixin):
     customer_id = Column(String)
     customer_name = Column(String)
 
-    site = Column(String)
+    site_id = Column(Integer, ForeignKey('site.id'))
+    site = relationship('Site', foreign_keys=site_id, uselist=False)
+
     current_location = Column(String)
     notes = Column(String)
 
@@ -142,3 +144,13 @@ class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
     position = Column(Integer, nullable=False, unique=True)
     label = Column(String, nullable=False, unique=True)
+
+
+class Site(Model, CreationDateTimeMixin):
+    tenant_id = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    site_type = Column(String)
+
+    contact = Column(String)
+    phone = Column(String)
+    email = Column(String)

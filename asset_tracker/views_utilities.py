@@ -1,5 +1,4 @@
 """Generic views (status, 404, 500) + views tools (headers and templates global variables)."""
-
 from datetime import datetime
 from traceback import format_exc
 

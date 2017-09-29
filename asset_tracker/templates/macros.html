@@ -16,6 +16,8 @@
                 {% if asset %}
                     {% if asset[field] %} value="{{ asset[field] }}"{% endif %}
                     {% if readonly %} readonly{% endif %}
+                {% elif site %}
+                    {% if site[field] %} value="{{ site[field] }}"{% endif %}
                 {% endif %}
                 {% if required %} required{% endif %}>
         </div>

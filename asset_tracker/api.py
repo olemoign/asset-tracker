@@ -1,8 +1,8 @@
-"""Asset tracker API
+"""Asset tracker API.
 
 List assets for dataTables and asset update WS (declare software version/get last software version).
-"""
 
+"""
 import os
 import re
 from collections import OrderedDict
@@ -13,13 +13,14 @@ from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
-from parsys_utilities.sql import sql_search
+from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
@@ -54,7 +55,7 @@ class Assets(object):
 
     def apply_tenanting_filter(self, q):
         """Filter assets according to user's rights/tenants.
-        Admins get access to all asssets.
+        Admins get access to all assets.
 
         Args:
             q (sqlalchemy.orm.query.Query): current query.
@@ -73,7 +74,7 @@ class Assets(object):
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
         """List assets and format output according to dataTables requirements."""
-        # Return if API is called by somebdy other than dataTables.
+        # Return if API is called by somebody other than dataTables.
         if not asbool(self.request.GET.get('datatables')):
             return []
 
@@ -85,11 +86,13 @@ class Assets(object):
 
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
-        joined_tables = [models.EventStatus]
-        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name, models.Asset.site,
-                                       models.Asset.current_location]
-        specific_search_attributes = {'status': models.EventStatus.status_id}
-        specific_sort_attributes = {'status': models.EventStatus.position}
+        joined_tables = [models.EventStatus, models.Site]
+        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name,
+                                       models.Asset.current_location, models.Site.name]
+        specific_search_attributes = {'status': models.EventStatus.status_id,
+                                      'site': models.Site.name}
+        specific_sort_attributes = {'status': models.EventStatus.position,
+                                    'site': models.Site.name}
 
         try:
             # noinspection PyTypeChecker
@@ -114,7 +117,9 @@ class Assets(object):
             is_active = asset.status.status_id != 'decommissioned'
 
             asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
-                            'customer_name': asset.customer_name, 'site': asset.site, 'status': status,
+                            'customer_name': asset.customer_name,
+                            'site': asset.site.name if asset.site else None,
+                            'status': status,
                             'calibration_next': calibration_next, 'is_active': is_active}
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -158,17 +163,7 @@ class Assets(object):
             flash (dict): information to be displayed in RTA session.flash
 
         """
-        # If asset exists only in Asset Tracker...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=login, user_id=None) \
-            .first()
-
-        if asset:
-            asset.user_id = user_id
-            asset.tenant_id = tenant_id
-            return
-
-        # Else if asset exists in both Asset Tracker and RTA...
+        # IF asset exists in both Asset Tracker and RTA...
         asset = self.request.db_session.query(models.Asset) \
             .filter_by(user_id=user_id) \
             .first()
@@ -178,7 +173,17 @@ class Assets(object):
             asset.tenant_id = tenant_id
             return
 
-        # Else create a new Asset
+        # ...ELSE IF asset exists only in Asset Tracker...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=login, user_id=None) \
+            .first()
+
+        if asset:
+            asset.user_id = user_id
+            asset.tenant_id = tenant_id
+            return
+
+        # ...ELSE create a new Asset
         # status selection for new Asset
         status = self.request.db_session.query(models.EventStatus) \
             .filter_by(status_id='stock_parsys') \
@@ -246,6 +251,148 @@ class Assets(object):
 
         else:
             return HTTPOk()
+
+
+class Sites(object):
+    """List sites for dataTables."""
+    def __acl__(self):
+        acl = [
+            (Allow, None, 'sites-list', 'sites-list'),
+            (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
+        ]
+
+        if self.asset:
+            acl.append((Allow, self.asset.tenant_id, 'sites-read', 'sites-read'))
+
+        return acl
+
+    def __init__(self, request):
+        self.request = request
+        self.asset = self.get_asset()
+
+    def get_asset(self):
+        user_id = self.request.matchdict.get('user_id')
+        if not user_id:
+            return
+
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .options(joinedload('site')) \
+            .first()
+
+        if not asset:
+            raise HTTPNotFound()
+        else:
+            return asset
+
+    def apply_tenanting_filter(self, q):
+        """Filter sites according to user's rights/tenants.
+        Admins get access to all sites.
+
+        Args:
+            q (sqlalchemy.orm.query.Query): current query.
+
+        Returns:
+            sqlalchemy.orm.query.Query: filtered query.
+
+        """
+        if 'g:admin' in self.request.effective_principals:
+            return q
+        else:
+            authorized_tenants = {right.tenant for right in self.request.effective_principals
+                                  if isinstance(right, Right) and right.name == 'sites-list'}
+            return q.filter(models.Site.tenant_id.in_(authorized_tenants))
+
+    @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
+    def sites_get(self):
+        """List sites and format output according to dataTables requirements."""
+        # Return if API is called by somebody other than dataTables.
+        if not asbool(self.request.GET.get('datatables')):
+            return []
+
+        # Parse data from datatables
+        try:
+            draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
+        except KeyError:
+            sentry_capture_exception(self.request, level='info')
+            return HTTPBadRequest()
+
+        # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
+        tenants = table_from_dict('tenant', self.request.user['tenants'])
+
+        # SQL query parameters
+        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
+                                       models.Site.phone, models.Site.email]
+        joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
+        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
+        search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
+                             'full_text_search': full_text_search}
+        try:
+            # noinspection PyTypeChecker
+            output = sql_search(db_session=self.request.db_session,
+                                searched_object=models.Site,
+                                full_text_search_attributes=full_text_search_attributes,
+                                joined_tables=joined_tables,
+                                tenanting=self.apply_tenanting_filter,
+                                specific_sort_attributes=specific_sort_attributes,
+                                search_parameters=search_parameters)
+        except KeyError:
+            sentry_capture_exception(self.request, get_tb=True, level='info')
+            return HTTPBadRequest()
+
+        # dict to get tenant name from tenant id
+        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user['tenants']}
+
+        # Format db return for dataTables.
+        sites = []
+        for site in output['items']:
+            site_type = None
+            if site.site_type:
+                site_type = self.request.localizer.translate(site.site_type.capitalize())
+
+            site_output = {
+                'name': site.name,
+                'type': site_type,
+                'tenant_name': tenant_names[site.tenant_id],
+                'contact': site.contact,
+                'phone': site.phone,
+                'email': site.email,
+            }
+
+            # Append link to output if the user is an admin or has the right to read the site info.
+            has_admin_rights = 'g:admin' in self.request.effective_principals
+            has_read_rights = (site.tenant_id, 'sites-read') in self.request.effective_principals
+
+            if has_admin_rights or has_read_rights:
+                link = self.request.route_path('sites-update', site_id=site.id)
+                site_output['links'] = [{'rel': 'self', 'href': link}]
+
+            sites.append(site_output)
+
+        return {'draw': draw,
+                'recordsTotal': output.get('recordsTotal'),
+                'recordsFiltered': output['recordsFiltered'],
+                'data': sites}
+
+    @view_config(route_name='api-sites-information', request_method='GET', permission='sites-read',
+                 renderer='sites-information.html')
+    def site_get(self):
+        """Get site information for consultation.
+        Html response to insert directly into the consultation.
+
+        """
+        site_type = None
+        if self.asset.site.site_type:
+            site_type = self.request.localizer.translate(self.asset.site.site_type.capitalize())
+
+        site_information = dict(
+            name=self.asset.site.name,
+            type=site_type,
+            contact=self.asset.site.contact,
+            phone=self.asset.site.phone,
+            email=self.asset.site.email,
+        )
+        return site_information
 
 
 class Software(object):
@@ -406,5 +553,7 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
+    config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-sites-information', factory=Sites)
+    config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)

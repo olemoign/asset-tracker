@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
+        <style>
+            html, body, p {
+                margin: 0;
+            }
+            div > div {
+                padding: 0 15px;
+            }
+            .panel-heading { /* override to cancel border on right/left side */
+                border-width: 1px 0;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="panel-default">
+        <div class="panel panel-heading">
+            <h3 class="panel-title">{{ name }}</h3>
+        </div>
+        <div>
+            <p><span class="glyphicon glyphicon-user"></span> {% if contact %}{{ contact }}{% else %}Ø{% endif %}</p>
+            <p><span class="glyphicon glyphicon-earphone"></span> {% if phone %}{{ phone }}{% else %}Ø{% endif %}</p>
+            <p><span class="glyphicon glyphicon-send"></span> {% if email %}{{ email }}{% else %}Ø{% endif %}</p>
+        </div>
+    </div>
+    </body>
+</html>
+
