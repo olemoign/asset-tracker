@@ -20,6 +20,7 @@ from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
@@ -254,14 +255,35 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables."""
-    __acl__ = [
-        (Allow, None, 'sites-read', 'sites-read'),
-        (Allow, None, 'sites-list', 'sites-list'),
-        (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
-    ]
+    def __acl__(self):
+        acl = [
+            (Allow, None, 'sites-list', 'sites-list'),
+            (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
+        ]
+
+        if self.asset:
+            acl.append((Allow, self.asset.tenant_id, 'sites-read', 'sites-read'))
+
+        return acl
 
     def __init__(self, request):
         self.request = request
+        self.asset = self.get_asset()
+
+    def get_asset(self):
+        user_id = self.request.matchdict.get('user_id')
+        if not user_id:
+            return
+
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .options(joinedload('site')) \
+            .first()
+
+        if not asset:
+            raise HTTPNotFound()
+        else:
+            return asset
 
     def apply_tenanting_filter(self, q):
         """Filter sites according to user's rights/tenants.
@@ -356,30 +378,19 @@ class Sites(object):
                  renderer='sites-information.html')
     def site_get(self):
         """Get site information for consultation.
-
         Html response to insert directly into the consultation.
 
         """
-        user_id = self.request.matchdict.get('user_id')
-
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(user_id=user_id) \
-            .join(models.Site) \
-            .first()
-
-        if not asset:
-            return HTTPNotFound()
-
         site_type = None
-        if asset.site.site_type:
-            site_type = self.request.localizer.translate(asset.site.site_type.capitalize())
+        if self.asset.site.site_type:
+            site_type = self.request.localizer.translate(self.asset.site.site_type.capitalize())
 
         site_information = dict(
-            name=asset.site.name,
+            name=self.asset.site.name,
             type=site_type,
-            contact=asset.site.contact,
-            phone=asset.site.phone,
-            email=asset.site.email,
+            contact=self.asset.site.contact,
+            phone=self.asset.site.phone,
+            email=self.asset.site.email,
         )
         return site_information
 
@@ -542,7 +553,7 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
+    config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-sites-information', factory=Sites)  # for consultation
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
-    config.add_route(pattern='sites/{user_id:\w{8}}/', name='api-sites-information', factory=Sites)  # for consultation
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
