@@ -318,7 +318,7 @@ class Sites(object):
             return HTTPBadRequest()
 
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
-        tenants = table_from_dict('tenant', self.request.user['tenants'])
+        tenants = table_from_dict('tenant', self.request.user.tenants)
 
         # SQL query parameters
         full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
@@ -341,7 +341,7 @@ class Sites(object):
             return HTTPBadRequest()
 
         # dict to get tenant name from tenant id
-        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user['tenants']}
+        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
         sites = []
@@ -504,7 +504,7 @@ class Software(object):
 
         # check if asset exists (cart, station, telecardia)
         try:
-            station_login = self.request.user['login']
+            station_login = self.request.user.login
         except KeyError:
             return HTTPBadRequest(json={'error': 'Invalid authentication.'})
 
