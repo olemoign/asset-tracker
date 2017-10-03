@@ -10,7 +10,7 @@
         <br>
         <a href="{{ 'users-logout'|route_path }}">{{ gettext('Logout') }}</a> {{ gettext('or go to') }}
         {# default_app = ['app_name', 'app_url'] #}
-        <a href="{{ authenticated_user.default_app[1] }}">{{ authenticated_user.default_app[0] }}</a>
+        <a href="{{ authenticated_user.default_app[1] }}">{{ authenticated_user.default_app[0] }}</a>.
     </div>
 </div>
 {% endblock %}

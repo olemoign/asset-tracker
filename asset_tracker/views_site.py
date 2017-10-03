@@ -117,7 +117,7 @@ class SitesEndPoint(object):
         self.request.db_session.add(self.site)
         self.request.db_session.flush()
 
-        return HTTPFound(location=self.request.route_path('sites-update', site_id=self.site.id))
+        return HTTPFound(location=self.request.route_path('sites-list'))
 
     @view_config(route_name='sites-update', request_method='GET', permission='sites-read',
                  renderer='sites-create_update.html')
@@ -147,7 +147,7 @@ class SitesEndPoint(object):
         self.site.phone = self.form.get('phone')
         self.site.email = self.form.get('email')
 
-        return HTTPFound(location=self.request.route_path('sites-update', site_id=self.site.id))
+        return HTTPFound(location=self.request.route_path('sites-list'))
 
     @view_config(route_name='sites-list', request_method='GET', permission='sites-list',
                  renderer='sites-list.html')

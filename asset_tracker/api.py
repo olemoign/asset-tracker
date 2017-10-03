@@ -15,7 +15,8 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNoContent, \
+    HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
@@ -84,14 +85,17 @@ class Assets(object):
             sentry_capture_exception(self.request, level='info')
             return HTTPBadRequest()
 
+        # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
+        tenants = table_from_dict('tenant', self.request.user.tenants)
+
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
-        joined_tables = [models.EventStatus, models.Site]
-        full_text_search_attributes = [models.Asset.asset_id, models.Asset.customer_name,
+        full_text_search_attributes = [models.Asset.asset_id, tenants.c.tenant_name, models.Asset.customer_name,
                                        models.Asset.current_location, models.Site.name]
-        specific_search_attributes = {'status': models.EventStatus.status_id,
+        joined_tables = [(tenants, tenants.c.tenant_id == models.Asset.tenant_id), models.EventStatus, models.Site]
+        specific_search_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.status_id,
                                       'site': models.Site.name}
-        specific_sort_attributes = {'status': models.EventStatus.position,
+        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.position,
                                     'site': models.Site.name}
 
         try:
@@ -104,6 +108,8 @@ class Assets(object):
             sentry_capture_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
 
+        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
+
         # Format db return for dataTables.
         assets = []
         for asset in output['items']:
@@ -112,15 +118,19 @@ class Assets(object):
             else:
                 calibration_next = None
 
-            asset_type = self.request.localizer.translate(asset.asset_type.capitalize())
             status = self.request.localizer.translate(asset.status.label)
             is_active = asset.status.status_id != 'decommissioned'
 
-            asset_output = {'id': asset.id, 'asset_id': asset.asset_id, 'asset_type': asset_type,
-                            'customer_name': asset.customer_name,
-                            'site': asset.site.name if asset.site else None,
-                            'status': status,
-                            'calibration_next': calibration_next, 'is_active': is_active}
+            asset_output = {
+                'id': asset.id,
+                'asset_id': asset.asset_id,
+                'tenant_name': tenant_names[asset.tenant_id],
+                'customer_name': asset.customer_name,
+                'site': asset.site.name if asset.site else None,
+                'status': status,
+                'calibration_next': calibration_next,
+                'is_active': is_active
+            }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
             has_admin_rights = 'g:admin' in self.request.effective_principals
@@ -255,6 +265,7 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables."""
+
     def __acl__(self):
         acl = [
             (Allow, None, 'sites-list', 'sites-list'),
@@ -275,15 +286,10 @@ class Sites(object):
         if not user_id:
             return
 
-        asset = self.request.db_session.query(models.Asset) \
+        return self.request.db_session.query(models.Asset) \
             .filter_by(user_id=user_id) \
             .options(joinedload('site')) \
             .first()
-
-        if not asset:
-            raise HTTPNotFound()
-        else:
-            return asset
 
     def apply_tenanting_filter(self, q):
         """Filter sites according to user's rights/tenants.
@@ -304,7 +310,7 @@ class Sites(object):
             return q.filter(models.Site.tenant_id.in_(authorized_tenants))
 
     @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
-    def sites_get(self):
+    def list_get(self):
         """List sites and format output according to dataTables requirements."""
         # Return if API is called by somebody other than dataTables.
         if not asbool(self.request.GET.get('datatables')):
@@ -324,6 +330,7 @@ class Sites(object):
         full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
                                        models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
+        specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
         specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
@@ -334,6 +341,7 @@ class Sites(object):
                                 full_text_search_attributes=full_text_search_attributes,
                                 joined_tables=joined_tables,
                                 tenanting=self.apply_tenanting_filter,
+                                specific_search_attributes=specific_search_attributes,
                                 specific_sort_attributes=specific_sort_attributes,
                                 search_parameters=search_parameters)
         except KeyError:
@@ -381,13 +389,16 @@ class Sites(object):
         Html response to insert directly into the consultation.
 
         """
+        if not self.asset:
+            return HTTPNoContent()
+
         site_type = None
         if self.asset.site.site_type:
             site_type = self.request.localizer.translate(self.asset.site.site_type.capitalize())
 
         site_information = dict(
             name=self.asset.site.name,
-            type=site_type,
+            site_type=site_type,
             contact=self.asset.site.contact,
             phone=self.asset.site.phone,
             email=self.asset.site.email,

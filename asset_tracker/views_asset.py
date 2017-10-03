@@ -367,7 +367,7 @@ class AssetsEndPoint(object):
 
         self.update_status_and_calibration_next(self.asset, self.client_specific)
 
-        return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
+        return HTTPFound(location=self.request.route_path('assets-list'))
 
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
                  renderer='assets-create_update.html')
@@ -430,7 +430,7 @@ class AssetsEndPoint(object):
 
         self.update_status_and_calibration_next(self.asset, self.client_specific)
 
-        return HTTPFound(location=self.request.route_path('assets-update', asset_id=self.asset.id))
+        return HTTPFound(location=self.request.route_path('assets-list'))
 
     @view_config(route_name='home', request_method='GET', permission='assets-list', renderer='assets-list.html')
     @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
