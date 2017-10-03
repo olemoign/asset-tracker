@@ -90,12 +90,12 @@ class AssetsEndPoint(object):
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read assets."""
         # Admins have access to all tenants.
-        if self.request.user['is_admin']:
-            return self.request.user['tenants']
+        if self.request.user.is_admin:
+            return self.request.user.tenants
 
         else:
             user_rights = self.request.effective_principals
-            user_tenants = self.request.user['tenants']
+            user_tenants = self.request.user.tenants
             tenants_ids = {tenant['id'] for tenant in user_tenants
                            if (tenant['id'], 'assets-create') in user_rights or
                            (self.asset and self.asset.tenant_id == tenant['id'])}
@@ -275,7 +275,7 @@ class AssetsEndPoint(object):
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
         # noinspection PyArgumentList
-        event = Event(date=event_date, creator_id=self.request.user['id'], creator_alias=self.request.user['alias'],
+        event = Event(date=event_date, creator_id=self.request.user.id, creator_alias=self.request.user.alias,
                       status=status)
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -290,8 +290,8 @@ class AssetsEndPoint(object):
             event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
             event.removed = True
             event.removed_at = datetime.utcnow()
-            event.remover_id = self.request.user['id']
-            event.remover_alias = self.request.user['alias']
+            event.remover_id = self.request.user.id
+            event.remover_alias = self.request.user.alias
 
     @staticmethod
     def update_status_and_calibration_next(asset, client_specific):

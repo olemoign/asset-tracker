@@ -47,12 +47,12 @@ class SitesEndPoint(object):
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read sites."""
         # Admins have access to all tenants.
-        if self.request.user['is_admin']:
-            return self.request.user['tenants']
+        if self.request.user.is_admin:
+            return self.request.user.tenants
 
         else:
             user_rights = self.request.effective_principals
-            user_tenants = self.request.user['tenants']
+            user_tenants = self.request.user.tenants
             tenants_ids = {tenant['id'] for tenant in user_tenants
                            if (tenant['id'], 'sites-create') in user_rights or
                            (self.site and self.site.tenant_id == tenant['id'])}
