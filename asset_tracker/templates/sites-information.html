@@ -5,25 +5,30 @@
             html, body, p {
                 margin: 0;
             }
-            div > div {
-                padding: 0 15px;
+            .site-title {
+                padding: 10px 15px;
+                background-color: #f5f5f5;
+                border-top: 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
             }
-            .panel-heading { /* override to cancel border on right/left side */
-                border-width: 1px 0;
+            .site-info {
+                padding: 20px 15px;
             }
         </style>
     </head>
     <body>
-    <div class="panel-default">
-        <div class="panel panel-heading">
+        <div class="site-title">
             <h3 class="panel-title">{{ name }}</h3>
         </div>
-        <div>
-            <p><span class="glyphicon glyphicon-user"></span> {% if contact %}{{ contact }}{% else %}Ø{% endif %}</p>
-            <p><span class="glyphicon glyphicon-earphone"></span> {% if phone %}{{ phone }}{% else %}Ø{% endif %}</p>
-            <p><span class="glyphicon glyphicon-send"></span> {% if email %}{{ email }}{% else %}Ø{% endif %}</p>
+
+    {% if site_type or contact or phone or email %}
+        <div class="site-info">
+            {% if site_type %}<p><span class="glyphicon glyphicon-tag"></span> {{ site_type }}</p>{% endif %}
+            {% if contact %}<p><span class="glyphicon glyphicon-user"></span> {{ contact }}</p>{% endif %}
+            {% if phone %}<p><span class="glyphicon glyphicon-earphone"></span> {{ phone }}</p>{% endif %}
+            {% if email %}<p><span class="glyphicon glyphicon-send"></span> {{ email }}</p>{% endif %}
         </div>
-    </div>
+    {% endif %}
     </body>
 </html>
 
