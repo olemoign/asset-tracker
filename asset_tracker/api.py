@@ -535,8 +535,8 @@ class Software(object):
                 new_event = models.Event(
                     status=software_status,
                     date=datetime.utcnow().date(),
-                    creator_id=self.request.user['id'],
-                    creator_alias=self.request.user['alias'],
+                    creator_id=self.request.user.id,
+                    creator_alias=self.request.user.alias,
                     extra=dumps({'software_name': self.product,
                                  'software_version': software_version})
                 )

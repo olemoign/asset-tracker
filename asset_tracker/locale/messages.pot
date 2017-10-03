@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-28 19:32+0200\n"
+"POT-Creation-Date: 2017-09-29 12:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,39 +182,39 @@ msgstr ""
 msgid "In transit to distributor"
 msgstr ""
 
-#: views_asset.py:205
+#: views_asset.py:204
 msgid "Invalid asset status."
 msgstr ""
 
-#: views_asset.py:191
+#: views_asset.py:190
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views_asset.py:221
+#: views_asset.py:220
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views_asset.py:161
+#: views_asset.py:160
 msgid "Invalid equipments."
 msgstr ""
 
-#: views_asset.py:212
+#: views_asset.py:211
 msgid "Invalid event date."
 msgstr ""
 
-#: views_asset.py:238
+#: views_asset.py:237
 msgid "Invalid event."
 msgstr ""
 
-#: views_asset.py:227 views_asset.py:233
+#: views_asset.py:226 views_asset.py:232
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views_asset.py:200
+#: views_asset.py:199
 msgid "Invalid site."
 msgstr ""
 
-#: views_asset.py:196 views_site.py:72
+#: views_asset.py:195 views_site.py:72
 msgid "Invalid tenant."
 msgstr ""
 
@@ -226,11 +226,11 @@ msgstr ""
 msgid "Last calibration"
 msgstr ""
 
-#: templates/errors/403.html:10 templates/menu.html:29
+#: templates/errors/403.html:11 templates/menu.html:29
 msgid "Logout"
 msgstr ""
 
-#: views_asset.py:185
+#: views_asset.py:184
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -339,7 +339,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: views_asset.py:426
+#: views_asset.py:425
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -390,16 +390,20 @@ msgstr ""
 msgid "Warranty end"
 msgstr ""
 
-#: templates/errors/403.html:9
-msgid "You are not authorized to access this page."
-msgstr ""
-
 #: templates/errors/404.html:148
 msgid "a mistyped address"
 msgstr ""
 
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
+msgstr ""
+
+#: templates/errors/403.html:9
+msgid "is not authorized to access this page."
+msgstr ""
+
+#: templates/errors/403.html:11
+msgid "or go to"
 msgstr ""
 
 #: templates/assets-create_update.html:85

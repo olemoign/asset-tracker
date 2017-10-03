@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-28 19:32+0200\n"
+"POT-Creation-Date: 2017-09-29 12:49+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -183,39 +183,39 @@ msgstr "En transit vers le client"
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: views_asset.py:205
+#: views_asset.py:204
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views_asset.py:191
+#: views_asset.py:190
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views_asset.py:221
+#: views_asset.py:220
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views_asset.py:161
+#: views_asset.py:160
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views_asset.py:212
+#: views_asset.py:211
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views_asset.py:238
+#: views_asset.py:237
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views_asset.py:227 views_asset.py:233
+#: views_asset.py:226 views_asset.py:232
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views_asset.py:200
+#: views_asset.py:199
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views_asset.py:196 views_site.py:72
+#: views_asset.py:195 views_site.py:72
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -227,11 +227,11 @@ msgstr "Cela peut être le résultat:"
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
-#: templates/errors/403.html:10 templates/menu.html:29
+#: templates/errors/403.html:11 templates/menu.html:29
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views_asset.py:185
+#: views_asset.py:184
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -340,7 +340,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views_asset.py:426
+#: views_asset.py:425
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -391,10 +391,6 @@ msgstr "Ultrason - Interson abdominal 99-5929"
 msgid "Warranty end"
 msgstr "Fin de garantie"
 
-#: templates/errors/403.html:9
-msgid "You are not authorized to access this page."
-msgstr "Vous n'êtes pas authorisé à accéder à cette page."
-
 #: templates/errors/404.html:148
 msgid "a mistyped address"
 msgstr "d'une adresse incorrecte"
@@ -402,6 +398,14 @@ msgstr "d'une adresse incorrecte"
 #: templates/errors/404.html:149
 msgid "an out-of-date link"
 msgstr "d'un lien obsolète"
+
+#: templates/errors/403.html:9
+msgid "is not authorized to access this page."
+msgstr "n'est pas autorisé(e) à accéder à cette page."
+
+#: templates/errors/403.html:11
+msgid "or go to"
+msgstr "ou accéder à"
 
 #: templates/assets-create_update.html:85
 msgid "years"
