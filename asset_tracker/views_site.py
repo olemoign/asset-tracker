@@ -74,7 +74,8 @@ class SitesEndPoint(object):
         site_name = self.form.get('name')
         if not site_name:
             raise FormException(_('Name is required.'))
-        elif not self.site and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
+        elif (not self.site or self.site.name != site_name) \
+                and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
             raise FormException(_('Name already exists.'))
 
     def get_base_form_data(self):
