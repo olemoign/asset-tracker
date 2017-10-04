@@ -327,8 +327,8 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
-                                       models.Site.phone, models.Site.email]
+        full_text_search_attributes = [models.Site.name, models.Site.site_type, tenants.c.tenant_name,
+                                       models.Site.contact, models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
         specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
@@ -360,7 +360,7 @@ class Sites(object):
 
             site_output = {
                 'name': site.name,
-                'type': site_type,
+                'site_type': site_type,
                 'tenant_name': tenant_names[site.tenant_id],
                 'contact': site.contact,
                 'phone': site.phone,
