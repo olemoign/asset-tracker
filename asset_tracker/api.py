@@ -356,7 +356,7 @@ class Sites(object):
         for site in output['items']:
             site_type = None
             if site.site_type:
-                site_type = self.request.localizer.translate(site.site_type.capitalize())
+                site_type = self.request.localizer.translate(site.site_type)
 
             site_output = {
                 'name': site.name,
@@ -392,18 +392,14 @@ class Sites(object):
         if not self.asset:
             return HTTPNoContent()
 
-        site_type = None
-        if self.asset.site.site_type:
-            site_type = self.request.localizer.translate(self.asset.site.site_type.capitalize())
-
-        site_information = dict(
-            name=self.asset.site.name,
-            site_type=site_type,
-            contact=self.asset.site.contact,
-            phone=self.asset.site.phone,
-            email=self.asset.site.email,
-        )
-        return site_information
+        site_information = self.asset.site
+        return {
+            'name': site_information.name,
+            'site_type': site_information.site_type,
+            'contact': site_information.contact,
+            'phone': site_information.phone,
+            'email': site_information.email,
+        }
 
 
 class Software(object):

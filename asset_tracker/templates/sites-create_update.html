@@ -46,9 +46,9 @@
                             <label for="site_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="site_type" name="site_type">
                                 <option></option>
-                                <option value="ship"{% if site and site.site_type == 'ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
-                                <option value="nursing"{% if site and site.site_type == 'nursing' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
-                                <option value="hospital"{% if site and site.site_type == 'hospital' %} selected{% endif %}>{{ gettext('Hospital') }}</option>
+                                <option value="Ship"{% if site and site.site_type == 'Ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
+                                <option value="Nursing home"{% if site and site.site_type == 'Nursing home' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
+                                <option value="Hospital"{% if site and site.site_type == 'Hospital' %} selected{% endif %}>{{ gettext('Hospital') }}</option>
                             </select>
                         </div>
                     </div>
