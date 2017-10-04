@@ -377,10 +377,12 @@ class Sites(object):
 
             sites.append(site_output)
 
-        return {'draw': draw,
-                'recordsTotal': output.get('recordsTotal'),
-                'recordsFiltered': output['recordsFiltered'],
-                'data': sites}
+        return {
+            'draw': draw,
+            'recordsTotal': output.get('recordsTotal'),
+            'recordsFiltered': output['recordsFiltered'],
+            'data': sites
+        }
 
     @view_config(route_name='api-sites-information', request_method='GET', permission='sites-read',
                  renderer='sites-information.html')
