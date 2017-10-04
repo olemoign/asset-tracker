@@ -40,7 +40,7 @@ class SitesEndPoint(object):
 
         site = self.request.db_session.query(models.Site).filter_by(id=site_id).first()
         if not site:
-            return HTTPNotFound()
+            raise HTTPNotFound()
 
         return site
 
