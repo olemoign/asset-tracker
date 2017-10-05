@@ -3,7 +3,6 @@
 
 {% if site %}
     {% set title = site.name %}
-    {% set form_update = True %}
 {% else %}
     {% set title = gettext('New site') %}
     {% set form_creation = True %}
@@ -29,7 +28,7 @@
             </div>
 
             <div class="panel-body">
-                <form role="form" action="{% if form_update %}{{ 'sites-update'|route_path(site_id=site.id) }}{% else %}{{ 'sites-create'|route_path }}{% endif %}" method="post">
+                <form role="form" action="{% if form_creation %}{{ 'sites-create'|route_path }}{% else %}{{ 'sites-update'|route_path(site_id=site.id) }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                     <div class="row">
@@ -45,8 +44,8 @@
                         </div>
 
                         <div class="col-sm-6 form-group">
-                            <label for="site_type">{{ gettext('Type') }}{% if form_update %} *{% endif %}</label>
-                            <select class="form-control" id="site_type" name="site_type"{% if form_update %} required{% endif %}>
+                            <label for="site_type">{{ gettext('Type') }} *</label>
+                            <select class="form-control" id="site_type" name="site_type" required>
                                 {% if form_creation %}<option></option>{% endif %}
                                 <option value="Ship"{% if site and site.site_type == 'Ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
                                 <option value="Nursing home"{% if site and site.site_type == 'Nursing home' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
