@@ -332,8 +332,8 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.name, tenants.c.tenant_name, models.Site.contact,
-                                       models.Site.phone, models.Site.email]
+        full_text_search_attributes = [models.Site.name, models.Site.site_type, tenants.c.tenant_name,
+                                       models.Site.contact, models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
         specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
@@ -361,11 +361,11 @@ class Sites(object):
         for site in output['items']:
             site_type = None
             if site.site_type:
-                site_type = self.request.localizer.translate(site.site_type.capitalize())
+                site_type = self.request.localizer.translate(site.site_type)
 
             site_output = {
                 'name': site.name,
-                'type': site_type,
+                'site_type': site_type,
                 'tenant_name': tenant_names[site.tenant_id],
                 'contact': site.contact,
                 'phone': site.phone,
@@ -382,10 +382,12 @@ class Sites(object):
 
             sites.append(site_output)
 
-        return {'draw': draw,
-                'recordsTotal': output.get('recordsTotal'),
-                'recordsFiltered': output['recordsFiltered'],
-                'data': sites}
+        return {
+            'draw': draw,
+            'recordsTotal': output.get('recordsTotal'),
+            'recordsFiltered': output['recordsFiltered'],
+            'data': sites
+        }
 
     @view_config(route_name='api-sites-information', request_method='GET', permission='sites-read',
                  renderer='sites-information.html')
@@ -397,18 +399,14 @@ class Sites(object):
         if not self.asset:
             return HTTPNoContent()
 
-        site_type = None
-        if self.asset.site.site_type:
-            site_type = self.request.localizer.translate(self.asset.site.site_type.capitalize())
-
-        site_information = dict(
-            name=self.asset.site.name,
-            site_type=site_type,
-            contact=self.asset.site.contact,
-            phone=self.asset.site.phone,
-            email=self.asset.site.email,
-        )
-        return site_information
+        site_information = self.asset.site
+        return {
+            'name': site_information.name,
+            'site_type': site_information.site_type,
+            'contact': site_information.contact,
+            'phone': site_information.phone,
+            'email': site_information.email,
+        }
 
 
 class Software(object):

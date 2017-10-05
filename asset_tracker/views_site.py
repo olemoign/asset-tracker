@@ -40,7 +40,7 @@ class SitesEndPoint(object):
 
         site = self.request.db_session.query(models.Site).filter_by(id=site_id).first()
         if not site:
-            return HTTPNotFound()
+            raise HTTPNotFound()
 
         return site
 
@@ -74,8 +74,13 @@ class SitesEndPoint(object):
         site_name = self.form.get('name')
         if not site_name:
             raise FormException(_('Name is required.'))
-        elif not self.site and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
+        elif (not self.site or self.site.name != site_name) \
+                and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
             raise FormException(_('Name already exists.'))
+
+        site_type = self.form.get('site_type')
+        if not site_type:
+            raise FormException(_('Site type is required.'))
 
     def get_base_form_data(self):
         """Get base form input data (tenants)."""

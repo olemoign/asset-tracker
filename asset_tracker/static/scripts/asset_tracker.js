@@ -4,6 +4,8 @@ const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
 
 
 $(document).ready(function() {
+    setActiveMenu($('#menu-main li, #menu-settings li'));
+
     createDataTables();
 
     // Auto focus first input in page.
@@ -35,6 +37,19 @@ $(document).ready(function() {
     // call the filter when page is ready
     manageSites();
 });
+
+function setActiveMenu(menuLinks) {
+    /**
+     * Activate menu tabs based on their path.
+     */
+    menuLinks.removeClass('active');
+    var path = window.location.pathname;
+    // Splitting the path name allows to highlight categories (Profiles/Oauth clients/Tenants are still highlighted
+    // when creating or updating objects)
+    var cat = path.split('/', 2).join('/');
+    var activeLink = menuLinks.find('a[href="' + cat + '/"]');
+    activeLink.parents('li').addClass('active');
+}
 
 // Manage site display
 $(document).on('change', '#tenant_id', function() {
