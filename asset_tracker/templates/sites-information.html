@@ -1,8 +1,9 @@
-<html>
+<!DOCTYPE html>
     <head>
         <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
         <style>
             html, body, p {
+                height: auto;
                 margin: 0;
             }
             .site-title {
@@ -29,6 +30,13 @@
             {% if email %}<p><span class="glyphicon glyphicon-send"></span> {{ email }}</p>{% endif %}
         </div>
     {% endif %}
+
+    <script>
+        {# send body height to the Cloud to ajust iframe height #}
+        const   data = document.body.scrollHeight,  {# must be Integer #}
+                targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
+        window.parent.postMessage(data, targetOrigin);
+    </script>
     </body>
 </html>
 
