@@ -396,7 +396,7 @@ class Sites(object):
         Html response to insert directly into the consultation.
 
         """
-        if not self.asset:
+        if not self.asset or not self.asset.site:
             return HTTPNoContent()
 
         site_information = self.asset.site
