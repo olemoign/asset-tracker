@@ -5,8 +5,8 @@ from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from parsys_utilities.sentry import sentry_capture_exception
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 

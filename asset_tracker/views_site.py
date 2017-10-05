@@ -14,6 +14,7 @@ class FormException(Exception):
 
 class SitesEndPoint(object):
     """List, read and update sites."""
+
     def __acl__(self):
         acl = [
             (Allow, None, 'sites-create', 'sites-create'),

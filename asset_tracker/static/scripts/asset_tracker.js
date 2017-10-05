@@ -3,7 +3,7 @@
 const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
 
 
-$(document).ready(function() {
+$(function() {
     setActiveMenu($('#menu-main li, #menu-settings li'));
 
     createDataTables();
