@@ -286,10 +286,15 @@ class Sites(object):
         if not user_id:
             return
 
-        return self.request.db_session.query(models.Asset) \
+        asset = self.request.db_session.query(models.Asset) \
             .filter_by(user_id=user_id) \
             .options(joinedload('site')) \
             .first()
+
+        if not asset:
+            raise HTTPNoContent()
+
+        return asset
 
     def apply_tenanting_filter(self, q):
         """Filter sites according to user's rights/tenants.
