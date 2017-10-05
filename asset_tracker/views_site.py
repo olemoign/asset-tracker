@@ -107,9 +107,9 @@ class SitesEndPoint(object):
             # required
             tenant_id=self.form['tenant_id'],
             name=self.form['name'],
-            site_type=self.form['site_type'],
 
             # optional
+            site_type=self.form.get('site_type'),
             contact=self.form.get('contact'),
             phone=self.form.get('phone'),
             email=self.form.get('email'),
