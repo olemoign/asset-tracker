@@ -15,8 +15,7 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_capture_exception
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNoContent, \
-    HTTPNotFound, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
@@ -269,11 +268,10 @@ class Sites(object):
     def __acl__(self):
         acl = [
             (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, 'g:admin', ('sites-list', 'sites-read')),
+            (Allow, None, 'g:admin', 'sites-list'),
         ]
 
-        if self.asset:
-            acl.append((Allow, self.asset.tenant_id, 'sites-read', 'sites-read'))
+        # 'sites-read' permission is exceptionally controlled in site_get() method.
 
         return acl
 
@@ -286,13 +284,11 @@ class Sites(object):
         if not user_id:
             return
 
+        # if asset is missing, site_get() method will return an empty response
         asset = self.request.db_session.query(models.Asset) \
             .filter_by(user_id=user_id) \
             .options(joinedload('site')) \
             .first()
-
-        if not asset:
-            raise HTTPNoContent()
 
         return asset
 
@@ -389,15 +385,22 @@ class Sites(object):
             'data': sites
         }
 
-    @view_config(route_name='api-sites-information', request_method='GET', permission='sites-read',
-                 renderer='sites-information.html')
+    @view_config(route_name='api-sites-information', request_method='GET', renderer='sites-information.html')
     def site_get(self):
         """Get site information for consultation.
+
         Html response to insert directly into the consultation.
+        Permissions are exceptionally controlled in the method,
+        so that the iframe (in Consultation) always receive a postMessage.
 
         """
         if not self.asset or not self.asset.site:
-            return HTTPNoContent()
+            return {}
+
+        # check permission
+        if 'g:admin' not in self.request.effective_principals \
+                and (self.asset.tenant_id, 'sites-read') not in self.request.effective_principals:
+            return HTTPForbidden()
 
         site_information = self.asset.site
         return {

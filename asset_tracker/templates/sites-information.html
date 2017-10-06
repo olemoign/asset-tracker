@@ -18,9 +18,11 @@
         </style>
     </head>
     <body>
+    {% if name %}
         <div class="site-title">
             <h3 class="panel-title">{{ name }}</h3>
         </div>
+    {% endif %}
 
     {% if site_type or contact or phone or email %}
         <div class="site-info">
