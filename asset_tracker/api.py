@@ -264,16 +264,11 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables."""
-
-    def __acl__(self):
-        acl = [
-            (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, 'g:admin', 'sites-list'),
-        ]
-
-        # 'sites-read' permission is exceptionally controlled in site_get() method.
-
-        return acl
+    # 'sites-read' permission is exceptionally controlled in site_get() method.
+    __acl__ = [
+        (Allow, None, 'sites-list', 'sites-list'),
+        (Allow, None, 'g:admin', 'sites-list'),
+    ]
 
     def __init__(self, request):
         self.request = request
