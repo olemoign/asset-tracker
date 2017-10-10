@@ -19,7 +19,7 @@ msgstr ""
 "Generated-By: Babel 2.5.1\n"
 
 #: views_asset.py:193
-msgid "${asset_id} alredy exists"
+msgid "${asset_id} already exists"
 msgstr ""
 
 #: templates/assets-create_update.html:189
