@@ -190,8 +190,7 @@ class AssetsEndPoint(object):
         asset_id = self.form.get('asset_id')
         if (not self.asset or self.asset.asset_id != asset_id) \
                 and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
-            error_msg = _('${asset_id} already exists', mapping={'asset_id': asset_id})
-            raise FormException(self.request.localizer.translate(error_msg))
+            raise FormException(_('This asset id already exists.'))
 
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
