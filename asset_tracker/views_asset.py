@@ -12,6 +12,7 @@ from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
+from sqlalchemy.exc import IntegrityError
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
@@ -186,6 +187,12 @@ class AssetsEndPoint(object):
 
     def validate_form(self):
         """Validate form data."""
+        asset_id = self.form.get('asset_id')
+        if (not self.asset or self.asset.asset_id != asset_id) \
+                and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
+            error_msg = _('${asset_id} alredy exists', mapping={'asset_id': asset_id})
+            raise FormException(self.request.localizer.translate(error_msg))
+
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
             raise FormException(_('Invalid calibration frequency.'))
@@ -362,6 +369,15 @@ class AssetsEndPoint(object):
                            notes=self.form.get('notes'))
         self.request.db_session.add(self.asset)
 
+        try:
+            self.request.db_session.flush()
+
+        except IntegrityError:
+            sentry_capture_exception(self.request, level='info')
+            self.request.db_session.rollback()
+            self.request.response.status = 500
+            return dict(**self.get_base_form_data())
+
         self.add_equipments()
 
         self.add_event()
@@ -388,6 +404,12 @@ class AssetsEndPoint(object):
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        if 'marlink' in self.client_specific:
+            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
+
         # no manual update if asset is linked with RTA
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
@@ -403,11 +425,15 @@ class AssetsEndPoint(object):
 
         self.asset.notes = self.form.get('notes')
 
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.client_specific:
-            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
-        else:
-            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
+        try:
+            self.request.db_session.flush()
+
+        except IntegrityError:
+            sentry_capture_exception(self.request, level='info')
+            self.request.db_session.rollback()
+            self.request.response.status = 500
+            return dict(asset=self.asset, asset_softwares=self.get_latest_softwares_version(),
+                        **self.get_base_form_data())
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)
