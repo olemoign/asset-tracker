@@ -186,6 +186,11 @@ class AssetsEndPoint(object):
 
     def validate_form(self):
         """Validate form data."""
+        asset_id = self.form.get('asset_id')
+        if (not self.asset or self.asset.asset_id != asset_id) \
+                and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
+            raise FormException(_('This asset id already exists.'))
+
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
             raise FormException(_('Invalid calibration frequency.'))
@@ -388,6 +393,12 @@ class AssetsEndPoint(object):
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        if 'marlink' in self.client_specific:
+            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
+
         # no manual update if asset is linked with RTA
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
@@ -402,12 +413,6 @@ class AssetsEndPoint(object):
         self.asset.current_location = self.form.get('current_location')
 
         self.asset.notes = self.form.get('notes')
-
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.client_specific:
-            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
-        else:
-            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)

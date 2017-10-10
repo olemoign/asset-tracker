@@ -13,7 +13,7 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 class Asset(Model, CreationDateTimeMixin):
     tenant_id = Column(String, nullable=False)
-    asset_id = Column(String, nullable=False)
+    asset_id = Column(String, nullable=False, unique=True)
     asset_type = Column(String, nullable=False)
 
     user_id = Column(String)  # received from RTA when create/edit station
