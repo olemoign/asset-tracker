@@ -368,15 +368,6 @@ class AssetsEndPoint(object):
                            notes=self.form.get('notes'))
         self.request.db_session.add(self.asset)
 
-        try:
-            self.request.db_session.flush()
-
-        except IntegrityError:
-            sentry_capture_exception(self.request, level='info')
-            self.request.db_session.rollback()
-            self.request.response.status = 500
-            return dict(**self.get_base_form_data())
-
         self.add_equipments()
 
         self.add_event()
@@ -423,16 +414,6 @@ class AssetsEndPoint(object):
         self.asset.current_location = self.form.get('current_location')
 
         self.asset.notes = self.form.get('notes')
-
-        try:
-            self.request.db_session.flush()
-
-        except IntegrityError:
-            sentry_capture_exception(self.request, level='info')
-            self.request.db_session.rollback()
-            self.request.response.status = 500
-            return dict(asset=self.asset, asset_softwares=self.get_latest_softwares_version(),
-                        **self.get_base_form_data())
 
         for equipment in self.asset.equipments:
             self.request.db_session.delete(equipment)
