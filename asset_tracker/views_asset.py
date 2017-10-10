@@ -12,7 +12,6 @@ from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
-from sqlalchemy.exc import IntegrityError
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
