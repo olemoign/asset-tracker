@@ -34,5 +34,8 @@
         <div class="img-background-fixed"></div>
 
         {% block page %}{% endblock %}
+
+        {% set footer = 'branding/footer-' + branding + '.html' %}
+        {% include footer ignore missing %}
     </body>
 </html>
