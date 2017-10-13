@@ -17,13 +17,15 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('event_status',
-                    sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('status_id', sa.Unicode(), nullable=True),
-                    sa.Column('position', sa.Integer(), nullable=True),
-                    sa.Column('label', sa.Unicode(), nullable=True),
-                    sa.PrimaryKeyConstraint('id', name=op.f('pk_status'))
-                    )
+    op.create_table(
+        'event_status',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('status_id', sa.Unicode(), nullable=True),
+        sa.Column('position', sa.Integer(), nullable=True),
+        sa.Column('label', sa.Unicode(), nullable=True),
+        sa.PrimaryKeyConstraint('id', name=op.f('pk_status'))
+    )
+
     with op.batch_alter_table('equipment_family', schema=None) as batch_op:
         batch_op.add_column(sa.Column('family_id', sa.Unicode(), nullable=True))
 

@@ -18,18 +18,20 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('site',
-                    sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('created_at', sa.DateTime(), nullable=False),
-                    sa.Column('tenant_id', sa.Unicode(), nullable=False),
-                    sa.Column('name', sa.Unicode(), nullable=False),
-                    sa.Column('site_type', sa.Unicode(), nullable=True),
-                    sa.Column('contact', sa.Unicode(), nullable=True),
-                    sa.Column('phone', sa.Unicode(), nullable=True),
-                    sa.Column('email', sa.Unicode(), nullable=True),
-                    sa.PrimaryKeyConstraint('id', name=op.f('pk_site')),
-                    sa.UniqueConstraint('name', name=op.f('uq_site_name'))
-                    )
+    op.create_table(
+        'site',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('tenant_id', sa.Unicode(), nullable=False),
+        sa.Column('name', sa.Unicode(), nullable=False),
+        sa.Column('site_type', sa.Unicode(), nullable=True),
+        sa.Column('contact', sa.Unicode(), nullable=True),
+        sa.Column('phone', sa.Unicode(), nullable=True),
+        sa.Column('email', sa.Unicode(), nullable=True),
+        sa.PrimaryKeyConstraint('id', name=op.f('pk_site')),
+        sa.UniqueConstraint('name', name=op.f('uq_site_name'))
+    )
+
     with op.batch_alter_table('asset', schema=None) as batch_op:
         batch_op.add_column(sa.Column('site_id', sa.Integer(), nullable=True))
         batch_op.create_foreign_key(batch_op.f('fk_asset_site_id_site'), 'site', ['site_id'], ['id'])
