@@ -393,8 +393,7 @@ class Sites(object):
             return {}
 
         # check permission
-        if 'g:admin' not in self.request.effective_principals \
-                and (self.asset.tenant_id, 'sites-read') not in self.request.effective_principals:
+        if (self.asset.tenant_id, 'sites-read') not in self.request.effective_principals:
             return HTTPForbidden()
 
         site_information = self.asset.site

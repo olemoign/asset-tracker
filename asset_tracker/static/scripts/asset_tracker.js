@@ -43,11 +43,11 @@ function setActiveMenu(menuLinks) {
      * Activate menu tabs based on their path.
      */
     menuLinks.removeClass('active');
-    var path = window.location.pathname;
+    const path = window.location.pathname;
     // Splitting the path name allows to highlight categories (Profiles/Oauth clients/Tenants are still highlighted
     // when creating or updating objects)
-    var cat = path.split('/', 2).join('/');
-    var activeLink = menuLinks.find('a[href="' + cat + '/"]');
+    const cat = path.split('/', 2).join('/');
+    const activeLink = menuLinks.find('a[href="' + cat + '/"]');
     activeLink.parents('li').addClass('active');
 }
 
@@ -63,14 +63,15 @@ function manageSites() {
     /**
      * Enable the sites corresponding to the selected tenant.
      */
-    const tenantId_selected = $('#tenant_id').find('option:selected').text();
+    const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
+    // noinspection JSValidateTypes
     $('#site_id').children('optgroup').each(function() {
-        if ($(this).attr('label') !== tenantId_selected) {
-            $(this).hide();
+        if (!tenantIdSelected || $(this).data('tenant_id') === tenantIdSelected) {
+            $(this).show();
         }
         else {
-            $(this).show();
+            $(this).hide();
         }
     });
 }

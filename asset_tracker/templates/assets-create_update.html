@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
-{% set read_only = asset and asset.is_linked %}
+{% set is_linked = asset and asset.is_linked %}
 {% if asset %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
 {% else %}
@@ -22,14 +22,14 @@
     {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel__title">{{ title }}{% if asset and asset.is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}</h3>
+                <h3 class="panel__title">{{ title }}{% if is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}</h3>
             </div>
 
             <div class="panel-body">
                 <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row">
-                        {{ input(_('Asset ID'), 'asset_id', required=True, readonly=read_only) }}
+                        {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
                         <div class="col-sm-6 form-group">
                             <label for="asset_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="asset_type" name="asset_type">
@@ -40,53 +40,54 @@
                         </div>
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                            <select class="form-control" id="tenant_id" name="tenant_id">
-                                {% for tenant in tenants|sort(attribute='name') %}
-                                    {# !template whitespaces! the content (tenant.name) must be directly between bracket #}
-                                <option value="{{ tenant.id }}"
-                                        {% if asset %}
-                                            {% if asset.tenant_id == tenant.id %} selected
-                                            {% elif asset.is_linked %} disabled
-                                            {% endif %}
-                                        {% endif %}>{{ tenant.name }}</option>
-                                {% endfor %}
+                            <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
+                            {% if not asset %}
+                                <option></option>
+                            {% endif %}
+                            {% for tenant in tenants|sort(attribute='name') %}
+                                <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>
+                                    {{- tenant.name -}}
+                                </option>
+                            {% endfor %}
                             </select>
                         </div>
 
-                        {% if 'marlink' in client_specific %}
-                        {{ input(_('Customer ID (Subscription ID)'), 'customer_id') }}
-                        {% endif %}
+                    {% if 'marlink' in client_specific %}
+                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
+                    {% endif %}
 
-                        {{ input(_('Customer name'), 'customer_name') }}
+                        {{ input(gettext('Customer name'), 'customer_name') }}
 
                         <div class="col-sm-6 form-group">
                             <label for="site_id">{{ gettext('Site') }}</label>
                             <select class="form-control" id="site_id" name="site_id">
                                 <option></option>
-                            {% for s in sites|sort(attribute='tenant_name') %}
-                                <optgroup label="{{ s.tenant_name }}">
-                                {% for site in s.sites_list %}
-                                    <option value="{{ site.id }}"
-                                            {% if asset and asset.site_id == site.id %} selected
-                                            {% endif %}>{{ site.name }}</option>
+                            {% for tenant in sites|sort(attribute='tenant_name') %}
+                                <optgroup label="{{ tenant.tenant_name }}" data-tenant_id="{{ tenant.tenant_id }}">
+                                {% for site in tenant.sites_list %}
+                                    <option value="{{ site.id }}"{% if asset and asset.site_id == site.id %} selected{% endif %}>
+                                        {{- site.name -}}
+                                    </option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
                             </select>
                         </div>
 
-                        {{ input(_('Current location'), 'current_location') }}
+                        {{ input(gettext('Current location'), 'current_location') }}
 
-                        {% if not 'marlink' in client_specific %}
+                    {% if not 'marlink' in client_specific %}
                         <div class="col-sm-6 form-group">
                             <label for="calibration_frequency">{{ gettext('Calibration frequency') }}{% if not asset %} *{% endif %}</label>
                             <select class="form-control" id="calibration_frequency" name="calibration_frequency">
-                                {% for frequency in calibration_frequencies.values() %}
-                                <option value="{{ frequency }}"{% if asset and asset.calibration_frequency == frequency %} selected{% endif %}>{{ frequency ~ ' ' ~ gettext('years') }}</option>
-                                {% endfor %}
+                            {% for frequency in calibration_frequencies.values() %}
+                                <option value="{{ frequency }}"{% if asset and asset.calibration_frequency == frequency %} selected{% endif %}>
+                                    {{- frequency ~ ' ' ~ gettext('years') -}}
+                                </option>
+                            {% endfor %}
                             </select>
                         </div>
-                        {% endif %}
+                    {% endif %}
                     </div>
 
                     {% if asset %}
@@ -121,11 +122,11 @@
                     <hr>
 
                     <div class="row">
-                        {{ date(_('Production'), 'production') }}
-                        {{ date(_('Activation'), 'activation_first') }}
-                        {{ date(_('Last calibration'), 'calibration_last') }}
-                        {{ date(_('Next calibration'), 'calibration_next') }}
-                        {{ date(_('Warranty end'), 'warranty_end') }}
+                        {{ date(gettext('Production'), 'production') }}
+                        {{ date(gettext('Activation'), 'activation_first') }}
+                        {{ date(gettext('Last calibration'), 'calibration_last') }}
+                        {{ date(gettext('Next calibration'), 'calibration_next') }}
+                        {{ date(gettext('Warranty end'), 'warranty_end') }}
                     </div>
                     {% endif %}
 
@@ -141,7 +142,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {{ input(_('Date'), 'event_date', 'date', placeholder=_('DD/MM/YYYY')) }}
+                        {{ input(gettext('Date'), 'event_date', 'date', placeholder=gettext('DD/MM/YYYY')) }}
                     </div>
 
                     <hr>

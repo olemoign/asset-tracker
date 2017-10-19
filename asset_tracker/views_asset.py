@@ -105,17 +105,18 @@ class AssetsEndPoint(object):
 
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants, result will be filtered in front/js"""
+        tenants_list = [tenant['id'] for tenant in tenants]
 
         sites_query = self.request.db_session.query(Site) \
-            .filter(Site.tenant_id.in_(tenant['id'] for tenant in tenants)) \
+            .filter(Site.tenant_id.in_(tenants_list)) \
             .order_by(Site.tenant_id, Site.name)
 
         # dict to find tenant name from tenant id
         tenant_names = {tenant['id']: tenant['name'] for tenant in tenants}
 
         # groupBy tenant name to make optGroup easier to manage
-        groupBy_tenant = namedtuple('groupBy_tenant', ['tenant_name', 'sites_list'])
-        sites = (groupBy_tenant(tenant_names[tenant_id], list(group_of_sites))
+        site_group = namedtuple('group_by_tenant', ['tenant_id', 'tenant_name', 'sites_list'])
+        sites = (site_group(tenant_id, tenant_names[tenant_id], list(group_of_sites))
                  for tenant_id, group_of_sites in groupby(sites_query, key=lambda site: site.tenant_id))
 
         return sites
