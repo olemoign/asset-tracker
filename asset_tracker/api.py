@@ -394,7 +394,7 @@ class Sites(object):
 
         # check permission
         if (self.asset.tenant_id, 'sites-read') not in self.request.effective_principals:
-            return HTTPForbidden()
+            raise HTTPForbidden()
 
         site_information = self.asset.site
         return {
