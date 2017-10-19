@@ -384,9 +384,9 @@ class Sites(object):
     def site_get(self):
         """Get site information for consultation.
 
-        Html response to insert directly into the consultation.
-        Permissions are exceptionally controlled in the method,
-        so that the iframe (in Consultation) always receive a postMessage.
+        Html response to insert directly into the consultation. Permissions are exceptionally controlled in the method,
+        so that there always is a response, even if the asset or the site doesn't exist. This means that the iframe
+        will always send the postMessage to give its size.
 
         """
         if not self.asset or not self.asset.site:
