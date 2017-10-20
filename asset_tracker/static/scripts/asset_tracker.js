@@ -63,10 +63,13 @@ function manageSites() {
     /**
      * Enable the sites corresponding to the selected tenant.
      */
+    const siteSelect = $('#site_id');
+    siteSelect.val('');
+
     const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
     // noinspection JSValidateTypes
-    $('#site_id').children('optgroup').each(function() {
+    siteSelect.children('optgroup').each(function() {
         if (!tenantIdSelected || $(this).data('tenant_id') === tenantIdSelected) {
             $(this).show();
         }
