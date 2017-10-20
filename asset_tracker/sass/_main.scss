@@ -148,8 +148,7 @@ td {
     }
 }
 
-// Typically an arrow.
-input:disabled:hover,
-select:disabled:hover {
+// Typically an arrow instead of not-allowed cursor
+.form-control[disabled] {
     cursor: default;
 }
