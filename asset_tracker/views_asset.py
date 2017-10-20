@@ -181,25 +181,33 @@ class AssetsEndPoint(object):
 
         has_creation_event = self.asset or self.form.get('event')
         has_calibration_frequency = 'marlink' in self.client_specific or self.form.get('calibration_frequency')
-        if not self.form.get('asset_id') or not self.form.get('tenant_id') or not self.form.get('asset_type') \
-                or not has_creation_event or not has_calibration_frequency:
+
+        # don't need asset_id and tenant_id if asset is linked
+        if not (self.asset and self.asset.is_linked) \
+                and (not self.form.get('asset_id') or not self.form.get('tenant_id')) \
+                or not self.form.get('asset_type') \
+                or not has_creation_event \
+                or not has_calibration_frequency:
             raise FormException(_('Missing mandatory data.'))
 
     def validate_form(self):
         """Validate form data."""
-        asset_id = self.form.get('asset_id')
-        if (not self.asset or self.asset.asset_id != asset_id) \
-                and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
-            raise FormException(_('This asset id already exists.'))
+
+        # don't check asset_id and tenant_id if asset is linked
+        if not (self.asset and self.asset.is_linked):
+            asset_id = self.form.get('asset_id')
+            if (not self.asset or self.asset.asset_id != asset_id) \
+                    and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
+                raise FormException(_('This asset id already exists.'))
+
+            tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
+            tenant_id = self.form.get('tenant_id')
+            if not tenant_id or tenant_id not in tenants_ids:
+                raise FormException(_('Invalid tenant.'))
 
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
             raise FormException(_('Invalid calibration frequency.'))
-
-        tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
-        tenant_id = self.form.get('tenant_id')
-        if not tenant_id or tenant_id not in tenants_ids:
-            raise FormException(_('Invalid tenant.'))
 
         site_id = self.form.get('site_id')
         if site_id and not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
