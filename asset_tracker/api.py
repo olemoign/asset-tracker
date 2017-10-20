@@ -178,8 +178,14 @@ class Assets(object):
             .first()
 
         if asset:
-            asset.asset_id = login
-            asset.tenant_id = tenant_id
+            if asset.asset_id != login:
+                asset.asset_id = login
+
+            # reset Site if tenant is updated
+            if asset.tenant_id != tenant_id:
+                asset.tenant_id = tenant_id
+                asset.site_id = None
+
             return
 
         # ...ELSE IF asset exists only in Asset Tracker...
@@ -189,7 +195,12 @@ class Assets(object):
 
         if asset:
             asset.user_id = user_id
-            asset.tenant_id = tenant_id
+
+            # reset Site if tenant is updated
+            if asset.tenant_id != tenant_id:
+                asset.tenant_id = tenant_id
+                asset.site_id = None
+
             return
 
         # ...ELSE create a new Asset
