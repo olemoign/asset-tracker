@@ -19,12 +19,12 @@
                     data-custom-filter="status!=decommissioned" data-custom-filter-label="{{ gettext('Show decommissioned assets') }}" width="100%">
                 <thead>
                     <tr>
-                        <th data-data="asset_id">{{ gettext('Asset ID') }}</th>
-                        <th data-data="tenant_name">{{ gettext('Tenant') }}</th>
+                        <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>
+                        <th data-data="tenant_name" data-priority="2">{{ gettext('Tenant') }}</th>
                         <th data-data="customer_name">{{ gettext('Customer') }}</th>
                         <th data-data="site">{{ gettext('Site') }}</th>
                         <th data-data="calibration_next">{{ gettext('Next calibration') }}</th>
-                        <th data-data="status">{{ gettext('Status') }}</th>
+                        <th data-data="status" data-priority="1">{{ gettext('Status') }}</th>
                     </tr>
                 </thead>
             </table>
