@@ -182,9 +182,9 @@ class AssetsEndPoint(object):
         has_creation_event = self.asset or self.form.get('event')
         has_calibration_frequency = 'marlink' in self.client_specific or self.form.get('calibration_frequency')
 
-        # don't need asset_id and tenant_id if asset is linked
-        if not (self.asset and self.asset.is_linked) \
-                and (not self.form.get('asset_id') or not self.form.get('tenant_id')) \
+        # We don't need asset_id or tenant_id if asset is linked.
+        is_linked = (self.asset and self.asset.is_linked)
+        if not is_linked and (not self.form.get('asset_id') or not self.form.get('tenant_id')) \
                 or not self.form.get('asset_type') \
                 or not has_creation_event \
                 or not has_calibration_frequency:
@@ -192,12 +192,14 @@ class AssetsEndPoint(object):
 
     def validate_form(self):
         """Validate form data."""
-
         # don't check asset_id and tenant_id if asset is linked
-        if not (self.asset and self.asset.is_linked):
+        if self.asset and self.asset.is_linked:
+            tenant_id = self.asset.tenant_id
+        else:
             asset_id = self.form.get('asset_id')
-            if (not self.asset or self.asset.asset_id != asset_id) \
-                    and self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first():
+            changed_id = not self.asset or self.asset.asset_id != asset_id
+            existing_asset = self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first()
+            if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
             tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]

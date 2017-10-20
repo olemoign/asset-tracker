@@ -181,9 +181,10 @@ class Assets(object):
             if asset.asset_id != login:
                 asset.asset_id = login
 
-            # reset Site if tenant is updated
             if asset.tenant_id != tenant_id:
                 asset.tenant_id = tenant_id
+                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
+                # be valid anymore.
                 asset.site_id = None
 
             return
@@ -196,9 +197,10 @@ class Assets(object):
         if asset:
             asset.user_id = user_id
 
-            # reset Site if tenant is updated
             if asset.tenant_id != tenant_id:
                 asset.tenant_id = tenant_id
+                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
+                # be valid anymore.
                 asset.site_id = None
 
             return

@@ -5,4 +5,10 @@ Rights list
 - assets-list
 - assets-read
 - assets-update
+
+- sites-create
+- sites-list
+- sites-read
+- sites-update
+
 - software-update
