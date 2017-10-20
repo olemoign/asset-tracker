@@ -15,7 +15,7 @@
                 {% if placeholder %} placeholder="{{ gettext(placeholder) }}"{% endif %}
                 {% if asset %}
                     {% if asset[field] %} value="{{ asset[field] }}"{% endif %}
-                    {% if readonly %} readonly{% endif %}
+                    {% if readonly %} disabled{% endif %}
                 {% elif site %}
                     {% if site[field] %} value="{{ site[field] }}"{% endif %}
                 {% endif %}

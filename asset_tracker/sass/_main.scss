@@ -147,3 +147,9 @@ td {
         clear:left;
     }
 }
+
+// Typically an arrow.
+input:disabled:hover,
+select:disabled:hover {
+    cursor: default;
+}
