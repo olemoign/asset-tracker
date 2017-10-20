@@ -181,6 +181,7 @@ class Assets(object):
             if asset.asset_id != login:
                 asset.asset_id = login
 
+            # reset Site if tenant is updated
             if asset.tenant_id != tenant_id:
                 asset.tenant_id = tenant_id
                 asset.site_id = None
@@ -195,6 +196,7 @@ class Assets(object):
         if asset:
             asset.user_id = user_id
 
+            # reset Site if tenant is updated
             if asset.tenant_id != tenant_id:
                 asset.tenant_id = tenant_id
                 asset.site_id = None
