@@ -147,3 +147,8 @@ td {
         clear:left;
     }
 }
+
+// Typically an arrow instead of not-allowed cursor
+.form-control[disabled] {
+    cursor: default;
+}
