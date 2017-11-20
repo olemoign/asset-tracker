@@ -75,19 +75,43 @@ table td a {
 }
 
 // Add padding to datatables tools in case we are in a panel.
-.panel .dataTables_length,
-.panel .dataTables_filter {
+.panel .dataTables_wrapper .row:first-child {
     padding-top: 10px;
 }
 
-.panel .dataTables_length,
-.panel .dataTables_info {
-    padding-left: 10px;
+@media (min-width: $screen-sm-min) {
+    .panel .custom_filter,
+    .panel .dataTables_info,
+    .panel .dataTables_length {
+        padding-left: 10px;
+    }
+
+    .panel .dataTables_filter,
+    .panel .dataTables_paginate {
+        padding-right: 10px;
+    }
 }
 
+.custom_filter {
+    margin-top: 0;
+}
+
+@media (max-width: $screen-xs-max) {
+    .panel .custom_filter {
+        text-align: center;
+    }
+
+    .panel .dataTables_info {
+        padding-bottom: 8px;
+    }
+}
+
+.panel .custom_filter,
+.panel .dataTables_info,
 .panel .dataTables_filter,
+.panel .dataTables_length,
 .panel .dataTables_paginate {
-    padding-right: 10px;
+    overflow-y: hidden;
 }
 
 div.dataTables_wrapper div.dataTables_processing {
@@ -137,14 +161,15 @@ td {
 }
 
 // to avoid equipment block "overlap" when they have a different height
-@media (min-width:992px) {
+@media (min-width: $screen-md-min) {
     .auto-clear .col-md-4:nth-child(3n+1) {
-        clear:left;
+        clear: left;
     }
 }
-@media (min-width:768px) and (max-width:991px) {
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     .auto-clear .col-sm-6:nth-child(odd) {
-        clear:left;
+        clear: left;
     }
 }
 

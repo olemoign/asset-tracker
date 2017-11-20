@@ -208,7 +208,7 @@ function createDataTables() {
         const inputIsChecked = (!tableState && !filterInit) || (tableState && !tableState.customFilter) ? ' checked' : '';
 
         const filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
-        tableContainer.find('.custom_filter').html(filterHTML).css('padding', '10px 0 0 10px');
+        tableContainer.find('.custom_filter').html(filterHTML);
         initialisedDataTable.state.save();
 
         // Force a draw of the table when the filter state changes.
