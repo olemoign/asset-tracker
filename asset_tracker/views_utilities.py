@@ -4,7 +4,7 @@ from traceback import format_exc
 
 import pkg_resources
 from parsys_utilities.authorization import rights_without_tenants
-from parsys_utilities.sentry import sentry_capture_exception
+from parsys_utilities.sentry import sentry_exception
 from parsys_utilities.status import status_endpoint
 from pyramid.events import BeforeRender, NewResponse, subscriber
 from pyramid.settings import asbool, aslist
@@ -70,7 +70,7 @@ def exception_view(request):
     In production log them then return a 500 page to the user.
 
     """
-    sentry_capture_exception(request)
+    sentry_exception(request)
 
     # In dev.
     debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))

@@ -5,7 +5,7 @@ from itertools import groupby
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.sentry import sentry_capture_exception
+from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
@@ -80,7 +80,7 @@ class AssetsEndPoint(object):
             try:
                 name, version = extra['software_name'], extra['software_version']
             except KeyError:
-                sentry_capture_exception(self.request, level='info')
+                sentry_exception(self.request, level='info')
                 continue
             else:
                 if name not in softwares:
@@ -224,7 +224,7 @@ class AssetsEndPoint(object):
             try:
                 datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
             except (TypeError, ValueError):
-                sentry_capture_exception(self.request, level='info')
+                sentry_exception(self.request, level='info')
                 raise FormException(_('Invalid event date.'))
 
         for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
@@ -239,13 +239,13 @@ class AssetsEndPoint(object):
                     try:
                         datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        sentry_capture_exception(self.request, level='info')
+                        sentry_exception(self.request, level='info')
                         raise FormException(_('Invalid expiration date.'))
                 if expiration_date_2:
                     try:
                         datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        sentry_capture_exception(self.request, level='info')
+                        sentry_exception(self.request, level='info')
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
@@ -360,7 +360,7 @@ class AssetsEndPoint(object):
             self.read_form()
             self.validate_form()
         except FormException as error:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
         # Marlink has only one calibration frequency so they don't want to see the input.
@@ -400,7 +400,7 @@ class AssetsEndPoint(object):
             self.read_form()
             self.validate_form()
         except FormException as error:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 

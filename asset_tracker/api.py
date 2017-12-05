@@ -12,7 +12,7 @@ from json import dumps, JSONDecodeError
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
-from parsys_utilities.sentry import sentry_capture_exception
+from parsys_utilities.sentry import sentry_exception
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
@@ -81,7 +81,7 @@ class Assets(object):
         try:
             draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
         except KeyError:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
@@ -104,7 +104,7 @@ class Assets(object):
                                 specific_search_attributes=specific_search_attributes,
                                 specific_sort_attributes=specific_sort_attributes, search_parameters=search_parameters)
         except KeyError:
-            sentry_capture_exception(self.request, get_tb=True, level='info')
+            sentry_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
 
         tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
@@ -250,7 +250,7 @@ class Assets(object):
 
         except JSONDecodeError:
             self.request.logger_technical.info('Asset linking: invalid JSON.')
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
         else:
@@ -268,7 +268,7 @@ class Assets(object):
 
         except SQLAlchemyError:
             self.request.logger_technical.info('Asset linking: db error.')
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
         else:
@@ -329,7 +329,7 @@ class Sites(object):
         try:
             draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
         except KeyError:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
@@ -354,7 +354,7 @@ class Sites(object):
                                 specific_sort_attributes=specific_sort_attributes,
                                 search_parameters=search_parameters)
         except KeyError:
-            sentry_capture_exception(self.request, get_tb=True, level='info')
+            sentry_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
 
         # dict to get tenant name from tenant id
@@ -523,7 +523,7 @@ class Software(object):
         try:
             json = self.request.json
         except JSONDecodeError:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
         # check if asset exists (cart, station, telecardia)
@@ -551,7 +551,7 @@ class Software(object):
                     software_status = self.request.db_session.query(models.EventStatus) \
                         .filter(models.EventStatus.status_id == 'software_update').one()
                 except (MultipleResultsFound, NoResultFound):
-                    sentry_capture_exception(self.request, level='info')
+                    sentry_exception(self.request, level='info')
                     self.request.logger_technical.info('asset status error')
                     return HTTPInternalServerError(json={'error': 'Internal server error.'})
 

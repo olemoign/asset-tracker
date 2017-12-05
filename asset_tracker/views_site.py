@@ -1,5 +1,5 @@
 """Site tracker views: sites lists and read/update."""
-from parsys_utilities.sentry import sentry_capture_exception
+from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
@@ -104,7 +104,7 @@ class SitesEndPoint(object):
             self.validate_form()
 
         except FormException as error:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
         # noinspection PyArgumentList
@@ -140,7 +140,7 @@ class SitesEndPoint(object):
             self.validate_form()
 
         except FormException as error:
-            sentry_capture_exception(self.request, level='info')
+            sentry_exception(self.request, level='info')
             return dict(error=str(error), site=self.site, **self.get_base_form_data())
 
         # required
