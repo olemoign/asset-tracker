@@ -3,16 +3,15 @@ $parsys-green: #a5e8cb;
 $parsys-green-hover: darken($parsys-green, 6.5%);
 $link-grey: #777;
 
-//General site branding
+// General site branding
 $brand-primary: $parsys-green;
 $panel-primary-text: $black;
 
-//Navbar styling
+// Navbar styling
 $navbar-default-bg: $parsys-green;
 $navbar-default-link-color: $black;
 $navbar-default-link-hover-color: $link-grey;
-$dropdown-bg: $parsys-green;
-$dropdown-link-hover-bg: $parsys-green-hover;
+
 $navbar-default-toggle-hover-bg: $parsys-green-hover;
 $navbar-default-toggle-icon-bar-bg: $black;
 $navbar-default-toggle-border-color: $parsys-green;
@@ -30,6 +29,17 @@ $link-color: $black;
     margin-bottom: 50px;
 }
 
-.panel-heading a:active, .panel-heading a:focus, .panel-heading a:hover {
-    color: $link-grey;
+// Navbar dropdown.
+#menu-settings .dropdown-menu {
+    background-color: $parsys-green;
+}
+
+#menu-settings .dropdown-menu > li > a {
+    &:hover, &:focus {
+        color: $link-grey;
+
+        @media (min-width: $grid-float-breakpoint) {
+            background-color: $parsys-green-hover;
+        }
+    }
 }

@@ -1,32 +1,29 @@
 $marlink-orange: #f04c24;
 $marlink-light-grey: #dedede;
+$marlink-middle-grey: #7d7d7d;
 $marlink-dark-grey: #4d4d4f;
-$white: #fff;
-$black: #000;
 
-//General site branding
-$panel-default-text: $white;
+// General site branding
+$panel-default-text: white;
 $panel-default-border: $marlink-light-grey;
 $panel-default-heading-bg: $marlink-dark-grey;
 
-$brand-primary: $black;
-$panel-primary-text: $white;
+$brand-primary: black;
+$panel-primary-text: white;
 $panel-primary-border: $marlink-light-grey;
 $panel-primary-heading-bg: $marlink-dark-grey;
 
-//Navbar styling
-$navbar-default-bg: $white;
-$navbar-default-link-color: $black;
-$navbar-default-link-hover-color: $marlink-dark-grey;
-$navbar-default-link-active-color: $black;
-$navbar-default-link-active-bg: $marlink-orange;
+// Navbar styling
 $navbar-height: 60px;
-$dropdown-bg: $white;
-$dropdown-link-color: $black;
-$dropdown-link-hover-bg: $marlink-orange;
-$dropdown-link-hover-color: $white;
+
+$navbar-default-bg: white;
+$navbar-default-link-color: black;
+$navbar-default-link-hover-color: $marlink-middle-grey;
+$navbar-default-link-active-color: black;
+$navbar-default-link-active-bg: white;
+
 $navbar-default-toggle-hover-bg: $marlink-orange;
-$navbar-default-toggle-icon-bar-bg: $black;
+$navbar-default-toggle-icon-bar-bg: black;
 $navbar-default-toggle-border-color: $marlink-orange;
 
 @import 'main';
@@ -70,7 +67,7 @@ body {
 }
 
 .root-container {
-    background: $white;
+    background: white;
     min-height: calc(100% - 63px - 40px);
     padding-top: 7px;
 }
@@ -80,7 +77,7 @@ body {
 }
 
 .main-container {
-    background-color: $white;
+    background-color: white;
     overflow-x: hidden;
 }
 
@@ -105,7 +102,7 @@ body {
     flex-grow: 2;
     flex-direction: column;
     justify-content: center;
-    color: $white;
+    color: white;
     padding-right: 0;
     padding-left: 30px;
     margin-right: calc(50% - 30px);
@@ -113,7 +110,7 @@ body {
     & .btn-default {
         border: none;
         background-color: $marlink-orange;
-        color: $white;
+        color: white;
         min-width: 110px;
         float: left !important;
     }
@@ -122,7 +119,7 @@ body {
 .forgot-pwd {
     text-align: left;
     & a {
-        color: $white;
+        color: white;
     }
 }
 
@@ -153,12 +150,12 @@ footer {
 
     & > div {
         flex-grow: 2;
-        color: $white;
+        color: white;
         font-size: 1.3rem;
         margin: 0 10px;
 
         & > a {
-            color: $white;
+            color: white;
         }
     }
 }
@@ -258,14 +255,25 @@ footer {
     margin-bottom: 0 !important;
 }
 
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-    color: $black;
-    background-color: $white;
+.navbar-default .navbar-nav > .active > a {
     border-bottom: 2px solid $marlink-orange;
 }
 
-.dropdown.open > a {
-    color: $white !important;
+// Navbar dropdown.
+#menu-settings > .open > a,
+#menu-settings > .open > a:hover,
+#menu-settings > .open > a:focus {
+    color: white;
+    background-color: $marlink-orange;
+}
+
+#menu-settings .dropdown-menu > li > a {
+    &:hover, &:focus {
+        @media (min-width: $grid-float-breakpoint) {
+            color: white;
+            background-color: $marlink-orange;
+        }
+    }
 }
 
 /****************/
@@ -274,7 +282,7 @@ footer {
 
 .panel-heading {
     & a {
-        color: $white;
+        color: white;
     }
 
     & a:active, a:focus, a:hover {
@@ -282,16 +290,20 @@ footer {
     }
 
     & a.btn {
-        color: $black;
+        color: black;
     }
 }
 
-.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-    color: $white;
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+    color: white;
     background-color: $marlink-orange;
 }
 
-table.dataTable thead .sorting:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc:after {
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_asc:after {
     color: $marlink-orange;
     opacity: 0.6;
 }
