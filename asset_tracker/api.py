@@ -277,7 +277,7 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables."""
-    # 'sites-read-api' permission is exceptionally controlled in site_get() method.
+    # 'external-sites-read' permission is exceptionally controlled in site_get() method.
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, 'g:admin', 'sites-list'),
