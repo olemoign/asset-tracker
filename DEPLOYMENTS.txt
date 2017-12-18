@@ -1,4 +1,4 @@
 2.7.0
 ---
 
--  Sites => add 'sites-read-api' to users' rights + modify "add_header X-Frame-Options ALLOW FROM cloud" in nginx conf.
+-  Sites => add 'external-sites-read' to users' rights + modify "add_header X-Frame-Options ALLOW FROM cloud" in nginx conf.
