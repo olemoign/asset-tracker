@@ -12,3 +12,5 @@ Rights list
 - sites-update
 
 - software-update
+
+- external-sites-read

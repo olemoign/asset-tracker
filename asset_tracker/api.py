@@ -277,7 +277,7 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables."""
-    # 'sites-read' permission is exceptionally controlled in site_get() method.
+    # 'sites-read-api' permission is exceptionally controlled in site_get() method.
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, 'g:admin', 'sites-list'),
@@ -406,7 +406,7 @@ class Sites(object):
             return {}
 
         # check permission
-        if (self.asset.tenant_id, 'sites-read') not in self.request.effective_principals:
+        if (self.asset.tenant_id, 'external-sites-read') not in self.request.effective_principals:
             raise HTTPForbidden()
 
         site_information = self.asset.site
