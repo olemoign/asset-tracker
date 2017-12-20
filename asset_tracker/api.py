@@ -406,7 +406,7 @@ class Sites(object):
             return {}
 
         # check permission
-        if (self.asset.tenant_id, 'external-sites-read') not in self.request.effective_principals:
+        if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
             raise HTTPForbidden()
 
         site_information = self.asset.site
@@ -425,15 +425,16 @@ class Software(object):
 
     """
     __acl__ = [
-        (Allow, None, 'software-update', 'software-update'),
-        (Allow, None, 'g:admin', 'software-update'),
+        (Allow, None, 'api-software-update', 'api-software-update'),
+        (Allow, None, 'g:admin', 'api-software-update'),
     ]
 
     def __init__(self, request):
         self.request = request
         self.product = None
 
-    @view_config(route_name='api-software-update', request_method='GET', permission='software-update', renderer='json')
+    @view_config(route_name='api-software-update', request_method='GET', permission='api-software-update',
+                 renderer='json')
     def software_update_get(self):
         """Return what is the lastest version of a product in a given branch (alpha/beta/dev/stable) and the url
         where to download the package.
@@ -500,7 +501,7 @@ class Software(object):
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return OrderedDict(version=channel_version[0], url=download_url)
 
-    @view_config(route_name='api-software-update', request_method='POST', permission='software-update',
+    @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
     def software_update_post(self):
         """Receive software(s) version.
