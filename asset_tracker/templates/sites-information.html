@@ -34,9 +34,9 @@
     {% endif %}
 
     <script>
-        {# send body height to the Cloud to ajust iframe height #}
-        const   data = document.body.scrollHeight,  {# must be Integer #}
-                targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
+        {# send body height to the Cloud to adjust iframe height #}
+        const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
+        const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
         window.parent.postMessage(data, targetOrigin);
     </script>
     </body>
