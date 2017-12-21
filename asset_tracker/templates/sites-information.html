@@ -1,23 +1,13 @@
 <!DOCTYPE html>
     <head>
         <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
-        <style>
-            html, body, p {
-                height: auto;
-                margin: 0;
-            }
-            .site-title {
-                padding: 10px 15px;
-                background-color: #f5f5f5;
-                border-top: 1px solid #ddd;
-                border-bottom: 1px solid #ddd;
-            }
-            .site-info {
-                padding: 20px 15px;
-            }
-        </style>
     </head>
-    <body>
+    <style>
+        html {
+            height: auto;
+        }
+    </style>
+    <body class="site-info-body">
     {% if name %}
         <div class="site-title">
             <h3 class="panel-title">{{ name }}</h3>
@@ -34,10 +24,18 @@
     {% endif %}
 
     <script>
-        {# send body height to the Cloud to adjust iframe height #}
-        const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
-        const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
-        window.parent.postMessage(data, targetOrigin);
+        function postSize() {
+            /**
+             * Send body height to the Cloud to adjust iframe height.
+             */
+            const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
+            const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
+            window.parent.postMessage(data, targetOrigin);
+        }
+
+        // Continue sending height on window resize as long lines can be split and change the iframe height.
+        postSize();
+        window.onresize = postSize;
     </script>
     </body>
 </html>

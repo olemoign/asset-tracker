@@ -34,7 +34,7 @@ html {
 
 body {
     font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
-    font-size: 1.6rem;
+    font-size: 16px;
     line-height: 1.4;
     background-color: $marlink-dark-grey;
 }
@@ -151,7 +151,7 @@ footer {
     & > div {
         flex-grow: 2;
         color: white;
-        font-size: 1.3rem;
+        font-size: 13px;
         margin: 0 10px;
 
         & > a {
@@ -161,10 +161,8 @@ footer {
 }
 
 @media (max-width: 1000px) {
-    footer {
-        & > div {
-            font-size: 1rem;
-        }
+    footer > div {
+        font-size: 10px;
     }
 }
 
@@ -186,10 +184,8 @@ footer {
         right: 10px;
     }
 
-    footer {
-        & > div {
-            font-size: 0.75rem;
-        }
+    footer > div {
+        font-size: 7.5px;
     }
 
     .img-background-fixed {
@@ -218,7 +214,7 @@ footer {
         height: auto;
 
         & > div {
-            font-size: 1.5rem !important;
+            font-size: 15px !important;
             padding: 10px 0;
 
             &:last-of-type {
@@ -313,10 +309,10 @@ table.dataTable thead .sorting_asc:after {
 /****************/
 
 #patient-action > footer > div {
-    font-size: 1rem;
+    font-size: 10px;
 
     @media (max-width: $screen-xl-min) {
-        font-size: 0.75rem;
+        font-size: 7.5px;
     }
 }
 

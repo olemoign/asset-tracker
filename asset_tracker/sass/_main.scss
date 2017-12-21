@@ -177,3 +177,27 @@ td {
 .form-control[disabled] {
     cursor: default;
 }
+
+
+/**********************/
+/** Site information **/
+/**********************/
+
+.site-info-body {
+    background-color: #ffffff;
+}
+
+.site-info-body p {
+    margin: 0;
+}
+
+.site-title {
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.site-info {
+    padding: 20px 15px;
+}
