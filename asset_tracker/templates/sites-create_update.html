@@ -5,7 +5,7 @@
     {% set title = site.name %}
 {% else %}
     {% set title = gettext('New site') %}
-    {% set form_creation = True %}
+    {% set is_creating_site = True %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -28,11 +28,11 @@
             </div>
 
             <div class="panel-body">
-                <form role="form" action="{% if form_creation %}{{ 'sites-create'|route_path }}{% else %}{{ 'sites-update'|route_path(site_id=site.id) }}{% endif %}" method="post">
+                <form role="form" action="{% if is_creating_site %}{{ 'sites-create'|route_path }}{% else %}{{ 'sites-update'|route_path(site_id=site.id) }}{% endif %}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                     <div class="row">
-                        {{ input(_('Name'), 'name', required=True) }}
+                        {{ input(gettext('Name'), 'name', required=True) }}
 
                         <div class="col-sm-6 form-group">
                             <label for="tenant_id">{{ gettext('Tenant') }} *</label>
@@ -46,21 +46,23 @@
                         <div class="col-sm-6 form-group">
                             <label for="site_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="site_type" name="site_type" required>
-                                {% if form_creation %}<option></option>{% endif %}
-                                <option value="Ship"{% if site and site.site_type == 'Ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
-                                <option value="Nursing home"{% if site and site.site_type == 'Nursing home' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
-                                <option value="Hospital"{% if site and site.site_type == 'Hospital' %} selected{% endif %}>{{ gettext('Hospital') }}</option>
+                            {% if is_creating_site %}
+                                <option></option>
+                            {% endif %}
+                            {% for site_type in site_types %}
+                                <option value={{ site_type }}{% if site and site.site_type == site_type %} selected{% endif %}>{{ gettext(site_type) }}</option>
+                            {% endfor %}
                             </select>
                         </div>
                     </div>
 
                     <div class="row">
-                        {{ input(_('Contact'), 'contact') }}
-                        {{ input(_('Phone'), 'phone') }}
-                        {{ input(_('Email'), 'email') }}
+                        {{ input(gettext('Contact'), 'contact') }}
+                        {{ input(gettext('Phone'), 'phone') }}
+                        {{ input(gettext('Email'), 'email') }}
                     </div>
 
-                {% if not site or 'g:admin' in principals or (site.tenant_id, 'sites-update') in principals %}
+                {% if is_creating_site or 'g:admin' in principals or (site.tenant_id, 'sites-update') in principals %}
                     <div class="btn-group pull-right">
                         <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
                         <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>

@@ -7,14 +7,15 @@ from pyramid.scripts.common import parse_vars
 
 from asset_tracker import models
 
-parser = argparse.ArgumentParser()
-parser.add_argument('config_uri')
-args, extras = parser.parse_known_args()
 
-print('Updating stations ...')
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config_uri')
+    args, extras = parser.parse_known_args()
 
-with bootstrap(args.config_uri, options=parse_vars(extras)) as env:
-    with transaction.manager:
+    print('Updating stations ...')
+
+    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, transaction.manager:
         db_session = env['request'].db_session
 
         in_stock_status = db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()
@@ -50,4 +51,8 @@ with bootstrap(args.config_uri, options=parse_vars(extras)) as env:
 
             print()
 
-print('Done.')
+    print('Done.')
+
+
+if __name__ == '__main__':
+    main()
