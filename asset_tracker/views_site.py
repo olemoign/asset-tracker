@@ -7,6 +7,8 @@ from pyramid.view import view_config
 
 from asset_tracker import models
 
+SITE_TYPES = [_('Company'), _('Hospital'), _('Nursing home'), _('Ship')]
+
 
 class FormException(Exception):
     pass
@@ -84,8 +86,9 @@ class SitesEndPoint(object):
             raise FormException(_('Site type is required.'))
 
     def get_base_form_data(self):
-        """Get base form input data (tenants)."""
+        """Get base form input data: site types, ordered by translated label, and tenants."""
         return {
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
             'tenants': self.get_create_read_tenants(),
         }
 

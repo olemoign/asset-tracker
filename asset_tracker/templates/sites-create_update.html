@@ -46,10 +46,12 @@
                         <div class="col-sm-6 form-group">
                             <label for="site_type">{{ gettext('Type') }} *</label>
                             <select class="form-control" id="site_type" name="site_type" required>
-                                {% if is_creating_site %}<option></option>{% endif %}
-                                <option value="Ship"{% if site and site.site_type == 'Ship' %} selected{% endif %}>{{ gettext('Ship') }}</option>
-                                <option value="Nursing home"{% if site and site.site_type == 'Nursing home' %} selected{% endif %}>{{ gettext('Nursing home') }}</option>
-                                <option value="Hospital"{% if site and site.site_type == 'Hospital' %} selected{% endif %}>{{ gettext('Hospital') }}</option>
+                            {% if is_creating_site %}
+                                <option></option>
+                            {% endif %}
+                            {% for site_type in site_types %}
+                                <option value={{ site_type }}{% if site and site.site_type == site_type %} selected{% endif %}>{{ gettext(site_type) }}</option>
+                            {% endfor %}
                             </select>
                         </div>
                     </div>
