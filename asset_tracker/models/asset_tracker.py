@@ -3,7 +3,6 @@ from json import loads
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
-from parsys_utilities.sentry import sentry_exception
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
