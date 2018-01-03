@@ -30,15 +30,19 @@ def main():
                 continue
 
             if site_name:
-                site = Site(tenant_id=asset.tenant_id, name=site_name)
+                site = db_session.query(Site).filter_by(name=site_name).first()
+
+                if not site:
+                    site = Site(tenant_id=asset.tenant_id, name=site_name)
+
+                    if site_name.startswith('CMA CGM') or site_name.startswith('APL'):
+                        site.site_type = 'Ship'
+                    else:
+                        site.site_type = 'Company'
+
+                    db_session.add(site)
+                    
                 asset.site = site
-
-                if site_name.startswith('CMA CGM') or site_name.startswith('APL'):
-                    site.site_type = 'Ship'
-                else:
-                    site.site_type = 'Company'
-
-                db_session.add(site)
                 print('Site {} added for asset {}.'.format(site_name, asset_id))
 
             else:
