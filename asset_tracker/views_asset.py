@@ -18,7 +18,9 @@ from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, Event
 
 
 class FormException(Exception):
-    pass
+    def __init__(self, message, log=False):
+        super().__init__(message)
+        self.log = log
 
 
 class AssetsEndPoint(object):
@@ -205,7 +207,7 @@ class AssetsEndPoint(object):
             tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
             tenant_id = self.form.get('tenant_id')
             if not tenant_id or tenant_id not in tenants_ids:
-                raise FormException(_('Invalid tenant.'))
+                raise FormException(_('Invalid tenant.'), log=True)
 
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
@@ -400,7 +402,8 @@ class AssetsEndPoint(object):
             self.read_form()
             self.validate_form()
         except FormException as error:
-            sentry_exception(self.request, level='info')
+            if error.log:
+                sentry_exception(self.request, level='info')
             return dict(error=str(error), asset=self.asset,
                         asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
 
