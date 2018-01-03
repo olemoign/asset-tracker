@@ -13,14 +13,8 @@ from pyramid.settings import aslist
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
 
-from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
-
-
-class FormException(Exception):
-    def __init__(self, message, log=False):
-        super().__init__(message)
-        self.log = log
 
 
 class AssetsEndPoint(object):
@@ -161,7 +155,7 @@ class AssetsEndPoint(object):
             self.form['equipment-serial_number'] = [self.form['equipment-serial_number']]
 
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
-            raise FormException(_('Invalid equipments.'))
+            raise FormException(_('Invalid equipments.'), log=True)
 
         expiration_dates_1 = self.form.get('equipment-expiration_date_1')
         if not expiration_dates_1:
@@ -211,23 +205,22 @@ class AssetsEndPoint(object):
 
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
-            raise FormException(_('Invalid calibration frequency.'))
+            raise FormException(_('Invalid calibration frequency.'), log=True)
 
         site_id = self.form.get('site_id')
         if site_id and not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
-            raise FormException(_('Invalid site.'))
+            raise FormException(_('Invalid site.'), log=True)
 
         if self.form.get('event'):
             status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
             if not status:
-                raise FormException(_('Invalid asset status.'))
+                raise FormException(_('Invalid asset status.'), log=True)
 
         if self.form.get('event_date'):
             try:
                 datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
             except (TypeError, ValueError):
-                sentry_exception(self.request, level='info')
-                raise FormException(_('Invalid event date.'))
+                raise FormException(_('Invalid event date.'), log=True)
 
         for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
                                                                    self.form['equipment-expiration_date_1'],
@@ -236,24 +229,24 @@ class AssetsEndPoint(object):
             if family_id:
                 db_family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
-                    raise FormException(_('Invalid equipment family.'))
+                    raise FormException(_('Invalid equipment family.'), log=True)
+
                 if expiration_date_1:
                     try:
                         datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        sentry_exception(self.request, level='info')
-                        raise FormException(_('Invalid expiration date.'))
+                        raise FormException(_('Invalid expiration date.'), log=True)
+
                 if expiration_date_2:
                     try:
                         datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        sentry_exception(self.request, level='info')
-                        raise FormException(_('Invalid expiration date.'))
+                        raise FormException(_('Invalid expiration date.'), log=True)
 
         for event_id in self.form['event-removed']:
             event = self.asset.history('asc', filter_software=True).filter(Event.event_id == event_id).first()
             if not event:
-                raise FormException(_('Invalid event.'))
+                raise FormException(_('Invalid event.'), log=True)
 
     def add_equipments(self):
         """Add asset's equipments."""
@@ -362,7 +355,8 @@ class AssetsEndPoint(object):
             self.read_form()
             self.validate_form()
         except FormException as error:
-            sentry_exception(self.request, level='info')
+            if error.log:
+                sentry_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
         # Marlink has only one calibration frequency so they don't want to see the input.

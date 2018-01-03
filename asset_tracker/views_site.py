@@ -6,10 +6,7 @@ from pyramid.security import Allow
 from pyramid.view import view_config
 
 from asset_tracker import models
-
-
-class FormException(Exception):
-    pass
+from asset_tracker.constants import FormException
 
 
 class SitesEndPoint(object):
@@ -70,7 +67,7 @@ class SitesEndPoint(object):
         tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
         tenant_id = self.form.get('tenant_id')
         if not tenant_id or tenant_id not in tenants_ids:
-            raise FormException(_('Invalid tenant.'))
+            raise FormException(_('Invalid tenant.'), log=True)
 
         site_name = self.form.get('name')
         if not site_name:
@@ -104,7 +101,8 @@ class SitesEndPoint(object):
             self.validate_form()
 
         except FormException as error:
-            sentry_exception(self.request, level='info')
+            if error.log:
+                sentry_exception(self.request, level='info')
             return dict(error=str(error), **self.get_base_form_data())
 
         # noinspection PyArgumentList
@@ -140,7 +138,8 @@ class SitesEndPoint(object):
             self.validate_form()
 
         except FormException as error:
-            sentry_exception(self.request, level='info')
+            if error.log:
+                sentry_exception(self.request, level='info')
             return dict(error=str(error), site=self.site, **self.get_base_form_data())
 
         # required
