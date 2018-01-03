@@ -41,7 +41,7 @@ def main():
                         site.site_type = 'Company'
 
                     db_session.add(site)
-                    
+
                 asset.site = site
                 print('Site {} added for asset {}.'.format(site_name, asset_id))
 

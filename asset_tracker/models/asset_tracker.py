@@ -136,7 +136,6 @@ class Event(Model, CreationDateTimeMixin):
         try:
             return loads(self.extra)
         except TypeError:
-            sentry_exception(self.request, get_tb=True, level='info')
             return {}
 
 
