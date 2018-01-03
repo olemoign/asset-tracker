@@ -54,8 +54,10 @@ function setActiveMenu(menuLinks) {
 // Manage site display
 $(document).on('change', '#tenant_id', function() {
     /**
-     * Call the filter when a new tenant is selected.
+     * Manage the site dropdown when a new tenant is selected.
      */
+    // Unselect the current value if we changed tenants.
+    $('#site_id').val('');
     manageSites();
 });
 
@@ -63,13 +65,10 @@ function manageSites() {
     /**
      * Enable the sites corresponding to the selected tenant.
      */
-    const siteSelect = $('#site_id');
-    siteSelect.val('');
-
     const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
     // noinspection JSValidateTypes
-    siteSelect.children('optgroup').each(function() {
+    $('#site_id').children('optgroup').each(function() {
         if (!tenantIdSelected || $(this).data('tenant_id') === tenantIdSelected) {
             $(this).show();
         }
