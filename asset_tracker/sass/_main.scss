@@ -8,6 +8,10 @@ $link-color: $black;
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
+[class^='select2'] {
+  border-radius: 0 !important;
+}
+
 
 $grid-float-breakpoint: 1100px;
 $screen-xl-min: 1500px;

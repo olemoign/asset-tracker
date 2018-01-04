@@ -17,6 +17,11 @@
 
         <link rel="stylesheet" href="https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.0/datatables.min.css">
         <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
+
+        {# select2 css #}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" integrity="sha256-xJOZHfpxLR/uhh1BwYFS5fhmOAdIRQaiOul5F/b7v3s=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous" />
+
     </head>
 
     <body>
@@ -27,6 +32,10 @@
         <script>$.fn.modal || document.write('<script src="/static/scripts/vendor/bootstrap-3.3.7.min.js"><\/script>')</script>
         <script src="https://cdn.datatables.net/v/bs/dt-1.10.16/r-2.2.0/datatables.min.js"></script>
         <script>$.fn.dataTable || document.write('<script src="/static/scripts/vendor/datatables-1.10.16.min.js"><\/script>')</script>
+
+        {# select2 js #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" integrity="sha256-FA14tBI8v+/1BtcH9XtJpcNbComBEpdawUZA6BPXRVw=" crossorigin="anonymous"></script>
+        <script>$.fn.select2 || document.write('<script src="/static/scripts/vendor/select2-4.0.5.min.js"><\/script>')</script>
 
         <script src="/static/scripts/asset_tracker.min.js"></script>
         <script>const userLocale = '{{ locale }}';</script>
