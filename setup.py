@@ -28,19 +28,19 @@ requires = [
     'zope.sqlalchemy',
 ]
 
-dev_requires = [
-    'babel',
-    'pybabel-json',
-    'pyramid_debugtoolbar',
-]
-
-prod_requires = [
-    'psycopg2',
-]
-
-qa_requires = [
-    'flake8',
-]
+optional = {
+    'dev': [
+        'babel',
+        'pybabel-json',
+        'pyramid_debugtoolbar',
+    ],
+    'prod': [
+        'psycopg2',
+    ],
+    'qa': [
+        'flake8',
+    ]
+}
 
 get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --first-parent --dirty | sed -e "s/-/+/"'
 version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
@@ -64,11 +64,7 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=requires,
-    extras_require={
-        'dev': dev_requires,
-        'prod': prod_requires,
-        'qa': qa_requires,
-    },
+    extras_require=optional,
     entry_points="""\
     [paste.app_factory]
     main = asset_tracker:main
