@@ -1,7 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
-from collections import namedtuple
 from datetime import datetime
-from itertools import groupby
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
@@ -12,6 +10,7 @@ from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import collate
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
@@ -100,20 +99,16 @@ class AssetsEndPoint(object):
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
     def get_site_data(self, tenants):
-        """Get all sites corresponding to current tenants, result will be filtered in front/js"""
-        tenants_list = [tenant['id'] for tenant in tenants]
+        """Get all sites corresponding to current tenants.
 
-        sites_query = self.request.db_session.query(Site) \
+        Sites will be filtered according to selected tenant in front/js.
+
+        """
+        tenants_list = (tenant['id'] for tenant in tenants)
+
+        sites = self.request.db_session.query(Site) \
             .filter(Site.tenant_id.in_(tenants_list)) \
-            .order_by(Site.tenant_id, Site.name)
-
-        # dict to find tenant name from tenant id
-        tenant_names = {tenant['id']: tenant['name'] for tenant in tenants}
-
-        # groupBy tenant name to make optGroup easier to manage
-        site_group = namedtuple('group_by_tenant', ['tenant_id', 'tenant_name', 'sites_list'])
-        sites = (site_group(tenant_id, tenant_names[tenant_id], list(group_of_sites))
-                 for tenant_id, group_of_sites in groupby(sites_query, key=lambda site: site.tenant_id))
+            .order_by(collate(Site.name, 'NOCASE'))
 
         return sites
 

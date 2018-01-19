@@ -34,50 +34,52 @@ $(function() {
         });
     }
 
+    // Show sites corresponding to the selected tenant when page is ready.
+    manageSites();
+
+    // select2 overrides standard select
     $('#site_id').select2({
         theme: "bootstrap",
         width: '100%'
-        // ,matcher: matchStart
     });
-
-    // call the filter when page is ready
-    // manageSites();
 });
 
-// TODO add custom filter to manage Site, because manageSites() don't work with select2
-// function matchStart(params, data) {
-//   // If there are no search terms, return all of the data
-//   if ($.trim(params.term) === '') {
-//     return data;
-//   }
-//
-//   // Skip if there is no 'children' property
-//   if (typeof data.children === 'undefined') {
-//     return null;
-//   }
-//
-//   // `data.children` contains the actual options that we are matching against
-//   var filteredChildren = [];
-//   $.each(data.children, function (idx, child) {
-//     if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
-//       filteredChildren.push(child);
-//     }
-//   });
-//
-//   // If we matched any of the timezone group's children, then set the matched children on the group
-//   // and return the group object
-//   if (filteredChildren.length) {
-//     var modifiedData = $.extend({}, data, true);
-//     modifiedData.children = filteredChildren;
-//
-//     // You can return modified objects from here
-//     // This includes matching the `children` how you want in nested data sets
-//     return modifiedData;
-//   }
-//
-//   // Return `null` if the term should not be displayed
-//   return null;
-// }
+// Manage site display
+$(document).on('change', '#tenant_id', function() {
+    /**
+     * Manage the site dropdown when a new tenant is selected.
+     * select2 don't understand hide attribute - select is rebuild every time a new tenant is selected
+     */
+    $('#site_id').select2('destroy');
+    $('#site_id').remove();
+    manageSites();
+
+    // Unselect the current value if we changed tenants.
+    $('#site_id').val('');
+
+    $('#site_id').select2({
+        theme: "bootstrap",
+        width: '100%'
+    });
+});
+
+function manageSites() {
+    /**
+     * Show sites corresponding to the selected tenant.
+     */
+    // Copy list of options (site__reference) in site__options
+    $('#site__reference').clone().prop('id', 'site_id').prop('name', 'site_id').show().appendTo('#site__options');
+
+    const tenantIdSelected = $('#tenant_id').find('option:selected').val();
+
+    // Filter Sites - remove irrelevant options
+    // noinspection JSValidateTypes
+    $('#site_id').children('option').each(function() {
+        if ($(this).data('tenant_id') && $(this).data('tenant_id') !== tenantIdSelected) {
+            $(this).remove();
+        }
+    });
+}
 
 function setActiveMenu(menuLinks) {
     /**
@@ -90,33 +92,6 @@ function setActiveMenu(menuLinks) {
     const cat = path.split('/', 2).join('/');
     const activeLink = menuLinks.find('a[href="' + cat + '/"]');
     activeLink.parents('li').addClass('active');
-}
-
-// Manage site display
-$(document).on('change', '#tenant_id', function() {
-    /**
-     * Manage the site dropdown when a new tenant is selected.
-     */
-    // Unselect the current value if we changed tenants.
-    $('#site_id').val('');
-    manageSites();
-});
-
-function manageSites() {
-    /**
-     * Enable the sites corresponding to the selected tenant.
-     */
-    const tenantIdSelected = $('#tenant_id').find('option:selected').val();
-
-    // noinspection JSValidateTypes
-    $('#site_id').children('optgroup').each(function() {
-        if (!tenantIdSelected || $(this).data('tenant_id') === tenantIdSelected) {
-            $(this).show();
-        }
-        else {
-            $(this).hide();
-        }
-    });
 }
 
 // Manage equipments.

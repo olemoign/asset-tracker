@@ -58,20 +58,21 @@
 
                         {{ input(gettext('Customer name'), 'customer_name') }}
 
-                        <div class="col-sm-6 form-group">
-                            <label for="site_id">{{ gettext('Site') }}</label>
-                            <select class="form-control" id="site_id" name="site_id">
+                        {# Site management - clone the select below in site__options #}
+                        <select class="form-control" id="site__reference" style="display: none;">
                                 <option></option>
-                            {% for tenant in sites|sort(attribute='tenant_name') %}
-                                <optgroup label="{{ tenant.tenant_name }}" data-tenant_id="{{ tenant.tenant_id }}">
-                                {% for site in tenant.sites_list %}
-                                    <option value="{{ site.id }}"{% if asset and asset.site_id == site.id %} selected{% endif %}>
-                                        {{- site.name -}}
-                                    </option>
-                                {% endfor %}
-                                </optgroup>
+                            {% for site in sites %}
+                                <option value="{{ site.id }}"
+                                        data-tenant_id="{{ site.tenant_id }}"
+                                        {% if asset and asset.site_id == site.id %} selected{% endif %}>
+                                    {{- site.name -}}
+                                </option>
                             {% endfor %}
-                            </select>
+                        </select>
+
+                        <div id="site__options" class="col-sm-6 form-group">
+                            <label for="site_id">{{ gettext('Site') }}</label>
+                            {# site__reference will be cloned here #}
                         </div>
 
                         {{ input(gettext('Current location'), 'current_location') }}
