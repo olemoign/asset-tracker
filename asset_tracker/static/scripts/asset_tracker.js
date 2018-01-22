@@ -34,9 +34,56 @@ $(function() {
         });
     }
 
-    // call the filter when page is ready
+    // Show sites corresponding to the selected tenant when page is ready.
     manageSites();
+
+    // select2 overrides standard select
+    $('#site_id').select2({
+        theme: "bootstrap",
+        width: '100%'
+    });
 });
+
+$(document).on('change', '#tenant_id', function() {
+    /**
+     * Manage the site dropdown when a new tenant is selected.
+     * select2 doesn't understand the 'hide' attribute - select is rebuilt every time a new tenant is selected.
+     */
+    let siteSelect = $('#site_id');
+    siteSelect.select2('destroy');
+    siteSelect.remove();
+    manageSites();
+
+    // Reselect div as it was removed/recreated.
+    siteSelect = $('#site_id');
+    // Unselect the current value if we changed tenants.
+    siteSelect.val('');
+
+    siteSelect.select2({
+        theme: "bootstrap",
+        width: '100%'
+    });
+});
+
+function manageSites() {
+    /**
+     * Show sites corresponding to the selected tenant.
+     */
+    // Copy list of options (site__reference) in site__options
+    $('#site__reference').clone()
+        .prop('id', 'site_id').prop('name', 'site_id')
+        .show().appendTo('#site__options');
+
+    const tenantIdSelected = $('#tenant_id').find('option:selected').val();
+
+    // Filter Sites - remove irrelevant options
+    // noinspection JSValidateTypes
+    $('#site_id').children('option').each(function() {
+        if ($(this).data('tenant_id') && $(this).data('tenant_id') !== tenantIdSelected) {
+            $(this).remove();
+        }
+    });
+}
 
 function setActiveMenu(menuLinks) {
     /**
@@ -49,33 +96,6 @@ function setActiveMenu(menuLinks) {
     const cat = path.split('/', 2).join('/');
     const activeLink = menuLinks.find('a[href="' + cat + '/"]');
     activeLink.parents('li').addClass('active');
-}
-
-// Manage site display
-$(document).on('change', '#tenant_id', function() {
-    /**
-     * Manage the site dropdown when a new tenant is selected.
-     */
-    // Unselect the current value if we changed tenants.
-    $('#site_id').val('');
-    manageSites();
-});
-
-function manageSites() {
-    /**
-     * Enable the sites corresponding to the selected tenant.
-     */
-    const tenantIdSelected = $('#tenant_id').find('option:selected').val();
-
-    // noinspection JSValidateTypes
-    $('#site_id').children('optgroup').each(function() {
-        if (!tenantIdSelected || $(this).data('tenant_id') === tenantIdSelected) {
-            $(this).show();
-        }
-        else {
-            $(this).hide();
-        }
-    });
 }
 
 // Manage equipments.
@@ -200,6 +220,7 @@ function createDataTables() {
 
         // Add the custom filter in the div created in the dom command above.
         const filterLabel = table.data('custom-filter-label');
+        // noinspection JSValidateTypes
         const tableState = initialisedDataTable.state.loaded();
 
         const filterInit = table.data('custom-filter-default') === true;
@@ -229,6 +250,7 @@ $(document).on('preInit.dt', function(event, settings) {
      * Before dataTable initialization, manage when to send the 'hide' query string for the custon filter.
      */
     const api = new $.fn.dataTable.Api(settings);
+    // noinspection JSValidateTypes
     const state = api.state.loaded();
 
     // This is the table div.

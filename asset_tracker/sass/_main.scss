@@ -8,6 +8,14 @@ $link-color: $black;
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
+[class^='select2'] {
+  border-radius: 0 !important;
+}
+
+// minimum height for select2 options = 20px (line-height) + 12px (padding)
+ul.select2-results__options > li {
+    min-height: 32px;
+}
 
 $grid-float-breakpoint: 1100px;
 $screen-xl-min: 1500px;
