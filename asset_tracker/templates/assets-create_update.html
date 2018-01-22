@@ -185,12 +185,12 @@
 
                                 <p class="history_event">
                                 {% if event.status.status_id == 'software_update' %}
-                                    {{ gettext('%(date)s: %(software)s updated to version %(version)s.',
+                                    {{ gettext('<b>%(date)s</b> %(software)s updated to version %(version)s.',
                                         software=event.extra_json.get('software_name')|capitalize,
                                         version=event.extra_json.get('software_version'),
                                         date=event.date|format_date(locale)) }}
                                 {% else %}
-                                    {{ gettext('%(date)s: %(creator)s set status to <b>%(status)s</b>.',
+                                    {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                         creator=event.creator_alias,
                                         status=gettext(event.status.label),
                                         date=event.date|format_date(locale)) }}
