@@ -44,17 +44,18 @@ $(function() {
     });
 });
 
-// Manage site display
 $(document).on('change', '#tenant_id', function() {
     /**
      * Manage the site dropdown when a new tenant is selected.
-     * select2 don't understand hide attribute - select is rebuild every time a new tenant is selected
+     * select2 doesn't understand the 'hide' attribute - select is rebuilt every time a new tenant is selected.
      */
-    const siteSelect = $('#site_id');
+    let siteSelect = $('#site_id');
     siteSelect.select2('destroy');
     siteSelect.remove();
     manageSites();
 
+    // Reselect div as it was removed/recreated.
+    siteSelect = $('#site_id');
     // Unselect the current value if we changed tenants.
     siteSelect.val('');
 
@@ -219,6 +220,7 @@ function createDataTables() {
 
         // Add the custom filter in the div created in the dom command above.
         const filterLabel = table.data('custom-filter-label');
+        // noinspection JSValidateTypes
         const tableState = initialisedDataTable.state.loaded();
 
         const filterInit = table.data('custom-filter-default') === true;
@@ -248,6 +250,7 @@ $(document).on('preInit.dt', function(event, settings) {
      * Before dataTable initialization, manage when to send the 'hide' query string for the custon filter.
      */
     const api = new $.fn.dataTable.Api(settings);
+    // noinspection JSValidateTypes
     const state = api.state.loaded();
 
     // This is the table div.
