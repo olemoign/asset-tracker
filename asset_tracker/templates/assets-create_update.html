@@ -62,7 +62,8 @@
                         {{ input(gettext('Customer name'), 'customer_name') }}
 
                         {# Site management - clone the select below in site__options #}
-                        <select class="form-control" id="site__reference" style="display: none;">
+                        <!--suppress HtmlFormInputWithoutLabel -->
+                        <select class="form-control hidden" id="site__reference">
                                 <option></option>
                             {% for site in sites %}
                                 <option value="{{ site.id }}"

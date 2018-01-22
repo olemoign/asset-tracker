@@ -50,14 +50,15 @@ $(document).on('change', '#tenant_id', function() {
      * Manage the site dropdown when a new tenant is selected.
      * select2 don't understand hide attribute - select is rebuild every time a new tenant is selected
      */
-    $('#site_id').select2('destroy');
-    $('#site_id').remove();
+    const siteSelect = $('#site_id');
+    siteSelect.select2('destroy');
+    siteSelect.remove();
     manageSites();
 
     // Unselect the current value if we changed tenants.
-    $('#site_id').val('');
+    siteSelect.val('');
 
-    $('#site_id').select2({
+    siteSelect.select2({
         theme: "bootstrap",
         width: '100%'
     });
@@ -68,7 +69,9 @@ function manageSites() {
      * Show sites corresponding to the selected tenant.
      */
     // Copy list of options (site__reference) in site__options
-    $('#site__reference').clone().prop('id', 'site_id').prop('name', 'site_id').show().appendTo('#site__options');
+    $('#site__reference').clone()
+        .prop('id', 'site_id').prop('name', 'site_id')
+        .show().appendTo('#site__options');
 
     const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
