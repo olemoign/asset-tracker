@@ -405,9 +405,14 @@ class Sites(object):
         if not self.asset or not self.asset.site:
             return {}
 
-        # check permission
-        if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
-            raise HTTPForbidden()
+        try:
+            # Check permission
+            if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
+                raise HTTPForbidden()
+
+        except HTTPForbidden:
+            sentry_exception(self.request)
+            return {}
 
         site_information = self.asset.site
         return {
