@@ -9,8 +9,8 @@ from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
-from sqlalchemy.sql import collate
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
@@ -108,7 +108,7 @@ class AssetsEndPoint(object):
 
         sites = self.request.db_session.query(Site) \
             .filter(Site.tenant_id.in_(tenants_list)) \
-            .order_by(collate(Site.name, 'NOCASE'))
+            .order_by(func.lower(Site.name))
 
         return sites
 
