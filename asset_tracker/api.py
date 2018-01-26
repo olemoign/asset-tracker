@@ -408,6 +408,9 @@ class Sites(object):
         try:
             # Check permission
             if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
+                tenant_id = self.asset.tenant_id
+                principals = self.request.effective_principals
+                print(tenant_id, principals)
                 raise HTTPForbidden()
 
         except HTTPForbidden:
