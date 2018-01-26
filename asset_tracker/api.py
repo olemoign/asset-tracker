@@ -44,7 +44,7 @@ def get_version_from_file(file_name):
 
 
 class Assets(object):
-    """List assets for dataTables."""
+    """List assets for dataTables + (RTA) link assets and their accounts."""
     __acl__ = [
         (Allow, None, 'assets-list', 'assets-list'),
         (Allow, None, 'g:admin', 'assets-list'),
@@ -276,11 +276,11 @@ class Assets(object):
 
 
 class Sites(object):
-    """List sites for dataTables."""
-    # 'external-sites-read' permission is exceptionally controlled in site_get() method.
+    """List sites for dataTables + (Cloud) get site info in consultation."""
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, 'g:admin', 'sites-list'),
+        (Allow, None, 'api-sites-read', 'api-sites-read'),
     ]
 
     def __init__(self, request):
@@ -393,20 +393,23 @@ class Sites(object):
             'data': sites
         }
 
-    @view_config(route_name='api-sites-information', request_method='GET', renderer='sites-information.html')
+    @view_config(route_name='api-sites-information', request_method='GET', permission='api-sites-read',
+                 renderer='sites-information.html')
     def site_get(self):
-        """Get site information for consultation.
+        """Get site information for consultation, HTML response to insert directly into the consultation.
 
-        Html response to insert directly into the consultation. Permissions are exceptionally controlled in the method,
-        so that there always is a response, even if the asset or the site doesn't exist. This means that the iframe
-        will always send the postMessage to give its size.
+        The authorisation process is tricky:
+            - we first apply the 'api-sites-read' permission with no tenant so that the app authenticates the user
+            and makes a first check.
+            - then we verify if the asset and the site exists. If they don't, it's ok, we return an iframe with no
+            data but the js that will send the postMessage to the cloud to give its size.
+            - if asset and site exist, we check the asset's tenant, to make sure the authorisation is right.
 
         """
         if not self.asset or not self.asset.site:
             return {}
 
         try:
-            # Check permission
             if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
                 raise HTTPForbidden()
 
