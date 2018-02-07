@@ -43,6 +43,24 @@ def get_version_from_file(file_name):
     return re.search('[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
 
 
+def natural_sort_key(string):
+    """Sort strings according to natural order.
+
+    When comparing strings, 'beta9' > 'beta15' because '9' > '1'. Actually, for humans, it should be '15' > '9'.
+    Here, we split the incoming string between text and digits and convert digits to int so that Python will be able
+    to compare int(15) and int(9).
+
+    Args:
+        string (str): string to be sorted.
+
+    Returns
+        list: split string, with text as str and numbers as int.
+
+    """
+    # 'if text' allows us to remove the empty strings always occuring for the first and last element of the re.split().
+    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', string) if text]
+
+
 class Assets(object):
     """List assets for dataTables + (RTA) link assets and their accounts."""
     __acl__ = [
@@ -479,7 +497,7 @@ class Software(object):
             version = get_version_from_file(product_file)
             product_versions[version] = product_file
         # Sort dictionary by version (which are the keys of the dict).
-        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: k[0]))
+        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: natural_sort_key(k[0])))
 
         version = self.request.GET.get('version')
         if version and version in product_versions.keys():
