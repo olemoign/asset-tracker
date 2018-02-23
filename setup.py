@@ -35,7 +35,7 @@ optional = {
         'pyramid_debugtoolbar',
     ],
     'prod': [
-        'psycopg2',
+        'psycopg2-binary',
     ],
     'qa': [
         'flake8',
