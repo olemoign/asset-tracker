@@ -477,6 +477,9 @@ class Software(object):
         else:
             self.product = product.lower()
 
+        # The station can indicate what version of the software it is using.
+        current = self.request.GET.get('current')
+
         # If storage folder wasn't set up, can't return link.
         storage = self.request.registry.settings.get('asset_tracker.software_storage')
         if not storage:
@@ -524,6 +527,11 @@ class Software(object):
 
         # We return only the latest version.
         channel_version = channel_versions.popitem(last=True)
+
+        # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
+        if current and natural_sort_key(current) > natural_sort_key(channel_version[0]):
+            return {}
+
         download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
         return OrderedDict(version=channel_version[0], url=download_url)
 
