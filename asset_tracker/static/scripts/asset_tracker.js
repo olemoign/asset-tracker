@@ -192,6 +192,10 @@ function createDataTables() {
         // Show 'processing' message.
         processing: true,
         columns: columns,
+        columnDefs: [{
+            targets: '_all',
+            render: $.fn.dataTable.render.text()
+        }],
         rowCallback: assetTrackerCallback
     };
 
