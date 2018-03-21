@@ -1,7 +1,7 @@
 import os
 import subprocess
-from setuptools import setup, find_packages
 
+from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.txt')) as f:

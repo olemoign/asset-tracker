@@ -9,7 +9,7 @@ $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
 [class^='select2'] {
-  border-radius: 0 !important;
+    border-radius: 0 !important;
 }
 
 // minimum height for select2 options = 20px (line-height) + 12px (padding)
@@ -185,7 +185,6 @@ td {
 .form-control[disabled] {
     cursor: default;
 }
-
 
 /**********************/
 /** Site information **/

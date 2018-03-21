@@ -11,6 +11,7 @@ class FormException(Exception):
     additional parameter (log) indicates if logging is required
 
     """
+
     def __init__(self, message, log=False):
         super().__init__(message)
         self.log = log

@@ -65,7 +65,7 @@ $(document).on('change', '#tenant_id', function() {
     });
 });
 
-function manageSites() {
+function manageSites() {
     /**
      * Show sites corresponding to the selected tenant.
      */
@@ -119,7 +119,7 @@ $(document).on('change', '.equipment__select', function() {
      */
     const expiration_date_fields = $(this).parents('.equipment__block').find('.expiration_date_fields');
 
-    if($(this).val() === GLUCOMETER_FAMILY_ID) {
+    if ($(this).val() === GLUCOMETER_FAMILY_ID) {
         expiration_date_fields.show();
     }
     else {
@@ -290,7 +290,9 @@ function addHref(row, data) {
      * Add on each row the link sent from the WebServices.
      */
     if (data.links) {
-        const object_link = $.grep(data.links, function(n) {return n.rel === 'self';});
+        const object_link = $.grep(data.links, function(n) {
+            return n.rel === 'self';
+        });
         const rowTd = $(row).find('td');
 
         rowTd.each(function() {
