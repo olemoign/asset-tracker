@@ -42,7 +42,7 @@ optional = {
     ]
 }
 
-get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --first-parent --dirty | sed -e "s/-/+/"'
+get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --dirty | sed -e "s/-/+/"'
 version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
 
 setup(
