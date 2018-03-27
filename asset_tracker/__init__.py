@@ -16,8 +16,7 @@ from pyramid_redis_sessions import RedisSessionFactory
 from asset_tracker.configuration import update_configuration
 
 
-# noinspection PyUnusedLocal
-def main(global_config, **settings):
+def main(_global_config, **settings):
     """This function returns a Pyramid WSGI application."""
     assert settings.get('rta.server_url')
     assert settings.get('rta.client_id')
