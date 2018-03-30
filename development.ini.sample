@@ -74,7 +74,7 @@ handlers =
 qualname = alembic
 
 [logger_sqlalchemy]
-level = WARN
+level = WARNING
 handlers =
 qualname = sqlalchemy.engine
 
