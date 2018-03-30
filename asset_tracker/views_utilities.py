@@ -13,7 +13,7 @@ from pyramid.view import exception_view_config, notfound_view_config, view_confi
 from asset_tracker import models
 from asset_tracker.constants import GLUCOMETER_ID
 
-DEFAULT_BRANDING = 'parsys_cloud'
+DEFAULT_BRANDING = 'parsys'
 
 
 @subscriber(NewResponse)

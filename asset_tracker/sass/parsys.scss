@@ -21,10 +21,8 @@ $link-color: $black;
 @import 'main';
 
 .main-logo {
-    width: 100%;
-    max-width: 470px;
+    background-image: url('/static/images/parsys/logo.png');
     padding-top: percentage(617px / 1032px);
-    background-image: url('/static/images/parsys_cloud/logo.png');
     margin-top: 10px;
     margin-bottom: 50px;
 }
