@@ -52,6 +52,7 @@ def get_tm_session(session_factory, transaction_manager):
 def includeme(config):
     """Initialize the model for a Pyramid app."""
     settings = config.get_settings()
+    settings['tm.manager_hook'] = 'pyramid_tm.explicit_manager'
 
     # use pyramid_tm to hook the transaction lifecycle to the request
     config.include('pyramid_tm')

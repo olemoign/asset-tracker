@@ -13,7 +13,7 @@ requires = [
     'alembic',
     'parsys_utilities',
     'paste',
-    'pastescript',
+    'plaster_pastedeploy',
     'pyramid',
     'pyramid_assetviews',
     'pyramid_jinja2',
@@ -48,25 +48,28 @@ version = subprocess.check_output(get_version, shell=True).decode('ascii').strip
 setup(
     name='asset_tracker',
     version=version,
-    description='asset_tracker',
+    description='Asset Tracker',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        'Programming Language :: Python',
+        'Framework :: Pyramid',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+        'Programming Language :: Python :: 3.5',
+        'License :: Other/Proprietary License',
     ],
-    author='',
-    author_email='',
-    url='',
-    keywords='web wsgi bfg pylons pyramid',
+    author='Parsys',
+    author_email='info@parsys.com',
+    url='https://parsys.com',
+    keywords='web pyramid pylons',
     packages=find_packages(),
     include_package_data=True,
-    zip_safe=True,
+    zip_safe=False,
     install_requires=requires,
     extras_require=optional,
-    entry_points="""\
-    [paste.app_factory]
-    main = asset_tracker:main
-    """,
+    entry_points={
+        'paste.app_factory': [
+            'main = rta:main',
+        ],
+    },
 )
