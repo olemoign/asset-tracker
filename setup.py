@@ -69,7 +69,7 @@ setup(
     extras_require=optional,
     entry_points={
         'paste.app_factory': [
-            'main = rta:main',
+            'main = asset_tracker:main',
         ],
     },
 )
