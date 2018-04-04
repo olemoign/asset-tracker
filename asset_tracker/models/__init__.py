@@ -19,9 +19,7 @@ def get_engine(settings, prefix='sqlalchemy.'):
 
 
 def get_session_factory(engine):
-    factory = sessionmaker()
-    factory.configure(bind=engine)
-    return factory
+    return sessionmaker(bind=engine)
 
 
 def get_tm_session(session_factory, transaction_manager):
