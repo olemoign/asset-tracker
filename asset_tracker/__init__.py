@@ -34,8 +34,6 @@ def main(_global_config, **settings):
     config.include('pyramid_jinja2')
     jinja2_settings = {
         'jinja2.directories': 'asset_tracker:templates',
-        'jinja2.cache_size': 400,
-        'jinja2.bytecode_caching': True,
         'jinja2.filters': {
             'format_date': 'parsys_utilities.dates:format_date',
             'format_datetime': 'parsys_utilities.dates:format_datetime',
