@@ -19,6 +19,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalSe
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
+from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
@@ -105,22 +106,48 @@ class Assets(object):
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
-        search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
-                             'full_text_search': full_text_search}
-        full_text_search_attributes = [models.Asset.asset_id, tenants.c.tenant_name, models.Asset.customer_name,
-                                       models.Asset.current_location, models.Site.name]
-        joined_tables = [(tenants, tenants.c.tenant_id == models.Asset.tenant_id), models.EventStatus, models.Site]
-        specific_search_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.status_id,
-                                      'site': models.Site.name}
-        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.position,
-                                    'site': models.Site.name}
+        search_parameters = {
+            'limit': limit,
+            'offset': offset,
+            'search': search,
+            'sort': sort,
+            'full_text_search': full_text_search
+        }
+        full_text_search_attributes = [
+            models.Asset.asset_id,
+            tenants.c.tenant_name,
+            models.Asset.customer_name,
+            models.Asset.current_location,
+            models.Site.name,
+        ]
+        joined_tables = [
+            (tenants, tenants.c.tenant_id == models.Asset.tenant_id),
+            models.EventStatus,
+            models.Site,
+        ]
+        specific_search_attributes = {
+            'site': models.Site.name,
+            'status': models.EventStatus.status_id,
+            'tenant_name': tenants.c.tenant_name,
+        }
+        specific_sort_attributes = {
+            'site': func.lower(models.Site.name),
+            'status': models.EventStatus.position,
+            'tenant_name': func.lower(tenants.c.tenant_name),
+        }
 
         try:
             # noinspection PyTypeChecker
-            output = sql_search(self.request.db_session, models.Asset, full_text_search_attributes,
-                                joined_tables=joined_tables, tenanting=self.apply_tenanting_filter,
-                                specific_search_attributes=specific_search_attributes,
-                                specific_sort_attributes=specific_sort_attributes, search_parameters=search_parameters)
+            output = sql_search(
+                self.request.db_session,
+                models.Asset,
+                full_text_search_attributes,
+                joined_tables=joined_tables,
+                tenanting=self.apply_tenanting_filter,
+                specific_search_attributes=specific_search_attributes,
+                specific_sort_attributes=specific_sort_attributes,
+                search_parameters=search_parameters
+            )
         except KeyError:
             sentry_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
@@ -358,7 +385,7 @@ class Sites(object):
                                        models.Site.contact, models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
-        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
+        specific_sort_attributes = {'tenant_name': func.lower(tenants.c.tenant_name)}
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
         try:
