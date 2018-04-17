@@ -19,6 +19,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalSe
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
+from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
@@ -112,7 +113,8 @@ class Assets(object):
         joined_tables = [(tenants, tenants.c.tenant_id == models.Asset.tenant_id), models.EventStatus, models.Site]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.status_id,
                                       'site': models.Site.name}
-        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name, 'status': models.EventStatus.position,
+        specific_sort_attributes = {'tenant_name': func.lower(tenants.c.tenant_name),
+                                    'status': models.EventStatus.position,
                                     'site': models.Site.name}
 
         try:
@@ -358,7 +360,7 @@ class Sites(object):
                                        models.Site.contact, models.Site.phone, models.Site.email]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
-        specific_sort_attributes = {'tenant_name': tenants.c.tenant_name}
+        specific_sort_attributes = {'tenant_name': func.lower(tenants.c.tenant_name)}
         search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
                              'full_text_search': full_text_search}
         try:
