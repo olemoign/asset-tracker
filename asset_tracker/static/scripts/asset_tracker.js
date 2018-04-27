@@ -251,7 +251,7 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
 
     var customFilter = table.data('custom-filter');
     if (customFilter) {
-        settings.ajax.data = function set(data) {
+        settings.ajax.data = function setDatatablesFilter(data) {
             // This is the HTML node wrapping around the table with the special search, filter, etc.
             var dataTableContainer = $(table.DataTable().table().container());
             var customFilterInput = dataTableContainer.find('.custom_filter__input');
