@@ -1,0 +1,31 @@
+{
+  "extends": "airbnb/legacy",
+  "parserOptions": {
+    "sourceType": "script"
+  },
+  "rules": {
+    "indent": [
+      "error",
+      4
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 140
+      }
+    ],
+    "space-before-function-paren": [
+      "error",
+      "never"
+    ],
+    "vars-on-top": "off"
+  },
+  "env": {
+    "browser": true,
+    "jquery": true
+  },
+  "globals": {
+    "Modernizr": true,
+    "userLocale": true
+  }
+}
