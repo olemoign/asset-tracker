@@ -136,6 +136,7 @@ function addHref(row, data) {
 
 function styleInactiveObjects(row, data) {
     var hasActiveProperty = Object.prototype.hasOwnProperty.call(data, 'is_active');
+    // noinspection JSUnresolvedVariable
     if (hasActiveProperty && !data.is_active) {
         $(row).addClass('warning');
     }
