@@ -1,5 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
+from itertools import chain
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
@@ -9,7 +10,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
-from sqlalchemy import func
+from sqlalchemy import and_, desc, func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
@@ -22,8 +23,10 @@ class AssetsEndPoint(object):
     def __acl__(self):
         acl = [
             (Allow, None, 'assets-create', 'assets-create'),
+            (Allow, None, 'assets-extract', 'assets-extract'),
             (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, 'g:admin', ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
+            (Allow, None, 'g:admin', ('assets-create', 'assets-extract', 'assets-read', 'assets-update',
+                                      'assets-list'))
         ]
 
         if self.asset:
@@ -441,6 +444,169 @@ class AssetsEndPoint(object):
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
+    @view_config(route_name='assets-extract', request_method='GET',
+                 permission='assets-extract', renderer='csv')
+    def extract_get(self):
+        """Download Asset data.
+
+        Write Asset information in csv file.
+
+        Returns:
+            (dict): header (list) and rows (list) of csv file
+
+        """
+        # authorized tenants TODO is get_create_read_tenants valid ?
+        tenants = dict((tenant['id'], tenant['name'])
+                       for tenant in self.get_create_read_tenants())
+
+        # TODO useless ?
+        asset_type_label = dict((('cart', 'Cart'),
+                                 ('station', 'Station'),
+                                 ('telecardia', 'Telecardia')))
+
+        # SET HEADER
+        # find column number
+
+        assets_with_software = self.request.db_session.query(Asset) \
+            .join(Event).join(EventStatus) \
+            .filter(and_(EventStatus.status_id == 'software_update',
+                         Asset.tenant_id.in_(tenants.keys())))
+
+        # TODO log KeyError ? (misspelled json)
+        # TODO heavy db access to get unique software!
+        unique_software_per_asset = []
+        for asset in assets_with_software:
+            software_update = self.request.db_session.query(Event).join(EventStatus) \
+                .filter(and_(Event.asset_id == asset.id,
+                             EventStatus.status_id == 'software_update'))
+
+            unique_software = set(update.extra_json['software_name']
+                                  for update in software_update)
+
+            unique_software_per_asset.append(len(unique_software))
+
+        max_software_per_asset = max(unique_software_per_asset)
+
+        max_equipment_per_asset = self.request.db_session.query(EquipmentFamily).count()
+
+        # -- csv header
+        columns_name = ('asset_id',
+                        'asset_type',
+                        'tenant_name',
+                        'customer_name',
+                        'current_location',
+                        'calibration_frequency',
+                        'status_label',
+                        'notes',
+
+                        'production_date',
+                        'activation_date',
+                        'last_calibration_date',
+                        'next_calibration_date',
+                        'warranty_end_date',
+
+                        'site_name',
+                        'site_type',
+                        'site_contact',
+                        'site_phone',
+                        'site_email')
+
+        columns_software = (label
+                            for i in range(1, max_software_per_asset + 1)
+                            for label in ('software_{}_name'.format(i),
+                                          'software_{}_version'.format(i)))
+
+        columns_equipment = (label
+                             for i in range(1, max_equipment_per_asset + 1)
+                             for label in ('equipment_{}_name'.format(i),
+                                           'equipment_{}_serial_number'.format(i)))
+
+        header = chain(columns_name, columns_software, columns_equipment)
+
+        # SET ROWS
+
+        # -- csv body
+        assets = self.request.db_session.query(Asset) \
+            .options(joinedload(Asset.site)) \
+            .options(joinedload(Asset.status)) \
+            .filter(Asset.tenant_id.in_(tenants.keys()))
+
+        rows = []
+        for asset in assets:
+            row = [asset.asset_id,
+                   _(asset_type_label[asset.asset_type]),
+                   tenants[asset.tenant_id],
+                   asset.customer_name,
+                   asset.current_location,
+                   asset.calibration_frequency,
+                   _(asset.status.label),
+                   asset.notes,
+
+                   # TODO heavy db access to get date !
+                   asset.production,
+                   asset.warranty_end,
+                   asset.calibration_last,
+                   asset.activation_first,
+                   asset.calibration_next]
+
+            if asset.site:
+                site = asset.site
+                row.extend((site.name,
+                            _(site.site_type),
+                            site.contact,
+                            site.phone,
+                            site.email))
+            else:
+                row.extend([None]*5)
+
+            # the complete list of the most recent software
+            software_update = self.request.db_session.query(Event).join(EventStatus) \
+                .filter(and_(Event.asset_id == asset.id,
+                             EventStatus.status_id == 'software_update')).order_by(desc('created_at'))
+
+            # get last version of each software
+            last_software = {}
+            for update in software_update:
+                extra_json = update.extra_json
+                software_name, software_version = extra_json['software_name'], extra_json['software_version']
+                if software_name not in last_software:
+                    last_software[software_name] = software_version
+
+            # format output
+            software = [label
+                        for name, version in last_software.items()
+                        for label in (name, version)]
+
+            # fill with None value to maintain column alignment
+            if max_software_per_asset - len(last_software):
+                software.extend([None]*(2*(max_software_per_asset - len(last_software))))
+
+            row.extend(software)
+
+            # the complete list of equipment for one asset
+            asset_equipments = self.request.db_session.query(Equipment) \
+                .options(joinedload(Equipment.family)) \
+                .filter(Equipment.asset_id == asset.id)
+
+            # format output
+            equipment = [label
+                         for equipment in asset_equipments
+                         for label in (equipment.family.model, equipment.serial_number)]
+
+            row.extend(equipment)
+
+            # add new row to csv
+            rows.append(row)
+
+        # override attributes of response
+        filename = 'report.csv'
+        self.request.response.content_disposition = 'attachment;filename=' + filename
+
+        return {
+            'header': header,
+            'rows': rows
+        }
+
     @view_config(route_name='home', request_method='GET', permission='assets-list')
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
@@ -455,4 +621,5 @@ def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=AssetsEndPoint)
     config.add_route(pattern='assets/{asset_id:\d+}/', name='assets-update', factory=AssetsEndPoint)
     config.add_route(pattern='assets/', name='assets-list', factory=AssetsEndPoint)
+    config.add_route(pattern='assets/extract/', name='assets-extract', factory=AssetsEndPoint)
     config.add_route(pattern='/', name='home', factory=AssetsEndPoint)
