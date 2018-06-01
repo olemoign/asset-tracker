@@ -582,9 +582,8 @@ class AssetsEndPoint(object):
         # dynamic data - software
         # find unique software name
         software_update = self.request.db_session.query(Event) \
-            .join(EventStatus).join(Asset) \
-            .filter(and_(EventStatus.status_id == 'software_update',
-                         Asset.tenant_id.in_(tenants.keys())))
+            .join(Asset, Event.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
+            .join(EventStatus, Event.status_id == EventStatus.id).filter(EventStatus.status_id == 'software_update')
 
         unique_software = set(update.extra_json['software_name']
                               for update in software_update)
