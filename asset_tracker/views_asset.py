@@ -444,23 +444,8 @@ class AssetsEndPoint(object):
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
-    @view_config(route_name='assets-extract', request_method='GET',
-                 permission='assets-extract', renderer='csv')
-    def extract_get(self):
-        """Download Asset data.
-
-        Write Asset information in csv file.
-
-        Returns:
-            (dict): header (list) and rows (list) of csv file
-
-        """
-        # authorized tenants TODO is get_create_read_tenants valid ?
-        tenants = dict((tenant['id'], tenant['name'])
-                       for tenant in self.get_create_read_tenants())
-
-        # SET HEADER
-
+    @staticmethod
+    def get_csv_header(unique_software, unique_equipment):
         # static data
         columns_name = ('asset_id',
                         'asset_type',
@@ -483,13 +468,6 @@ class AssetsEndPoint(object):
                         'site_phone',
                         'site_email')
 
-        # dynamic data - software
-        software_update = self.request.db_session.query(Event).join(EventStatus) \
-            .filter(EventStatus.status_id == 'software_update')
-
-        unique_software = set(update.extra_json['software_name']
-                              for update in software_update)
-
         max_software_per_asset = len(unique_software)
 
         columns_software = (label
@@ -497,13 +475,6 @@ class AssetsEndPoint(object):
                             for label in ('software_{}_name'.format(i),
                                           'software_{}_version'.format(i)))
 
-        # dynamic data - equipment
-        equipment_query = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
-            .join(EquipmentFamily) \
-            .group_by(Equipment.family_id, EquipmentFamily.model) \
-            .order_by(EquipmentFamily.model)
-
-        unique_equipment = tuple(e[1] for e in equipment_query)
         max_equipment_per_asset = len(unique_equipment)
 
         columns_equipment = (label
@@ -512,11 +483,9 @@ class AssetsEndPoint(object):
                                            'equipment_{}_serial_number'.format(i)))
 
         # columns name of csv file
-        header = chain(columns_name, columns_software, columns_equipment)
+        return chain(columns_name, columns_software, columns_equipment)
 
-        # SET ROWS
-
-        # -- csv body
+    def get_csv_rows(self, unique_software, unique_equipment, tenants):
         assets = self.request.db_session.query(Asset) \
             .options(joinedload(Asset.site)) \
             .options(joinedload(Asset.status)) \
@@ -525,6 +494,7 @@ class AssetsEndPoint(object):
 
         rows = []
         for asset in assets:
+            # ADD basic information
             row = [asset.asset_id,
                    asset.asset_type,
                    tenants[asset.tenant_id],
@@ -541,6 +511,7 @@ class AssetsEndPoint(object):
                    asset.calibration_next,
                    asset.warranty_end]
 
+            # ADD Site information
             if asset.site:
                 site = asset.site
                 row.extend((site.name,
@@ -552,6 +523,7 @@ class AssetsEndPoint(object):
                 # fill with None value to maintain column alignment
                 row.extend((None, None, None, None, None))
 
+            # ADD software information
             # the complete list of the most recent software
             software_update = self.request.db_session.query(Event).join(EventStatus) \
                 .filter(and_(Event.asset_id == asset.id,
@@ -573,6 +545,7 @@ class AssetsEndPoint(object):
                     # fill with None value to maintain column alignment
                     row.extend((None, None))
 
+            # ADD equipment information
             # the complete list of equipment for one asset
             equipments = self.request.db_session.query(EquipmentFamily.model, Equipment.serial_number) \
                 .join(Equipment) \
@@ -589,13 +562,50 @@ class AssetsEndPoint(object):
             # add asset to csv
             rows.append(row)
 
+        return rows
+
+    @view_config(route_name='assets-extract', request_method='GET',
+                 permission='assets-extract', renderer='csv')
+    def extract_get(self):
+        """Download Asset data.
+
+        Write Asset information in csv file.
+
+        Returns:
+            (dict): header (list) and rows (list) of csv file
+
+        """
+        # authorized tenants TODO is get_create_read_tenants valid ?
+        tenants = dict((tenant['id'], tenant['name'])
+                       for tenant in self.get_create_read_tenants())
+
+        # dynamic data - software
+        # find unique software name
+        software_update = self.request.db_session.query(Event) \
+            .join(EventStatus).join(Asset) \
+            .filter(and_(EventStatus.status_id == 'software_update',
+                         Asset.tenant_id.in_(tenants.keys())))
+
+        unique_software = set(update.extra_json['software_name']
+                              for update in software_update)
+
+        # dynamic data - equipment
+        # find unique equipment name
+        equipment_query = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
+            .join(EquipmentFamily).join(Asset) \
+            .filter(Asset.tenant_id.in_(tenants.keys())) \
+            .group_by(Equipment.family_id, EquipmentFamily.model) \
+            .order_by(EquipmentFamily.model)
+
+        unique_equipment = tuple(e[1] for e in equipment_query)
+
         # override attributes of response
         filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
         self.request.response.content_disposition = 'attachment;filename=' + filename
 
         return {
-            'header': header,
-            'rows': rows
+            'header': self.get_csv_header(unique_software, unique_equipment),
+            'rows': self.get_csv_rows(unique_software, unique_equipment, tenants)
         }
 
     @view_config(route_name='home', request_method='GET', permission='assets-list')
