@@ -498,8 +498,12 @@ class AssetsEndPoint(object):
                                           'software_{}_version'.format(i)))
 
         # dynamic data - equipment
-        equipment_query = self.request.db_session.query(EquipmentFamily.model).order_by(EquipmentFamily.model)
-        unique_equipment = tuple(e[0] for e in equipment_query)
+        equipment_query = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
+            .join(EquipmentFamily) \
+            .group_by(Equipment.family_id, EquipmentFamily.model) \
+            .order_by(EquipmentFamily.model)
+
+        unique_equipment = tuple(e[1] for e in equipment_query)
         max_equipment_per_asset = len(unique_equipment)
 
         columns_equipment = (label
@@ -586,7 +590,7 @@ class AssetsEndPoint(object):
             rows.append(row)
 
         # override attributes of response
-        filename = 'report.csv'
+        filename = 'report.csv'  # TODO add date
         self.request.response.content_disposition = 'attachment;filename=' + filename
 
         return {
