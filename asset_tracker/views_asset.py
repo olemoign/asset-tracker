@@ -590,7 +590,7 @@ class AssetsEndPoint(object):
             rows.append(row)
 
         # override attributes of response
-        filename = 'report.csv'  # TODO add date
+        filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
         self.request.response.content_disposition = 'attachment;filename=' + filename
 
         return {
