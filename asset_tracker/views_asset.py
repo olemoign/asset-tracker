@@ -459,37 +459,9 @@ class AssetsEndPoint(object):
         tenants = dict((tenant['id'], tenant['name'])
                        for tenant in self.get_create_read_tenants())
 
-        # TODO useless ?
-        asset_type_label = dict((('cart', 'Cart'),
-                                 ('station', 'Station'),
-                                 ('telecardia', 'Telecardia')))
-
         # SET HEADER
-        # find column number
 
-        assets_with_software = self.request.db_session.query(Asset) \
-            .join(Event).join(EventStatus) \
-            .filter(and_(EventStatus.status_id == 'software_update',
-                         Asset.tenant_id.in_(tenants.keys())))
-
-        # TODO log KeyError ? (misspelled json)
-        # TODO heavy db access to get unique software!
-        unique_software_per_asset = []
-        for asset in assets_with_software:
-            software_update = self.request.db_session.query(Event).join(EventStatus) \
-                .filter(and_(Event.asset_id == asset.id,
-                             EventStatus.status_id == 'software_update'))
-
-            unique_software = set(update.extra_json['software_name']
-                                  for update in software_update)
-
-            unique_software_per_asset.append(len(unique_software))
-
-        max_software_per_asset = max(unique_software_per_asset)
-
-        max_equipment_per_asset = self.request.db_session.query(EquipmentFamily).count()
-
-        # -- csv header
+        # static data
         columns_name = ('asset_id',
                         'asset_type',
                         'tenant_name',
@@ -511,16 +483,31 @@ class AssetsEndPoint(object):
                         'site_phone',
                         'site_email')
 
+        # dynamic data - software
+        software_update = self.request.db_session.query(Event).join(EventStatus) \
+            .filter(EventStatus.status_id == 'software_update')
+
+        unique_software = set(update.extra_json['software_name']
+                              for update in software_update)
+
+        max_software_per_asset = len(unique_software)
+
         columns_software = (label
                             for i in range(1, max_software_per_asset + 1)
                             for label in ('software_{}_name'.format(i),
                                           'software_{}_version'.format(i)))
+
+        # dynamic data - equipment
+        equipment_query = self.request.db_session.query(EquipmentFamily.model).order_by(EquipmentFamily.model)
+        unique_equipment = tuple(e[0] for e in equipment_query)
+        max_equipment_per_asset = len(unique_equipment)
 
         columns_equipment = (label
                              for i in range(1, max_equipment_per_asset + 1)
                              for label in ('equipment_{}_name'.format(i),
                                            'equipment_{}_serial_number'.format(i)))
 
+        # columns name of csv file
         header = chain(columns_name, columns_software, columns_equipment)
 
         # SET ROWS
@@ -529,73 +516,73 @@ class AssetsEndPoint(object):
         assets = self.request.db_session.query(Asset) \
             .options(joinedload(Asset.site)) \
             .options(joinedload(Asset.status)) \
-            .filter(Asset.tenant_id.in_(tenants.keys()))
+            .filter(Asset.tenant_id.in_(tenants.keys())) \
+            .order_by(Asset.asset_id)
 
         rows = []
         for asset in assets:
             row = [asset.asset_id,
-                   _(asset_type_label[asset.asset_type]),
+                   asset.asset_type,
                    tenants[asset.tenant_id],
                    asset.customer_name,
                    asset.current_location,
                    asset.calibration_frequency,
-                   _(asset.status.label),
+                   asset.status.label,
                    asset.notes,
 
-                   # TODO heavy db access to get date !
+                   # TODO heavy db access (7/asset) to get date !
                    asset.production,
-                   asset.warranty_end,
-                   asset.calibration_last,
                    asset.activation_first,
-                   asset.calibration_next]
+                   asset.calibration_last,
+                   asset.calibration_next,
+                   asset.warranty_end]
 
             if asset.site:
                 site = asset.site
                 row.extend((site.name,
-                            _(site.site_type),
+                            site.site_type,
                             site.contact,
                             site.phone,
                             site.email))
             else:
-                row.extend([None]*5)
+                # fill with None value to maintain column alignment
+                row.extend((None, None, None, None, None))
 
             # the complete list of the most recent software
             software_update = self.request.db_session.query(Event).join(EventStatus) \
                 .filter(and_(Event.asset_id == asset.id,
-                             EventStatus.status_id == 'software_update')).order_by(desc('created_at'))
+                             EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
             # get last version of each software
-            last_software = {}
+            most_recent_soft_per_asset = {}
             for update in software_update:
                 extra_json = update.extra_json
                 software_name, software_version = extra_json['software_name'], extra_json['software_version']
-                if software_name not in last_software:
-                    last_software[software_name] = software_version
+                if software_name not in most_recent_soft_per_asset:
+                    most_recent_soft_per_asset[software_name] = software_version
 
-            # format output
-            software = [label
-                        for name, version in last_software.items()
-                        for label in (name, version)]
-
-            # fill with None value to maintain column alignment
-            if max_software_per_asset - len(last_software):
-                software.extend([None]*(2*(max_software_per_asset - len(last_software))))
-
-            row.extend(software)
+            # format software output
+            for software_name in unique_software:
+                if software_name in most_recent_soft_per_asset:
+                    row.extend((software_name, most_recent_soft_per_asset[software_name]))
+                else:
+                    # fill with None value to maintain column alignment
+                    row.extend((None, None))
 
             # the complete list of equipment for one asset
-            asset_equipments = self.request.db_session.query(Equipment) \
-                .options(joinedload(Equipment.family)) \
-                .filter(Equipment.asset_id == asset.id)
+            equipments = self.request.db_session.query(EquipmentFamily.model, Equipment.serial_number) \
+                .join(Equipment) \
+                .filter(Equipment.asset_id == asset.id).all()
 
-            # format output
-            equipment = [label
-                         for equipment in asset_equipments
-                         for label in (equipment.family.model, equipment.serial_number)]
+            for equipment_name in unique_equipment:
+                equipment = next((e for e in equipments if e[0] == equipment_name), None)
+                if equipment:
+                    row.extend(equipment)
+                else:
+                    # fill with None value to maintain column alignment
+                    row.extend((None, None))
 
-            row.extend(equipment)
-
-            # add new row to csv
+            # add asset to csv
             rows.append(row)
 
         # override attributes of response
