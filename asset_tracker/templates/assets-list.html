@@ -14,7 +14,7 @@
                 <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
             {% endif %}
             {% if 'g:admin' in principals or 'assets-extract' in principals_without_tenants %}
-                <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('Extract') }}</a>
+                <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default pull-right margin-right-10">{{ gettext('Extract') }}</a>
             {% endif %}
             </div>
 
