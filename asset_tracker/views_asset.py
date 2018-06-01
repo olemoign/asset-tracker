@@ -591,8 +591,8 @@ class AssetsEndPoint(object):
         # dynamic data - equipment
         # find unique equipment name
         equipment_query = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
-            .join(EquipmentFamily).join(Asset) \
-            .filter(Asset.tenant_id.in_(tenants.keys())) \
+            .join(EquipmentFamily, Equipment.family_id == EquipmentFamily.id) \
+            .join(Asset, Equipment.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
             .group_by(Equipment.family_id, EquipmentFamily.model) \
             .order_by(EquipmentFamily.model)
 
