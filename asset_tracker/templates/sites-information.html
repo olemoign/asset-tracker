@@ -24,12 +24,14 @@
     {% endif %}
 
     <script>
+        'use strict';
+
         function postSize() {
             /**
              * Send body height to the Cloud to adjust iframe height.
              */
-            const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
-            const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
+            var data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
+            var targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
             window.parent.postMessage(data, targetOrigin);
         }
 
