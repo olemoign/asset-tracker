@@ -4,6 +4,7 @@ from itertools import chain
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
+from parsys_utilities.form import replace_newline
 from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -502,7 +503,7 @@ class AssetsEndPoint(object):
                    asset.current_location,
                    asset.calibration_frequency,
                    asset.status.label,
-                   asset.notes,
+                   replace_newline(asset.notes),
 
                    # TODO heavy db access (7/asset) to get date !
                    asset.production,
