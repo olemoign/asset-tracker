@@ -486,8 +486,9 @@ class AssetsEndPoint(object):
         # columns name of csv file
         return chain(columns_name, columns_software, columns_equipment)
 
-    def get_csv_rows(self, unique_software, unique_equipment, tenants):
-        assets = self.request.db_session.query(Asset) \
+    @staticmethod
+    def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
+        assets = db_session.query(Asset) \
             .options(joinedload(Asset.site)) \
             .options(joinedload(Asset.status)) \
             .filter(Asset.tenant_id.in_(tenants.keys())) \
@@ -526,7 +527,7 @@ class AssetsEndPoint(object):
 
             # ADD software information
             # the complete list of the most recent software
-            software_update = self.request.db_session.query(Event).join(EventStatus) \
+            software_update = db_session.query(Event).join(EventStatus) \
                 .filter(and_(Event.asset_id == asset.id,
                              EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
@@ -548,7 +549,7 @@ class AssetsEndPoint(object):
 
             # ADD equipment information
             # the complete list of equipment for one asset
-            equipments = self.request.db_session.query(EquipmentFamily.model, Equipment.serial_number) \
+            equipments = db_session.query(EquipmentFamily.model, Equipment.serial_number) \
                 .join(Equipment) \
                 .filter(Equipment.asset_id == asset.id).all()
 
@@ -605,7 +606,7 @@ class AssetsEndPoint(object):
 
         return {
             'header': self.get_csv_header(unique_software, unique_equipment),
-            'rows': self.get_csv_rows(unique_software, unique_equipment, tenants)
+            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants)
         }
 
     @view_config(route_name='home', request_method='GET', permission='assets-list')
