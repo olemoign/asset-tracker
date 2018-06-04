@@ -447,7 +447,8 @@ class AssetsEndPoint(object):
 
     @staticmethod
     def get_csv_header(unique_software, unique_equipment):
-        # static data
+        """Define the column titles for the csv file."""
+
         columns_name = ('asset_id',
                         'asset_type',
                         'tenant_name',
@@ -488,6 +489,8 @@ class AssetsEndPoint(object):
 
     @staticmethod
     def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
+        """Get the asset information for the csv file."""
+
         assets = db_session.query(Asset) \
             .options(joinedload(Asset.site)) \
             .options(joinedload(Asset.status)) \
