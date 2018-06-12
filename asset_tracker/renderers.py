@@ -1,10 +1,7 @@
 """https://docs.pylonsproject.org/projects/pyramid-cookbook/en/latest/templates/customrenderers.html"""
 
 import csv
-try:
-    from StringIO import StringIO  # python 2
-except ImportError:
-    from io import StringIO  # python 3
+from io import StringIO
 
 
 class CSVRenderer(object):
