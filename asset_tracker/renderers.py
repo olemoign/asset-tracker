@@ -1,4 +1,4 @@
-"""https://docs.pylonsproject.org/projects/pyramid-cookbook/en/latest/templates/customrenderers.html"""
+"""CSV Renderer https://docs.pylonsproject.org/projects/pyramid-cookbook/en/latest/templates/customrenderers.html"""
 
 import csv
 from io import StringIO
@@ -9,10 +9,10 @@ class CSVRenderer(object):
         pass
 
     def __call__(self, value, system):
-        """ Returns a plain CSV-encoded string with content-type
-        ``text/csv``. The content-type may be overridden by
-        setting ``request.response.content_type``."""
+        """ Returns a plain CSV-encoded string with content-type ``text/csv``. The content-type may be overridden by
+        setting ``request.response.content_type``.
 
+        """
         request = system.get('request')
         if request is not None:
             response = request.response

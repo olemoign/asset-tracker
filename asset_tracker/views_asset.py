@@ -130,8 +130,13 @@ class AssetsEndPoint(object):
 
         sites = self.get_site_data(tenants)
 
-        return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
-                'statuses': statuses, 'tenants': tenants, 'sites': sites}
+        return {
+            'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
+            'equipments_families': equipments_families,
+            'statuses': statuses,
+            'tenants': tenants,
+            'sites': sites
+        }
 
     def read_form(self):
         """Format form content according to our needs.
@@ -269,10 +274,12 @@ class AssetsEndPoint(object):
                 expiration_date_2 = None
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            equipment = Equipment(family=family,
-                                  serial_number=serial_number,
-                                  expiration_date_1=expiration_date_1,
-                                  expiration_date_2=expiration_date_2)
+            equipment = Equipment(
+                family=family,
+                serial_number=serial_number,
+                expiration_date_1=expiration_date_1,
+                expiration_date_2=expiration_date_2,
+            )
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -286,8 +293,12 @@ class AssetsEndPoint(object):
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
         # noinspection PyArgumentList
-        event = Event(date=event_date, creator_id=self.request.user.id, creator_alias=self.request.user.alias,
-                      status=status)
+        event = Event(
+            date=event_date,
+            creator_id=self.request.user.id,
+            creator_alias=self.request.user.alias,
+            status=status,
+        )
         # noinspection PyProtectedMember
         self.asset._history.append(event)
         self.request.db_session.add(event)
@@ -365,12 +376,17 @@ class AssetsEndPoint(object):
             calibration_frequency = int(self.form['calibration_frequency'])
 
         # noinspection PyArgumentList
-        self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
-                           asset_type=self.form['asset_type'], site_id=self.form.get('site_id'),
-                           customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
-                           current_location=self.form.get('current_location'),
-                           calibration_frequency=calibration_frequency,
-                           notes=self.form.get('notes'))
+        self.asset = Asset(
+            asset_id=self.form['asset_id'],
+            tenant_id=self.form['tenant_id'],
+            asset_type=self.form['asset_type'],
+            site_id=self.form.get('site_id'),
+            customer_id=self.form.get('customer_id'),
+            customer_name=self.form.get('customer_name'),
+            current_location=self.form.get('current_location'),
+            calibration_frequency=calibration_frequency,
+            notes=self.form.get('notes'),
+        )
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
@@ -397,8 +413,8 @@ class AssetsEndPoint(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return dict(error=str(error), asset=self.asset,
-                        asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
+            softwares = self.get_latest_softwares_version()
+            return dict(error=str(error), asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
@@ -436,8 +452,8 @@ class AssetsEndPoint(object):
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
                 error = _('Status not removed, an asset cannot have no status.')
-                return dict(error=error, asset=self.asset,
-                            asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
+                softwares = self.get_latest_softwares_version()
+                return dict(error=error, asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
 
             self.remove_events()
 
@@ -474,15 +490,13 @@ class AssetsEndPoint(object):
 
         columns_software = (label
                             for i in range(1, max_software_per_asset + 1)
-                            for label in ('software_{}_name'.format(i),
-                                          'software_{}_version'.format(i)))
+                            for label in ('software_{}_name'.format(i), 'software_{}_version'.format(i)))
 
         max_equipment_per_asset = len(unique_equipment)
 
         columns_equipment = (label
                              for i in range(1, max_equipment_per_asset + 1)
-                             for label in ('equipment_{}_name'.format(i),
-                                           'equipment_{}_serial_number'.format(i)))
+                             for label in ('equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)))
 
         # columns name of csv file
         return chain(columns_name, columns_software, columns_equipment)
@@ -569,20 +583,16 @@ class AssetsEndPoint(object):
 
         return rows
 
-    @view_config(route_name='assets-extract', request_method='GET',
-                 permission='assets-extract', renderer='csv')
+    @view_config(route_name='assets-extract', request_method='GET', permission='assets-extract', renderer='csv')
     def extract_get(self):
-        """Download Asset data.
-
-        Write Asset information in csv file.
+        """Download Asset data. Write Asset information in csv file.
 
         Returns:
             (dict): header (list) and rows (list) of csv file
 
         """
         # authorized tenants TODO is get_create_read_tenants valid ?
-        tenants = dict((tenant['id'], tenant['name'])
-                       for tenant in self.get_create_read_tenants())
+        tenants = dict((tenant['id'], tenant['name']) for tenant in self.get_create_read_tenants())
 
         # dynamic data - software
         # find unique software name
@@ -590,8 +600,7 @@ class AssetsEndPoint(object):
             .join(Asset, Event.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
             .join(EventStatus, Event.status_id == EventStatus.id).filter(EventStatus.status_id == 'software_update')
 
-        unique_software = set(update.extra_json['software_name']
-                              for update in software_update)
+        unique_software = set(update.extra_json['software_name'] for update in software_update)
 
         # dynamic data - equipment
         # find unique equipment name
