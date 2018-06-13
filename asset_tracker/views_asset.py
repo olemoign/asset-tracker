@@ -110,8 +110,7 @@ class AssetsEndPoint(object):
         """
         tenants_list = (tenant['id'] for tenant in tenants)
 
-        sites = self.request.db_session.query(Site) \
-            .filter(Site.tenant_id.in_(tenants_list)) \
+        sites = self.request.db_session.query(Site).filter(Site.tenant_id.in_(tenants_list)) \
             .order_by(func.lower(Site.name))
 
         return sites
@@ -123,8 +122,7 @@ class AssetsEndPoint(object):
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
 
-        statuses = self.request.db_session.query(EventStatus) \
-            .filter(EventStatus.status_id != 'software_update')
+        statuses = self.request.db_session.query(EventStatus).filter(EventStatus.status_id != 'software_update')
 
         tenants = self.get_create_read_tenants()
 
@@ -255,10 +253,13 @@ class AssetsEndPoint(object):
     def add_equipments(self):
         """Add asset's equipments."""
         # Equipment box can be completely empty.
-        zip_equipment = zip(self.form['equipment-family'],
-                            self.form['equipment-serial_number'],
-                            self.form['equipment-expiration_date_1'],
-                            self.form['equipment-expiration_date_2'])
+        zip_equipment = zip(
+            self.form['equipment-family'],
+            self.form['equipment-serial_number'],
+            self.form['equipment-expiration_date_1'],
+            self.form['equipment-expiration_date_2'],
+        )
+
         for family_id, serial_number, expiration_date_1, expiration_date_2 in zip_equipment:
             if not family_id and not serial_number:
                 continue
@@ -339,10 +340,9 @@ class AssetsEndPoint(object):
             # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
             # set as "produced").
             else:
-                activation_first = asset.history('asc').join(EventStatus) \
-                    .filter(EventStatus.status_id == 'service').first()
+                activation_first = asset.activation_first
                 if activation_first:
-                    asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
+                    asset.calibration_next = activation_first + relativedelta(years=calibration_frequency)
 
         else:
             # Parsys rule is straightforward: next calibration = last calibration + asset calibration frequency.
