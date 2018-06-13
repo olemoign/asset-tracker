@@ -110,7 +110,8 @@ class AssetsEndPoint(object):
         """
         tenants_list = (tenant['id'] for tenant in tenants)
 
-        sites = self.request.db_session.query(Site).filter(Site.tenant_id.in_(tenants_list)) \
+        sites = self.request.db_session.query(Site) \
+            .filter(Site.tenant_id.in_(tenants_list)) \
             .order_by(func.lower(Site.name))
 
         return sites
@@ -122,7 +123,8 @@ class AssetsEndPoint(object):
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
 
-        statuses = self.request.db_session.query(EventStatus).filter(EventStatus.status_id != 'software_update')
+        statuses = self.request.db_session.query(EventStatus) \
+            .filter(EventStatus.status_id != 'software_update')
 
         tenants = self.get_create_read_tenants()
 
