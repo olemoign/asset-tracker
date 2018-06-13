@@ -102,6 +102,20 @@ class AssetsEndPoint(object):
 
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
+    def get_extract_tenants(self):
+        """Get for which tenants the current user can extract information from assets."""
+        # Admins have access to all tenants.
+        if self.request.user.is_admin:
+            return self.request.user.tenants
+
+        else:
+            user_rights = self.request.effective_principals
+            user_tenants = self.request.user.tenants
+            tenants_ids = {tenant['id'] for tenant in user_tenants
+                           if (tenant['id'], 'assets-extract') in user_rights}
+
+            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
+
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants.
 
@@ -464,49 +478,68 @@ class AssetsEndPoint(object):
         return HTTPFound(location=self.request.route_path('assets-list'))
 
     @staticmethod
-    def get_csv_header(unique_software, unique_equipment):
-        """Define the column titles for the csv file."""
+    def get_csv_header(max_software_per_asset, max_equipment_per_asset):
+        """Define the column titles for the csv file.
 
-        columns_name = ('asset_id',
-                        'asset_type',
-                        'tenant_name',
-                        'customer_name',
-                        'current_location',
-                        'calibration_frequency',
-                        'status_label',
-                        'notes',
+        From unique_software and unique_equipment, we know the exact number
+        of columns required to display each information without extra column.
 
-                        'production_date',
-                        'activation_date',
-                        'last_calibration_date',
-                        'next_calibration_date',
-                        'warranty_end_date',
+        Args:
+            max_software_per_asset (int): number of distinct software.
+            max_equipment_per_asset (int): number of distinct equipment.
 
-                        'site_name',
-                        'site_type',
-                        'site_contact',
-                        'site_phone',
-                        'site_email')
+        Returns:
+            csv header (list): columns name.
 
-        max_software_per_asset = len(unique_software)
+        """
+        asset_columns = ('asset_id',
+                         'asset_type',
+                         'tenant_name',
+                         'customer_name',
+                         'current_location',
+                         'calibration_frequency',
+                         'status_label',
+                         'notes',
 
-        columns_software = (label
+                         'production_date',
+                         'activation_date',
+                         'last_calibration_date',
+                         'next_calibration_date',
+                         'warranty_end_date',
+
+                         'site_name',
+                         'site_type',
+                         'site_contact',
+                         'site_phone',
+                         'site_email')
+
+        # each software is identified by a name and a version
+        software_columns = (label
                             for i in range(1, max_software_per_asset + 1)
                             for label in ('software_{}_name'.format(i), 'software_{}_version'.format(i)))
 
-        max_equipment_per_asset = len(unique_equipment)
-
-        columns_equipment = (label
+        # each equipment is identified by a name and a serial number
+        equipment_columns = (label
                              for i in range(1, max_equipment_per_asset + 1)
                              for label in ('equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)))
 
         # columns name of csv file
-        return chain(columns_name, columns_software, columns_equipment)
+        return chain(asset_columns, software_columns, equipment_columns)
 
     @staticmethod
     def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
-        """Get the asset information for the csv file."""
+        """Get the asset information for the csv file.
 
+        Args:
+            db_session (sqlalchemy.orm.session.Session): current db session.
+            unique_software (set): all the names of the deployed software.
+            unique_equipment (tuple): all the names of the deployed equipment.
+            tenants (dict): authorized tenants to extract data.
+
+        Returns:
+            csv body (list): information on the assets.
+
+        """
         assets = db_session.query(Asset) \
             .options(joinedload(Asset.site)) \
             .options(joinedload(Asset.status)) \
@@ -525,7 +558,7 @@ class AssetsEndPoint(object):
                    asset.status.label,
                    replace_newline(asset.notes),
 
-                   # TODO heavy db access (7/asset) to get date !
+                   # asset_date
                    asset.production,
                    asset.activation_first,
                    asset.calibration_last,
@@ -534,25 +567,24 @@ class AssetsEndPoint(object):
 
             # ADD Site information
             if asset.site:
-                site = asset.site
-                row.extend((site.name,
-                            site.site_type,
-                            site.contact,
-                            site.phone,
-                            site.email))
+                row.extend((asset.site.name,
+                            asset.site.site_type,
+                            asset.site.contact,
+                            asset.site.phone,
+                            asset.site.email))
             else:
                 # fill with None value to maintain column alignment
                 row.extend((None, None, None, None, None))
 
             # ADD software information
             # the complete list of the most recent software
-            software_update = db_session.query(Event).join(EventStatus) \
+            software_updates = db_session.query(Event).join(EventStatus) \
                 .filter(and_(Event.asset_id == asset.id,
                              EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
             # get last version of each software
-            most_recent_soft_per_asset = {}
-            for update in software_update:
+            most_recent_soft_per_asset = dict()
+            for update in software_updates:
                 extra_json = update.extra_json
                 software_name, software_version = extra_json['software_name'], extra_json['software_version']
                 if software_name not in most_recent_soft_per_asset:
@@ -568,12 +600,12 @@ class AssetsEndPoint(object):
 
             # ADD equipment information
             # the complete list of equipment for one asset
-            equipments = db_session.query(EquipmentFamily.model, Equipment.serial_number) \
+            asset_equipment = db_session.query(EquipmentFamily.model, Equipment.serial_number) \
                 .join(Equipment) \
                 .filter(Equipment.asset_id == asset.id).all()
 
             for equipment_name in unique_equipment:
-                equipment = next((e for e in equipments if e[0] == equipment_name), None)
+                equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
                 if equipment:
                     row.extend(equipment)
                 else:
@@ -593,33 +625,34 @@ class AssetsEndPoint(object):
             (dict): header (list) and rows (list) of csv file
 
         """
-        # authorized tenants TODO is get_create_read_tenants valid ?
-        tenants = dict((tenant['id'], tenant['name']) for tenant in self.get_create_read_tenants())
+        # authorized tenants
+        tenants = dict((tenant['id'], tenant['name']) for tenant in self.get_extract_tenants())
 
         # dynamic data - software
         # find unique software name
-        software_update = self.request.db_session.query(Event) \
+        software_updates = self.request.db_session.query(Event) \
             .join(Asset, Event.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
             .join(EventStatus, Event.status_id == EventStatus.id).filter(EventStatus.status_id == 'software_update')
 
-        unique_software = set(update.extra_json['software_name'] for update in software_update)
+        unique_software = set(update.extra_json['software_name'] for update in software_updates)
 
         # dynamic data - equipment
-        # find unique equipment name
-        equipment_query = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
+        # find the name of the deployed equipment
+        equipment_names = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
             .join(EquipmentFamily, Equipment.family_id == EquipmentFamily.id) \
             .join(Asset, Equipment.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
             .group_by(Equipment.family_id, EquipmentFamily.model) \
             .order_by(EquipmentFamily.model)
 
-        unique_equipment = tuple(e[1] for e in equipment_query)
+        # get EquipmentFamily.model
+        unique_equipment = tuple(e[1] for e in equipment_names)
 
         # override attributes of response
         filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
         self.request.response.content_disposition = 'attachment;filename=' + filename
 
         return {
-            'header': self.get_csv_header(unique_software, unique_equipment),
+            'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
             'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants)
         }
 
