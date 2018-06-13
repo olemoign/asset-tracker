@@ -390,14 +390,16 @@ class Sites(object):
                              'full_text_search': full_text_search}
         try:
             # noinspection PyTypeChecker
-            output = sql_search(db_session=self.request.db_session,
-                                searched_object=models.Site,
-                                full_text_search_attributes=full_text_search_attributes,
-                                joined_tables=joined_tables,
-                                tenanting=self.apply_tenanting_filter,
-                                specific_search_attributes=specific_search_attributes,
-                                specific_sort_attributes=specific_sort_attributes,
-                                search_parameters=search_parameters)
+            output = sql_search(
+                db_session=self.request.db_session,
+                searched_object=models.Site,
+                full_text_search_attributes=full_text_search_attributes,
+                joined_tables=joined_tables,
+                tenanting=self.apply_tenanting_filter,
+                specific_search_attributes=specific_search_attributes,
+                specific_sort_attributes=specific_sort_attributes,
+                search_parameters=search_parameters,
+            )
         except KeyError:
             sentry_exception(self.request, get_tb=True, level='info')
             return HTTPBadRequest()
