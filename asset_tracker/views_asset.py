@@ -1,15 +1,17 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
+from itertools import chain
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
+from parsys_utilities.form import replace_newline
 from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
-from sqlalchemy import func
+from sqlalchemy import and_, desc, func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
@@ -22,8 +24,10 @@ class AssetsEndPoint(object):
     def __acl__(self):
         acl = [
             (Allow, None, 'assets-create', 'assets-create'),
+            (Allow, None, 'assets-extract', 'assets-extract'),
             (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, 'g:admin', ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
+            (Allow, None, 'g:admin', ('assets-create', 'assets-extract', 'assets-read', 'assets-update',
+                                      'assets-list'))
         ]
 
         if self.asset:
@@ -92,11 +96,20 @@ class AssetsEndPoint(object):
         else:
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
-            tenants_ids = {tenant['id'] for tenant in user_tenants
-                           if (tenant['id'], 'assets-create') in user_rights or
-                           (self.asset and self.asset.tenant_id == tenant['id'])}
+            return [tenant for tenant in user_tenants
+                    if (tenant['id'], 'assets-create') in user_rights or
+                    (self.asset and self.asset.tenant_id == tenant['id'])]
 
-            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
+    def get_extract_tenants(self):
+        """Get for which tenants the current user can extract assets information."""
+        # Admins have access to all tenants.
+        if self.request.user.is_admin:
+            return self.request.user.tenants
+
+        else:
+            user_rights = self.request.effective_principals
+            user_tenants = self.request.user.tenants
+            return [tenant for tenant in user_tenants if (tenant['id'], 'assets-extract') in user_rights]
 
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants.
@@ -126,8 +139,13 @@ class AssetsEndPoint(object):
 
         sites = self.get_site_data(tenants)
 
-        return {'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS, 'equipments_families': equipments_families,
-                'statuses': statuses, 'tenants': tenants, 'sites': sites}
+        return {
+            'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
+            'equipments_families': equipments_families,
+            'statuses': statuses,
+            'tenants': tenants,
+            'sites': sites
+        }
 
     def read_form(self):
         """Format form content according to our needs.
@@ -246,10 +264,13 @@ class AssetsEndPoint(object):
     def add_equipments(self):
         """Add asset's equipments."""
         # Equipment box can be completely empty.
-        zip_equipment = zip(self.form['equipment-family'],
-                            self.form['equipment-serial_number'],
-                            self.form['equipment-expiration_date_1'],
-                            self.form['equipment-expiration_date_2'])
+        zip_equipment = zip(
+            self.form['equipment-family'],
+            self.form['equipment-serial_number'],
+            self.form['equipment-expiration_date_1'],
+            self.form['equipment-expiration_date_2'],
+        )
+
         for family_id, serial_number, expiration_date_1, expiration_date_2 in zip_equipment:
             if not family_id and not serial_number:
                 continue
@@ -265,10 +286,12 @@ class AssetsEndPoint(object):
                 expiration_date_2 = None
 
             family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            equipment = Equipment(family=family,
-                                  serial_number=serial_number,
-                                  expiration_date_1=expiration_date_1,
-                                  expiration_date_2=expiration_date_2)
+            equipment = Equipment(
+                family=family,
+                serial_number=serial_number,
+                expiration_date_1=expiration_date_1,
+                expiration_date_2=expiration_date_2,
+            )
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -282,8 +305,12 @@ class AssetsEndPoint(object):
         status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
 
         # noinspection PyArgumentList
-        event = Event(date=event_date, creator_id=self.request.user.id, creator_alias=self.request.user.alias,
-                      status=status)
+        event = Event(
+            date=event_date,
+            creator_id=self.request.user.id,
+            creator_alias=self.request.user.alias,
+            status=status,
+        )
         # noinspection PyProtectedMember
         self.asset._history.append(event)
         self.request.db_session.add(event)
@@ -324,10 +351,9 @@ class AssetsEndPoint(object):
             # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
             # set as "produced").
             else:
-                activation_first = asset.history('asc').join(EventStatus) \
-                    .filter(EventStatus.status_id == 'service').first()
+                activation_first = asset.activation_first
                 if activation_first:
-                    asset.calibration_next = activation_first.date + relativedelta(years=calibration_frequency)
+                    asset.calibration_next = activation_first + relativedelta(years=calibration_frequency)
 
         else:
             # Parsys rule is straightforward: next calibration = last calibration + asset calibration frequency.
@@ -361,12 +387,17 @@ class AssetsEndPoint(object):
             calibration_frequency = int(self.form['calibration_frequency'])
 
         # noinspection PyArgumentList
-        self.asset = Asset(asset_id=self.form['asset_id'], tenant_id=self.form['tenant_id'],
-                           asset_type=self.form['asset_type'], site_id=self.form.get('site_id'),
-                           customer_id=self.form.get('customer_id'), customer_name=self.form.get('customer_name'),
-                           current_location=self.form.get('current_location'),
-                           calibration_frequency=calibration_frequency,
-                           notes=self.form.get('notes'))
+        self.asset = Asset(
+            asset_id=self.form['asset_id'],
+            tenant_id=self.form['tenant_id'],
+            asset_type=self.form['asset_type'],
+            site_id=self.form.get('site_id'),
+            customer_id=self.form.get('customer_id'),
+            customer_name=self.form.get('customer_name'),
+            current_location=self.form.get('current_location'),
+            calibration_frequency=calibration_frequency,
+            notes=self.form.get('notes'),
+        )
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
@@ -393,8 +424,8 @@ class AssetsEndPoint(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return dict(error=str(error), asset=self.asset,
-                        asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
+            softwares = self.get_latest_softwares_version()
+            return dict(error=str(error), asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
@@ -432,14 +463,200 @@ class AssetsEndPoint(object):
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
                 error = _('Status not removed, an asset cannot have no status.')
-                return dict(error=error, asset=self.asset,
-                            asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
+                softwares = self.get_latest_softwares_version()
+                return dict(error=error, asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
 
             self.remove_events()
 
         self.update_status_and_calibration_next(self.asset, self.client_specific)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
+
+    @staticmethod
+    def get_csv_header(max_software_per_asset, max_equipment_per_asset):
+        """Define the column titles for the csv file.
+
+        From unique_software and unique_equipment, we know the exact number of columns required to display each
+        information without extra column.
+
+        Args:
+            max_software_per_asset (int): number of distinct software.
+            max_equipment_per_asset (int): number of distinct equipment.
+
+        Returns:
+            csv header (list): columns name.
+
+        """
+        asset_columns = (
+            'asset_id',
+            'asset_type',
+            'tenant_name',
+            'customer_name',
+            'current_location',
+            'calibration_frequency',
+            'status_label',
+            'notes',
+
+            'production_date',
+            'activation_date',
+            'last_calibration_date',
+            'next_calibration_date',
+            'warranty_end_date',
+
+            'site_name',
+            'site_type',
+            'site_contact',
+            'site_phone',
+            'site_email',
+        )
+
+        # each software is identified by a name and a version
+        software_columns = (label
+                            for i in range(1, max_software_per_asset + 1)
+                            for label in ('software_{}_name'.format(i), 'software_{}_version'.format(i)))
+
+        # each equipment is identified by a name and a serial number
+        equipment_columns = (label
+                             for i in range(1, max_equipment_per_asset + 1)
+                             for label in ('equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)))
+
+        # columns name of csv file
+        return chain(asset_columns, software_columns, equipment_columns)
+
+    @staticmethod
+    def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
+        """Get the asset information for the csv file.
+
+        Args:
+            db_session (sqlalchemy.orm.session.Session): current db session.
+            unique_software (set): all the names of the deployed software.
+            unique_equipment (tuple): all the names of the deployed equipment.
+            tenants (dict): authorized tenants to extract data.
+
+        Returns:
+            csv body (list): information on the assets.
+
+        """
+        assets = db_session.query(Asset) \
+            .options(joinedload(Asset.site)) \
+            .options(joinedload(Asset.status)) \
+            .filter(Asset.tenant_id.in_(tenants.keys())) \
+            .order_by(Asset.asset_id)
+
+        rows = []
+        for asset in assets:
+            # ADD basic information
+            row = [
+                asset.asset_id,
+                asset.asset_type,
+                tenants[asset.tenant_id],
+                asset.customer_name,
+                asset.current_location,
+                asset.calibration_frequency,
+                asset.status.label,
+                replace_newline(asset.notes),
+
+                # asset_dates
+                asset.production,
+                asset.activation_first,
+                asset.calibration_last,
+                asset.calibration_next,
+                asset.warranty_end,
+            ]
+
+            # ADD Site information
+            if asset.site:
+                site = (
+                    asset.site.name,
+                    asset.site.site_type,
+                    asset.site.contact,
+                    asset.site.phone,
+                    asset.site.email,
+                )
+                row.extend(site)
+            else:
+                # fill with None value to maintain column alignment
+                row.extend((None, None, None, None, None))
+
+            # ADD software information
+            # the complete list of the most recent software
+            software_updates = db_session.query(Event).join(EventStatus) \
+                .filter(and_(Event.asset_id == asset.id,
+                             EventStatus.status_id == 'software_update')).order_by(desc('date'))
+
+            # get last version of each software
+            most_recent_soft_per_asset = dict()
+            for update in software_updates:
+                extra_json = update.extra_json
+                software_name, software_version = extra_json['software_name'], extra_json['software_version']
+                if software_name not in most_recent_soft_per_asset:
+                    most_recent_soft_per_asset[software_name] = software_version
+
+            # format software output
+            for software_name in unique_software:
+                if software_name in most_recent_soft_per_asset:
+                    row.extend((software_name, most_recent_soft_per_asset[software_name]))
+                else:
+                    # fill with None value to maintain column alignment
+                    row.extend((None, None))
+
+            # ADD equipment information
+            # the complete list of equipment for one asset
+            asset_equipment = db_session.query(EquipmentFamily.model, Equipment.serial_number) \
+                .join(Equipment) \
+                .filter(Equipment.asset_id == asset.id).all()
+
+            for equipment_name in unique_equipment:
+                equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
+                if equipment:
+                    row.extend(equipment)
+                else:
+                    # fill with None value to maintain column alignment
+                    row.extend((None, None))
+
+            # add asset to csv
+            rows.append(row)
+
+        return rows
+
+    @view_config(route_name='assets-extract', request_method='GET', permission='assets-extract', renderer='csv')
+    def extract_get(self):
+        """Download Asset data. Write Asset information in csv file.
+
+        Returns:
+            (dict): header (list) and rows (list) of csv file
+
+        """
+        # authorized tenants
+        tenants = dict((tenant['id'], tenant['name']) for tenant in self.get_extract_tenants())
+
+        # dynamic data - software
+        # find unique software name
+        software_updates = self.request.db_session.query(Event) \
+            .join(Asset, Event.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
+            .join(EventStatus, Event.status_id == EventStatus.id).filter(EventStatus.status_id == 'software_update')
+
+        unique_software = set(update.extra_json['software_name'] for update in software_updates)
+
+        # dynamic data - equipment
+        # find the name of the deployed equipment
+        equipment_names = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
+            .join(EquipmentFamily, Equipment.family_id == EquipmentFamily.id) \
+            .join(Asset, Equipment.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
+            .group_by(Equipment.family_id, EquipmentFamily.model) \
+            .order_by(EquipmentFamily.model)
+
+        # get EquipmentFamily.model
+        unique_equipment = tuple(e[1] for e in equipment_names)
+
+        # override attributes of response
+        filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
+        self.request.response.content_disposition = 'attachment;filename=' + filename
+
+        return {
+            'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
+            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants)
+        }
 
     @view_config(route_name='home', request_method='GET', permission='assets-list')
     def home_get(self):
@@ -455,4 +672,5 @@ def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=AssetsEndPoint)
     config.add_route(pattern='assets/{asset_id:\d+}/', name='assets-update', factory=AssetsEndPoint)
     config.add_route(pattern='assets/', name='assets-list', factory=AssetsEndPoint)
+    config.add_route(pattern='assets/extract/', name='assets-extract', factory=AssetsEndPoint)
     config.add_route(pattern='/', name='home', factory=AssetsEndPoint)

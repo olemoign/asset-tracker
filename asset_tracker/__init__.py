@@ -47,6 +47,9 @@ def main(_global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_translation_dirs('asset_tracker:locale')
 
+    # add custom csv renderer
+    config.add_renderer('csv', 'asset_tracker.renderers.CSVRenderer')
+
     # Authentication/Authorization policies.
     cookie_signature = settings['asset_tracker.cookie_signature']
     authentication_callback = partial(get_effective_principals, allow_admins=True)
