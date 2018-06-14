@@ -11,11 +11,11 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
-
     # add instance variable outside constructor
     @orm.reconstructor
     def init_on_load(self):
-        self.asset_date = dict()
+        # noinspection PyAttributeOutsideInit
+        self.asset_dates = dict()
 
     tenant_id = Column(String, nullable=False)
     asset_id = Column(String, nullable=False, unique=True)
@@ -65,68 +65,64 @@ class Asset(Model, CreationDateTimeMixin):
     calibration_frequency = Column(Integer)
     calibration_next = Column(Date)
 
-    def _get_asset_date(self):
+    def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
         activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
         if activation_first:
-            self.asset_date['activation_first'] = activation_first.date
-            self.asset_date['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS)
+            self.asset_dates['activation_first'] = activation_first.date
+            self.asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS)
         else:
-            self.asset_date['activation_first'] = None
-            self.asset_date['warranty_end'] = None
+            self.asset_dates['activation_first'] = None
+            self.asset_dates['warranty_end'] = None
 
         production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
-            self.asset_date['production'] = production.date
+            self.asset_dates['production'] = production.date
         else:
-            self.asset_date['production'] = None
+            self.asset_dates['production'] = None
 
         calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
-            self.asset_date['calibration_last'] = max(production.date, calibration_last.date)
+            self.asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.
         elif calibration_last:
-            self.asset_date['calibration_last'] = calibration_last.date
+            self.asset_dates['calibration_last'] = calibration_last.date
         elif production:
-            self.asset_date['calibration_last'] = production.date
+            self.asset_dates['calibration_last'] = production.date
         else:
-            self.asset_date['calibration_last'] = None
+            self.asset_dates['calibration_last'] = None
 
     @property
     def activation_first(self):
         """Get the date of the asset first activation."""
+        if 'activation_first' not in self.asset_dates:
+            self._get_asset_dates()
 
-        if 'activation_first' not in self.asset_date:
-            self._get_asset_date()
-
-        return self.asset_date['activation_first']
+        return self.asset_dates['activation_first']
 
     @property
     def calibration_last(self):
         """Get the date of the asset last calibration."""
+        if 'calibration_last' not in self.asset_dates:
+            self._get_asset_dates()
 
-        if 'calibration_last' not in self.asset_date:
-            self._get_asset_date()
-
-        return self.asset_date['calibration_last']
+        return self.asset_dates['calibration_last']
 
     @property
     def production(self):
         """Get the date of the asset production."""
+        if 'production' not in self.asset_dates:
+            self._get_asset_dates()
 
-        if 'production' not in self.asset_date:
-            self._get_asset_date()
-
-        return self.asset_date['production']
+        return self.asset_dates['production']
 
     @property
     def warranty_end(self):
         """Get the date of the end of the asset warranty."""
+        if 'warranty_end' not in self.asset_dates:
+            self._get_asset_dates()
 
-        if 'warranty_end' not in self.asset_date:
-            self._get_asset_date()
-
-        return self.asset_date['warranty_end']
+        return self.asset_dates['warranty_end']
 
 
 class Equipment(Model):

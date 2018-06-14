@@ -96,14 +96,12 @@ class AssetsEndPoint(object):
         else:
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
-            tenants_ids = {tenant['id'] for tenant in user_tenants
-                           if (tenant['id'], 'assets-create') in user_rights or
-                           (self.asset and self.asset.tenant_id == tenant['id'])}
-
-            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
+            return [tenant for tenant in user_tenants
+                    if (tenant['id'], 'assets-create') in user_rights or
+                    (self.asset and self.asset.tenant_id == tenant['id'])]
 
     def get_extract_tenants(self):
-        """Get for which tenants the current user can extract information from assets."""
+        """Get for which tenants the current user can extract assets information."""
         # Admins have access to all tenants.
         if self.request.user.is_admin:
             return self.request.user.tenants
@@ -111,10 +109,7 @@ class AssetsEndPoint(object):
         else:
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
-            tenants_ids = {tenant['id'] for tenant in user_tenants
-                           if (tenant['id'], 'assets-extract') in user_rights}
-
-            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
+            return [tenant for tenant in user_tenants if (tenant['id'], 'assets-extract') in user_rights]
 
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants.
@@ -481,8 +476,8 @@ class AssetsEndPoint(object):
     def get_csv_header(max_software_per_asset, max_equipment_per_asset):
         """Define the column titles for the csv file.
 
-        From unique_software and unique_equipment, we know the exact number
-        of columns required to display each information without extra column.
+        From unique_software and unique_equipment, we know the exact number of columns required to display each
+        information without extra column.
 
         Args:
             max_software_per_asset (int): number of distinct software.
@@ -492,26 +487,28 @@ class AssetsEndPoint(object):
             csv header (list): columns name.
 
         """
-        asset_columns = ('asset_id',
-                         'asset_type',
-                         'tenant_name',
-                         'customer_name',
-                         'current_location',
-                         'calibration_frequency',
-                         'status_label',
-                         'notes',
+        asset_columns = (
+            'asset_id',
+            'asset_type',
+            'tenant_name',
+            'customer_name',
+            'current_location',
+            'calibration_frequency',
+            'status_label',
+            'notes',
 
-                         'production_date',
-                         'activation_date',
-                         'last_calibration_date',
-                         'next_calibration_date',
-                         'warranty_end_date',
+            'production_date',
+            'activation_date',
+            'last_calibration_date',
+            'next_calibration_date',
+            'warranty_end_date',
 
-                         'site_name',
-                         'site_type',
-                         'site_contact',
-                         'site_phone',
-                         'site_email')
+            'site_name',
+            'site_type',
+            'site_contact',
+            'site_phone',
+            'site_email',
+        )
 
         # each software is identified by a name and a version
         software_columns = (label
@@ -549,29 +546,34 @@ class AssetsEndPoint(object):
         rows = []
         for asset in assets:
             # ADD basic information
-            row = [asset.asset_id,
-                   asset.asset_type,
-                   tenants[asset.tenant_id],
-                   asset.customer_name,
-                   asset.current_location,
-                   asset.calibration_frequency,
-                   asset.status.label,
-                   replace_newline(asset.notes),
+            row = [
+                asset.asset_id,
+                asset.asset_type,
+                tenants[asset.tenant_id],
+                asset.customer_name,
+                asset.current_location,
+                asset.calibration_frequency,
+                asset.status.label,
+                replace_newline(asset.notes),
 
-                   # asset_date
-                   asset.production,
-                   asset.activation_first,
-                   asset.calibration_last,
-                   asset.calibration_next,
-                   asset.warranty_end]
+                # asset_dates
+                asset.production,
+                asset.activation_first,
+                asset.calibration_last,
+                asset.calibration_next,
+                asset.warranty_end,
+            ]
 
             # ADD Site information
             if asset.site:
-                row.extend((asset.site.name,
-                            asset.site.site_type,
-                            asset.site.contact,
-                            asset.site.phone,
-                            asset.site.email))
+                site = (
+                    asset.site.name,
+                    asset.site.site_type,
+                    asset.site.contact,
+                    asset.site.phone,
+                    asset.site.email,
+                )
+                row.extend(site)
             else:
                 # fill with None value to maintain column alignment
                 row.extend((None, None, None, None, None))
