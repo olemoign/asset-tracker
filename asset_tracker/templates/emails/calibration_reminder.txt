@@ -1,0 +1,11 @@
+{{ gettext('Dear user') }},
+
+{{ gettext('This is a reminder from %(app_name)s of the planned calibration in %(validity_months)s months, on %(expiration_date)s :',
+           app_name=app_name, validity_months=validity_months, expiration_date=expiration_date|format_date(locale, 'long')) }}
+
+{% for asset in assets %}
+    * {{ asset.asset_id }} : {{ assets_url }}/{{ asset.id }}/
+{% endfor %}
+
+{{ gettext('Sincerely') }},
+{{ gettext(app_name) }}

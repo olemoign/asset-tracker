@@ -1,0 +1,13 @@
+<p>{{ gettext('Dear user') }},</p>
+
+<p>{{ gettext('This is a reminder from %(app_name)s of the planned calibration in %(validity_months)s months, on %(expiration_date)s :',
+              app_name=app_name, validity_months=validity_months, expiration_date=expiration_date|format_date(locale, 'long')) }}</p>
+
+<ul>
+{% for asset in assets %}
+    <li><a href="{{ assets_url }}/{{ asset.id }}/">{{ asset.asset_id }}</a></li>
+{% endfor %}
+</ul>
+
+<p>{{ gettext('Sincerely') }},<br>
+{{ gettext(app_name) }}</p>

@@ -3,6 +3,7 @@
 import logging
 from functools import partial
 
+import parsys_utilities.celery_app as celery
 import pkg_resources
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
@@ -16,7 +17,7 @@ from pyramid_redis_sessions import RedisSessionFactory
 from asset_tracker.configuration import update_configuration
 
 
-def main(_global_config, **settings):
+def main(global_config, **settings):
     """This function returns a Pyramid WSGI application."""
     assert settings.get('rta.server_url')
     assert settings.get('rta.client_id')
@@ -71,6 +72,10 @@ def main(_global_config, **settings):
     config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
+
+    config_file = global_config['__file__']
+    here = global_config['here']
+    celery.configure_celery_app(config_file, here=here)
 
     # Add routes.
     config.include('asset_tracker.models')
