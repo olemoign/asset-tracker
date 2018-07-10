@@ -62,7 +62,7 @@ def next_calibration_reminder(validity_months=3):
         if assets:
             pyramid_config = app.conf.pyramid_config['app:main']
 
-            # must be sorted by tenant_id
+            # assets must be sorted by tenant_id
             groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
             for tenant_id, assets in groupby_tenant:
