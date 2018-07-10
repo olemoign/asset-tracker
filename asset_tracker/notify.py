@@ -73,7 +73,7 @@ def notify_offline(ini_configuration, **json):
     Keyword Args:
         message (dict).
         tenant (str).
-        profiles (list(str)): user_ids or rights.
+        user_ids or rights (list(str)).
         level (str).
 
     """
@@ -117,10 +117,11 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, validity
     emails = emails_renderer_offline(subject=subject, text_path=text, html_path=html, template_data=template_data)
     messages = {'email': emails}
 
-    assets_ids = [asset.id for asset in assets]
+    # rights to identify users to prevent for future asset calibration
+    rights = ['notifications-calibration']
 
     # Asynchronous POST
-    notify_offline(ini_configuration, message=messages, tenant=tenant_id, user_ids=assets_ids, level='info')
+    notify_offline(ini_configuration, message=messages, tenant=tenant_id, rights=rights, level='info')
 
-    logging_info = ['notify the assets owner for the next calibration date', assets_ids]
+    logging_info = ['notify the assets owner for the next calibration date', [asset.id for asset in assets]]
     logging.getLogger('asset_tracker_technical').info(logging_info)
