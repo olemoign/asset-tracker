@@ -56,6 +56,8 @@ broker_url = redis+socket:///%(here)s/tmp/redis.sock
 # Execute daily at 4AM UTC.
 schedule = {"hour": 4, "minute": 0}
 task = asset_tracker.celery_tasks.next_calibration_reminder
+# months before next calibration
+kwargs = {"months": 3}
 
 ###
 # logging configuration

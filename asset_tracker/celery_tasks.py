@@ -26,11 +26,11 @@ def get_session_factory():
 
 
 @app.task()
-def next_calibration_reminder(validity_months=3):
+def next_calibration_reminder(months=3):
     """Remind the assets owner about planned calibration.
 
     Args:
-        validity_months (int) reminder period before calibration.
+        months (int) reminder period before calibration.
 
     """
     mandatory_config = ('asset_tracker.cloud_name', 'asset_tracker.server_url',
@@ -45,7 +45,7 @@ def next_calibration_reminder(validity_months=3):
         return -1
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    expiration_date = arrow.utcnow().shift(days=validity_months * 30).format('YYYY-MM-DD')
+    expiration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
 
     # Set up db connection.
     session_factory = get_session_factory()
@@ -66,4 +66,4 @@ def next_calibration_reminder(validity_months=3):
             groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
             for tenant_id, assets in groupby_tenant:
-                next_calibration_notification(pyramid_config, tenant_id, list(assets), validity_months, expiration_date)
+                next_calibration_notification(pyramid_config, tenant_id, list(assets), months, expiration_date)
