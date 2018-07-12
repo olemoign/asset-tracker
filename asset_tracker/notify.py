@@ -4,6 +4,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 from pyramid.i18n import make_localizer, TranslationString as _
+from pyramid.settings import asbool
 
 from parsys_utilities import AVAILABLE_LOCALES, celery_tasks, dates
 
@@ -77,6 +78,9 @@ def notify_offline(ini_configuration, **json):
         level (str).
 
     """
+    if asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False)):
+        return
+
     notifications_url = '{server_url}/api/notifications/'.format(server_url=ini_configuration['rta.server_url'])
     client_id = ini_configuration['rta.client_id']
     secret = ini_configuration['rta.secret']
