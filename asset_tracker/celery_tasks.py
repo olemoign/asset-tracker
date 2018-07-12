@@ -46,7 +46,7 @@ def next_calibration_reminder(months=3):
         return -1
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    expiration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
+    calibration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
 
     # Set up db connection.
     session_factory = get_session_factory()
@@ -54,9 +54,9 @@ def next_calibration_reminder(months=3):
     with transaction.manager:
         db_session = models.get_tm_session(session_factory, transaction.manager)
 
-        # Checkups about to expire on expiration_date.
+        # Assets that need calibration.
         assets = db_session.query(models.Asset) \
-            .filter(models.Asset.calibration_next == expiration_date) \
+            .filter(models.Asset.calibration_next == calibration_date) \
             .order_by(models.Asset.tenant_id) \
             .all()
 
@@ -67,4 +67,4 @@ def next_calibration_reminder(months=3):
             groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
             for tenant_id, assets in groupby_tenant:
-                next_calibration_notification(pyramid_config, tenant_id, list(assets), months, expiration_date)
+                next_calibration_notification(pyramid_config, tenant_id, list(assets), calibration_date)

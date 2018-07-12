@@ -89,15 +89,14 @@ def notify_offline(ini_configuration, **json):
     celery_tasks.post_json.apply_async(args=args)
 
 
-def next_calibration_notification(ini_configuration, tenant_id, assets, validity_months, expiration_date):
+def next_calibration_notification(ini_configuration, tenant_id, assets, calibration_date):
     """Notify 'HR officer's of an employee's tenant that her/his vocational certificate is expiring.
 
     Args:
         ini_configuration (dict) asset tracker configuration.
         tenant_id (str).
         assets (list(asset_tracker.models.Asset)).
-        validity_months (int): reminder period.
-        expiration_date (str): precise expiration date (YYYY-MM-DD).
+        calibration_date (str): precise calibration date (YYYY-MM-DD).
 
     """
     app_name = ini_configuration['asset_tracker.cloud_name']
@@ -111,8 +110,7 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, validity
 
     template_data = {
         'app_name': app_name,
-        'expiration_date': expiration_date,
-        'validity_months': validity_months,
+        'calibration_date': calibration_date,
         'assets': assets,
         'assets_url': assets_url
     }

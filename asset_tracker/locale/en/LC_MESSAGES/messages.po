@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-07-10 16:02+0200\n"
+"POT-Creation-Date: 2018-07-12 13:43+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: notify.py:100
+#: notify.py:103
 msgid "${app_name} - Device calibration reminder"
 msgstr ""
 
@@ -408,8 +408,8 @@ msgstr ""
 #: templates/emails/calibration_reminder.txt:3
 #, python-format
 msgid ""
-"This is a reminder from %(app_name)s of the planned calibration in "
-"%(validity_months)s months, on %(expiration_date)s :"
+"This is a reminder from %(app_name)s, the following assets must be "
+"recalibrated before %(calibration_date)s :"
 msgstr ""
 
 #: templates/menu.html:5
