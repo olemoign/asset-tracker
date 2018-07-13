@@ -11,6 +11,9 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'alembic',
+    'arrow',
+    'celery[redis]',
+    'jinja2',
     'parsys_utilities',
     'paste',
     'plaster_pastedeploy',
