@@ -16,8 +16,8 @@ flake8:
     - docker
 
   script:
-    - pip install -q -U pip setuptools wheel
-    - pip -q install '.[qa]'
+    - pip3 install -q -U pip setuptools wheel
+    - pip3 -q install '.[qa]'
     - flake8
 
 build:
@@ -27,9 +27,9 @@ build:
     - docker
 
   script:
-    - pip -q install -U pip wheel setuptools
+    - pip3 -q install -U pip wheel setuptools
     - python setup.py bdist_wheel
-    - pip wheel -w dist/ '.[prod]'
+    - pip3 wheel -w dist/ '.[prod]'
 
   artifacts:
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"

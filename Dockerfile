@@ -8,7 +8,7 @@ ENV LANG C.UTF-8
 COPY dist/ /opt
 
 # Install app.
-RUN pip install -q --ignore-installed /opt/* \
+RUN pip3 install -q --ignore-installed /opt/* \
  && mkdir -p /opt/files
 
 # Copy config files.
