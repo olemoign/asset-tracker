@@ -21,7 +21,6 @@ from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
@@ -330,20 +329,18 @@ class Sites(object):
 
     def __init__(self, request):
         self.request = request
-        self.asset = self.get_asset()
+        self.site = self.get_site()
 
-    def get_asset(self):
-        user_id = self.request.matchdict.get('user_id')
-        if not user_id:
+    def get_site(self):
+        site_id = self.request.matchdict.get('site_id')
+        if not site_id:
             return
 
-        # if asset is missing, site_get() method will return an empty response
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(user_id=user_id) \
-            .options(joinedload('site')) \
-            .first()
+        # if site is missing, site_get() method will return an empty response
+        site = self.request.db_session.query(models.Site) \
+            .filter_by(site_id=site_id).first()
 
-        return asset
+        return site
 
     def apply_tenanting_filter(self, q):
         """Filter sites according to user's rights/tenants.
@@ -440,7 +437,7 @@ class Sites(object):
             'data': sites
         }
 
-    @view_config(route_name='api-sites-information', request_method='GET', permission='api-sites-read',
+    @view_config(route_name='api-sites-read', request_method='GET', permission='api-sites-read',
                  renderer='sites-information.html')
     def site_get(self):
         """Get site information for consultation, HTML response to insert directly into the consultation.
@@ -448,29 +445,28 @@ class Sites(object):
         The authorisation process is tricky:
             - we first apply the 'api-sites-read' permission with no tenant so that the app authenticates the user
             and makes a first check.
-            - then we verify if the asset and the site exists. If they don't, it's ok, we return an iframe with no
+            - then we verify if the site exists. If it don't, it's ok, we return an iframe with no
             data but the js that will send the postMessage to the cloud to give its size.
-            - if asset and site exist, we check the asset's tenant, to make sure the authorisation is right.
+            - if site exist, we check the site's tenant, to make sure the authorisation is right.
 
         """
-        if not self.asset or not self.asset.site:
+        if not self.site:
             return {}
 
         try:
-            if (self.asset.tenant_id, 'api-sites-read') not in self.request.effective_principals:
+            if (self.site.tenant_id, 'api-sites-read') not in self.request.effective_principals:
                 raise HTTPForbidden()
 
         except HTTPForbidden:
             sentry_exception(self.request)
             return {}
 
-        site_information = self.asset.site
         return {
-            'name': site_information.name,
-            'site_type': site_information.site_type,
-            'contact': site_information.contact,
-            'phone': site_information.phone,
-            'email': site_information.email,
+            'name': self.site.name,
+            'site_type': self.site.site_type,
+            'contact': self.site.contact,
+            'phone': self.site.phone,
+            'email': self.site.email,
         }
 
 
@@ -643,5 +639,6 @@ def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-sites-information', factory=Sites)
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
+    config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
