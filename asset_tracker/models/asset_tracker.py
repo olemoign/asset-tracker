@@ -169,6 +169,8 @@ class EventStatus(Model):
 
 
 class Site(Model, CreationDateTimeMixin):
+    site_id = Column(String, nullable=False, unique=True, default=random_id)
+
     tenant_id = Column(String, nullable=False)
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
