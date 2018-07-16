@@ -15,7 +15,7 @@ from asset_tracker.models import Site
 
 # SQLITE = 'sqlite:////home/user/project_root/tmp/parsys_cloud.sqlite'
 # PG_SQL = 'postgresql://user:password@localhost/postgres'
-AT_DB_PATH = 'postgresql://abonamy:abonamy@localhost/at_dev'
+AT_DB_PATH = ''
 
 ALEMBIC_VERSION = '70292af6fd9e'
 
