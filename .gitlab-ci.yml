@@ -28,7 +28,7 @@ build:
 
   script:
     - pip3 -q install -U pip wheel setuptools
-    - python setup.py bdist_wheel
+    - python3 setup.py bdist_wheel
     - pip3 wheel -w dist/ '.[prod]'
 
   artifacts:
