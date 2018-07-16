@@ -469,6 +469,18 @@ class Sites(object):
             'email': self.site.email,
         }
 
+    @view_config(route_name='api-sites-information', request_method='GET', renderer='json')
+    def site_id_get(self):
+        user_id = self.request.matchdict.get('user_id')
+        site = self.request.db_session.query(models.Site).join(models.Asset) \
+            .filter(models.Asset.user_id == user_id).first()
+
+        if site:
+            return {'site_id': site.site_id}
+
+        else:
+            return {}
+
 
 class Software(object):
     """Software update WebServices: tell to the assets what is the latest version and url of a given product +
