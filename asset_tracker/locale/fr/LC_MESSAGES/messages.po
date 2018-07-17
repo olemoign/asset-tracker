@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-07-12 13:43+0200\n"
+"POT-Creation-Date: 2018-07-17 16:39+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -396,6 +396,12 @@ msgstr "Base de chargement Télécardia - Parsys"
 msgid "Tenant"
 msgstr "Tenant"
 
+#: templates/emails/calibration_reminder.html:3
+#: templates/emails/calibration_reminder.txt:3
+#, python-format
+msgid "The following assets must be calibrated before %(calibration_date)s"
+msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)s"
+
 #: configuration.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr "Thermomètre - Foracare IR21"
@@ -403,16 +409,6 @@ msgstr "Thermomètre - Foracare IR21"
 #: views_asset.py:212
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
-
-#: templates/emails/calibration_reminder.html:3
-#: templates/emails/calibration_reminder.txt:3
-#, python-format
-msgid ""
-"This is a reminder from %(app_name)s, the following assets must be "
-"recalibrated before %(calibration_date)s :"
-msgstr ""
-"Ceci est un rappel de %(app_name)s, les assets suivants doivent être "
-"recalibrés avant le %(calibration_date)s :"
 
 #: templates/menu.html:5
 msgid "Toggle navigation"

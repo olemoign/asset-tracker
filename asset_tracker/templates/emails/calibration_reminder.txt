@@ -1,7 +1,7 @@
 {{ gettext('Dear user') }},
 
-{{ gettext('This is a reminder from %(app_name)s, the following assets must be recalibrated before %(calibration_date)s :',
-           app_name=app_name, calibration_date=calibration_date|format_date(locale, 'long')) }}
+{{ gettext('The following assets must be calibrated before %(calibration_date)s',
+           app_name=app_name, calibration_date=calibration_date|format_date(locale, 'long')) }}:
 
 {% for asset in assets %}
     * {{ asset.asset_id }} : {{ assets_url }}/{{ asset.id }}/

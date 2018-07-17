@@ -31,7 +31,7 @@ def next_calibration_reminder(months=3):
     """Remind the assets owner about planned calibration.
 
     Args:
-        months (int) reminder period before calibration.
+        months (int): a reminder is sent x months before a calibration is needed.
 
     """
     mandatory_config = ('asset_tracker.cloud_name', 'asset_tracker.server_url',

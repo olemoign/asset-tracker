@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-07-12 13:43+0200\n"
+"POT-Creation-Date: 2018-07-17 16:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -395,20 +395,18 @@ msgstr ""
 msgid "Tenant"
 msgstr ""
 
+#: templates/emails/calibration_reminder.html:3
+#: templates/emails/calibration_reminder.txt:3
+#, python-format
+msgid "The following assets must be calibrated before %(calibration_date)s :"
+msgstr ""
+
 #: configuration.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
 #: views_asset.py:212
 msgid "This asset id already exists."
-msgstr ""
-
-#: templates/emails/calibration_reminder.html:3
-#: templates/emails/calibration_reminder.txt:3
-#, python-format
-msgid ""
-"This is a reminder from %(app_name)s, the following assets must be "
-"recalibrated before %(calibration_date)s :"
 msgstr ""
 
 #: templates/menu.html:5

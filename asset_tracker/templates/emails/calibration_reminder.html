@@ -1,7 +1,7 @@
 <p>{{ gettext('Dear user') }},</p>
 
-<p>{{ gettext('This is a reminder from %(app_name)s, the following assets must be recalibrated before %(calibration_date)s :',
-              app_name=app_name, calibration_date=calibration_date|format_date(locale, 'long')) }}</p>
+<p>{{ gettext('The following assets must be calibrated before %(calibration_date)s',
+              app_name=app_name, calibration_date=calibration_date|format_date(locale, 'long')) }}:</p>
 
 <ul>
 {% for asset in assets %}
