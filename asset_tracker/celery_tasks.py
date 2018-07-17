@@ -3,27 +3,15 @@ import itertools
 import arrow
 import transaction
 from celery.utils.log import get_task_logger
-from sqlalchemy import create_engine
 
 from parsys_utilities.celery_app import app
+from parsys_utilities.celery_tasks import get_session_factory
 from parsys_utilities.sentry import sentry_celery_exception
 
 from asset_tracker import models
 from asset_tracker.notify import next_calibration_notification
 
 logger = get_task_logger(__name__)
-
-
-def get_session_factory():
-    """Create an SQLAlchemy session factory.
-
-    Returns:
-        sqlalchemy.orm.sessionmaker.
-
-    """
-    sqlalchemy_url = app.conf.pyramid_config['app:main']['sqlalchemy.url']
-    engine = create_engine(sqlalchemy_url)
-    return models.get_session_factory(engine)
 
 
 @app.task()
@@ -49,7 +37,7 @@ def next_calibration_reminder(months=3):
     calibration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
 
     # Set up db connection.
-    session_factory = get_session_factory()
+    session_factory = get_session_factory(sqlalchemy_url=app.conf.pyramid_config['app:main']['sqlalchemy.url'])
 
     with transaction.manager:
         db_session = models.get_tm_session(session_factory, transaction.manager)
