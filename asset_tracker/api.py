@@ -472,8 +472,8 @@ class Sites(object):
     @view_config(route_name='api-sites-information', request_method='GET', renderer='json')
     def site_id_get(self):
         user_id = self.request.matchdict.get('user_id')
-        site = self.request.db_session.query(models.Site).join(models.Asset) \
-            .filter(models.Asset.user_id == user_id).first()
+        site = self.request.db_session.query(models.Site.site_id) \
+            .join(models.Asset).filter(models.Asset.user_id == user_id).first()
 
         if site:
             return {'site_id': site.site_id}
