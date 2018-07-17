@@ -1,92 +1,14 @@
-import gettext
 import logging
 import os
 
-from jinja2 import Environment, FileSystemLoader
-from pyramid.i18n import make_localizer, TranslationString as _
+from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
 
-from parsys_utilities import AVAILABLE_LOCALES, celery_tasks, dates
+from parsys_utilities.notifications import emails_renderer_offline, Notifier
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
 TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
-
-
-def emails_renderer_offline(subject, text_path, html_path, template_data):
-    """Generates emails in all the languages available in this application.
-
-    RTA will choose the language according to the user parameters.
-
-    This function is a modification of emails_renderer().
-    It allows us to send notifications from outside the WGSI app, in our case, from a Celery worker.
-
-    Args:
-         subject (str): email subject.
-         text_path (str): path to message body as plain text.
-         html_path (str): path to message body as html.
-         template_data (dict).
-
-    Returns:
-        messages (dict): {<locale_name>: {'subject': str, 'text': str, 'html': str}}.
-
-    """
-    # jinja2 configuration
-    env = Environment(
-        extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape', 'jinja2.ext.with_'],
-        loader=FileSystemLoader(TEMPLATES_PATH)
-    )
-    env.filters['format_date'] = dates.format_date  # add custom filter to format date according to locale
-
-    text_template = env.get_template(text_path)
-    html_template = env.get_template(html_path)
-
-    rendered_emails = dict()
-    for locale in AVAILABLE_LOCALES:
-        # translate subject
-        pyramid_localizer = make_localizer(current_locale_name=locale, translation_directories=[TRANSLATIONS_PATH])
-        rendered_subject = pyramid_localizer.translate(subject)
-
-        # translate template
-        template_data['locale'] = locale
-        translations = gettext.translation(domain='messages', localedir=TRANSLATIONS_PATH, languages=[locale])
-        env.install_gettext_translations(translations, newstyle=True)
-        rendered_text = text_template.render(template_data)
-        rendered_html = html_template.render(template_data)
-
-        rendered_emails[locale] = {
-            'subject': rendered_subject,
-            'text': rendered_text,
-            'html': rendered_html
-        }
-
-    return rendered_emails
-
-
-def notify_offline(ini_configuration, **json):
-    """Send notifications from outside the WGSI app.
-
-    This function is a modification of Notifier.notify() from parsys_utilities.notifications.
-
-    Args:
-        ini_configuration (dict) Parsys Cloud parameters.
-
-    Keyword Args:
-        message (dict).
-        tenant (str).
-        user_ids or rights (list(str)).
-        level (str).
-
-    """
-    if asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False)):
-        return
-
-    notifications_url = '{server_url}/api/notifications/'.format(server_url=ini_configuration['rta.server_url'])
-    client_id = ini_configuration['rta.client_id']
-    secret = ini_configuration['rta.secret']
-
-    args = [notifications_url, json, client_id, secret]
-    celery_tasks.post_json.apply_async(args=args)
 
 
 def next_calibration_notification(ini_configuration, tenant_id, assets, calibration_date):
@@ -116,14 +38,17 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, calibrat
     }
 
     # Template generation
-    emails = emails_renderer_offline(subject=subject, text_path=text, html_path=html, template_data=template_data)
+    configuration = {'templates_path': TEMPLATES_PATH, 'translations_path': TRANSLATIONS_PATH}
+    emails = emails_renderer_offline(subject, text, html, template_data, **configuration)
     messages = {'email': emails}
 
     # rights to identify users to prevent for future asset calibration
     rights = ['notifications-calibration']
 
     # Asynchronous POST
-    notify_offline(ini_configuration, message=messages, tenant=tenant_id, rights=rights, level='info')
+    send_notifications = not asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False))
+    Notifier.notify_offline(ini_configuration, send_notifications,
+                            message=messages, tenant=tenant_id, rights=rights, level='info')
 
     logging_info = ['notify the assets owner for the next calibration date', [asset.id for asset in assets]]
     logging.getLogger('asset_tracker_technical').info(logging_info)
