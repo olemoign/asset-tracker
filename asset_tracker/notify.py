@@ -4,7 +4,7 @@ import os
 from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
 
-from parsys_utilities.notifications import emails_renderer_offline, Notifier
+from parsys_utilities.notifications import emails_renderer_offline, notify_offline
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
@@ -47,8 +47,8 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, calibrat
 
     # Asynchronous POST
     send_notifications = not asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False))
-    Notifier.notify_offline(ini_configuration, send_notifications,
-                            message=messages, tenant=tenant_id, rights=rights, level='info')
+    notify_offline(ini_configuration, send_notifications,
+                   message=messages, tenant=tenant_id, rights=rights, level='info')
 
     logging_info = ['notify the assets owner for the next calibration date', [asset.id for asset in assets]]
     logging.getLogger('asset_tracker_technical').info(logging_info)
