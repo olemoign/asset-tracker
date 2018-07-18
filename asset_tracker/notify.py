@@ -9,6 +9,8 @@ FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
 TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
 
+logger = logging.getLogger('asset_tracker_technical')
+
 
 def next_calibration_notification(ini_configuration, tenant_id, assets, calibration_date):
     """Notify 'HR officer's of an employee's tenant that her/his vocational certificate is expiring.
@@ -42,8 +44,11 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, calibrat
 
     # Asynchronous POST
     send_notifications = not asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False))
-    json = {'message': messages, 'tenant': tenant_id, 'rights': ['notifications-calibration'], 'level': 'info'}
-    notify_offline(send_notifications, ini_configuration, **json)
+    if send_notifications:
+        json = {'message': messages, 'tenant': tenant_id, 'rights': ['notifications-calibration'], 'level': 'info'}
+        notify_offline(ini_configuration, **json)
+    else:
+        logger.debug('Notifications are disabled.')
 
     logging_info = ['notify the assets owner for the next calibration date', [asset.id for asset in assets]]
-    logging.getLogger('asset_tracker_technical').info(logging_info)
+    logger.info(logging_info)
