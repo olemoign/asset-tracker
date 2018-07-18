@@ -38,8 +38,7 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, calibrat
     }
 
     # Template generation
-    configuration = {'templates_path': TEMPLATES_PATH, 'translations_path': TRANSLATIONS_PATH}
-    emails = emails_renderer_offline(subject, text, html, template_data, **configuration)
+    emails = emails_renderer_offline(subject, text, html, template_data, TEMPLATES_PATH, TRANSLATIONS_PATH)
     messages = {'email': emails}
 
     # rights to identify users to prevent for future asset calibration
