@@ -37,7 +37,7 @@ def next_calibration_reminder(months=3):
     calibration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
 
     # Set up db connection.
-    session_factory = get_session_factory(sqlalchemy_url=app.conf.pyramid_config['app:main']['sqlalchemy.url'])
+    session_factory = get_session_factory()
 
     with transaction.manager:
         db_session = models.get_tm_session(session_factory, transaction.manager)
