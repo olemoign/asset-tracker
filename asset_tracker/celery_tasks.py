@@ -3,7 +3,6 @@ import itertools
 import arrow
 import transaction
 from celery.utils.log import get_task_logger
-
 from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
 from parsys_utilities.sentry import sentry_celery_exception

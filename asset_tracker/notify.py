@@ -1,10 +1,9 @@
 import logging
 import os
 
+from parsys_utilities.notifications import emails_renderer_offline, notify_offline
 from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
-
-from parsys_utilities.notifications import emails_renderer_offline, notify_offline
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
