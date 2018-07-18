@@ -38,16 +38,13 @@ def next_calibration_notification(ini_configuration, tenant_id, assets, calibrat
     }
 
     # Template generation
-    emails = emails_renderer_offline(subject, text, html, template_data, TEMPLATES_PATH, TRANSLATIONS_PATH)
+    emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
     messages = {'email': emails}
-
-    # rights to identify users to prevent for future asset calibration
-    rights = ['notifications-calibration']
 
     # Asynchronous POST
     send_notifications = not asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False))
-    notify_offline(ini_configuration, send_notifications,
-                   message=messages, tenant=tenant_id, rights=rights, level='info')
+    json = {'message': messages, 'tenant': tenant_id, 'rights': ['notifications-calibration'], 'level': 'info'}
+    notify_offline(send_notifications, ini_configuration, **json)
 
     logging_info = ['notify the assets owner for the next calibration date', [asset.id for asset in assets]]
     logging.getLogger('asset_tracker_technical').info(logging_info)
