@@ -18,7 +18,7 @@ flake8:
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 -q install '.[qa]'
-    - flake8
+    - flake8 --exclude asset_tracker/tests/a_porter
 
 build:
   stage: build
