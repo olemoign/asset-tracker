@@ -44,6 +44,13 @@ class SitesEndPoint(object):
 
         return site
 
+    def get_base_form_data(self):
+        """Get base form input data: site types, ordered by translated label, and tenants."""
+        return {
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.get_create_read_tenants(),
+        }
+
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read sites."""
         # Admins have access to all tenants.
@@ -81,13 +88,6 @@ class SitesEndPoint(object):
         site_type = self.form.get('site_type')
         if not site_type:
             raise FormException(_('Site type is required.'))
-
-    def get_base_form_data(self):
-        """Get base form input data: site types, ordered by translated label, and tenants."""
-        return {
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.get_create_read_tenants(),
-        }
 
     @view_config(route_name='sites-create', request_method='GET', permission='sites-create',
                  renderer='sites-create_update.html')
