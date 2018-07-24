@@ -11,7 +11,7 @@ from asset_tracker.constants import FormException
 SITE_TYPES = [_('Company'), _('Hospital'), _('Nursing home'), _('Ship')]
 
 
-class SitesEndPoint(object):
+class Sites(object):
     """List, read and update sites."""
 
     def __acl__(self):
@@ -165,6 +165,6 @@ class SitesEndPoint(object):
 
 
 def includeme(config):
-    config.add_route(pattern='sites/create/', name='sites-create', factory=SitesEndPoint)
-    config.add_route(pattern='sites/{site_id:\d+}/', name='sites-update', factory=SitesEndPoint)
-    config.add_route(pattern='sites/', name='sites-list', factory=SitesEndPoint)
+    config.add_route(pattern='sites/create/', name='sites-create', factory=Sites)
+    config.add_route(pattern='sites/{site_id:\d+}/', name='sites-update', factory=Sites)
+    config.add_route(pattern='sites/', name='sites-list', factory=Sites)

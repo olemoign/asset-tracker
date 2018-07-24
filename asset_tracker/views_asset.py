@@ -14,11 +14,11 @@ from pyramid.view import view_config
 from sqlalchemy import and_, desc, func
 from sqlalchemy.orm import joinedload
 
+from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus, Site
 
 
-class AssetsEndPoint(object):
+class Assets(object):
     """List, read and update assets."""
 
     def __acl__(self):
@@ -50,7 +50,8 @@ class AssetsEndPoint(object):
         if not asset_id:
             return
 
-        asset = self.request.db_session.query(Asset).options(joinedload('equipments')).filter_by(id=asset_id).first()
+        asset = self.request.db_session.query(models.Asset) \
+            .options(joinedload(models.Asset.equipments)).filter_by(id=asset_id).first()
         if not asset:
             raise HTTPNotFound()
 
@@ -89,8 +90,8 @@ class AssetsEndPoint(object):
             else:
                 expiration_date_2 = None
 
-            family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
-            equipment = Equipment(
+            family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
+            equipment = models.Equipment(
                 family=family,
                 serial_number=serial_number,
                 expiration_date_1=expiration_date_1,
@@ -106,10 +107,10 @@ class AssetsEndPoint(object):
         else:
             event_date = datetime.utcnow().date()
 
-        status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
 
         # noinspection PyArgumentList
-        event = Event(
+        event = models.Event(
             date=event_date,
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
@@ -121,13 +122,14 @@ class AssetsEndPoint(object):
 
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
-        equipments_families = self.request.db_session.query(EquipmentFamily).order_by(EquipmentFamily.model).all()
+        equipments_families = self.request.db_session.query(models.EquipmentFamily) \
+            .order_by(models.EquipmentFamily.model).all()
         # Translate family models so that they can be sorted translated on the page.
         for family in equipments_families:
             family.model_translated = self.request.localizer.translate(family.model)
 
-        statuses = self.request.db_session.query(EventStatus) \
-            .filter(EventStatus.status_id != 'software_update')
+        statuses = self.request.db_session.query(models.EventStatus) \
+            .filter(models.EventStatus.status_id != 'software_update')
 
         tenants = self.get_create_read_tenants()
 
@@ -219,11 +221,11 @@ class AssetsEndPoint(object):
             csv body (list): information on the assets.
 
         """
-        assets = db_session.query(Asset) \
-            .options(joinedload(Asset.site)) \
-            .options(joinedload(Asset.status)) \
-            .filter(Asset.tenant_id.in_(tenants.keys())) \
-            .order_by(Asset.asset_id)
+        assets = db_session.query(models.Asset) \
+            .options(joinedload(models.Asset.site)) \
+            .options(joinedload(models.Asset.status)) \
+            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .order_by(models.Asset.asset_id)
 
         rows = []
         for asset in assets:
@@ -262,9 +264,9 @@ class AssetsEndPoint(object):
 
             # ADD software information
             # the complete list of the most recent software
-            software_updates = db_session.query(Event).join(EventStatus) \
-                .filter(and_(Event.asset_id == asset.id,
-                             EventStatus.status_id == 'software_update')).order_by(desc('date'))
+            software_updates = db_session.query(models.Event).join(models.EventStatus) \
+                .filter(and_(models.Event.asset_id == asset.id,
+                             models.EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
             # get last version of each software
             most_recent_soft_per_asset = dict()
@@ -284,9 +286,9 @@ class AssetsEndPoint(object):
 
             # ADD equipment information
             # the complete list of equipment for one asset
-            asset_equipment = db_session.query(EquipmentFamily.model, Equipment.serial_number) \
-                .join(Equipment) \
-                .filter(Equipment.asset_id == asset.id).all()
+            asset_equipment = db_session.query(models.EquipmentFamily.model, models.Equipment.serial_number) \
+                .join(models.Equipment) \
+                .filter(models.Equipment.asset_id == asset.id).all()
 
             for equipment_name in unique_equipment:
                 equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
@@ -318,7 +320,7 @@ class AssetsEndPoint(object):
             return None  # no available software for new Asset
 
         software_updates = self.asset.history('desc') \
-            .join(EventStatus).filter(EventStatus.status_id == 'software_update')
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
 
         softwares = {}
         for event in software_updates:
@@ -342,9 +344,9 @@ class AssetsEndPoint(object):
         """
         tenants_list = (tenant['id'] for tenant in tenants)
 
-        sites = self.request.db_session.query(Site) \
-            .filter(Site.tenant_id.in_(tenants_list)) \
-            .order_by(func.lower(Site.name))
+        sites = self.request.db_session.query(models.Site) \
+            .filter(models.Site.tenant_id.in_(tenants_list)) \
+            .order_by(func.lower(models.Site.name))
 
         return sites
 
@@ -406,7 +408,7 @@ class AssetsEndPoint(object):
 
         """
         for event_id in self.form['event-removed']:
-            event = self.request.db_session.query(Event).filter_by(event_id=event_id).first()
+            event = self.request.db_session.query(models.Event).filter_by(event_id=event_id).first()
             event.removed = True
             event.removed_at = datetime.utcnow()
             event.remover_id = self.request.user.id
@@ -424,8 +426,8 @@ class AssetsEndPoint(object):
             # If asset was calibrated (it should be, as production is considered a calibration).
             # Marlink rule: next calibration = activation date + calibration frequency.
             if calibration_last:
-                activation_next = asset.history('asc').filter(Event.date > calibration_last) \
-                    .join(EventStatus).filter(EventStatus.status_id == 'service').first()
+                activation_next = asset.history('asc').filter(models.Event.date > calibration_last) \
+                    .join(models.EventStatus).filter(models.EventStatus.status_id == 'service').first()
                 if activation_next:
                     asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
                 else:
@@ -455,7 +457,7 @@ class AssetsEndPoint(object):
         else:
             asset_id = self.form.get('asset_id')
             changed_id = not self.asset or self.asset.asset_id != asset_id
-            existing_asset = self.request.db_session.query(Asset).filter_by(asset_id=asset_id).first()
+            existing_asset = self.request.db_session.query(models.Asset).filter_by(asset_id=asset_id).first()
             if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
@@ -469,11 +471,12 @@ class AssetsEndPoint(object):
             raise FormException(_('Invalid calibration frequency.'), log=True)
 
         site_id = self.form.get('site_id')
-        if site_id and not self.request.db_session.query(Site).filter_by(id=site_id, tenant_id=tenant_id).first():
+        model_site = self.request.db_session.query(models.Site).filter_by(id=site_id, tenant_id=tenant_id).first()
+        if site_id and not model_site:
             raise FormException(_('Invalid site.'), log=True)
 
         if self.form.get('event'):
-            status = self.request.db_session.query(EventStatus).filter_by(status_id=self.form['event']).first()
+            status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
             if not status:
                 raise FormException(_('Invalid asset status.'), log=True)
 
@@ -488,7 +491,7 @@ class AssetsEndPoint(object):
                                                                    self.form['equipment-expiration_date_2']):
             # form['equipment-family'] can be ['', '']
             if family_id:
-                db_family = self.request.db_session.query(EquipmentFamily).filter_by(family_id=family_id).first()
+                db_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'), log=True)
 
@@ -505,7 +508,7 @@ class AssetsEndPoint(object):
                         raise FormException(_('Invalid expiration date.'), log=True)
 
         for event_id in self.form['event-removed']:
-            event = self.asset.history('asc', filter_software=True).filter(Event.event_id == event_id).first()
+            event = self.asset.history('asc', filter_software=True).filter(models.Event.event_id == event_id).first()
             if not event:
                 raise FormException(_('Invalid event.'), log=True)
 
@@ -534,7 +537,7 @@ class AssetsEndPoint(object):
             calibration_frequency = int(self.form['calibration_frequency'])
 
         # noinspection PyArgumentList
-        self.asset = Asset(
+        self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             tenant_id=self.form['tenant_id'],
             asset_type=self.form['asset_type'],
@@ -637,19 +640,22 @@ class AssetsEndPoint(object):
 
         # dynamic data - software
         # find unique software name
-        software_updates = self.request.db_session.query(Event) \
-            .join(Asset, Event.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
-            .join(EventStatus, Event.status_id == EventStatus.id).filter(EventStatus.status_id == 'software_update')
+        software_updates = self.request.db_session.query(models.Event) \
+            .join(models.Asset, models.Event.asset_id == models.Asset.id) \
+            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .join(models.EventStatus, models.Event.status_id == models.EventStatus.id) \
+            .filter(models.EventStatus.status_id == 'software_update')
 
         unique_software = set(update.extra_json['software_name'] for update in software_updates)
 
         # dynamic data - equipment
         # find the name of the deployed equipment
-        equipment_names = self.request.db_session.query(Equipment.family_id, EquipmentFamily.model) \
-            .join(EquipmentFamily, Equipment.family_id == EquipmentFamily.id) \
-            .join(Asset, Equipment.asset_id == Asset.id).filter(Asset.tenant_id.in_(tenants.keys())) \
-            .group_by(Equipment.family_id, EquipmentFamily.model) \
-            .order_by(EquipmentFamily.model)
+        equipment_names = self.request.db_session.query(models.Equipment.family_id, models.EquipmentFamily.model) \
+            .join(models.EquipmentFamily, models.Equipment.family_id == models.EquipmentFamily.id) \
+            .join(models.Asset, models.Equipment.asset_id == models.Asset.id) \
+            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .group_by(models.Equipment.family_id, models.EquipmentFamily.model) \
+            .order_by(models.EquipmentFamily.model)
 
         # get EquipmentFamily.model
         unique_equipment = tuple(e[1] for e in equipment_names)
@@ -669,8 +675,8 @@ class AssetsEndPoint(object):
 
 
 def includeme(config):
-    config.add_route(pattern='assets/create/', name='assets-create', factory=AssetsEndPoint)
-    config.add_route(pattern='assets/{asset_id:\d+}/', name='assets-update', factory=AssetsEndPoint)
-    config.add_route(pattern='assets/', name='assets-list', factory=AssetsEndPoint)
-    config.add_route(pattern='assets/extract/', name='assets-extract', factory=AssetsEndPoint)
-    config.add_route(pattern='/', name='home', factory=AssetsEndPoint)
+    config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
+    config.add_route(pattern='assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
+    config.add_route(pattern='assets/', name='assets-list', factory=Assets)
+    config.add_route(pattern='assets/extract/', name='assets-extract', factory=Assets)
+    config.add_route(pattern='/', name='home', factory=Assets)
