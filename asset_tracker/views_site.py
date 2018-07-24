@@ -11,7 +11,7 @@ from asset_tracker.constants import FormException
 SITE_TYPES = [_('Company'), _('Hospital'), _('Nursing home'), _('Ship')]
 
 
-class SitesEndPoint(object):
+class Sites(object):
     """List, read and update sites."""
 
     def __acl__(self):
@@ -43,6 +43,13 @@ class SitesEndPoint(object):
             raise HTTPNotFound()
 
         return site
+
+    def get_base_form_data(self):
+        """Get base form input data: site types, ordered by translated label, and tenants."""
+        return {
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.get_create_read_tenants(),
+        }
 
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read sites."""
@@ -81,13 +88,6 @@ class SitesEndPoint(object):
         site_type = self.form.get('site_type')
         if not site_type:
             raise FormException(_('Site type is required.'))
-
-    def get_base_form_data(self):
-        """Get base form input data: site types, ordered by translated label, and tenants."""
-        return {
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.get_create_read_tenants(),
-        }
 
     @view_config(route_name='sites-create', request_method='GET', permission='sites-create',
                  renderer='sites-create_update.html')
@@ -165,6 +165,6 @@ class SitesEndPoint(object):
 
 
 def includeme(config):
-    config.add_route(pattern='sites/create/', name='sites-create', factory=SitesEndPoint)
-    config.add_route(pattern='sites/{site_id:\d+}/', name='sites-update', factory=SitesEndPoint)
-    config.add_route(pattern='sites/', name='sites-list', factory=SitesEndPoint)
+    config.add_route(pattern='sites/create/', name='sites-create', factory=Sites)
+    config.add_route(pattern='sites/{site_id:\d+}/', name='sites-update', factory=Sites)
+    config.add_route(pattern='sites/', name='sites-list', factory=Sites)
