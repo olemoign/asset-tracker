@@ -12,7 +12,7 @@ from json import dumps, JSONDecodeError
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import Right
 from parsys_utilities.dates import format_date
-from parsys_utilities.sentry import sentry_exception
+from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
@@ -25,7 +25,25 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.views_asset import AssetsEndPoint
+from asset_tracker.views_asset import Assets as AssetView
+
+
+def authenticate_rta(request):
+    """Authenticate RTA using "reversed" authentication: the asset tracker has credentials to authenticate on RTA
+    (client_id/secret). Make RTA use those same credentials to link assets.
+
+    Args:
+        request (pyramid.request.Request).
+
+    """
+    rta_auth = extract_http_basic_credentials(request)
+    if not rta_auth:
+        return False
+
+    client_id = request.registry.settings['rta.client_id']
+    secret = request.registry.settings['rta.secret']
+
+    return client_id == rta_auth.username and secret == rta_auth.password
 
 
 def get_version_from_file(file_name):
@@ -88,6 +106,83 @@ class Assets(object):
             authorized_tenants = {right.tenant for right in self.request.effective_principals
                                   if isinstance(right, Right) and right.name == 'assets-list'}
             return q.filter(models.Asset.tenant_id.in_(authorized_tenants))
+
+    def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
+        """Create/Update an asset based on information from RTA.
+        Find and update asset information if asset exists in AssetTracker or create it.
+
+        Args:
+            user_id (str): unique id to identify the station
+            login (str): serial number or station login/ID
+            tenant_id (str): unique id to identify the tenant
+            creator_id (str): unique id to identify the user
+            creator_alias (str): '{first_name} {last_name}'
+
+        Returns:
+            flash (dict): information to be displayed in RTA session.flash
+
+        """
+        # IF asset exists in both Asset Tracker and RTA...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(user_id=user_id) \
+            .first()
+
+        if asset:
+            if asset.asset_id != login:
+                asset.asset_id = login
+
+            if asset.tenant_id != tenant_id:
+                asset.tenant_id = tenant_id
+                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
+                # be valid anymore.
+                asset.site_id = None
+
+            return
+
+        # ...ELSE IF asset exists only in Asset Tracker...
+        asset = self.request.db_session.query(models.Asset) \
+            .filter_by(asset_id=login, user_id=None) \
+            .first()
+
+        if asset:
+            asset.user_id = user_id
+
+            if asset.tenant_id != tenant_id:
+                asset.tenant_id = tenant_id
+                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
+                # be valid anymore.
+                asset.site_id = None
+
+            return
+
+        # ...ELSE create a new Asset
+        # status selection for new Asset
+        status = self.request.db_session.query(models.EventStatus) \
+            .filter_by(status_id='stock_parsys') \
+            .one()
+
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
+        if 'marlink' in client_specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            calibration_frequency = 2
+
+        # noinspection PyArgumentList
+        asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
+                             calibration_frequency=calibration_frequency)
+        self.request.db_session.add(asset)
+
+        # Add Event
+        # noinspection PyArgumentList
+        event = models.Event(status=status, date=datetime.utcnow().date(),
+                             creator_id=creator_id, creator_alias=creator_alias)
+        # noinspection PyProtectedMember
+        asset._history.append(event)
+        self.request.db_session.add(event)
+
+        # Update status and calibration
+        AssetView.update_status_and_calibration_next(asset, client_specific)
 
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
@@ -187,97 +282,6 @@ class Assets(object):
         return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
                 'data': assets}
 
-    def authenticate_rta(self):
-        """Authenticate RTA using "reversed" authentication: the asset tracker has credentials to authenticate on RTA
-        (client_id/secret). Make RTA use those same credentials to link assets.
-
-        """
-        rta_auth = extract_http_basic_credentials(self.request)
-        if not rta_auth:
-            return False
-
-        client_id = self.request.registry.settings['rta.client_id']
-        secret = self.request.registry.settings['rta.secret']
-
-        return client_id == rta_auth.username and secret == rta_auth.password
-
-    def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
-        """Create/Update an asset based on information from RTA.
-        Find and update asset information if asset exists in AssetTracker or create it.
-
-        Args:
-            user_id (str): unique id to identify the station
-            login (str): serial number or station login/ID
-            tenant_id (str): unique id to identify the tenant
-            creator_id (str): unique id to identify the user
-            creator_alias (str): '{first_name} {last_name}'
-
-        Returns:
-            flash (dict): information to be displayed in RTA session.flash
-
-        """
-        # IF asset exists in both Asset Tracker and RTA...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(user_id=user_id) \
-            .first()
-
-        if asset:
-            if asset.asset_id != login:
-                asset.asset_id = login
-
-            if asset.tenant_id != tenant_id:
-                asset.tenant_id = tenant_id
-                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
-                # be valid anymore.
-                asset.site_id = None
-
-            return
-
-        # ...ELSE IF asset exists only in Asset Tracker...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=login, user_id=None) \
-            .first()
-
-        if asset:
-            asset.user_id = user_id
-
-            if asset.tenant_id != tenant_id:
-                asset.tenant_id = tenant_id
-                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
-                # be valid anymore.
-                asset.site_id = None
-
-            return
-
-        # ...ELSE create a new Asset
-        # status selection for new Asset
-        status = self.request.db_session.query(models.EventStatus) \
-            .filter_by(status_id='stock_parsys') \
-            .one()
-
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
-        if 'marlink' in client_specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
-        else:
-            calibration_frequency = 2
-
-        # noinspection PyArgumentList
-        asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
-                             calibration_frequency=calibration_frequency)
-        self.request.db_session.add(asset)
-
-        # Add Event
-        # noinspection PyArgumentList
-        event = models.Event(status=status, date=datetime.utcnow().date(),
-                             creator_id=creator_id, creator_alias=creator_alias)
-        # noinspection PyProtectedMember
-        asset._history.append(event)
-        self.request.db_session.add(event)
-
-        # Update status and calibration
-        AssetsEndPoint.update_status_and_calibration_next(asset, client_specific)
-
     @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
     def rta_link_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
@@ -285,7 +289,7 @@ class Assets(object):
 
         """
         # Authentify RTA using HTTP Basic Auth.
-        if not self.authenticate_rta():
+        if not authenticate_rta(self.request):
             return HTTPForbidden()
 
         # Make sure the JSON provided is valid.
@@ -318,14 +322,36 @@ class Assets(object):
         else:
             return HTTPOk()
 
+    @view_config(route_name='api-assets-site', request_method='GET', renderer='json')
+    def site_id_get(self):
+        # Authentify RTA using HTTP Basic Auth.
+        if not authenticate_rta(self.request):
+            sentry_log(self.request, 'Forbidden RTA request.')
+            return HTTPForbidden()
+
+        user_id = self.request.matchdict.get('user_id')
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
+        if not asset:
+            sentry_log(self.request, 'Unknown asset.')
+            raise HTTPNotFound()
+
+        return {'site_id': asset.site.site_id if asset.site else None}
+
 
 class Sites(object):
     """List sites for dataTables + (Cloud) get site info in consultation."""
-    __acl__ = [
-        (Allow, None, 'sites-list', 'sites-list'),
-        (Allow, None, 'g:admin', 'sites-list'),
-        (Allow, None, 'api-sites-read', 'api-sites-read'),
-    ]
+    def __acl__(self):
+        rights = [
+            (Allow, None, 'sites-list', 'sites-list'),
+            (Allow, None, 'g:admin', 'sites-list'),
+        ]
+
+        if self.site:
+            rights.append([
+                (Allow, self.site.tenant_id, 'api-sites-read', 'api-sites-read'),
+            ])
+
+        return rights
 
     def __init__(self, request):
         self.request = request
@@ -337,8 +363,10 @@ class Sites(object):
             return
 
         # if site is missing, site_get() method will return an empty response
-        site = self.request.db_session.query(models.Site) \
-            .filter_by(site_id=site_id).first()
+        site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
+        if not site:
+            sentry_log(self.request, 'Missing site.')
+            raise HTTPNotFound()
 
         return site
 
@@ -439,7 +467,7 @@ class Sites(object):
 
     @view_config(route_name='api-sites-read', request_method='GET', permission='api-sites-read',
                  renderer='sites-information.html')
-    def site_get(self):
+    def read_get(self):
         """Get site information for consultation, HTML response to insert directly into the consultation.
 
         The authorisation process is tricky:
@@ -450,17 +478,6 @@ class Sites(object):
             - if site exist, we check the site's tenant, to make sure the authorisation is right.
 
         """
-        if not self.site:
-            return {}
-
-        try:
-            if (self.site.tenant_id, 'api-sites-read') not in self.request.effective_principals:
-                raise HTTPForbidden()
-
-        except HTTPForbidden:
-            sentry_exception(self.request)
-            return {}
-
         return {
             'name': self.site.name,
             'site_type': self.site.site_type,
@@ -468,18 +485,6 @@ class Sites(object):
             'phone': self.site.phone,
             'email': self.site.email,
         }
-
-    @view_config(route_name='api-sites-information', request_method='GET', renderer='json')
-    def site_id_get(self):
-        user_id = self.request.matchdict.get('user_id')
-        site = self.request.db_session.query(models.Site.site_id) \
-            .join(models.Asset).filter(models.Asset.user_id == user_id).first()
-
-        if site:
-            return {'site_id': site.site_id}
-
-        else:
-            return {}
 
 
 class Software(object):
@@ -536,6 +541,7 @@ class Software(object):
         for product_file in product_files:
             version = get_version_from_file(product_file)
             product_versions[version] = product_file
+        # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
         product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: natural_sort_key(k[0])))
 
@@ -649,7 +655,7 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
-    config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-sites-information', factory=Sites)
+    config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-assets-site', factory=Assets)
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
     config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
