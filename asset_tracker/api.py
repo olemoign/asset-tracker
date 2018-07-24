@@ -331,10 +331,7 @@ class Assets(object):
 
         user_id = self.request.matchdict.get('user_id')
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
-        if not asset:
-            raise HTTPNotFound()
-
-        return {'site_id': asset.site.site_id if asset.site else None}
+        return {'site_id': asset.site.site_id if asset and asset.site else None}
 
 
 class Sites(object):
