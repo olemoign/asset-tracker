@@ -343,7 +343,7 @@ class Sites(object):
         ]
 
         if self.site:
-            rights.append([
+            rights.extend([
                 (Allow, self.site.tenant_id, 'api-sites-read', 'api-sites-read'),
             ])
 
