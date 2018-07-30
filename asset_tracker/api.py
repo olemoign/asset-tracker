@@ -15,7 +15,7 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk, HTTPUnauthorized
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
@@ -290,7 +290,7 @@ class Assets(object):
         """
         # Authentify RTA using HTTP Basic Auth.
         if not authenticate_rta(self.request):
-            return HTTPForbidden()
+            return HTTPUnauthorized()
 
         # Make sure the JSON provided is valid.
         try:
@@ -327,7 +327,7 @@ class Assets(object):
         # Authentify RTA using HTTP Basic Auth.
         if not authenticate_rta(self.request):
             sentry_log(self.request, 'Forbidden RTA request.')
-            return HTTPForbidden()
+            return HTTPUnauthorized()
 
         user_id = self.request.matchdict.get('user_id')
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
@@ -635,8 +635,7 @@ class Software(object):
                     date=datetime.utcnow().date(),
                     creator_id=self.request.user.id,
                     creator_alias=self.request.user.alias,
-                    extra=dumps({'software_name': self.product,
-                                 'software_version': software_version})
+                    extra=dumps({'software_name': self.product, 'software_version': software_version})
                 )
 
                 # noinspection PyProtectedMember
