@@ -7,7 +7,7 @@ import parsys_utilities.celery_app as celery
 import pkg_resources
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
-from parsys_utilities.logging import logger
+from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
