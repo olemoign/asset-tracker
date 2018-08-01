@@ -28,7 +28,6 @@ def main(global_config, **settings):
     update_configuration(settings)
 
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
-    config.set_default_csrf_options(require_csrf=True)
     config.include('pyramid_tm')
 
     # Jinja configuration.
