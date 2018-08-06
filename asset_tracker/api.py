@@ -336,6 +336,7 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables + (Cloud) get site info in consultation."""
+
     def __acl__(self):
         rights = [
             (Allow, None, 'sites-list', 'sites-list'),
