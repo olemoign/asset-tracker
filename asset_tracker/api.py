@@ -343,29 +343,10 @@ class Sites(object):
             (Allow, None, 'g:admin', 'sites-list'),
         ]
 
-        if self.site:
-            rights.extend([
-                (Allow, self.site.tenant_id, 'api-sites-read', 'api-sites-read'),
-            ])
-
         return rights
 
     def __init__(self, request):
         self.request = request
-        self.site = self.get_site()
-
-    def get_site(self):
-        site_id = self.request.matchdict.get('site_id')
-        if not site_id:
-            return
-
-        # if site is missing, site_get() method will return an empty response
-        site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
-        if not site:
-            sentry_log(self.request, 'Missing site.')
-            raise HTTPNotFound()
-
-        return site
 
     def apply_tenanting_filter(self, q):
         """Filter sites according to user's rights/tenants.
@@ -462,25 +443,33 @@ class Sites(object):
             'data': sites
         }
 
-    @view_config(route_name='api-sites-read', request_method='GET', permission='api-sites-read',
-                 renderer='sites-information.html')
+    @view_config(route_name='api-sites-read', request_method='GET', renderer='sites-information.html')
     def read_get(self):
         """Get site information for consultation, HTML response to insert directly into the consultation.
 
-        The authorisation process is tricky:
-            - we first apply the 'api-sites-read' permission with no tenant so that the app authenticates the user
-            and makes a first check.
-            - then we verify if the site exists. If it don't, it's ok, we return an iframe with no
-            data but the js that will send the postMessage to the cloud to give its size.
-            - if site exist, we check the site's tenant, to make sure the authorisation is right.
+        Always returns a 200, even if the site doesn't exist or the user hasn't got the rights. This way the user
+        doesn't get an error message, just an empty iframe.
 
         """
+        site_id = self.request.matchdict.get('site_id')
+
+        # if site is missing, site_get() method will return an empty response
+        site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
+        if not site:
+            sentry_log(self.request, 'Missing site.')
+            return {}
+
+        if (site.tenant_id, 'api-sites-read') not in self.request.effective_principals:
+            extras = {'user_id': self.request.user.id}
+            sentry_log(self.request, 'Forbidden site request.', extras=extras)
+            return {}
+
         return {
-            'name': self.site.name,
-            'site_type': self.site.site_type,
-            'contact': self.site.contact,
-            'phone': self.site.phone,
-            'email': self.site.email,
+            'name': site.name,
+            'site_type': site.site_type,
+            'contact': site.contact,
+            'phone': site.phone,
+            'email': site.email,
         }
 
 
