@@ -40,7 +40,7 @@ class Assets(object):
         self.request = request
         self.asset = self.get_asset()
         # Manage Marlink specifics.
-        self.client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
+        self.client_specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
         self.form = None
 
     def get_asset(self):

@@ -1,4 +1,4 @@
-0.0
+2.8
 ---
 
--  Initial version
+- conf: asset_tracker.client_specific => asset_tracker.specific

@@ -162,7 +162,7 @@ class Assets(object):
             .one()
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        client_specific = aslist(self.request.registry.settings.get('asset_tracker.client_specific', []))
+        client_specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
         if 'marlink' in client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
