@@ -15,7 +15,8 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
-from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk, HTTPUnauthorized
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk,\
+    HTTPUnauthorized
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
@@ -453,14 +454,17 @@ class Sites(object):
         """
         site_id = self.request.matchdict.get('site_id')
 
-        # if site is missing, site_get() method will return an empty response
         site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
         if not site:
             sentry_log(self.request, 'Missing site.')
             return {}
 
+        # If the user isn't authenticated yet, make sure he does the roundtrip with RTA.
+        if not self.request.user:
+            raise HTTPForbidden()
+
         if (site.tenant_id, 'api-sites-read') not in self.request.effective_principals:
-            extras = {'user_id': self.request.user.id}
+            extras = {'user_id': self.request.user.id if self.request.user else None}
             sentry_log(self.request, 'Forbidden site request.', extras=extras)
             return {}
 
