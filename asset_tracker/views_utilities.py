@@ -13,14 +13,14 @@ from pyramid.view import exception_view_config, notfound_view_config, view_confi
 from asset_tracker import models
 from asset_tracker.constants import GLUCOMETER_ID
 
+ASSET_TRACKER_VERSION = pkg_resources.require(__package__)[0].version
 DEFAULT_BRANDING = 'parsys'
 
 
 @subscriber(NewResponse)
 def add_app_version_header(event):
     """App version header is added to all responses."""
-    asset_tracker_version = pkg_resources.require(__package__)[0].version
-    event.response.headers.add('X-Parsys-Version', asset_tracker_version)
+    event.response.headers.add('X-Parsys-Version', ASSET_TRACKER_VERSION)
 
 
 @subscriber(BeforeRender)
