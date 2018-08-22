@@ -98,7 +98,7 @@ def main(global_config, assets_configuration=True, **settings):
     config.include('asset_tracker.views_asset')
     config.include('asset_tracker.views_site')
     config.include('asset_tracker.views_utilities')
-    config.scan()
+    config.scan(ignore='asset_tracker.tests')
 
     config.include('parsys_utilities.openid_client')
     config.scan('parsys_utilities.openid_client')
