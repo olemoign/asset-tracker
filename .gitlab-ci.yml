@@ -29,7 +29,7 @@ pytest:
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 -q install '.[tests]'
-    - py.test --cov=rta
+    - py.test --cov=asset_tracker
 
 build:
   stage: build
