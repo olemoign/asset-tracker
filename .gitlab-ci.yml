@@ -20,6 +20,17 @@ flake8:
     - pip3 -q install '.[qa]'
     - flake8 --exclude asset_tracker/tests/a_porter
 
+pytest:
+  stage: test
+  image: python:3.5
+  tags:
+    - docker
+
+  script:
+    - pip3 install -q -U pip setuptools wheel
+    - pip3 -q install '.[tests]'
+    - py.test --cov=rta
+
 build:
   stage: build
   image: python:3.5
@@ -27,7 +38,7 @@ build:
     - docker
 
   script:
-    - pip3 -q install -U pip wheel setuptools
+    - pip3 install -q -U pip setuptools wheel
     - python3 setup.py bdist_wheel
     - pip3 wheel -w dist/ '.[prod]'
 
@@ -45,8 +56,6 @@ docker-image:
   script:
     - echo creating $CONTAINER_TEST_IMAGE
     - docker build -t $CONTAINER_TEST_IMAGE .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
-    - docker push $CONTAINER_TEST_IMAGE
 
 release-image:
   stage: release
@@ -99,6 +108,3 @@ deploy_demo:
 
   only:
   - master
-
-
-# TODO : run tests

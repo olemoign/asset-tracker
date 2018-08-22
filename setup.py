@@ -42,7 +42,12 @@ optional = {
     ],
     'qa': [
         'flake8',
-    ]
+    ],
+    'tests': [
+        'pytest',
+        'pytest-cov',
+        'webtest',
+    ],
 }
 
 get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --dirty | sed -e "s/-/+/"'
@@ -70,6 +75,7 @@ setup(
     zip_safe=False,
     python_requires='>=3.5',
     install_requires=requires,
+    tests_require=optional['tests'],
     extras_require=optional,
     entry_points={
         'paste.app_factory': [

@@ -59,7 +59,7 @@ def get_version_from_file(file_name):
     """
     # Remove file extension
     file_name = os.path.splitext(file_name)[0]
-    return re.search('[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
+    return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
 
 
 def natural_sort_key(string):
@@ -644,7 +644,7 @@ class Software(object):
 
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
-    config.add_route(pattern='assets/{user_id:\w{8}}/site/', name='api-assets-site', factory=Assets)
+    config.add_route(pattern=r'assets/{user_id:\w{8}}/site/', name='api-assets-site', factory=Assets)
     config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
     config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')

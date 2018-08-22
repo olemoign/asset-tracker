@@ -2,3 +2,4 @@
 ---
 
 - conf: asset_tracker.client_specific => asset_tracker.specific
+- conf: add celery block
