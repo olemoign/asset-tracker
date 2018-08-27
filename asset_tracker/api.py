@@ -303,7 +303,7 @@ class Assets(object):
             return HTTPBadRequest()
 
         else:
-            asset_keys = ('userId', 'logIn', 'tenantId', 'creatorID', 'creatorAlias')
+            asset_keys = ('userID', 'logIn', 'tenantID', 'creatorID', 'creatorAlias')
             data = {k: json.get(k) for k in asset_keys}
 
         # Check information availability
@@ -313,7 +313,7 @@ class Assets(object):
 
         # Create or update Asset
         try:
-            self.link_asset(data['userId'], data['logIn'], data['tenantId'], data['creatorID'], data['creatorAlias'])
+            self.link_asset(data['userID'], data['logIn'], data['tenantID'], data['creatorID'], data['creatorAlias'])
 
         except SQLAlchemyError:
             self.request.logger_technical.info('Asset linking: db error.')
