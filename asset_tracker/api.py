@@ -141,11 +141,14 @@ class Assets(object):
             return
 
         # ...ELSE IF asset exists only in Asset Tracker...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=login, user_id=None) \
-            .first()
+        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=login).first()
 
         if asset:
+            if asset.user_id:
+                data = [asset.id, asset.user_id, user_id]
+                sentry_log(self.request, 'Trying to link asset {} which is already linked: {}/{}.'.format(*data))
+                return
+
             asset.user_id = user_id
 
             if asset.tenant_id != tenant_id:
