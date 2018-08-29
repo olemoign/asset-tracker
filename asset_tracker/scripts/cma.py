@@ -3,7 +3,6 @@ import csv
 import sys
 from datetime import datetime, timedelta
 
-import transaction
 from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
@@ -21,8 +20,8 @@ def main():
     parser.add_argument('creator_alias')
     args, extras = parser.parse_known_args()
 
-    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, transaction.manager, \
-            open(args.csv_file) as csv_file:
+    options = parse_vars(extras)
+    with bootstrap(args.config_uri, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
         db_session = env['request'].db_session
         csv_reader = csv.reader(csv_file, delimiter=';')
 

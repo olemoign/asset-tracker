@@ -1,6 +1,5 @@
 import argparse
 
-import transaction
 from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
@@ -15,7 +14,7 @@ def main():
 
     print('Updating stations ...')
 
-    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, transaction.manager:
+    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, env['request'].tm:
         db_session = env['request'].db_session
 
         in_stock_status = db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()

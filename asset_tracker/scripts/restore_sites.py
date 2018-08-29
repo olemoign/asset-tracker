@@ -2,7 +2,6 @@
 import argparse
 import csv
 
-import transaction
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
@@ -17,8 +16,8 @@ def main():
 
     print('Restoring sites data.')
 
-    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, transaction.manager, \
-            open(args.csv_file) as csv_file:
+    options = parse_vars(extras)
+    with bootstrap(args.config_uri, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
         db_session = env['request'].db_session
         csv_reader = csv.reader(csv_file, delimiter=';')
 
