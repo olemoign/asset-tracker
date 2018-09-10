@@ -19,7 +19,7 @@ class BaseTest(unittest.TestCase):
     def setUp(self):
         asset_tracker_path = os.path.dirname(asset_tracker.__file__)
         asset_tracker_root = os.path.dirname(asset_tracker_path)
-        config_path = os.path.abspath(os.path.join(asset_tracker_root, 'development.ini.sample'))
+        config_path = os.path.abspath(os.path.join(asset_tracker_root, 'development.ini'))
         global_config = {'__file__': config_path, 'here': asset_tracker_root}
 
         self.blob_dir = tempfile.mkdtemp()
