@@ -106,7 +106,7 @@ class Sites(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return dict(error=str(error), **self.get_base_form_data())
+            return {'error': str(error), **self.get_base_form_data()}
 
         # noinspection PyArgumentList
         self.site = models.Site(
@@ -130,7 +130,7 @@ class Sites(object):
                  renderer='sites-create_update.html')
     def update_get(self):
         """Get site update form: we need the site data."""
-        return dict(site=self.site, **self.get_base_form_data())
+        return {'site': self.site, **self.get_base_form_data()}
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
                  renderer='sites-create_update.html')
@@ -143,7 +143,7 @@ class Sites(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return dict(error=str(error), site=self.site, **self.get_base_form_data())
+            return {'error': str(error), 'site': self.site, **self.get_base_form_data()}
 
         # required
         self.site.tenant_id = self.form['tenant_id']

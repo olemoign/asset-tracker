@@ -54,4 +54,4 @@ def next_calibration_reminder(months=3):
             groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
             for tenant_id, assets in groupby_tenant:
-                next_calibration_notification(pyramid_config, tenant_id, list(assets), calibration_date)
+                next_calibration_notification(pyramid_config, tenant_id, assets, calibration_date)

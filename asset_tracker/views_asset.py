@@ -269,7 +269,7 @@ class Assets(object):
                              models.EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
             # get last version of each software
-            most_recent_soft_per_asset = dict()
+            most_recent_soft_per_asset = {}
             for update in software_updates:
                 extra_json = update.extra_json
                 software_name, software_version = extra_json['software_name'], extra_json['software_version']
@@ -528,7 +528,7 @@ class Assets(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return dict(error=str(error), **self.get_base_form_data())
+            return {'error': str(error), **self.get_base_form_data()}
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
@@ -562,7 +562,11 @@ class Assets(object):
                  renderer='assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
-        return dict(asset=self.asset, asset_softwares=self.get_latest_softwares_version(), **self.get_base_form_data())
+        return {
+            'asset': self.asset,
+            'asset_softwares': self.get_latest_softwares_version(),
+            **self.get_base_form_data(),
+        }
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
                  renderer='assets-create_update.html')
@@ -574,8 +578,12 @@ class Assets(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            softwares = self.get_latest_softwares_version()
-            return dict(error=str(error), asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
+            return {
+                'error': str(error),
+                'asset': self.asset,
+                'asset_softwares': self.get_latest_softwares_version(),
+                **self.get_base_form_data(),
+            }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
@@ -612,9 +620,12 @@ class Assets(object):
             nb_removed_event = len(self.form['event-removed'])
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
-                error = _('Status not removed, an asset cannot have no status.')
-                softwares = self.get_latest_softwares_version()
-                return dict(error=error, asset=self.asset, asset_softwares=softwares, **self.get_base_form_data())
+                return {
+                    'error':  _('Status not removed, an asset cannot have no status.'),
+                    'asset': self.asset,
+                    'asset_softwares': self.get_latest_softwares_version(),
+                    **self.get_base_form_data(),
+                }
 
             self.remove_events()
 

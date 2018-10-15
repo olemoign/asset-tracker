@@ -61,7 +61,7 @@ class Asset(Model, CreationDateTimeMixin):
 
     def _compute_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
-        self._asset_dates = dict()
+        self._asset_dates = {}
 
         activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
         if activation_first:
