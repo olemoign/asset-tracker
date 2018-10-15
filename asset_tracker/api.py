@@ -124,9 +124,7 @@ class Assets(object):
 
         """
         # IF asset exists in both Asset Tracker and RTA...
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(user_id=user_id) \
-            .first()
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
 
         if asset:
             if asset.asset_id != login:
@@ -161,9 +159,7 @@ class Assets(object):
 
         # ...ELSE create a new Asset
         # status selection for new Asset
-        status = self.request.db_session.query(models.EventStatus) \
-            .filter_by(status_id='stock_parsys') \
-            .one()
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         client_specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
@@ -179,8 +175,8 @@ class Assets(object):
 
         # Add Event
         # noinspection PyArgumentList
-        event = models.Event(status=status, date=datetime.utcnow().date(),
-                             creator_id=creator_id, creator_alias=creator_alias)
+        event = models.Event(status=status, date=datetime.utcnow().date(), creator_id=creator_id,
+                             creator_alias=creator_alias)
         # noinspection PyProtectedMember
         asset._history.append(event)
         self.request.db_session.add(event)
