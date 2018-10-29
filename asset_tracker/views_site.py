@@ -166,5 +166,5 @@ class Sites(object):
 
 def includeme(config):
     config.add_route(pattern='sites/create/', name='sites-create', factory=Sites)
-    config.add_route(pattern='sites/{site_id:\d+}/', name='sites-update', factory=Sites)
+    config.add_route(pattern=r'sites/{site_id:\d+}/', name='sites-update', factory=Sites)
     config.add_route(pattern='sites/', name='sites-list', factory=Sites)
