@@ -26,7 +26,7 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.views_asset import Assets as AssetView
+from asset_tracker.views.assets import Assets as AssetView
 
 
 def authenticate_rta(request):

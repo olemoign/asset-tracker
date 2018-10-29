@@ -2,7 +2,6 @@
 from datetime import datetime
 from traceback import format_exc
 
-import pkg_resources
 from parsys_utilities.authorization import rights_without_tenants
 from parsys_utilities.sentry import sentry_exception
 from parsys_utilities.status import status_endpoint
@@ -11,10 +10,7 @@ from pyramid.settings import asbool, aslist
 from pyramid.view import exception_view_config, notfound_view_config, view_config
 
 from asset_tracker import models
-from asset_tracker.constants import GLUCOMETER_ID
-
-ASSET_TRACKER_VERSION = pkg_resources.require(__package__)[0].version
-DEFAULT_BRANDING = 'parsys'
+from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING, GLUCOMETER_ID
 
 
 @subscriber(NewResponse)
