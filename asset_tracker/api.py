@@ -368,7 +368,7 @@ class Sites(object):
         if not asbool(self.request.GET.get('datatables')):
             return []
 
-        # Parse data from datatables
+        # Parse data from datatables.
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
@@ -379,7 +379,7 @@ class Sites(object):
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
-        # SQL query parameters
+        # SQL query parameters.
         full_text_search_attributes = [
             models.Site.name,
             models.Site.site_type,
