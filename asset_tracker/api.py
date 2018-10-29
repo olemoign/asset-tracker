@@ -166,7 +166,7 @@ class Assets(object):
         if 'marlink' in client_specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
-            calibration_frequency = 2
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
         # noinspection PyArgumentList
         asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
@@ -205,7 +205,7 @@ class Assets(object):
             'offset': offset,
             'search': search,
             'sort': sort,
-            'full_text_search': full_text_search
+            'full_text_search': full_text_search,
         }
         full_text_search_attributes = [
             models.Asset.asset_id,
@@ -240,7 +240,7 @@ class Assets(object):
                 tenanting=self.apply_tenanting_filter,
                 specific_search_attributes=specific_search_attributes,
                 specific_sort_attributes=specific_sort_attributes,
-                search_parameters=search_parameters
+                search_parameters=search_parameters,
             )
         except KeyError:
             sentry_exception(self.request, get_tb=True, level='info')
@@ -267,7 +267,7 @@ class Assets(object):
                 'site': asset.site.name if asset.site else None,
                 'status': status,
                 'calibration_next': calibration_next,
-                'is_active': is_active
+                'is_active': is_active,
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -301,18 +301,15 @@ class Assets(object):
             sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
-        else:
-            asset_keys = ('userID', 'logIn', 'tenantID', 'creatorID', 'creatorAlias')
-            data = {k: json.get(k) for k in asset_keys}
-
+        asset_info = ('userID', 'login', 'tenantID', 'creatorID', 'creatorAlias')
         # Check information availability
-        if not all(data.values()):
+        if not all(json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
             return HTTPBadRequest()
 
         # Create or update Asset
         try:
-            self.link_asset(data['userID'], data['logIn'], data['tenantID'], data['creatorID'], data['creatorAlias'])
+            self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
 
         except SQLAlchemyError:
             self.request.logger_technical.info('Asset linking: db error.')
@@ -440,7 +437,7 @@ class Sites(object):
             'draw': draw,
             'recordsTotal': output.get('recordsTotal'),
             'recordsFiltered': output['recordsFiltered'],
-            'data': sites
+            'data': sites,
         }
 
     @view_config(route_name='api-sites-read', request_method='GET', renderer='sites-information.html')
@@ -539,6 +536,7 @@ class Software(object):
             file = product_versions[version]
             download_url = self.request.route_url('api-software-download', product=self.product, file=file)
             return {'version': version, 'url': download_url}
+
         elif version:
             return {}
 
@@ -599,9 +597,7 @@ class Software(object):
         except KeyError:
             return HTTPBadRequest(json={'error': 'Invalid authentication.'})
 
-        asset = self.request.db_session.query(models.Asset) \
-            .filter_by(asset_id=station_login) \
-            .first()
+        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=station_login).first()
         if not asset:
             return HTTPNotFound(json={'error': 'Unknown asset.'})
 
@@ -628,7 +624,7 @@ class Software(object):
                     date=datetime.utcnow().date(),
                     creator_id=self.request.user.id,
                     creator_alias=self.request.user.alias,
-                    extra=dumps({'software_name': self.product, 'software_version': software_version})
+                    extra=dumps({'software_name': self.product, 'software_version': software_version}),
                 )
 
                 # noinspection PyProtectedMember
