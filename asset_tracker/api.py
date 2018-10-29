@@ -192,7 +192,8 @@ class Assets(object):
             return []
 
         try:
-            draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
+            search_parameters = manage_datatables_queries(self.request.GET)
+            draw = search_parameters.pop('draw')
         except KeyError:
             sentry_exception(self.request, level='info')
             return HTTPBadRequest()
@@ -200,13 +201,6 @@ class Assets(object):
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
-        search_parameters = {
-            'limit': limit,
-            'offset': offset,
-            'search': search,
-            'sort': sort,
-            'full_text_search': full_text_search,
-        }
         full_text_search_attributes = [
             models.Asset.asset_id,
             tenants.c.tenant_name,
@@ -279,8 +273,12 @@ class Assets(object):
 
             assets.append(asset_output)
 
-        return {'draw': draw, 'recordsTotal': output.get('recordsTotal'), 'recordsFiltered': output['recordsFiltered'],
-                'data': assets}
+        return {
+            'draw': draw,
+            'recordsTotal': output['recordsTotal'],
+            'recordsFiltered': output['recordsFiltered'],
+            'data': assets,
+        }
 
     @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
     def rta_link_post(self):
@@ -372,7 +370,8 @@ class Sites(object):
 
         # Parse data from datatables
         try:
-            draw, limit, offset, search, sort, full_text_search = manage_datatables_queries(self.request.GET)
+            search_parameters = manage_datatables_queries(self.request.GET)
+            draw = search_parameters.pop('draw')
         except KeyError:
             sentry_exception(self.request, level='info')
             return HTTPBadRequest()
@@ -381,13 +380,18 @@ class Sites(object):
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
         # SQL query parameters
-        full_text_search_attributes = [models.Site.name, models.Site.site_type, tenants.c.tenant_name,
-                                       models.Site.contact, models.Site.phone, models.Site.email]
+        full_text_search_attributes = [
+            models.Site.name,
+            models.Site.site_type,
+            tenants.c.tenant_name,
+            models.Site.contact,
+            models.Site.phone,
+            models.Site.email,
+        ]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
         specific_sort_attributes = {'tenant_name': func.lower(tenants.c.tenant_name)}
-        search_parameters = {'limit': limit, 'offset': offset, 'search': search, 'sort': sort,
-                             'full_text_search': full_text_search}
+
         try:
             # noinspection PyTypeChecker
             output = sql_search(
