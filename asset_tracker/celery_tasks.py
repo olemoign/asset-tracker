@@ -7,8 +7,7 @@ from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
 from parsys_utilities.sentry import sentry_celery_exception
 
-from asset_tracker import models
-from asset_tracker.notify import next_calibration_notification
+from asset_tracker import models, notifications
 
 logger = get_task_logger(__name__)
 
@@ -54,4 +53,4 @@ def next_calibration_reminder(months=3):
             groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
             for tenant_id, assets in groupby_tenant:
-                next_calibration_notification(pyramid_config, tenant_id, assets, calibration_date)
+                notifications.next_calibration(pyramid_config, tenant_id, assets, calibration_date)

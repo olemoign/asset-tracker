@@ -12,7 +12,7 @@ TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
 logger = logging.getLogger('asset_tracker_technical')
 
 
-def next_calibration_notification(ini_configuration, tenant_id, assets, calibration_date):
+def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     """Notify 'HR officer's of an employee's tenant that her/his vocational certificate is expiring.
 
     Args:
