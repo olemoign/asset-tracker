@@ -50,8 +50,8 @@ class Assets(object):
         if not asset_id:
             return
 
-        asset = self.request.db_session.query(models.Asset) \
-            .options(joinedload(models.Asset.equipments)).filter_by(id=asset_id).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
+            .options(joinedload(models.Asset.equipments)).first()
         if not asset:
             raise HTTPNotFound()
 

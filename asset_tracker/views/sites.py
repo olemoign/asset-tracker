@@ -81,9 +81,11 @@ class Sites(object):
         site_name = self.form.get('name')
         if not site_name:
             raise FormException(_('Name is required.'))
-        elif (not self.site or self.site.name != site_name) \
-                and self.request.db_session.query(models.Site).filter_by(name=site_name).first():
-            raise FormException(_('Name already exists.'))
+
+        if not self.site or self.site.name != site_name:
+            existing_site = self.request.db_session.query(models.Site).filter_by(name=site_name).first()
+            if existing_site:
+                raise FormException(_('Name already exists.'))
 
         site_type = self.form.get('site_type')
         if not site_type:
