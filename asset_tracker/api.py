@@ -103,6 +103,7 @@ class Assets(object):
         """
         if 'g:admin' in self.request.effective_principals:
             return q
+
         else:
             authorized_tenants = {right.tenant for right in self.request.effective_principals
                                   if isinstance(right, Right) and right.name == 'assets-list'}
@@ -254,14 +255,14 @@ class Assets(object):
             is_active = asset.status.status_id != 'decommissioned'
 
             asset_output = {
-                'id': asset.id,
                 'asset_id': asset.asset_id,
-                'tenant_name': tenant_names[asset.tenant_id],
+                'calibration_next': calibration_next,
                 'customer_name': asset.customer_name,
+                'id': asset.id,
+                'is_active': is_active,
                 'site': asset.site.name if asset.site else None,
                 'status': status,
-                'calibration_next': calibration_next,
-                'is_active': is_active,
+                'tenant_name': tenant_names[asset.tenant_id],
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -274,10 +275,10 @@ class Assets(object):
             assets.append(asset_output)
 
         return {
-            'draw': draw,
-            'recordsTotal': output['recordsTotal'],
-            'recordsFiltered': output['recordsFiltered'],
             'data': assets,
+            'draw': draw,
+            'recordsFiltered': output['recordsFiltered'],
+            'recordsTotal': output['recordsTotal'],
         }
 
     @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
@@ -381,12 +382,12 @@ class Sites(object):
 
         # SQL query parameters.
         full_text_search_attributes = [
+            models.Site.contact,
+            models.Site.email,
             models.Site.name,
+            models.Site.phone,
             models.Site.site_type,
             tenants.c.tenant_name,
-            models.Site.contact,
-            models.Site.phone,
-            models.Site.email,
         ]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
         specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
@@ -419,12 +420,12 @@ class Sites(object):
                 site_type = self.request.localizer.translate(site.site_type)
 
             site_output = {
+                'contact': site.contact,
+                'email': site.email,
                 'name': site.name,
+                'phone': site.phone,
                 'site_type': site_type,
                 'tenant_name': tenant_names[site.tenant_id],
-                'contact': site.contact,
-                'phone': site.phone,
-                'email': site.email,
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
@@ -438,10 +439,10 @@ class Sites(object):
             sites.append(site_output)
 
         return {
-            'draw': draw,
-            'recordsTotal': output.get('recordsTotal'),
-            'recordsFiltered': output['recordsFiltered'],
             'data': sites,
+            'draw': draw,
+            'recordsFiltered': output['recordsFiltered'],
+            'recordsTotal': output.get('recordsTotal'),
         }
 
     @view_config(route_name='api-sites-read', request_method='GET', renderer='sites-information.html')
@@ -469,11 +470,11 @@ class Sites(object):
             return {}
 
         return {
-            'name': site.name,
-            'site_type': site.site_type,
             'contact': site.contact,
-            'phone': site.phone,
             'email': site.email,
+            'name': site.name,
+            'phone': site.phone,
+            'site_type': site.site_type,
         }
 
 
