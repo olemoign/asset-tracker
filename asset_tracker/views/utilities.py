@@ -39,17 +39,9 @@ def add_global_variables(event):
 
 @view_config(route_name='status', request_method='GET', renderer='json')
 def status_get(request):
-    """Check status of service.
-    Choose a db table to be queried by status api for availability testing.
-
-    """
+    """Display app status."""
     # noinspection PyTypeChecker
-    return status_endpoint(
-        request=request,
-        caller_package=__package__,
-        caller_model=models.Asset,
-        check_rta=True,
-    )
+    return status_endpoint(request, 'asset_tracker', models.Asset, check_rta=True)
 
 
 @notfound_view_config(append_slash=True, renderer='errors/404.html')
