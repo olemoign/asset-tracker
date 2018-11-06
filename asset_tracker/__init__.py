@@ -15,7 +15,7 @@ from pyramid.settings import asbool
 from pyramid_redis_sessions import RedisSessionFactory
 
 from asset_tracker.configuration import update_configuration
-from asset_tracker.constants import STATIC_FILES_CACHE
+from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 
 def main(global_config, assets_configuration=True, **settings):
@@ -68,13 +68,11 @@ def main(global_config, assets_configuration=True, **settings):
     # Redis sessions configuration.
     cookie_signature = settings['asset_tracker.cookie_signature']
     if settings.get('redis.sessions.callable'):
-        session_factory = RedisSessionFactory(
-            cookie_signature,
-            client_callable=settings['redis.sessions.callable'],
-        )
+        session_factory = RedisSessionFactory(cookie_signature, client_callable=settings['redis.sessions.callable'])
     else:
         session_factory = RedisSessionFactory(
             cookie_signature,
+            timeout=USER_INACTIVITY_MAX,
             cookie_name='asset_tracker_session',
             cookie_secure=not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False)),
             url=settings['asset_tracker.sessions_broker_url'],
