@@ -1,4 +1,5 @@
 """Site tracker views: sites lists and read/update."""
+from parsys_utilities.authorization import Right
 from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -6,9 +7,7 @@ from pyramid.security import Allow
 from pyramid.view import view_config
 
 from asset_tracker import models
-from asset_tracker.constants import FormException
-
-SITE_TYPES = [_('Company'), _('Hospital'), _('Nursing home'), _('Ship')]
+from asset_tracker.constants import FormException, SITE_TYPES
 
 
 class Sites(object):
@@ -61,7 +60,7 @@ class Sites(object):
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
             tenants_ids = {tenant['id'] for tenant in user_tenants
-                           if (tenant['id'], 'sites-create') in user_rights or
+                           if Right(name='sites-create', tenant=tenant['id']) in user_rights or
                            (self.site and self.site.tenant_id == tenant['id'])}
 
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]

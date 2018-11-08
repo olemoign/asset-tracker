@@ -7,8 +7,17 @@ DEFAULT_BRANDING = 'parsys'
 STATIC_FILES_CACHE = 60 * 60
 USER_INACTIVITY_MAX = 60 * 60
 
-CALIBRATION_FREQUENCIES_YEARS = OrderedDict([('default', 2), ('maritime', 3)])
+CALIBRATION_FREQUENCIES_YEARS = OrderedDict([
+    ('default', 2),
+    ('maritime', 3),
+])
 GLUCOMETER_ID = '2YUEMLmH'
+SITE_TYPES = [
+    _('Company'),
+    _('Hospital'),
+    _('Nursing home'),
+    _('Ship'),
+]
 WARRANTY_DURATION_YEARS = 2
 
 

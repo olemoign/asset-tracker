@@ -4,6 +4,7 @@ from itertools import chain
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
+from parsys_utilities.authorization import Right
 from parsys_utilities.form import replace_newline
 from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -153,7 +154,7 @@ class Assets(object):
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
             return [tenant for tenant in user_tenants
-                    if (tenant['id'], 'assets-create') in user_rights or
+                    if Right(name='assets-create', tenant=tenant['id']) in user_rights or
                     (self.asset and self.asset.tenant_id == tenant['id'])]
 
     @staticmethod
@@ -310,9 +311,8 @@ class Assets(object):
             return self.request.user.tenants
 
         else:
-            user_rights = self.request.effective_principals
-            user_tenants = self.request.user.tenants
-            return [tenant for tenant in user_tenants if (tenant['id'], 'assets-extract') in user_rights]
+            return [tenant for tenant in self.request.user.tenants
+                    if Right(name='assets-extract', tenant=tenant['id']) in self.request.effective_principals]
 
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""

@@ -267,7 +267,7 @@ class Assets(object):
 
             # Append link to output if the user is an admin or has the right to read the asset info.
             has_admin_rights = 'g:admin' in self.request.effective_principals
-            has_read_rights = (asset.tenant_id, 'assets-read') in self.request.effective_principals
+            has_read_rights = Right(name='assets-read', tenant=asset.tenant_id) in self.request.effective_principals
             if has_admin_rights or has_read_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
                 asset_output['links'] = [{'rel': 'self', 'href': link}]
@@ -430,7 +430,7 @@ class Sites(object):
 
             # Append link to output if the user is an admin or has the right to read the site info.
             has_admin_rights = 'g:admin' in self.request.effective_principals
-            has_read_rights = (site.tenant_id, 'sites-read') in self.request.effective_principals
+            has_read_rights = Right(name='sites-read', tenant=site.tenant_id) in self.request.effective_principals
 
             if has_admin_rights or has_read_rights:
                 link = self.request.route_path('sites-update', site_id=site.id)
@@ -464,7 +464,7 @@ class Sites(object):
         if not self.request.user:
             raise HTTPForbidden()
 
-        if (site.tenant_id, 'api-sites-read') not in self.request.effective_principals:
+        if Right(name='api-sites-read', tenant=site.tenant_id) not in self.request.effective_principals:
             extras = {'user_id': self.request.user.id if self.request.user else None}
             sentry_log(self.request, 'Forbidden site request.', extras=extras)
             return {}
