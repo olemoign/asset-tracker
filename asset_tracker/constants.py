@@ -1,5 +1,7 @@
-import pkg_resources
 from collections import OrderedDict
+
+import pkg_resources
+from pyramid.i18n import TranslationString as _
 
 ASSET_TRACKER_VERSION = pkg_resources.require(__package__)[0].version
 DEFAULT_BRANDING = 'parsys'
