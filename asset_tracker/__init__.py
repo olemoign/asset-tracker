@@ -12,7 +12,7 @@ from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
-from pyramid_redis_sessions import RedisSessionFactory
+from pyramid_session_redis import RedisSessionFactory
 
 from asset_tracker.configuration import update_configuration
 from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX

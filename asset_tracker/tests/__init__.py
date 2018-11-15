@@ -7,7 +7,7 @@ import alembic.command
 import alembic.config
 from parsys_utilities.model import Model
 from pyramid.testing import DummyRequest
-from pyramid_redis_sessions.tests import DummyRedis
+from pyramid_session_redis.tests import DummyRedis
 from webtest import TestApp
 
 import asset_tracker
