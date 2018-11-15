@@ -111,12 +111,9 @@ class Sites(object):
 
         # noinspection PyArgumentList
         self.site = models.Site(
-            # required
             tenant_id=self.form['tenant_id'],
             name=self.form['name'],
             site_type=self.form['site_type'],
-
-            # optional
             contact=self.form.get('contact'),
             phone=self.form.get('phone'),
             email=self.form.get('email'),

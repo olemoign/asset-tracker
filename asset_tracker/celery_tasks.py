@@ -9,6 +9,14 @@ from parsys_utilities.sentry import sentry_celery_exception
 
 from asset_tracker import models, notifications
 
+MANDATORY_CONFIG = {
+    'asset_tracker.cloud_name',
+    'asset_tracker.server_url',
+    'rta.client_id',
+    'rta.secret',
+    'rta.server_url',
+}
+
 logger = get_task_logger(__name__)
 
 
@@ -20,12 +28,10 @@ def next_calibration_reminder(months=3):
         months (int): a reminder is sent x months before a calibration is needed.
 
     """
-    mandatory_config = ('asset_tracker.cloud_name', 'asset_tracker.server_url',
-                        'rta.client_id', 'rta.secret', 'rta.server_url')
 
     try:
         # Validate all mandatory config is present.
-        [app.conf.pyramid_config['app:main'][config] for config in mandatory_config]
+        [app.conf.pyramid_config['app:main'][config] for config in MANDATORY_CONFIG]
     except AttributeError as error:
         sentry_celery_exception(app.conf)
         logger.error(error)

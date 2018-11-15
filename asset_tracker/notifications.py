@@ -1,13 +1,10 @@
 import logging
-import os
 
 from parsys_utilities.notifications import emails_renderer_offline, notify_offline
 from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
 
-FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
-TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
+from asset_tracker.constants import TEMPLATES_PATH, TRANSLATIONS_PATH
 
 logger = logging.getLogger('asset_tracker_technical')
 

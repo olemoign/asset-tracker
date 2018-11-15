@@ -1,3 +1,4 @@
+import os
 from collections import OrderedDict
 
 import pkg_resources
@@ -21,6 +22,10 @@ SITE_TYPES = [
     _('Ship'),
 ]
 WARRANTY_DURATION_YEARS = 2
+
+FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
+TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
 
 
 class FormException(Exception):

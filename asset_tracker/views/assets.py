@@ -139,9 +139,9 @@ class Assets(object):
         return {
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
+            'sites': sites,
             'statuses': statuses,
             'tenants': tenants,
-            'sites': sites
         }
 
     def get_create_read_tenants(self):
@@ -172,7 +172,7 @@ class Assets(object):
             csv header (list): columns name.
 
         """
-        asset_columns = (
+        asset_columns = [
             'asset_id',
             'asset_type',
             'tenant_name',
@@ -193,20 +193,17 @@ class Assets(object):
             'site_contact',
             'site_phone',
             'site_email',
-        )
+        ]
 
-        # each software is identified by a name and a version
-        software_columns = (label
-                            for i in range(1, max_software_per_asset + 1)
-                            for label in ('software_{}_name'.format(i), 'software_{}_version'.format(i)))
+        # Each software is identified by a name and a version.
+        software_columns = [label for i in range(1, max_software_per_asset + 1)
+                            for label in {'software_{}_name'.format(i), 'software_{}_version'.format(i)}]
 
-        # each equipment is identified by a name and a serial number
-        equipment_columns = (label
-                             for i in range(1, max_equipment_per_asset + 1)
-                             for label in ('equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)))
+        # Each equipment is identified by a name and a serial number.
+        equipment_columns = [label for i in range(1, max_equipment_per_asset + 1)
+                             for label in {'equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)}]
 
-        # columns name of csv file
-        return chain(asset_columns, software_columns, equipment_columns)
+        return asset_columns + software_columns + equipment_columns
 
     @staticmethod
     def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
@@ -230,7 +227,7 @@ class Assets(object):
 
         rows = []
         for asset in assets:
-            # ADD basic information
+            # Asset information.
             row = [
                 asset.asset_id,
                 asset.asset_type,
@@ -240,8 +237,6 @@ class Assets(object):
                 asset.calibration_frequency,
                 asset.status.label,
                 replace_newline(asset.notes),
-
-                # asset_dates
                 asset.production,
                 asset.activation_first,
                 asset.calibration_last,
@@ -249,27 +244,25 @@ class Assets(object):
                 asset.warranty_end,
             ]
 
-            # ADD Site information
+            # Site information.
             if asset.site:
-                site = (
+                row += [
                     asset.site.name,
                     asset.site.site_type,
                     asset.site.contact,
                     asset.site.phone,
                     asset.site.email,
-                )
-                row.extend(site)
+                ]
             else:
-                # fill with None value to maintain column alignment
-                row.extend((None, None, None, None, None))
+                # Fill with None values to maintain column alignment.
+                row += [None, None, None, None, None]
 
-            # ADD software information
-            # the complete list of the most recent software
+            # Software information.
             software_updates = db_session.query(models.Event).join(models.EventStatus) \
                 .filter(and_(models.Event.asset_id == asset.id,
                              models.EventStatus.status_id == 'software_update')).order_by(desc('date'))
 
-            # get last version of each software
+            # Get last version of each software.
             most_recent_soft_per_asset = {}
             for update in software_updates:
                 extra_json = update.extra_json
@@ -277,16 +270,15 @@ class Assets(object):
                 if software_name not in most_recent_soft_per_asset:
                     most_recent_soft_per_asset[software_name] = software_version
 
-            # format software output
+            # Format software output.
             for software_name in unique_software:
                 if software_name in most_recent_soft_per_asset:
-                    row.extend((software_name, most_recent_soft_per_asset[software_name]))
+                    row += [software_name, most_recent_soft_per_asset[software_name]]
                 else:
-                    # fill with None value to maintain column alignment
-                    row.extend((None, None))
+                    # Fill with None values to maintain column alignment.
+                    row += [None, None]
 
-            # ADD equipment information
-            # the complete list of equipment for one asset
+            # Equipment information.
             asset_equipment = db_session.query(models.EquipmentFamily.model, models.Equipment.serial_number) \
                 .join(models.Equipment) \
                 .filter(models.Equipment.asset_id == asset.id).all()
@@ -294,12 +286,11 @@ class Assets(object):
             for equipment_name in unique_equipment:
                 equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
                 if equipment:
-                    row.extend(equipment)
+                    row += [equipment]
                 else:
-                    # fill with None value to maintain column alignment
-                    row.extend((None, None))
+                    # Fill with None values to maintain column alignment.
+                    row += [None, None]
 
-            # add asset to csv
             rows.append(row)
 
         return rows
@@ -317,7 +308,7 @@ class Assets(object):
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
         if not self.asset.id:
-            return None  # no available software for new Asset
+            return None
 
         software_updates = self.asset.history('desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
@@ -677,7 +668,7 @@ class Assets(object):
 
         return {
             'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
-            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants)
+            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants),
         }
 
     @view_config(route_name='home', request_method='GET', permission='assets-list')
