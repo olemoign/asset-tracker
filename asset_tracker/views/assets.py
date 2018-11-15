@@ -1,6 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
-from itertools import chain
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
