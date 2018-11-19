@@ -20,7 +20,7 @@ requires = [
     'pyramid',
     'pyramid_assetviews',
     'pyramid_jinja2',
-    'pyramid_session_redis<1.3',
+    'pyramid_session_redis',
     'pyramid_tm',
     'python-dateutil',
     'raven',
