@@ -24,7 +24,6 @@ requires = [
     'pyramid_tm',
     'python-dateutil',
     'raven',
-    'redis==2.10.6',
     'setuptools',
     'sqlalchemy',
     'transaction',
