@@ -18,7 +18,7 @@ COPY alembic /opt/alembic
 
 WORKDIR /srv
 
-CMD mkdir -p /srv/log/ /srv/socket/ /srv/data/ \
+CMD mkdir -p /srv/log/ /srv/log/celery/ /srv/log/nginx/ /srv/log/supervisor/ /srv/socket/ /srv/data/ \
  && cp -n /opt/files/* /srv || true \
  && alembic -c production.ini upgrade head \
  && supervisord -n -c /srv/supervisord.conf
