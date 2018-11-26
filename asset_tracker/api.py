@@ -15,7 +15,7 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.authentication import extract_http_basic_credentials
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk,\
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk, \
     HTTPUnauthorized
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
@@ -332,14 +332,10 @@ class Assets(object):
 
 class Sites(object):
     """List sites for dataTables + (Cloud) get site info in consultation."""
-
-    def __acl__(self):
-        rights = [
-            (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, 'g:admin', 'sites-list'),
-        ]
-
-        return rights
+    __acl__ = [
+        (Allow, None, 'sites-list', 'sites-list'),
+        (Allow, None, 'g:admin', 'sites-list'),
+    ]
 
     def __init__(self, request):
         self.request = request
