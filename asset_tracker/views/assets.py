@@ -611,7 +611,7 @@ class Assets(object):
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
                 return {
-                    'error':  _('Status not removed, an asset cannot have no status.'),
+                    'error': _('Status not removed, an asset cannot have no status.'),
                     'asset': self.asset,
                     'asset_softwares': self.get_latest_softwares_version(),
                     **self.get_base_form_data(),
@@ -637,7 +637,7 @@ class Assets(object):
 
         """
         # authorized tenants
-        tenants = dict((tenant['id'], tenant['name']) for tenant in self.get_extract_tenants())
+        tenants = {tenant['id']: tenant['name'] for tenant in self.get_extract_tenants()}
 
         # dynamic data - software
         # find unique software name
