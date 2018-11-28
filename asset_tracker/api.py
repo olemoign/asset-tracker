@@ -289,6 +289,7 @@ class Assets(object):
         """
         # Authentify RTA using HTTP Basic Auth.
         if not authenticate_rta(self.request):
+            sentry_log(self.request, 'Forbidden RTA request.')
             return HTTPUnauthorized()
 
         # Make sure the JSON provided is valid.
