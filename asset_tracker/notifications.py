@@ -30,9 +30,9 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
 
     template_data = {
         'app_name': app_name,
-        'calibration_date': calibration_date,
         'assets': assets,
-        'assets_url': assets_url
+        'assets_url': assets_url,
+        'calibration_date': calibration_date,
     }
 
     # Template generation
