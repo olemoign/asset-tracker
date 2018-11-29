@@ -1,22 +1,21 @@
-$black: #000;
 $parsys-green: #a5e8cb;
 $parsys-green-hover: darken($parsys-green, 6.5%);
 $link-grey: #777;
 
 // General site branding
 $brand-primary: $parsys-green;
-$panel-primary-text: $black;
+$panel-primary-text: black;
 
 // Navbar styling
 $navbar-default-bg: $parsys-green;
-$navbar-default-link-color: $black;
+$navbar-default-link-color: black;
 $navbar-default-link-hover-color: $link-grey;
 
 $navbar-default-toggle-hover-bg: $parsys-green-hover;
-$navbar-default-toggle-icon-bar-bg: $black;
+$navbar-default-toggle-icon-bar-bg: black;
 $navbar-default-toggle-border-color: $parsys-green;
 
-$link-color: $black;
+$link-color: black;
 
 @import 'main';
 
