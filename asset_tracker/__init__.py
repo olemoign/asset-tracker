@@ -99,9 +99,6 @@ def main(global_config, assets_configuration=True, **settings):
     config.include('parsys_utilities.openid_client')
     config.scan('parsys_utilities.openid_client')
 
-    rta_url = settings['rta.server_url'] + '/{path}'
-    config.add_route('rta', rta_url)
-
     config.add_static_view('static', 'static', cache_max_age=STATIC_FILES_CACHE)
 
     # Serve root static files.
