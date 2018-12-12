@@ -8,12 +8,18 @@ stages:
 variables:
   CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
   CONTAINER_RELEASE_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:latest
+  PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
 
 flake8:
   stage: test
   image: python:3.5
   tags:
     - docker
+
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .cache/pip
 
   script:
     - pip3 install -q -U pip setuptools wheel
@@ -26,6 +32,12 @@ pytest:
   tags:
     - docker
 
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .cache/pip
+    policy: pull
+
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 -q install '.[tests]'
@@ -37,13 +49,19 @@ build:
   tags:
     - docker
 
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .cache/pip
+    policy: pull
+
   script:
     - pip3 install -q -U pip setuptools wheel
     - python3 setup.py bdist_wheel
     - pip3 wheel -w dist/ '.[prod]'
 
   artifacts:
-    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    name: $CI_BUILD_NAME_$CI_BUILD_REF_NAME
     expire_in: 6 hours
     paths:
       - dist/
