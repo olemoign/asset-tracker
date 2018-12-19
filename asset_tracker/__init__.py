@@ -8,6 +8,7 @@ import parsys_utilities.celery_app as celery
 import pkg_resources
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
 from paste.translogger import TransLogger
@@ -80,12 +81,21 @@ def main(global_config, assets_configuration=True, **settings):
         )
     config.set_session_factory(session_factory)
 
-    # Request methods.
+    # Add request methods.
+    # Add user, authenticated or not.
     config.add_request_method(get_user, 'user', reify=True)
-    config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
-    config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
+
+    # Add tenant configurator.
+    tenant_configurator = partial(TenantConfigurator, config_file=global_config['__file__'])
+    config.add_request_method(tenant_configurator, 'tenant_config', reify=True)
+
+    # Add notifier.
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
+
+    # Add loggers.
+    config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
+    config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
 
     config_file = global_config['__file__']
     here = global_config['here']
