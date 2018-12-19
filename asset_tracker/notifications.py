@@ -13,7 +13,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     """Notify 'HR officer's of an employee's tenant that her/his vocational certificate is expiring.
 
     Args:
-        ini_configuration (dict) asset tracker configuration.
+        ini_configuration (dict): asset tracker configuration.
         tenant_id (str).
         assets (list(asset_tracker.models.Asset)).
         calibration_date (str): precise calibration date (YYYY-MM-DD).
@@ -42,7 +42,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     # Asynchronous POST
     send_notifications = not asbool(ini_configuration.get('asset_tracker.dev.disable_notifications', False))
     if send_notifications:
-        json = {'message': messages, 'tenant': tenant_id, 'rights': ['notifications-calibration'], 'level': 'info'}
+        json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
         notify_offline(ini_configuration, **json)
     else:
         logger.debug('Notifications are disabled.')
