@@ -642,7 +642,7 @@ class Software(object):
 def includeme(config):
     config.add_route(pattern='assets/', name='api-assets', factory=Assets)
     config.add_route(pattern=r'assets/{user_id:\w{8}}/site/', name='api-assets-site', factory=Assets)
-    config.add_route(pattern='sites/', name='api-sites', factory=Sites)  # for datatables
-    config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
     config.add_route(pattern='download/{product}/{file}', name='api-software-download')
+    config.add_route(pattern='sites/', name='api-sites', factory=Sites)
+    config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
     config.add_route(pattern='update/', name='api-software-update', factory=Software)
