@@ -33,9 +33,6 @@ def add_global_variables(event):
 
     event['GLUCOMETER_ID'] = GLUCOMETER_ID
 
-    if event['request'].user:
-        event['authenticated_user'] = event['request'].user
-
 
 @view_config(route_name='status', request_method='GET', renderer='json')
 def status_get(request):

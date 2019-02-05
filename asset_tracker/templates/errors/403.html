@@ -6,11 +6,11 @@
 <div class="login-container container">
     <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
     <div class="alert alert-danger text-center" role="alert">
-        <b>{{ authenticated_user.login }}</b> {{ gettext('is not authorized to access this page.') }}
+        <b>{{ request.user.login }}</b> {{ gettext('is not authorized to access this page.') }}
         <br>
         <a href="{{ 'users-logout'|route_path }}" class="alert-link">{{ gettext('Logout') }}</a> {{ gettext('or go to') }}
         {# default_app = ['app_name', 'app_url'] #}
-        <a href="{{ authenticated_user.default_app[1] }}" class="alert-link">{{ authenticated_user.default_app[0] }}</a>.
+        <a href="{{ request.user.default_app[1] }}" class="alert-link">{{ request.user.default_app[0] }}</a>.
     </div>
 </div>
 {% endblock %}
