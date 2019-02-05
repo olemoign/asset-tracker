@@ -7,7 +7,7 @@ from pyramid.security import Allow
 from pyramid.view import view_config
 
 from asset_tracker import models
-from asset_tracker.constants import FormException, SITE_TYPES
+from asset_tracker.constants import ADMIN_PRINCIPAL, FormException, SITE_TYPES
 
 
 class Sites(object):
@@ -17,12 +17,14 @@ class Sites(object):
         acl = [
             (Allow, None, 'sites-create', 'sites-create'),
             (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, 'g:admin', ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
+            (Allow, None, ADMIN_PRINCIPAL, ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
         ]
 
         if self.site:
-            acl.append((Allow, self.site.tenant_id, 'sites-read', 'sites-read'))
-            acl.append((Allow, self.site.tenant_id, 'sites-update', 'sites-update'))
+            acl.extend([
+                (Allow, self.site.tenant_id, 'sites-read', 'sites-read'),
+                (Allow, self.site.tenant_id, 'sites-update', 'sites-update'),
+            ])
 
         return acl
 

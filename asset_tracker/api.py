@@ -25,7 +25,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
-from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views.assets import Assets as AssetView
 
 
@@ -84,7 +84,7 @@ class Assets(object):
     """List assets for dataTables + (RTA) link assets and their accounts."""
     __acl__ = [
         (Allow, None, 'assets-list', 'assets-list'),
-        (Allow, None, 'g:admin', 'assets-list'),
+        (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
     ]
 
     def __init__(self, request):
@@ -101,7 +101,7 @@ class Assets(object):
             sqlalchemy.orm.query.Query: filtered query.
 
         """
-        if 'g:admin' in self.request.effective_principals:
+        if self.request.user.is_admin:
             return q
 
         else:
@@ -266,9 +266,8 @@ class Assets(object):
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
-            has_admin_rights = 'g:admin' in self.request.effective_principals
             has_read_rights = Right(name='assets-read', tenant=asset.tenant_id) in self.request.effective_principals
-            if has_admin_rights or has_read_rights:
+            if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
                 asset_output['links'] = [{'rel': 'self', 'href': link}]
 
@@ -335,7 +334,7 @@ class Sites(object):
     """List sites for dataTables + (Cloud) get site info in consultation."""
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
-        (Allow, None, 'g:admin', 'sites-list'),
+        (Allow, None, ADMIN_PRINCIPAL, 'sites-list'),
     ]
 
     def __init__(self, request):
@@ -352,7 +351,7 @@ class Sites(object):
             sqlalchemy.orm.query.Query: filtered query.
 
         """
-        if 'g:admin' in self.request.effective_principals:
+        if self.request.user.is_admin:
             return q
         else:
             authorized_tenants = {right.tenant for right in self.request.effective_principals
@@ -426,10 +425,8 @@ class Sites(object):
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
-            has_admin_rights = 'g:admin' in self.request.effective_principals
             has_read_rights = Right(name='sites-read', tenant=site.tenant_id) in self.request.effective_principals
-
-            if has_admin_rights or has_read_rights:
+            if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('sites-update', site_id=site.id)
                 site_output['links'] = [{'rel': 'self', 'href': link}]
 
@@ -482,7 +479,7 @@ class Software(object):
     """
     __acl__ = [
         (Allow, None, 'api-software-update', 'api-software-update'),
-        (Allow, None, 'g:admin', 'api-software-update'),
+        (Allow, None, ADMIN_PRINCIPAL, 'api-software-update'),
     ]
 
     def __init__(self, request):

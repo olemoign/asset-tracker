@@ -15,7 +15,7 @@ from sqlalchemy import and_, desc, func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS, FormException
+from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS, FormException
 
 
 class Assets(object):
@@ -26,13 +26,15 @@ class Assets(object):
             (Allow, None, 'assets-create', 'assets-create'),
             (Allow, None, 'assets-extract', 'assets-extract'),
             (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, 'g:admin', ('assets-create', 'assets-extract', 'assets-read', 'assets-update',
-                                      'assets-list'))
+            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-extract', 'assets-read', 'assets-update',
+                                            'assets-list'))
         ]
 
         if self.asset:
-            acl.append((Allow, self.asset.tenant_id, 'assets-read', 'assets-read'))
-            acl.append((Allow, self.asset.tenant_id, 'assets-update', 'assets-update'))
+            acl.extend([
+                (Allow, self.asset.tenant_id, 'assets-read', 'assets-read'),
+                (Allow, self.asset.tenant_id, 'assets-update', 'assets-update'),
+            ])
 
         return acl
 
