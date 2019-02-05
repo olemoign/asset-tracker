@@ -10,16 +10,18 @@
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-            {% if 'g:admin' in principals or 'assets-create' in principals_without_tenants %}
-                <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
-            {% endif %}
-            {% if 'g:admin' in principals or 'assets-extract' in principals_without_tenants %}
-                <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default pull-right margin-right-10">{{ gettext('Extract') }}</a>
-            {% endif %}
+                {% if request.user.is_admin or 'assets-create' in principals_without_tenants %}
+                    <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">{{ gettext('New') }}</a>
+                {% endif %}
+                {% if request.user.is_admin or 'assets-extract' in principals_without_tenants %}
+                    <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default pull-right margin-right-10">{{ gettext('Extract') }}</a>
+                {% endif %}
             </div>
 
-            <table id="assets-list" class="dataTables table table-striped table-hover nowrap" data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
-                    data-custom-filter="status!=decommissioned" data-custom-filter-label="{{ gettext('Show decommissioned assets') }}" width="100%">
+            <table id="assets-list" class="dataTables table table-striped table-hover nowrap"
+                   data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
+                   data-custom-filter="status!=decommissioned"
+                   data-custom-filter-label="{{ gettext('Show decommissioned assets') }}" width="100%">
                 <thead>
                     <tr>
                         <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>

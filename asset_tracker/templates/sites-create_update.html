@@ -1,78 +1,84 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import input with context %}
 
-{% if site %}
+{% set update = site and site.id %}
+{% if update %}
     {% set title = site.name %}
+    {% set submit_url = 'sites-update'|route_path(site_id=site.id) %}
 {% else %}
     {% set title = gettext('New site') %}
-    {% set is_creating_site = True %}
+    {% set submit_url = 'sites-create'|route_path %}
 {% endif %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
 
 {% block page %}
-{% include 'menu.html' %}
+    {% include 'menu.html' %}
 
-<div class="root-container">
-    <div class="container">
+    <div class="root-container">
+        <div class="container">
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                    {{ gettext(error) }}
+                </div>
+            {% endif %}
 
-    {% if error %}
-        <div class="alert alert-danger alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
-            {{ gettext(error) }}
-        </div>
-    {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel__title">{{ title }}</h3>
+                </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel__title">{{ title }}</h3>
-            </div>
+                <div class="panel-body">
+                    <form role="form" action="{{ submit_url }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
-            <div class="panel-body">
-                <form role="form" action="{% if is_creating_site %}{{ 'sites-create'|route_path }}{% else %}{{ 'sites-update'|route_path(site_id=site.id) }}{% endif %}" method="post">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <div class="row">
+                            {{ input(gettext('Name'), 'name', required=True) }}
 
-                    <div class="row">
-                        {{ input(gettext('Name'), 'name', required=True) }}
+                            <div class="col-sm-6 form-group">
+                                <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                                <select class="form-control" id="tenant_id" name="tenant_id">
+                                    {% for tenant in tenants|sort(attribute='name') %}
+                                        <option value="{{ tenant.id }}"{% if update and site.tenant_id == tenant.id %} selected{% endif %}>
+                                            {{ tenant.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                        <div class="col-sm-6 form-group">
-                            <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                            <select class="form-control" id="tenant_id" name="tenant_id">
-                                {% for tenant in tenants|sort(attribute='name') %}
-                                <option value="{{ tenant.id }}"{% if site and site.tenant_id == tenant.id %} selected{% endif %}>{{ tenant.name }}</option>
-                                {% endfor %}
-                            </select>
+                            <div class="col-sm-6 form-group">
+                                <label for="site_type">{{ gettext('Type') }} *</label>
+                                <select class="form-control" id="site_type" name="site_type" required>
+                                    {% if not update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for site_type in site_types %}
+                                        <option value={{ site_type }}{% if update and site.site_type == site_type %} selected{% endif %}>
+                                            {{ gettext(site_type) }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="col-sm-6 form-group">
-                            <label for="site_type">{{ gettext('Type') }} *</label>
-                            <select class="form-control" id="site_type" name="site_type" required>
-                            {% if is_creating_site %}
-                                <option></option>
-                            {% endif %}
-                            {% for site_type in site_types %}
-                                <option value={{ site_type }}{% if site and site.site_type == site_type %} selected{% endif %}>{{ gettext(site_type) }}</option>
-                            {% endfor %}
-                            </select>
+                        <div class="row">
+                            {{ input(gettext('Contact'), 'contact') }}
+                            {{ input(gettext('Phone'), 'phone') }}
+                            {{ input(gettext('Email'), 'email') }}
                         </div>
-                    </div>
 
-                    <div class="row">
-                        {{ input(gettext('Contact'), 'contact') }}
-                        {{ input(gettext('Phone'), 'phone') }}
-                        {{ input(gettext('Email'), 'email') }}
-                    </div>
-
-                {% if is_creating_site or 'g:admin' in principals or ('sites-update', site.tenant_id) in principals %}
-                    <div class="btn-group pull-right">
-                        <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                        <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
-                    </div>
-                {% endif %}
-
-                </form>
+                        {% if not update or request.user.is_admin or ('sites-update', site.tenant_id) in principals %}
+                            <div class="btn-group pull-right">
+                                <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
+                                <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

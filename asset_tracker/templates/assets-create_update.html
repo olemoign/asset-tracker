@@ -2,217 +2,229 @@
 {% from 'macros.html' import date, equipment_box, input with context %}
 
 {% set is_linked = asset and asset.is_linked %}
-{% if asset %}
+{% set update = asset and asset.id %}
+{% if update %}
     {% set title = gettext(asset.asset_type|capitalize) + ' ' + asset.asset_id %}
+    {% set submit_url = 'assets-update'|route_path(asset_id=asset.id) %}
 {% else %}
     {% set title = gettext('New asset') %}
+    {% set submit_url = 'assets-create'|route_path %}
 {% endif %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
 
 {% block page %}
-{% include 'menu.html' %}
+    {% include 'menu.html' %}
 
-<div class="root-container">
-    <div class="container">
+    <div class="root-container">
+        <div class="container">
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                    {{ gettext(error) }}
+                </div>
+            {% endif %}
 
-    {% if error %}
-        <div class="alert alert-danger alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
-            {{ gettext(error) }}
-        </div>
-    {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel__title">
+                        {{ title }}{% if is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}
+                    </h3>
+                </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel__title">{{ title }}{% if is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}</h3>
-            </div>
+                <div class="panel-body">
+                    <form role="form" action="{{ submit_url }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <div class="row">
+                            {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
+                            <div class="col-sm-6 form-group">
+                                <label for="asset_type">{{ gettext('Type') }} *</label>
+                                <select class="form-control" id="asset_type" name="asset_type">
+                                    <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
+                                    <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
+                                    <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                                <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
+                                    {% if not update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for tenant in tenants|sort(attribute='name') %}
+                                        <option value="{{ tenant.id }}"{% if update and asset.tenant_id == tenant.id %} selected{% endif %}>
+                                            {{- tenant.name -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-            <div class="panel-body">
-                <form role="form" action="{% if asset %}{{ 'assets-update'|route_path(asset_id=asset.id) }}{% else %}{{ 'assets-create'|route_path }}{% endif %}" method="post">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <div class="row">
-                        {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
-                        <div class="col-sm-6 form-group">
-                            <label for="asset_type">{{ gettext('Type') }} *</label>
-                            <select class="form-control" id="asset_type" name="asset_type">
-                                <option value="cart"{% if asset and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
-                                <option value="station"{% if not asset or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                <option value="telecardia"{% if asset and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-6 form-group">
-                            <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                            <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
-                            {% if not asset %}
-                                <option></option>
+                            {% if 'marlink' in client_specific %}
+                                {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                             {% endif %}
-                            {% for tenant in tenants|sort(attribute='name') %}
-                                <option value="{{ tenant.id }}"{% if asset and asset.tenant_id == tenant.id %} selected{% endif %}>
-                                    {{- tenant.name -}}
-                                </option>
-                            {% endfor %}
-                            </select>
-                        </div>
 
-                    {% if 'marlink' in client_specific %}
-                        {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
-                    {% endif %}
+                            {{ input(gettext('Customer name'), 'customer_name') }}
 
-                        {{ input(gettext('Customer name'), 'customer_name') }}
-
-                        {# Site management - clone the select below in site__options #}
-                        <!--suppress HtmlFormInputWithoutLabel -->
-                        <select class="form-control hidden" id="site__reference">
-                            <option></option>
-                        {% for site in sites %}
-                            <option value="{{ site.id }}"
-                                    data-tenant_id="{{ site.tenant_id }}"
-                                    {% if asset and asset.site_id == site.id %} selected{% endif %}>
-                                {{- site.name -}}
-                            </option>
-                        {% endfor %}
-                        </select>
-
-                        <div id="site__options" class="col-sm-6 form-group">
-                            <label for="site_id">{{ gettext('Site') }}</label>
-                            {# site__reference will be cloned here #}
-                        </div>
-
-                        {{ input(gettext('Current location'), 'current_location') }}
-
-                    {% if not 'marlink' in client_specific %}
-                        <div class="col-sm-6 form-group">
-                            <label for="calibration_frequency">{{ gettext('Calibration frequency') }}{% if not asset %} *{% endif %}</label>
-                            <select class="form-control" id="calibration_frequency" name="calibration_frequency">
-                            {% for frequency in calibration_frequencies.values() %}
-                                <option value="{{ frequency }}"{% if asset and asset.calibration_frequency == frequency %} selected{% endif %}>
-                                    {{- frequency ~ ' ' ~ gettext('years') -}}
-                                </option>
-                            {% endfor %}
-                            </select>
-                        </div>
-                    {% endif %}
-                    </div>
-
-                    {% if asset %}
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>{{ gettext('Software versions') }}</label>
-                                <p>
-                                {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
-                                    {{ software|capitalize }}: {{ version }} {% if not loop.last %}<br />{% endif %}
-                                {% else %}
-                                    {{ gettext('No software registered.') }}
-                                {% endfor %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>{{ gettext('Status') }}</label>
-                                <p>{% if asset.status %}{{ gettext(asset.status.label) }}{% else %}&nbsp;{% endif %}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="row">
-                        {{ date(gettext('Production'), 'production') }}
-                        {{ date(gettext('Activation'), 'activation_first') }}
-                        {{ date(gettext('Last calibration'), 'calibration_last') }}
-                        {{ date(gettext('Next calibration'), 'calibration_next') }}
-                        {{ date(gettext('Warranty end'), 'warranty_end') }}
-                    </div>
-                    {% endif %}
-
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-sm-6 form-group">
-                            <label for="event">{{ gettext('Add Event') }}{% if not asset %} *{% endif %}</label>
-                            <select class="form-control" id="event" name="event">
-                                {% if asset %}<option></option>{% endif %}
-                                {% for status in statuses|sort(attribute='position') %}
-                                <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
+                            {# Site management - clone the select below in site__options #}
+                            <!--suppress HtmlFormInputWithoutLabel -->
+                            <select class="form-control hidden" id="site__reference">
+                                <option></option>
+                                {% for site in sites %}
+                                    <option value="{{ site.id }}" data-tenant_id="{{ site.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
+                                        {{- site.name -}}
+                                    </option>
                                 {% endfor %}
                             </select>
+
+                            <div id="site__options" class="col-sm-6 form-group">
+                                <label for="site_id">{{ gettext('Site') }}</label>
+                                {# site__reference will be cloned here #}
+                            </div>
+
+                            {{ input(gettext('Current location'), 'current_location') }}
+
+                            {% if not 'marlink' in client_specific %}
+                                <div class="col-sm-6 form-group">
+                                    <label for="calibration_frequency">
+                                        {{ gettext('Calibration frequency') }}{% if not update %} *{% endif %}
+                                    </label>
+                                    <select class="form-control" id="calibration_frequency" name="calibration_frequency">
+                                        {% for frequency in calibration_frequencies.values() %}
+                                            <option value="{{ frequency }}"{% if update and asset.calibration_frequency == frequency %} selected{% endif %}>
+                                                {{- frequency ~ ' ' ~ gettext('years') -}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
                         </div>
-                        {{ input(gettext('Date'), 'event_date', 'date', placeholder=gettext('DD/MM/YYYY')) }}
-                    </div>
 
-                    <hr>
+                        {% if update %}
+                            <hr>
 
-                    {# Equipment management - clone the model below in equipment_list #}
-                    <div class="row">
-                        <div class="col-sm-12 equipments__header">
-                            <label class="equipments__label">{{ gettext('Equipments') }}</label>
-                            <button type="button" class="equipment__add btn btn-default">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </button>
-                        </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{ gettext('Software versions') }}</label>
+                                        <p>
+                                            {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
+                                                {{ software|capitalize }}: {{ version }}{% if not loop.last %}<br/>{% endif %}
+                                            {% else %}
+                                                {{ gettext('No software registered.') }}
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        {# (macro) its purpose is to be cloned in equipment_list #}
-                        {{ equipment_box(reference=True) }}
+                            <hr>
 
-                        <div id="equipments__list" class="auto-clear">
-                            {% for equipment in (asset or {}).equipments %}
-                                {{ equipment_box(equipment) }}
-                            {% endfor %}
-                        </div>
-                    </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>{{ gettext('Status') }}</label>
+                                        <p>
+                                            {% if update and asset.status %}
+                                                {{ gettext(asset.status.label) }}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <hr>
+                            <hr>
 
-                    <div class="row">
-                        <div class="col-sm-12 form-group">
-                            <label for="notes">{{ gettext('Notes') }}</label>
-                            <textarea class="form-control" rows="3" id="notes" name="notes">
-                                {%- if asset and asset.notes -%}{{ asset.notes }}{%- endif -%}
-                            </textarea>
-                        </div>
-                        {% if asset %}
-                        <div class="col-sm-12 form-group">
-                            <label for="notes">{{ gettext('History') }}</label>
-                            {% for event in asset.history('asc') %}
-
-                                <p class="history_event">
-                                {% if event.status.status_id == 'software_update' %}
-                                    {{ gettext('<b>%(date)s</b> %(software)s updated to version %(version)s.',
-                                        software=event.extra_json.get('software_name')|capitalize,
-                                        version=event.extra_json.get('software_version'),
-                                        date=event.date|format_date(locale)) }}
-                                {% else %}
-                                    {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
-                                        creator=event.creator_alias,
-                                        status=gettext(event.status.label),
-                                        date=event.date|format_date(locale)) }}
-                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
-                                {% endif %}
-                                </p>
-
-                            {% endfor %}
-                        </div>
+                            <div class="row">
+                                {{ date(gettext('Production'), 'production') }}
+                                {{ date(gettext('Activation'), 'activation_first') }}
+                                {{ date(gettext('Last calibration'), 'calibration_last') }}
+                                {{ date(gettext('Next calibration'), 'calibration_next') }}
+                                {{ date(gettext('Warranty end'), 'warranty_end') }}
+                            </div>
                         {% endif %}
-                    </div>
-                    {% if not asset or 'g:admin' in principals or ('assets-update', asset.tenant_id) in principals %}
-                    <div class="btn-group pull-right">
-                        <a href="{{ 'assets-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                        <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
-                    </div>
-                    {% endif %}
-                </form>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
+                                <select class="form-control" id="event" name="event">
+                                    {% if update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for status in statuses|sort(attribute='position') %}
+                                        <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {{ input(gettext('Date'), 'event_date', 'date', placeholder=gettext('DD/MM/YYYY')) }}
+                        </div>
+
+                        <hr>
+
+                        {# Equipment management - clone the model below in equipment_list #}
+                        <div class="row">
+                            <div class="col-sm-12 equipments__header">
+                                <label class="equipments__label">{{ gettext('Equipments') }}</label>
+                                <button type="button" class="equipment__add btn btn-default">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+
+                            {# (macro) its purpose is to be cloned in equipment_list #}
+                            {{ equipment_box(reference=True) }}
+
+                            <div id="equipments__list" class="auto-clear">
+                                {% for equipment in (asset or {}).equipments %}
+                                    {{ equipment_box(equipment) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-sm-12 form-group">
+                                <label for="notes">{{ gettext('Notes') }}</label>
+                                <textarea class="form-control" rows="3" id="notes" name="notes">
+                                    {%- if update and asset.notes -%}{{ asset.notes }}{%- endif -%}
+                                </textarea>
+                            </div>
+                            {% if update %}
+                                <div class="col-sm-12 form-group">
+                                    <label for="notes">{{ gettext('History') }}</label>
+                                    {% for event in asset.history('asc') %}
+                                        <p class="history_event">
+                                            {% if event.status.status_id == 'software_update' %}
+                                                {{ gettext('<b>%(date)s</b> %(software)s updated to version %(version)s.',
+                                                           software=event.extra_json.get('software_name')|capitalize,
+                                                           version=event.extra_json.get('software_version'),
+                                                           date=event.date|format_date(locale)) }}
+                                            {% else %}
+                                                {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
+                                                           creator=event.creator_alias,
+                                                           status=gettext(event.status.label),
+                                                           date=event.date|format_date(locale)) }}
+                                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                            {% endif %}
+                                        </p>
+
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if not update or request.user.is_admin or ('assets-update', asset.tenant_id) in principals %}
+                            <div class="btn-group pull-right">
+                                <a href="{{ 'assets-list'|route_path }}"
+                                   class="btn btn-default">{{ gettext('Cancel') }}</a>
+                                <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
