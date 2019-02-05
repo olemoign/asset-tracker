@@ -520,7 +520,10 @@ class Assets(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return {'error': str(error), **self.get_base_form_data()}
+            return {
+                'messages': [{'type': 'danger', 'text': str(error)}],
+                **self.get_base_form_data(),
+            }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.client_specific:
@@ -531,14 +534,14 @@ class Assets(object):
         # noinspection PyArgumentList
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
-            tenant_id=self.form['tenant_id'],
             asset_type=self.form['asset_type'],
-            site_id=self.form.get('site_id'),
+            calibration_frequency=calibration_frequency,
+            current_location=self.form.get('current_location'),
             customer_id=self.form.get('customer_id'),
             customer_name=self.form.get('customer_name'),
-            current_location=self.form.get('current_location'),
-            calibration_frequency=calibration_frequency,
             notes=self.form.get('notes'),
+            site_id=self.form.get('site_id'),
+            tenant_id=self.form['tenant_id'],
         )
         self.request.db_session.add(self.asset)
 
@@ -571,9 +574,9 @@ class Assets(object):
             if error.log:
                 sentry_exception(self.request, level='info')
             return {
-                'error': str(error),
                 'asset': self.asset,
                 'asset_softwares': self.get_latest_softwares_version(),
+                'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
             }
 
@@ -613,9 +616,9 @@ class Assets(object):
             nb_active_event = self.asset.history('asc', filter_software=True).count()
             if nb_active_event <= nb_removed_event:
                 return {
-                    'error': _('Status not removed, an asset cannot have no status.'),
                     'asset': self.asset,
                     'asset_softwares': self.get_latest_softwares_version(),
+                    'messages': [{'type': 'danger', 'text': _('Status not removed, an asset cannot have no status.')}],
                     **self.get_base_form_data(),
                 }
 

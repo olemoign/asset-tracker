@@ -109,16 +109,19 @@ class Sites(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return {'error': str(error), **self.get_base_form_data()}
+            return {
+                'messages': [{'type': 'danger', 'text': str(error)}],
+                **self.get_base_form_data(),
+            }
 
         # noinspection PyArgumentList
         self.site = models.Site(
-            tenant_id=self.form['tenant_id'],
-            name=self.form['name'],
-            site_type=self.form['site_type'],
             contact=self.form.get('contact'),
-            phone=self.form.get('phone'),
             email=self.form.get('email'),
+            name=self.form['name'],
+            phone=self.form.get('phone'),
+            site_type=self.form['site_type'],
+            tenant_id=self.form['tenant_id'],
         )
 
         self.request.db_session.add(self.site)
@@ -143,7 +146,11 @@ class Sites(object):
         except FormException as error:
             if error.log:
                 sentry_exception(self.request, level='info')
-            return {'error': str(error), 'site': self.site, **self.get_base_form_data()}
+            return {
+                'messages': [{'type': 'danger', 'text': str(error)}],
+                'site': self.site,
+                **self.get_base_form_data(),
+            }
 
         # required
         self.site.tenant_id = self.form['tenant_id']
