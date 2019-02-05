@@ -1,4 +1,5 @@
-"""add Site object
+"""Add Site object
+
 Informations about devices localisation and people in charge
 
 Revision ID: 49e3635c66c5

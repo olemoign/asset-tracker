@@ -1,4 +1,4 @@
-"""add extra to Event
+"""Add extra to Event
 
 Revision ID: f22d6bf9b6b6
 Revises: cd58dc1487e1

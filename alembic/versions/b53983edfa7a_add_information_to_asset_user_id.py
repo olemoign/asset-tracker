@@ -1,4 +1,5 @@
-"""add information to Asset: user_id
+"""Add information to Asset: user_id
+
 RTA will populate this field when create/edit station.
 This field allow to get information about Asset from consultation.
 

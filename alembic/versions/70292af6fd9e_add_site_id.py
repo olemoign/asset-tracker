@@ -1,4 +1,4 @@
-"""add site_id
+"""Add site_id
 
 Revision ID: 70292af6fd9e
 Revises: 72daf9faa92b

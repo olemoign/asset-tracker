@@ -1,4 +1,4 @@
-"""make asset_id unique
+"""Make asset_id unique
 
 Revision ID: 72daf9faa92b
 Revises: 49e3635c66c5
