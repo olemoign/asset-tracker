@@ -68,6 +68,10 @@ def update_statuses(db_session, configuration):
     config_statuses = configuration['status']
     db_statuses = db_session.query(EventStatus).all()
 
+    # Put temp positions to make sure we don't overwrite existing ones, as the position has to be unique.
+    for index, db_status in enumerate(db_statuses):
+        db_status.position = 10000 + index
+
     # Remove existing status if it was removed from the config and no asset ever had this status.
     for db_status in db_statuses:
         config_status = next((x for x in config_statuses if x['status_id'] == db_status.status_id), None)

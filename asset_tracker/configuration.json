@@ -75,33 +75,58 @@
       "label": "In transit to customer"
     },
     {
-      "status_id": "service",
+      "status_id": "on_site",
       "position": "5",
+      "label": "On site"
+    },
+    {
+      "status_id": "connected",
+      "position": "6",
+      "label": "Connected"
+    },
+    {
+      "status_id": "service",
+      "position": "7",
       "label": "In service"
     },
     {
+      "status_id": "incident",
+      "position": "8",
+      "label": "Incident declared"
+    },
+    {
+      "status_id": "replacement",
+      "position": "9",
+      "label": "Replacement ordered"
+    },
+    {
+      "status_id": "distributor_checkup",
+      "position": "10",
+      "label": "Distributor checkup"
+    },
+    {
       "status_id": "transit_parsys",
-      "position": "6",
+      "position": "11",
       "label": "In transit to Parsys"
     },
     {
       "status_id": "calibration",
-      "position": "7",
+      "position": "12",
       "label": "In calibration"
     },
     {
       "status_id": "repair",
-      "position": "8",
+      "position": "13",
       "label": "In repair"
     },
     {
       "status_id": "decommissioned",
-      "position": "9",
+      "position": "14",
       "label": "Decommissioned"
     },
     {
       "status_id": "software_update",
-      "position": "10",
+      "position": "15",
       "label": "Software update"
     }
   ]
