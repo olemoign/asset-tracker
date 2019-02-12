@@ -72,6 +72,8 @@ def update_statuses(db_session, configuration):
     for index, db_status in enumerate(db_statuses):
         db_status.position = 10000 + index
 
+    db_session.flush()
+
     # Remove existing status if it was removed from the config and no asset ever had this status.
     for db_status in db_statuses:
         config_status = next((x for x in config_statuses if x['status_id'] == db_status.status_id), None)
