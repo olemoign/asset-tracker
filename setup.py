@@ -35,7 +35,7 @@ requires = [
 optional = {
     'dev': [
         'babel',
-        'pybabel-json',
+        'pybabel-json-md',
         'pyramid_debugtoolbar',
     ],
     'prod': [
