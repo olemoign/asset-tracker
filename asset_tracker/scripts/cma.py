@@ -39,9 +39,13 @@ def main():
                 sys.exit()
 
             print('Added asset for vessel {}'.format(vessel))
-            # noinspection PyArgumentList
-            kit = Asset(asset_id=kit_id, tenant_id=args.tenant_id, asset_type='telecardia', customer_name='CMA CGM',
-                        site=vessel)
+            kit = Asset(
+                asset_id=kit_id,
+                tenant_id=args.tenant_id,
+                asset_type='telecardia',
+                customer_name='CMA CGM',
+                site=vessel,
+            )
 
             base = Equipment(family=family_base, serial_number=base_id)
             telecardia = Equipment(family=family_telecardia, serial_number=telecardia_id)
@@ -49,12 +53,18 @@ def main():
             kit.equipments.append(telecardia)
 
             calibration_date = datetime.strptime(calibration_date, '%d/%m/%y')
-            # noinspection PyArgumentList,PyTypeChecker
-            calibration = Event(date=calibration_date, creator_id=args.creator_id, creator_alias=args.creator_alias,
-                                status=calibration_status)
-            # noinspection PyArgumentList,PyTypeChecker
-            activation = Event(date=calibration_date + timedelta(hours=1), creator_id=args.creator_id,
-                               creator_alias=args.creator_alias, status=activation_status)
+            calibration = Event(
+                date=calibration_date,
+                creator_id=args.creator_id,
+                creator_alias=args.creator_alias,
+                status=calibration_status,
+            )
+            activation = Event(
+                date=calibration_date + timedelta(hours=1),
+                creator_id=args.creator_id,
+                creator_alias=args.creator_alias,
+                status=activation_status,
+            )
             # noinspection PyProtectedMember
             kit._history.append(calibration)
             # noinspection PyProtectedMember

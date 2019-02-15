@@ -40,14 +40,6 @@
                         <div class="row">
                             {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
                             <div class="col-sm-6 form-group">
-                                <label for="asset_type">{{ gettext('Type') }} *</label>
-                                <select class="form-control" id="asset_type" name="asset_type">
-                                    <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
-                                    <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                    <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6 form-group">
                                 <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                                 <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
                                     {% if not update %}
@@ -60,6 +52,16 @@
                                     {% endfor %}
                                 </select>
                             </div>
+
+                            <div class="col-sm-6 form-group">
+                                <label for="asset_type">{{ gettext('Type') }} *</label>
+                                <select class="form-control" id="asset_type" name="asset_type">
+                                    <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
+                                    <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
+                                    <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                                </select>
+                            </div>
+                            {{ input(gettext('Hardware version'), 'hardware_version') }}
 
                             {% if 'marlink' in client_specific %}
                                 {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}

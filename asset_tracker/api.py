@@ -169,15 +169,22 @@ class Assets(object):
         else:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
-        # noinspection PyArgumentList
-        asset = models.Asset(asset_type='station', asset_id=login, user_id=user_id, tenant_id=tenant_id,
-                             calibration_frequency=calibration_frequency)
+        asset = models.Asset(
+            asset_type='station',
+            asset_id=login,
+            user_id=user_id,
+            tenant_id=tenant_id,
+            calibration_frequency=calibration_frequency,
+        )
         self.request.db_session.add(asset)
 
         # Add Event
-        # noinspection PyArgumentList
-        event = models.Event(status=status, date=datetime.utcnow().date(), creator_id=creator_id,
-                             creator_alias=creator_alias)
+        event = models.Event(
+            status=status,
+            date=datetime.utcnow().date(),
+            creator_id=creator_id,
+            creator_alias=creator_alias,
+        )
         # noinspection PyProtectedMember
         asset._history.append(event)
         self.request.db_session.add(event)
@@ -617,7 +624,6 @@ class Software(object):
                     self.request.logger_technical.info('asset status error')
                     return HTTPInternalServerError(json={'error': 'Internal server error.'})
 
-                # noinspection PyArgumentList
                 new_event = models.Event(
                     status=software_status,
                     date=datetime.utcnow().date(),

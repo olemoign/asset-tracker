@@ -34,9 +34,12 @@ def main():
 
             if in_service_event is first_event:
                 print('Adding "in stock" event.'.format(asset.id))
-                # noinspection PyArgumentList
-                in_stock_event = models.Event(date=in_service_event.date, creator_id='59EcBjjl',
-                                              creator_alias='TISON Sylvain', status=in_stock_status)
+                in_stock_event = models.Event(
+                    date=in_service_event.date,
+                    creator_id='59EcBjjl',
+                    creator_alias='TISON Sylvain',
+                    status=in_stock_status,
+                )
                 # noinspection PyProtectedMember
                 asset._history.append(in_stock_event)
                 db_session.add(in_stock_event)
