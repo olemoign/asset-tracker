@@ -111,7 +111,6 @@ class Assets(object):
 
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
 
-        # noinspection PyArgumentList
         event = models.Event(
             date=event_date,
             creator_id=self.request.user.id,
@@ -531,7 +530,6 @@ class Assets(object):
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
 
-        # noinspection PyArgumentList
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],
@@ -539,6 +537,7 @@ class Assets(object):
             current_location=self.form.get('current_location'),
             customer_id=self.form.get('customer_id'),
             customer_name=self.form.get('customer_name'),
+            hardware_version=self.form.get('hardware_version'),
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
             tenant_id=self.form['tenant_id'],
@@ -592,6 +591,7 @@ class Assets(object):
             self.asset.tenant_id = self.form['tenant_id']
 
         self.asset.asset_type = self.form['asset_type']
+        self.asset.hardware_version = self.form.get('hardware_version')
 
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')

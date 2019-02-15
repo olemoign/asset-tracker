@@ -14,8 +14,9 @@ class Asset(Model, CreationDateTimeMixin):
     tenant_id = Column(String, nullable=False)
     asset_id = Column(String, nullable=False, unique=True)
     asset_type = Column(String, nullable=False)
+    hardware_version = Column(String)
 
-    user_id = Column(String)  # received from RTA when create/edit station
+    user_id = Column(String)  # Received from RTA during station creation/update.
 
     @property
     def is_linked(self):
@@ -40,7 +41,7 @@ class Asset(Model, CreationDateTimeMixin):
 
         Args:
             order (str): asc/desc.
-            filter_software (bool): should we get software update or not ?
+            filter_software (bool): should we get software update or not?
 
         """
         if order == 'asc':
@@ -59,7 +60,7 @@ class Asset(Model, CreationDateTimeMixin):
     calibration_frequency = Column(Integer)
     calibration_next = Column(Date)
 
-    def _compute_asset_dates(self):
+    def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
 
@@ -91,7 +92,7 @@ class Asset(Model, CreationDateTimeMixin):
     @property
     def asset_dates(self):
         if not hasattr(self, '_asset_dates'):
-            self._compute_asset_dates()
+            self._get_asset_dates()
 
         return self._asset_dates
 

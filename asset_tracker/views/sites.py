@@ -114,7 +114,6 @@ class Sites(object):
                 **self.get_base_form_data(),
             }
 
-        # noinspection PyArgumentList
         self.site = models.Site(
             contact=self.form.get('contact'),
             email=self.form.get('email'),
