@@ -199,9 +199,9 @@ function createDataTables() {
     // If there is a custom filter, change the organization of the special divs around the dataTable (page size to
     // the bottom).
     if (customFilter) {
-        dataTableParameters.dom = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>' +
-                                     '<"row"<"col-sm-12"tr>>' +
-                                     '<"row"<"col-sm-5"i><"col-sm-7"p>>';
+        dataTableParameters.dom = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>'
+                                + '<"row"<"col-sm-12"tr>>'
+                                + '<"row"<"col-sm-5"i><"col-sm-7"p>>';
     }
 
     var initialisedDataTable = table.DataTable(dataTableParameters);
@@ -288,30 +288,59 @@ $(document).on('click', '.event__delete', function removeEvent() {
 
 $(document).on('submit', 'form', function validateDates(event) {
     /**
-     * Validate dates formats on form submit.
+     * Validate dates on form submit.
      */
-    $('input[type="date"]').each(function validateDate() {
-        var date = $(this).val();
-        // If date input is empty.
-        if (!date) return;
-
-        // If date is in the format DD/MM/YYYY, transform it in the ISO format YY-MM-DD.
-        var isHumanDate = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (isHumanDate) {
-            $(this).val(isHumanDate[3] + '-' + isHumanDate[2] + '-' + isHumanDate[1]);
+    $(this).find('input[type="date"]').each(function validateDate() {
+        // Date is null.
+        if (!this.value) {
+            this.setCustomValidity('');
             return;
         }
 
-        var isStandardDate = date.match(/^\d{4}-\d{2}-\d{2}$/);
-        if (isStandardDate) return;
+        // Date is in the format DD/MM/YYYY, transform it in the ISO format YYYY-MM-DD.
+        var humanPattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+        if (humanPattern.test(this.value)) {
+            this.value = this.value.replace(humanPattern, '$3-$2-$1');
+            this.setCustomValidity('');
+            return;
+        }
 
-        // If date format hasn't been recognized (neither DD/MM/YYYY nor YY-MM-DD), stop submit and show error to the user.
-        event.preventDefault();
-        $(this).parent().addClass('has-error');
-        // eslint-disable-next-line no-alert
-        alert('Invalid date format.');
+        // Date is in the expected format YYYY-MM-DD.
+        var isoPattern = /^\d{4}-\d{2}-\d{2}$/;
+        if (isoPattern.test(this.value)) {
+            this.setCustomValidity('');
+            return;
+        }
+
+        // Date format hasn't been recognized, show error to the user and stop submit.
+        this.setCustomValidity('Invalid date.');
     });
+
+    if (!this.reportValidity()) {
+        event.preventDefault();
+    }
 });
+
+$(document).on('input', 'input[type="date"]', function resetCustomValidity() {
+    // Reset customValidity on input change, otherwise Safari will not fire form submit.
+    this.setCustomValidity('');
+});
+
+function restoreDates() {
+    // Update date format if browser doesn't manage date input types.
+    if (!Modernizr.inputtypes.date) {
+        $('input[type="date"]').each(function standardizeDates() {
+            // If date is null.
+            if (!this.value) return;
+
+            // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
+            var isStandardDate = this.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (isStandardDate) {
+                this.value = isStandardDate[3] + '/' + isStandardDate[2] + '/' + isStandardDate[1];
+            }
+        });
+    }
+}
 
 $(function preparePageReady() {
     setActiveMenu($('#menu-main li, #menu-settings li'));
@@ -324,21 +353,7 @@ $(function preparePageReady() {
     // Move cursor to the end of the input.
     firstInput.val(firstInput.val());
 
-    // Update date format if browser doesn't manage date input types.
-    if (!Modernizr.inputtypes.date) {
-        $('input[type="date"]').each(function standardizeDates() {
-            var date = $(this).val();
-
-            // If date input is empty.
-            if (!date) return;
-
-            // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
-            var isStandardDate = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-            if (isStandardDate) {
-                $(this).val(isStandardDate[3] + '/' + isStandardDate[2] + '/' + isStandardDate[1]);
-            }
-        });
-    }
+    restoreDates();
 
     // Show sites corresponding to the selected tenant when page is ready.
     manageSites();
