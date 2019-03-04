@@ -90,7 +90,7 @@ class Assets(object):
     def __init__(self, request):
         self.request = request
 
-    def apply_tenanting_filter(self, q):
+    def tenanting(self, q):
         """Filter assets according to user's rights/tenants.
         Admins get access to all assets.
 
@@ -239,7 +239,7 @@ class Assets(object):
                 models.Asset,
                 full_text_search_attributes,
                 joined_tables=joined_tables,
-                tenanting=self.apply_tenanting_filter,
+                tenanting=self.tenanting,
                 specific_search_attributes=specific_search_attributes,
                 specific_sort_attributes=specific_sort_attributes,
                 search_parameters=search_parameters,
@@ -347,7 +347,7 @@ class Sites(object):
     def __init__(self, request):
         self.request = request
 
-    def apply_tenanting_filter(self, q):
+    def tenanting(self, q):
         """Filter sites according to user's rights/tenants.
         Admins get access to all sites.
 
@@ -360,6 +360,7 @@ class Sites(object):
         """
         if self.request.user.is_admin:
             return q
+
         else:
             authorized_tenants = {right.tenant for right in self.request.effective_principals
                                   if isinstance(right, Right) and right.name == 'sites-list'}
@@ -403,7 +404,7 @@ class Sites(object):
                 searched_object=models.Site,
                 full_text_search_attributes=full_text_search_attributes,
                 joined_tables=joined_tables,
-                tenanting=self.apply_tenanting_filter,
+                tenanting=self.tenanting,
                 specific_search_attributes=specific_search_attributes,
                 specific_sort_attributes=specific_sort_attributes,
                 search_parameters=search_parameters,
