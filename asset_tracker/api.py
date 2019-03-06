@@ -10,11 +10,10 @@ from datetime import datetime
 from json import dumps, JSONDecodeError
 
 from parsys_utilities.api import manage_datatables_queries
-from parsys_utilities.authorization import Right
+from parsys_utilities.authorization import authenticate_rta, Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
-from pyramid.authentication import extract_http_basic_credentials
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk, \
     HTTPUnauthorized
 from pyramid.security import Allow
@@ -27,24 +26,6 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views.assets import Assets as AssetView
-
-
-def authenticate_rta(request):
-    """Authenticate RTA using "reversed" authentication: the asset tracker has credentials to authenticate on RTA
-    (client_id/secret). Make RTA use those same credentials to link assets.
-
-    Args:
-        request (pyramid.request.Request).
-
-    """
-    rta_auth = extract_http_basic_credentials(request)
-    if not rta_auth:
-        return False
-
-    client_id = request.registry.settings['rta.client_id']
-    secret = request.registry.settings['rta.secret']
-
-    return client_id == rta_auth.username and secret == rta_auth.password
 
 
 def get_version_from_file(file_name):
@@ -307,7 +288,7 @@ class Assets(object):
             sentry_exception(self.request, level='info')
             return HTTPBadRequest()
 
-        asset_info = ('userID', 'login', 'tenantID', 'creatorID', 'creatorAlias')
+        asset_info = {'userID', 'login', 'tenantID', 'creatorID', 'creatorAlias'}
         # Check information availability
         if not all(json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
