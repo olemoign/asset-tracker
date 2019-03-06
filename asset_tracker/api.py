@@ -101,9 +101,6 @@ class Assets(object):
             creator_id (str): unique id to identify the user
             creator_alias (str): '{first_name} {last_name}'
 
-        Returns:
-            flash (dict): information to be displayed in RTA session.flash
-
         """
         # IF asset exists in both Asset Tracker and RTA...
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
@@ -289,12 +286,12 @@ class Assets(object):
             return HTTPBadRequest()
 
         asset_info = {'userID', 'login', 'tenantID', 'creatorID', 'creatorAlias'}
-        # Check information availability
-        if not all(json.get(field) for field in asset_info):
+        # Validate data.
+        if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
             return HTTPBadRequest()
 
-        # Create or update Asset
+        # Create or update Asset.
         try:
             self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
 
