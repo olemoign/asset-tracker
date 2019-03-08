@@ -194,20 +194,17 @@ class Assets(object):
             models.Asset.current_location,
             models.Site.name,
         ]
+
         joined_tables = [
             (tenants, tenants.c.tenant_id == models.Asset.tenant_id),
             models.EventStatus,
             models.Site,
         ]
-        specific_search_attributes = {
+
+        specific_attributes = {
             'site': models.Site.name,
             'status': models.EventStatus.status_id,
             'tenant_name': tenants.c.tenant_name,
-        }
-        specific_sort_attributes = {
-            'site': func.lower(models.Site.name),
-            'status': models.EventStatus.position,
-            'tenant_name': func.lower(tenants.c.tenant_name),
         }
 
         try:
@@ -218,8 +215,7 @@ class Assets(object):
                 full_text_search_attributes,
                 joined_tables=joined_tables,
                 tenanting=self.tenanting,
-                specific_search_attributes=specific_search_attributes,
-                specific_sort_attributes=specific_sort_attributes,
+                specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
         except KeyError:
@@ -372,8 +368,7 @@ class Sites(object):
             tenants.c.tenant_name,
         ]
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
-        specific_search_attributes = {'tenant_name': tenants.c.tenant_name}
-        specific_sort_attributes = {'tenant_name': func.lower(tenants.c.tenant_name)}
+        specific_attributes = {'tenant_name': tenants.c.tenant_name}
 
         try:
             # noinspection PyTypeChecker
@@ -383,8 +378,7 @@ class Sites(object):
                 full_text_search_attributes=full_text_search_attributes,
                 joined_tables=joined_tables,
                 tenanting=self.tenanting,
-                specific_search_attributes=specific_search_attributes,
-                specific_sort_attributes=specific_sort_attributes,
+                specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
         except KeyError:
