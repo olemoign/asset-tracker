@@ -19,7 +19,6 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalSe
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
-from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
