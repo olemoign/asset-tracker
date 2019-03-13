@@ -48,7 +48,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
         logger.debug('Notifications are disabled.')
     else:
         json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
-        notify_offline(ini_configuration, **json)
+        notify_offline(ini_configuration, json)
 
     logging_info = ['notify calibration date', [asset.id for asset in assets]]
     logger.info(logging_info)
