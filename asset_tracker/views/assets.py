@@ -4,14 +4,13 @@ from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import Right
-from parsys_utilities.form import replace_newline
 from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
-from sqlalchemy import and_, desc, func
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
@@ -26,8 +25,7 @@ class Assets(object):
             (Allow, None, 'assets-create', 'assets-create'),
             (Allow, None, 'assets-extract', 'assets-extract'),
             (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-extract', 'assets-read', 'assets-update',
-                                            'assets-list'))
+            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-read', 'assets-update', 'assets-list'))
         ]
 
         if self.asset:
@@ -153,157 +151,11 @@ class Assets(object):
         else:
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
-            return [tenant for tenant in user_tenants
-                    if Right(name='assets-create', tenant=tenant['id']) in user_rights or
-                    (self.asset and self.asset.tenant_id == tenant['id'])]
-
-    @staticmethod
-    def get_csv_header(max_software_per_asset, max_equipment_per_asset):
-        """Define the column titles for the csv file.
-
-        From unique_software and unique_equipment, we know the exact number of columns required to display each
-        information without extra column.
-
-        Args:
-            max_software_per_asset (int): number of distinct software.
-            max_equipment_per_asset (int): number of distinct equipment.
-
-        Returns:
-            csv header (list): columns name.
-
-        """
-        asset_columns = [
-            'asset_id',
-            'asset_type',
-            'tenant_name',
-            'customer_name',
-            'current_location',
-            'calibration_frequency',
-            'status_label',
-            'notes',
-
-            'production_date',
-            'activation_date',
-            'last_calibration_date',
-            'next_calibration_date',
-            'warranty_end_date',
-
-            'site_name',
-            'site_type',
-            'site_contact',
-            'site_phone',
-            'site_email',
-        ]
-
-        # Each software is identified by a name and a version.
-        software_columns = [label for i in range(1, max_software_per_asset + 1)
-                            for label in {'software_{}_name'.format(i), 'software_{}_version'.format(i)}]
-
-        # Each equipment is identified by a name and a serial number.
-        equipment_columns = [label for i in range(1, max_equipment_per_asset + 1)
-                             for label in {'equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)}]
-
-        return asset_columns + software_columns + equipment_columns
-
-    @staticmethod
-    def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
-        """Get the asset information for the csv file.
-
-        Args:
-            db_session (sqlalchemy.orm.session.Session): current db session.
-            unique_software (set): all the names of the deployed software.
-            unique_equipment (tuple): all the names of the deployed equipment.
-            tenants (dict): authorized tenants to extract data.
-
-        Returns:
-            csv body (list): information on the assets.
-
-        """
-        assets = db_session.query(models.Asset) \
-            .options(joinedload(models.Asset.site)) \
-            .options(joinedload(models.Asset.status)) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .order_by(models.Asset.asset_id)
-
-        rows = []
-        for asset in assets:
-            # Asset information.
-            row = [
-                asset.asset_id,
-                asset.asset_type,
-                tenants[asset.tenant_id],
-                asset.customer_name,
-                asset.current_location,
-                asset.calibration_frequency,
-                asset.status.label,
-                replace_newline(asset.notes),
-                asset.production,
-                asset.activation_first,
-                asset.calibration_last,
-                asset.calibration_next,
-                asset.warranty_end,
+            return [
+                tenant for tenant in user_tenants
+                if Right(name='assets-create', tenant=tenant['id']) in user_rights or
+                (self.asset and self.asset.tenant_id == tenant['id'])
             ]
-
-            # Site information.
-            if asset.site:
-                row += [
-                    asset.site.name,
-                    asset.site.site_type,
-                    asset.site.contact,
-                    asset.site.phone,
-                    asset.site.email,
-                ]
-            else:
-                # Fill with None values to maintain column alignment.
-                row += [None, None, None, None, None]
-
-            # Software information.
-            software_updates = db_session.query(models.Event).join(models.EventStatus) \
-                .filter(and_(models.Event.asset_id == asset.id,
-                             models.EventStatus.status_id == 'software_update')).order_by(desc('date'))
-
-            # Get last version of each software.
-            most_recent_soft_per_asset = {}
-            for update in software_updates:
-                extra_json = update.extra_json
-                software_name, software_version = extra_json['software_name'], extra_json['software_version']
-                if software_name not in most_recent_soft_per_asset:
-                    most_recent_soft_per_asset[software_name] = software_version
-
-            # Format software output.
-            for software_name in unique_software:
-                if software_name in most_recent_soft_per_asset:
-                    row += [software_name, most_recent_soft_per_asset[software_name]]
-                else:
-                    # Fill with None values to maintain column alignment.
-                    row += [None, None]
-
-            # Equipment information.
-            asset_equipment = db_session.query(models.EquipmentFamily.model, models.Equipment.serial_number) \
-                .join(models.Equipment) \
-                .filter(models.Equipment.asset_id == asset.id).all()
-
-            for equipment_name in unique_equipment:
-                equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
-                if equipment:
-                    row += [equipment]
-                else:
-                    # Fill with None values to maintain column alignment.
-                    row += [None, None]
-
-            rows.append(row)
-
-        return rows
-
-    def get_extract_tenants(self):
-        """Get for which tenants the current user can extract assets information."""
-        # Admins have access to all tenants.
-        if self.request.user.is_admin:
-            return self.request.user.tenants
-
-        else:
-            return [tenant for tenant in self.request.user.tenants
-                    if Right(name='assets-extract', tenant=tenant['id']) in self.request.effective_principals]
 
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
@@ -633,48 +485,6 @@ class Assets(object):
         """List assets. No work done here as dataTables will call the API to get the assets list."""
         return {}
 
-    @view_config(route_name='assets-extract', request_method='GET', permission='assets-extract', renderer='csv')
-    def extract_get(self):
-        """Download Asset data. Write Asset information in csv file.
-
-        Returns:
-            (dict): header (list) and rows (list) of csv file
-
-        """
-        # authorized tenants
-        tenants = {tenant['id']: tenant['name'] for tenant in self.get_extract_tenants()}
-
-        # dynamic data - software
-        # find unique software name
-        software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Asset, models.Event.asset_id == models.Asset.id) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .join(models.EventStatus, models.Event.status_id == models.EventStatus.id) \
-            .filter(models.EventStatus.status_id == 'software_update')
-
-        unique_software = set(update.extra_json['software_name'] for update in software_updates)
-
-        # dynamic data - equipment
-        # find the name of the deployed equipment
-        equipment_names = self.request.db_session.query(models.Equipment.family_id, models.EquipmentFamily.model) \
-            .join(models.EquipmentFamily, models.Equipment.family_id == models.EquipmentFamily.id) \
-            .join(models.Asset, models.Equipment.asset_id == models.Asset.id) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .group_by(models.Equipment.family_id, models.EquipmentFamily.model) \
-            .order_by(models.EquipmentFamily.model)
-
-        # get EquipmentFamily.model
-        unique_equipment = tuple(e[1] for e in equipment_names)
-
-        # override attributes of response
-        filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
-        self.request.response.content_disposition = 'attachment;filename=' + filename
-
-        return {
-            'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
-            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants),
-        }
-
     @view_config(route_name='home', request_method='GET', permission='assets-list')
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
@@ -684,5 +494,4 @@ def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
-    config.add_route(pattern='assets/extract/', name='assets-extract', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)

@@ -104,6 +104,7 @@ def main(global_config, assets_configuration=True, **settings):
     # Add app routes.
     config.include('asset_tracker.models')
     config.include('asset_tracker.api', route_prefix='api')
+    config.include('asset_tracker.extract')
     config.include('asset_tracker.views')
     config.scan(ignore='asset_tracker.tests')
 
