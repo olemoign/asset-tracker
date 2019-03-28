@@ -24,10 +24,10 @@
                     {% endif %}
                 </div>
 
-                <table id="assets-list" class="dataTables table table-striped table-hover nowrap"
+                <table id="assets-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
                        data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
                        data-custom-filter="status!=decommissioned"
-                       data-custom-filter-label="{{ gettext('Show decommissioned assets') }}" width="100%">
+                       data-custom-filter-label="{{ gettext('Show decommissioned assets') }}">
                     <thead>
                         <tr>
                             <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>
