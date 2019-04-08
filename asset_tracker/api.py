@@ -366,7 +366,9 @@ class Sites(object):
             models.Site.site_type,
             tenants.c.tenant_name,
         ]
+
         joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
+
         specific_attributes = {'tenant_name': tenants.c.tenant_name}
 
         try:
