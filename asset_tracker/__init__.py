@@ -35,10 +35,6 @@ def main(global_config, assets_configuration=True, **settings):
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.include('pyramid_tm')
 
-    # Tests requirement: if we created the db_session BEFORE running the app, keep it.
-    if settings.get('db_session_factory'):
-        config.registry['db_session_factory'] = settings['db_session_factory']
-
     config.include('pyramid_jinja2')
     jinja2_settings = {
         'jinja2.directories': 'asset_tracker:templates',
