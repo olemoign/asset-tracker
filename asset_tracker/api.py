@@ -188,8 +188,6 @@ class Assets(object):
 
         full_text_search_attributes = [
             models.Asset.asset_id,
-            tenants.c.tenant_name,
-            models.Asset.customer_name,
             models.Asset.current_location,
             models.Site.name,
         ]
