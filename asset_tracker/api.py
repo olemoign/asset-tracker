@@ -556,20 +556,20 @@ class Software(object):
             position (optional).
 
         """
-        # get product name (medcapture, camagent)
+        # Get product name (medcapture, camagent).
         if not self.request.GET.get('product'):
             return HTTPBadRequest(json={'error': 'Missing product.'})
         else:
             self.product = self.request.GET['product'].lower()
 
-        # make sure the JSON provided is valid.
+        # Make sure the JSON provided is valid.
         try:
             json = self.request.json
         except JSONDecodeError:
             sentry_exception(self.request, level='info')
             return HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
-        # check if asset exists (cart, station, telecardia)
+        # Check if asset exists (cart, station, telecardia).
         try:
             station_login = self.request.user.login
         except KeyError:
