@@ -1,5 +1,5 @@
 # We use buildpack for now, will use alpine later.
-FROM parsys/python2-python3-redis-supervisord
+FROM parsys/python-redis-supervisord
 
 # This fix an annoying bug between python3 and ubuntu.
 ENV LANG C.UTF-8
