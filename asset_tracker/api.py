@@ -27,6 +27,23 @@ from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEA
 from asset_tracker.views.assets import Assets as AssetView
 
 
+def get_archi_from_file(file_name):
+    """Get architecture (32 or 64 bits) version from file name.
+
+    Args:
+        file_name (str): file name.
+
+    Returns:
+        int: software architecture, 32 or 64.
+
+    """
+    # Remove file extension.
+    file_name = os.path.splitext(file_name)[0]
+    product_name = file_name.split('-')[0]
+    # noinspection PyTypeChecker
+    return 32 if product_name.endswith('32') else 64
+
+
 def get_version_from_file(file_name):
     """Get software version from file name.
 
@@ -37,7 +54,7 @@ def get_version_from_file(file_name):
         str: software version.
 
     """
-    # Remove file extension
+    # Remove file extension.
     file_name = os.path.splitext(file_name)[0]
     return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
 
@@ -57,7 +74,11 @@ def natural_sort_key(string):
 
     """
     # 'if text' allows us to remove the empty strings always occuring for the first and last element of the re.split().
-    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', string) if text]
+    return [
+        int(text) if text.isdigit() else text.lower()
+        for text in re.split('([0-9]+)', string)
+        if text
+    ]
 
 
 class Assets(object):
@@ -486,6 +507,12 @@ class Software(object):
         # The station can indicate what version of the software it is using.
         current = self.request.GET.get('current')
 
+        # Release channel (alpha, beta, dev, stable).
+        channel = self.request.GET.get('channel', 'stable')
+
+        # 32 or 64 bits?
+        archi_32_bits = self.request.user_agent and 'Windows NT 6.3' in self.request.user_agent
+
         # If storage folder wasn't set up, can't return link.
         storage = self.request.registry.settings.get('asset_tracker.software_storage')
         if not storage:
@@ -503,8 +530,23 @@ class Software(object):
 
         product_versions = {}
         for product_file in product_files:
+            # Test channel.
             version = get_version_from_file(product_file)
-            product_versions[version] = product_file
+            alpha = 'alpha' in version and channel in ['alpha', 'dev']
+            beta = 'beta' in version and channel in ['alpha', 'beta', 'dev']
+            stable = 'alpha' not in version and 'beta' not in version
+            wanted_channel = alpha or beta or stable
+
+            # Test_archi.
+            archi = get_archi_from_file(product_file)
+            wanted_archi = archi_32_bits == (archi == 32)
+
+            if wanted_channel and wanted_archi:
+                product_versions[version] = product_file
+
+        if not product_versions:
+            return {}
+
         # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
         product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: natural_sort_key(k[0])))
@@ -518,30 +560,15 @@ class Software(object):
         elif version:
             return {}
 
-        # Create a new OrderedDict for the output so that we can mutate the dict while looping on it.
-        channel_versions = OrderedDict()
-
-        channel = self.request.GET.get('channel', 'stable')
-        for version, file in product_versions.items():
-            alpha = 'alpha' in version and channel in ['alpha', 'dev']
-            beta = 'beta' in version and channel in ['beta', 'alpha', 'dev']
-            stable = 'alpha' not in version and 'beta' not in version
-            if alpha or beta or stable:
-                channel_versions[version] = file
-
-        # If no version was found for the requested parameters.
-        if not channel_versions:
-            return {}
-
         # We return only the latest version.
-        channel_version = channel_versions.popitem(last=True)
+        product_latest = product_versions.popitem(last=True)
 
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
-        if current and natural_sort_key(current) > natural_sort_key(channel_version[0]):
+        if current and natural_sort_key(current) > natural_sort_key(product_latest[0]):
             return {}
 
-        download_url = self.request.route_url('api-software-download', product=self.product, file=channel_version[1])
-        return OrderedDict(version=channel_version[0], url=download_url)
+        download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
+        return OrderedDict(version=product_latest[0], url=download_url)
 
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
@@ -556,20 +583,20 @@ class Software(object):
             position (optional).
 
         """
-        # get product name (medcapture, camagent)
+        # Get product name (medcapture, camagent).
         if not self.request.GET.get('product'):
             return HTTPBadRequest(json={'error': 'Missing product.'})
         else:
             self.product = self.request.GET['product'].lower()
 
-        # make sure the JSON provided is valid.
+        # Make sure the JSON provided is valid.
         try:
             json = self.request.json
         except JSONDecodeError:
             sentry_exception(self.request, level='info')
             return HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
-        # check if asset exists (cart, station, telecardia)
+        # Check if asset exists (cart, station, telecardia).
         try:
             station_login = self.request.user.login
         except KeyError:
