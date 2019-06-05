@@ -155,7 +155,7 @@ class Assets(object):
             return [
                 tenant for tenant in user_tenants
                 if Right(name='assets-create', tenant=tenant['id']) in user_rights or
-                (self.asset and self.asset.tenant_id == tenant['id'])
+                   (self.asset and self.asset.tenant_id == tenant['id'])
             ]
 
     def get_latest_softwares_version(self):
