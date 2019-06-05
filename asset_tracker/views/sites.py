@@ -7,7 +7,8 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, FormException, SITE_TYPES
+from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
+from asset_tracker.views import FormException
 
 
 class Sites(object):

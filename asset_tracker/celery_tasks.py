@@ -5,7 +5,7 @@ import transaction
 from celery.utils.log import get_task_logger
 from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
-from parsys_utilities.sentry import sentry_celery_exception
+from sentry_sdk import capture_exception
 
 from asset_tracker import models, notifications
 
@@ -33,7 +33,7 @@ def next_calibration_reminder(months=3):
         # Validate all mandatory config is present.
         [app.conf.pyramid_config['app:main'][config] for config in MANDATORY_CONFIG]
     except AttributeError as error:
-        sentry_celery_exception(app.conf)
+        capture_exception(error)
         logger.error(error)
         return -1
 

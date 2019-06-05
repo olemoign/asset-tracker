@@ -16,7 +16,6 @@ from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
 from pyramid_session_redis import RedisSessionFactory
-from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.pyramid import PyramidIntegration
 
 from asset_tracker.configuration import update_configuration
@@ -99,7 +98,7 @@ def main(global_config, assets_configuration=True, **settings):
     # Configure Sentry.
     sentry_dsn = settings.get('sentry.dsn')
     if sentry_dsn:
-        sentry_sdk.init(dsn=sentry_dsn, integrations=[CeleryIntegration(), PyramidIntegration()])
+        sentry_sdk.init(dsn=sentry_dsn, integrations=[PyramidIntegration()])
 
     config_file = global_config['__file__']
     here = global_config['here']
