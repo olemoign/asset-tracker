@@ -12,13 +12,13 @@ from json import dumps, JSONDecodeError
 from parsys_utilities.api import manage_datatables_queries
 from parsys_utilities.authorization import authenticate_rta, Right
 from parsys_utilities.dates import format_date
-from parsys_utilities.sentry import sentry_exception, sentry_log
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPInternalServerError, HTTPNotFound, HTTPOk, \
     HTTPUnauthorized
 from pyramid.security import Allow
 from pyramid.settings import asbool, aslist
 from pyramid.view import view_config
+from sentry_sdk import capture_exception, capture_message
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
@@ -143,7 +143,7 @@ class Assets(object):
         if asset:
             if asset.user_id:
                 data = [asset.id, asset.user_id, user_id]
-                sentry_log(self.request, 'Trying to link asset {} which is already linked: {}/{}.'.format(*data))
+                capture_message('Trying to link asset {} which is already linked: {}/{}.'.format(*data))
                 return
 
             asset.user_id = user_id
@@ -200,8 +200,8 @@ class Assets(object):
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
-        except KeyError:
-            sentry_exception(self.request, level='info')
+        except KeyError as error:
+            capture_exception(error)
             return HTTPBadRequest()
 
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
@@ -236,8 +236,8 @@ class Assets(object):
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
-        except KeyError:
-            sentry_exception(self.request, get_tb=True, level='info')
+        except KeyError as error:
+            capture_exception(error)
             return HTTPBadRequest()
 
         tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
@@ -287,16 +287,16 @@ class Assets(object):
         """
         # Authentify RTA using HTTP Basic Auth.
         if not authenticate_rta(self.request):
-            sentry_log(self.request, 'Forbidden RTA request.')
+            capture_message('Forbidden RTA request.')
             return HTTPUnauthorized()
 
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
 
-        except JSONDecodeError:
+        except JSONDecodeError as error:
             self.request.logger_technical.info('Asset linking: invalid JSON.')
-            sentry_exception(self.request, level='info')
+            capture_exception(error)
             return HTTPBadRequest()
 
         asset_info = {'userID', 'login', 'tenantID', 'creatorID', 'creatorAlias'}
@@ -309,9 +309,9 @@ class Assets(object):
         try:
             self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
 
-        except SQLAlchemyError:
+        except SQLAlchemyError as error:
             self.request.logger_technical.info('Asset linking: db error.')
-            sentry_exception(self.request, level='info')
+            capture_exception(error)
             return HTTPBadRequest()
 
         else:
@@ -321,7 +321,7 @@ class Assets(object):
     def site_id_get(self):
         # Authentify RTA using HTTP Basic Auth.
         if not authenticate_rta(self.request):
-            sentry_log(self.request, 'Forbidden RTA request.')
+            capture_message('Forbidden RTA request.')
             return HTTPUnauthorized()
 
         user_id = self.request.matchdict.get('user_id')
@@ -369,8 +369,8 @@ class Sites(object):
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
-        except KeyError:
-            sentry_exception(self.request, level='info')
+        except KeyError as error:
+            capture_exception(error)
             return HTTPBadRequest()
 
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
@@ -401,8 +401,8 @@ class Sites(object):
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
-        except KeyError:
-            sentry_exception(self.request, get_tb=True, level='info')
+        except KeyError as error:
+            capture_exception(error)
             return HTTPBadRequest()
 
         # dict to get tenant name from tenant id
@@ -451,7 +451,7 @@ class Sites(object):
 
         site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
         if not site:
-            sentry_log(self.request, 'Missing site.')
+            capture_message('Missing site.')
             return {}
 
         # If the user isn't authenticated yet, make sure he does the roundtrip with RTA.
@@ -459,8 +459,7 @@ class Sites(object):
             raise HTTPForbidden()
 
         if Right(name='api-sites-read', tenant=site.tenant_id) not in self.request.effective_principals:
-            extras = {'user_id': self.request.user.id if self.request.user else None}
-            sentry_log(self.request, 'Forbidden site request.', extras=extras)
+            capture_message('Forbidden site request.')
             return {}
 
         return {
@@ -592,8 +591,8 @@ class Software(object):
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
-        except JSONDecodeError:
-            sentry_exception(self.request, level='info')
+        except JSONDecodeError as error:
+            capture_exception(error)
             return HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
         # Check if asset exists (cart, station, telecardia).
@@ -618,8 +617,8 @@ class Software(object):
                 try:
                     software_status = self.request.db_session.query(models.EventStatus) \
                         .filter(models.EventStatus.status_id == 'software_update').one()
-                except (MultipleResultsFound, NoResultFound):
-                    sentry_exception(self.request, level='info')
+                except (MultipleResultsFound, NoResultFound) as error:
+                    capture_exception(error)
                     self.request.logger_technical.info('asset status error')
                     return HTTPInternalServerError(json={'error': 'Internal server error.'})
 

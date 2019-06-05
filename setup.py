@@ -24,7 +24,7 @@ requires = [
     'pyramid_session_redis',
     'pyramid_tm',
     'python-dateutil',
-    'raven',
+    'sentry_sdk',
     'setuptools',
     'sqlalchemy',
     'transaction',

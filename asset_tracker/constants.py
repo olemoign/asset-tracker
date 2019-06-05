@@ -27,14 +27,3 @@ WARRANTY_DURATION_YEARS = 2
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
 TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
-
-
-class FormException(Exception):
-    """Custom exception to handle form validation of Assets and Sites.
-    The addditional parameter (log) indicates if logging is required.
-
-    """
-
-    def __init__(self, message, log=False):
-        super().__init__(message)
-        self.log = log

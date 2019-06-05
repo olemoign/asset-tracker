@@ -4,17 +4,18 @@ from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.authorization import Right
-from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.settings import aslist
 from pyramid.view import view_config
+from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS, FormException
+from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.views import FormException
 
 
 class Assets(object):
@@ -170,8 +171,8 @@ class Assets(object):
             extra = event.extra_json
             try:
                 name, version = extra['software_name'], extra['software_version']
-            except KeyError:
-                sentry_exception(self.request, level='info')
+            except KeyError as error:
+                capture_exception(error)
                 continue
             else:
                 if name not in softwares:
@@ -214,7 +215,7 @@ class Assets(object):
             self.form['equipment-serial_number'] = [self.form['equipment-serial_number']]
 
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
-            raise FormException(_('Invalid equipments.'), log=True)
+            raise FormException(_('Invalid equipments.'))
 
         expiration_dates_1 = self.form.get('equipment-expiration_date_1')
         if not expiration_dates_1:
@@ -243,7 +244,7 @@ class Assets(object):
                 or not self.form.get('asset_type') \
                 or not has_creation_event \
                 or not has_calibration_frequency:
-            raise FormException(_('Missing mandatory data.'))
+            raise FormException(_('Missing mandatory data.'), log=False)
 
     def remove_events(self):
         """Remove events.
@@ -307,27 +308,27 @@ class Assets(object):
             tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
             tenant_id = self.form.get('tenant_id')
             if not tenant_id or tenant_id not in tenants_ids:
-                raise FormException(_('Invalid tenant.'), log=True)
+                raise FormException(_('Invalid tenant.'))
 
         calibration_frequency = self.form.get('calibration_frequency')
         if calibration_frequency and not calibration_frequency.isdigit():
-            raise FormException(_('Invalid calibration frequency.'), log=True)
+            raise FormException(_('Invalid calibration frequency.'))
 
         site_id = self.form.get('site_id')
         model_site = self.request.db_session.query(models.Site).filter_by(id=site_id, tenant_id=tenant_id).first()
         if site_id and not model_site:
-            raise FormException(_('Invalid site.'), log=True)
+            raise FormException(_('Invalid site.'))
 
         if self.form.get('event'):
             status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
             if not status:
-                raise FormException(_('Invalid asset status.'), log=True)
+                raise FormException(_('Invalid asset status.'))
 
         if self.form.get('event_date'):
             try:
                 datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
             except (TypeError, ValueError):
-                raise FormException(_('Invalid event date.'), log=True)
+                raise FormException(_('Invalid event date.'))
 
         for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
                                                                    self.form['equipment-expiration_date_1'],
@@ -336,24 +337,24 @@ class Assets(object):
             if family_id:
                 db_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
-                    raise FormException(_('Invalid equipment family.'), log=True)
+                    raise FormException(_('Invalid equipment family.'))
 
                 if expiration_date_1:
                     try:
                         datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'), log=True)
+                        raise FormException(_('Invalid expiration date.'))
 
                 if expiration_date_2:
                     try:
                         datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
                     except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'), log=True)
+                        raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
             event = self.asset.history('asc', filter_software=True).filter(models.Event.event_id == event_id).first()
             if not event:
-                raise FormException(_('Invalid event.'), log=True)
+                raise FormException(_('Invalid event.'))
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
                  renderer='assets-create_update.html')
@@ -370,7 +371,7 @@ class Assets(object):
             self.validate_form()
         except FormException as error:
             if error.log:
-                sentry_exception(self.request, level='info')
+                capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
@@ -423,7 +424,7 @@ class Assets(object):
             self.validate_form()
         except FormException as error:
             if error.log:
-                sentry_exception(self.request, level='info')
+                capture_exception(error)
             return {
                 'asset': self.asset,
                 'asset_softwares': self.get_latest_softwares_version(),

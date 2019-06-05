@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 import parsys_utilities.celery_app as celery
 import pkg_resources
+import sentry_sdk
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.config import TenantConfigurator
@@ -15,6 +16,8 @@ from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
 from pyramid_session_redis import RedisSessionFactory
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.pyramid import PyramidIntegration
 
 from asset_tracker.configuration import update_configuration
 from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
@@ -92,6 +95,11 @@ def main(global_config, assets_configuration=True, **settings):
     # Add loggers.
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
     config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
+
+    # Configure Sentry.
+    sentry_dsn = settings.get('sentry.dsn')
+    if sentry_dsn:
+        sentry_sdk.init(dsn=sentry_dsn, integrations=[CeleryIntegration(), PyramidIntegration()])
 
     config_file = global_config['__file__']
     here = global_config['here']

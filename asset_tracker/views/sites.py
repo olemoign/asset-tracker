@@ -1,10 +1,10 @@
 """Site tracker views: sites lists and read/update."""
 from parsys_utilities.authorization import Right
-from parsys_utilities.sentry import sentry_exception
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.view import view_config
+from sentry_sdk import capture_exception
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, FormException, SITE_TYPES
@@ -108,7 +108,7 @@ class Sites(object):
 
         except FormException as error:
             if error.log:
-                sentry_exception(self.request, level='info')
+                capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
@@ -144,7 +144,7 @@ class Sites(object):
 
         except FormException as error:
             if error.log:
-                sentry_exception(self.request, level='info')
+                capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site': self.site,

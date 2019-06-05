@@ -27,6 +27,17 @@ def add_global_variables(event):
     event['GLUCOMETER_ID'] = GLUCOMETER_ID
 
 
+class FormException(Exception):
+    """Custom exception to handle form validation of Assets and Sites.
+    The addditional parameter (log) indicates if logging is required.
+
+    """
+
+    def __init__(self, message, log=True):
+        super().__init__(message)
+        self.log = log
+
+
 def includeme(config):
     config.include('asset_tracker.views.assets')
     config.include('asset_tracker.views.sites')
