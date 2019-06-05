@@ -1,8 +1,16 @@
 from parsys_utilities.authorization import rights_without_tenants
-from pyramid.events import BeforeRender, NewResponse, subscriber
+from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
 from pyramid.settings import aslist
+from sentry_sdk import configure_scope
 
 from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING, GLUCOMETER_ID
+
+
+@subscriber(NewRequest)
+def tag_user_for_sentry(event):
+    """Tag the user in Sentry."""
+    with configure_scope() as scope:
+        scope.user = {'email': event.request.user.login if event.request.user else None}
 
 
 @subscriber(NewResponse)
