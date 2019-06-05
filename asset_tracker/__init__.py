@@ -98,7 +98,7 @@ def main(global_config, assets_configuration=True, **settings):
     # Configure Sentry.
     sentry_dsn = settings.get('sentry.dsn')
     if sentry_dsn:
-        sentry_sdk.init(dsn=sentry_dsn, integrations=[PyramidIntegration()])
+        sentry_sdk.init(dsn=sentry_dsn, integrations=[PyramidIntegration()], attach_stacktrace=True)
 
     config_file = global_config['__file__']
     here = global_config['here']
