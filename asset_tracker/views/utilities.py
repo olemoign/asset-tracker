@@ -5,6 +5,7 @@ from traceback import format_exc
 from parsys_utilities.status import status_endpoint
 from pyramid.settings import asbool
 from pyramid.view import exception_view_config, notfound_view_config, view_config
+from sentry_sdk import capture_exception
 
 from asset_tracker import models
 
@@ -25,8 +26,8 @@ def not_found_get(request):
 @exception_view_config(Exception, renderer='errors/500.html')
 def exception_view(request):
     """Catch exceptions.
-    In dev reraise them to be caught by pyramid_debugtoolbar.
-    In production log them then return a 500 page to the user.
+    In dev reraise them to be caught by pyramid_debugtoolbar/sentry.
+    In production log them, send them to sentry, then return a 500 page to the user.
 
     """
     # In dev.
@@ -36,6 +37,8 @@ def exception_view(request):
 
     # In production.
     else:
+        capture_exception(request.exception)
+
         error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
         error_text = error_header + format_exc()
         request.logger_technical.error(error_text)
