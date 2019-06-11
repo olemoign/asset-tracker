@@ -4,11 +4,11 @@ import logging
 from functools import partial
 from urllib.parse import urljoin
 
-import parsys_utilities.celery_app as celery
 import pkg_resources
 import sentry_sdk
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities import celery_app
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
@@ -21,6 +21,9 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 
 from asset_tracker.configuration import update_configuration
 from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
+
+# Celery runs celery.app.
+celery = celery_app
 
 
 def main(global_config, assets_configuration=True, **settings):
@@ -104,7 +107,7 @@ def main(global_config, assets_configuration=True, **settings):
 
     config_file = global_config['__file__']
     here = global_config['here']
-    celery.configure_celery_app(config_file, here=here)
+    celery_app.configure_celery_app(config_file, here=here)
 
     # Add app routes.
     config.include('asset_tracker.models')
