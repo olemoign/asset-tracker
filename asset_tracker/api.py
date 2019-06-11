@@ -59,26 +59,37 @@ def get_version_from_file(file_name):
     return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
 
 
-def natural_sort_key(string):
-    """Sort strings according to natural order.
+def sort_versions(version):
+    """Sort versions according to natural order.
 
     When comparing strings, 'beta9' > 'beta15' because '9' > '1'. Actually, for humans, it should be '15' > '9'.
     Here, we split the incoming string between text and digits and convert digits to int so that Python will be able
     to compare int(15) and int(9).
 
+    Special case for final versions: 2.9.0 has only three items, less than 2.9.0-rc10. Thus we force final versions to
+    the end of the list.
+
     Args:
-        string (str): string to be sorted.
+        version (str): version to be sorted.
 
     Returns
         list: split string, with text as str and numbers as int.
 
     """
     # 'if text' allows us to remove the empty strings always occuring for the first and last element of the re.split().
-    return [
-        int(text) if text.isdigit() else text.lower()
-        for text in re.split('([0-9]+)', string)
-        if text
-    ]
+    sort_key = []
+
+    for substring in re.split('([0-9]+)', version):
+        if substring.isdigit():
+            sort_key.append(int(substring))
+        elif substring and substring != '.':
+            sort_key.append(substring.lower().replace('-', ''))
+
+    # Final version.
+    if len(sort_key) == 3:
+        sort_key.append('zzz')
+
+    return sort_key
 
 
 class Assets(object):
@@ -548,7 +559,7 @@ class Software(object):
 
         # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
-        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: natural_sort_key(k[0])))
+        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
 
         version = self.request.GET.get('version')
         if version and version in product_versions.keys():
@@ -563,7 +574,7 @@ class Software(object):
         product_latest = product_versions.popitem(last=True)
 
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
-        if current and natural_sort_key(current) > natural_sort_key(product_latest[0]):
+        if current and sort_versions(current) > sort_versions(product_latest[0]):
             return {}
 
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
