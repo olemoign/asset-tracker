@@ -21,7 +21,7 @@ requires = [
     'pyramid',
     'pyramid-assetviews',
     'pyramid-jinja2',
-    'pyramid-session_redis',
+    'pyramid-session-redis',
     'pyramid-tm',
     'python-dateutil',
     'sentry-sdk',
