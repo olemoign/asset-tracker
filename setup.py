@@ -14,7 +14,7 @@ requires = [
     'arrow',
     'celery[redis]',
     'jinja2',
-    'kombu==4.5.0',
+    'kombu',
     'parsys-utilities',
     'paste',
     'plaster-pastedeploy',
