@@ -55,7 +55,7 @@ get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --dirty | sed -e "s/-
 version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
 
 setup(
-    name='asset_tracker',
+    name='asset-tracker',
     version=version,
     description='Asset Tracker',
     long_description=README + '\n\n' + CHANGES,
