@@ -5,7 +5,6 @@ from traceback import format_exc
 from parsys_utilities.status import status_endpoint
 from pyramid.settings import asbool
 from pyramid.view import exception_view_config, notfound_view_config, view_config
-from sentry_sdk import capture_exception
 
 from asset_tracker import models
 
