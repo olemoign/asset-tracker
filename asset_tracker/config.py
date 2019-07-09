@@ -100,7 +100,7 @@ def update_statuses(db_session, config):
         db_status.label = config_status['label']
 
 
-def update_config(settings):
+def update_configuration(settings):
     """Run the update."""
     with transaction.manager:
         # Connect to the db.

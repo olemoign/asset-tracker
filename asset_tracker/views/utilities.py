@@ -27,7 +27,7 @@ def not_found_get(request):
 def exception_view(request):
     """Catch exceptions.
     In dev reraise them to be caught by pyramid_debugtoolbar/sentry.
-    In production log them, send them to sentry, then return a 500 page to the user.
+    In production log them then return a 500 page to the user, the exception is automatically caught by sentry.
 
     """
     # In dev.
@@ -37,13 +37,11 @@ def exception_view(request):
 
     # In production.
     else:
-        capture_exception(request.exception)
-
         error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
         error_text = error_header + format_exc()
         request.logger_technical.error(error_text)
 
-        request.response.status_int = 500
+        request.response.status_code = 500
         return {}
 
 

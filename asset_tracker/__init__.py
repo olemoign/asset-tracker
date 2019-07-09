@@ -16,6 +16,7 @@ from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
 from pyramid_session_redis import RedisSessionFactory
+from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.pyramid import PyramidIntegration
 
@@ -38,6 +39,7 @@ def main(global_config, assets_configuration=True, **settings):
     if assets_configuration:
         update_configuration(settings)
 
+    # noinspection PyShadowingNames
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     config.include('pyramid_tm')
 
@@ -100,9 +102,9 @@ def main(global_config, assets_configuration=True, **settings):
     config.add_request_method(partial(logger, name='asset_tracker_technical'), 'logger_technical', reify=True)
 
     # Configure Sentry.
-    sentry_dsn = settings.get('sentry.dsn')
-    if sentry_dsn:
-        sentry_sdk.init(dsn=sentry_dsn, integrations=[PyramidIntegration()], attach_stacktrace=True)
+    dsn = settings.get('sentry.dsn')
+    if dsn:
+        sentry_sdk.init(dsn=dsn, integrations=[CeleryIntegration(), PyramidIntegration()], attach_stacktrace=True)
         ignore_logger('asset_tracker_technical')
 
     config_file = global_config['__file__']
