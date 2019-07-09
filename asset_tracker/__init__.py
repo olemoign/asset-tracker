@@ -19,7 +19,7 @@ from pyramid_session_redis import RedisSessionFactory
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.pyramid import PyramidIntegration
 
-from asset_tracker.configuration import update_configuration
+from asset_tracker.config import update_configuration
 from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 # Celery runs celery.app.

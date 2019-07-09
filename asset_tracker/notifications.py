@@ -5,7 +5,7 @@ from parsys_utilities.notifications import emails_renderer_offline, notify_offli
 from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
 
-from asset_tracker.configuration import DEFAULT_CONFIG
+from asset_tracker.config import DEFAULT_CONFIG
 from asset_tracker.constants import TEMPLATES_PATH, TRANSLATIONS_PATH
 
 logger = logging.getLogger('asset_tracker_technical')
