@@ -24,8 +24,7 @@ def add_global_variables(event):
     """Templating global variables: these variables are added to all render() calls."""
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
-    # TODO: merge client_specific with branding.
-    event['client_specific'] = aslist(event['request'].registry.settings.get('asset_tracker.specific', []))
+    event['specific'] = aslist(event['request'].registry.settings.get('asset_tracker.specific', []))
     event['csrf_token'] = event['request'].session.get_csrf_token()
 
     event['principals'] = event['request'].effective_principals

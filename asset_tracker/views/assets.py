@@ -41,7 +41,7 @@ class Assets(object):
         self.request = request
         self.asset = self.get_asset()
         # Manage Marlink specifics.
-        self.client_specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
+        self.specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
         self.form = None
 
     def get_asset(self):
@@ -236,7 +236,7 @@ class Assets(object):
             self.form['event-removed'] = [self.form['event-removed']]
 
         has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = 'marlink' in self.client_specific or self.form.get('calibration_frequency')
+        has_calibration_frequency = 'marlink' in self.specific or self.form.get('calibration_frequency')
 
         # We don't need asset_id or tenant_id if asset is linked.
         is_linked = (self.asset and self.asset.is_linked)
@@ -259,11 +259,11 @@ class Assets(object):
             event.remover_alias = self.request.user.alias
 
     @staticmethod
-    def update_status_and_calibration_next(asset, client_specific):
+    def update_status_and_calibration_next(asset, specific):
         """Update asset status and next calibration date according to functional rules."""
         asset.status = asset.history('desc', filter_software=True).first().status
 
-        if 'marlink' in client_specific:
+        if 'marlink' in specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
             calibration_last = asset.calibration_last
 
@@ -378,7 +378,7 @@ class Assets(object):
             }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.client_specific:
+        if 'marlink' in self.specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
@@ -401,7 +401,7 @@ class Assets(object):
 
         self.add_event()
 
-        self.update_status_and_calibration_next(self.asset, self.client_specific)
+        self.update_status_and_calibration_next(self.asset, self.specific)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
@@ -433,7 +433,7 @@ class Assets(object):
             }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.client_specific:
+        if 'marlink' in self.specific:
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
@@ -477,7 +477,7 @@ class Assets(object):
 
             self.remove_events()
 
-        self.update_status_and_calibration_next(self.asset, self.client_specific)
+        self.update_status_and_calibration_next(self.asset, self.specific)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 

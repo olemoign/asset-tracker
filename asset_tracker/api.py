@@ -172,8 +172,8 @@ class Assets(object):
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        client_specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
-        if 'marlink' in client_specific:
+        specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
+        if 'marlink' in specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
@@ -199,7 +199,7 @@ class Assets(object):
         self.request.db_session.add(event)
 
         # Update status and calibration
-        AssetView.update_status_and_calibration_next(asset, client_specific)
+        AssetView.update_status_and_calibration_next(asset, specific)
 
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
@@ -502,7 +502,7 @@ class Software(object):
         """Return what is the lastest version of a product in a given branch (alpha/beta/dev/stable) and the url
         where to download the package.
 
-        QueryString:
+        Query string:
             product (mandatory).
             channel (optional): product channel (in 'alpha', 'beta', 'dev', 'stable').
             version (optional): if we want the url of one specific version.
@@ -585,12 +585,11 @@ class Software(object):
     def software_update_post(self):
         """Receive software(s) version.
 
-        QueryString:
+        Query string:
             product (mandatory).
 
         Body (json):
             version (mandatory).
-            position (optional).
 
         """
         # Get product name (medcapture, camagent).

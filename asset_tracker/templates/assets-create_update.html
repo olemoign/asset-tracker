@@ -63,7 +63,7 @@
                             </div>
                             {{ input(gettext('Hardware version'), 'hardware_version') }}
 
-                            {% if 'marlink' in client_specific %}
+                            {% if 'marlink' in specific %}
                                 {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                             {% endif %}
 
@@ -87,7 +87,7 @@
 
                             {{ input(gettext('Current location'), 'current_location') }}
 
-                            {% if not 'marlink' in client_specific %}
+                            {% if not 'marlink' in specific %}
                                 <div class="col-sm-6 form-group">
                                     <label for="calibration_frequency">
                                         {{ gettext('Calibration frequency') }}{% if not update %} *{% endif %}
