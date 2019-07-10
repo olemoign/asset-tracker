@@ -32,7 +32,7 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Column(String)
     notes = Column(String)
 
-    equipments = relationship('Equipment')
+    equipments = relationship('Equipment', backref='asset')
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
