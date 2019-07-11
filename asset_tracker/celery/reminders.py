@@ -65,7 +65,7 @@ def next_calibration(months=3):
                 notifications_assets.next_calibration(pyramid_config, tenant_id, assets, calibration_date)
 
 
-def search_notify_consumables_expiration(db_session, expiration_date, delay_days):
+def search_consumables_notify_expiration(db_session, expiration_date, delay_days):
     """Get equipments with consumables that will expire and send a notification to involved users.
 
     Args:
@@ -88,7 +88,7 @@ def search_notify_consumables_expiration(db_session, expiration_date, delay_days
 
 
 @app.task()
-def consumables_expiration_reminder():
+def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
 
     try:
@@ -113,4 +113,4 @@ def consumables_expiration_reminder():
         db_session = models.get_tm_session(session_factory, transaction.manager)
 
         for delay_days, expiration_date in expiration_delays_and_dates:
-            search_notify_consumables_expiration(db_session, expiration_date, delay_days)
+            search_consumables_notify_expiration(db_session, expiration_date, delay_days)
