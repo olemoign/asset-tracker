@@ -5,9 +5,9 @@ import transaction
 from celery.utils.log import get_task_logger
 from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
+from sentry_sdk import capture_exception
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
-from sentry_sdk import capture_exception
 
 from asset_tracker import models
 from asset_tracker.notifications import assets as notifications_assets
