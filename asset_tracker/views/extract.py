@@ -157,7 +157,7 @@ class AssetsExtract(object):
             for equipment_name in unique_equipment:
                 equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
                 if equipment:
-                    row += [equipment]
+                    row += [*equipment]
                 else:
                     # Fill with None values to maintain column alignment.
                     row += [None, None]
