@@ -1,11 +1,11 @@
 {{ gettext('Dear user') }},
 
-{{ gettext('The %(model)s of your asset %(asset_id)s has consumables that will expire in %(delay_days) days on %(expiration_date)s.',
+{{ gettext('The equipment "%(model)s" of your asset %(asset_id)s has consumables that expires in %(delay_days)s days on %(expiration_date)s.',
                 model=model, asset_id=asset_id, delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 
-{{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the expiration date passes.') }}
+{{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the expiration date has passed.') }}
 
-{{ gettext('To view the asset, follow ') }} {{ gettext('this link') }}: <a href="{{ asset_url }}">
+{{ gettext('To view the asset, follow ') }} {{ gettext('this link') }}: <a href="{{ asset_url }}">.
 
 {{ gettext('Sincerely') }},
 {{ gettext(app_name) }}

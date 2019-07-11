@@ -75,11 +75,10 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         ini_configuration['app:main'].get('asset_tracker.server_url'),
         equipment.asset.id,
     )
-    model = equipment.family.model.split('-')[0]
 
     template_data = {
         'app_name': app_name,
-        'model': model,
+        'model': equipment.family.model,
         'asset_id': equipment.asset.asset_id,
         'asset_url': asset_url,
         'expiration_date': expiration_date,
