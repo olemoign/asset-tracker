@@ -99,5 +99,5 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
                 'rights': ['notifications-consumables'], 'tenant': tenant_id}
         notify_offline(ini_configuration, json)
 
-    logger.info('notify equipment consumables expiration date {} - {}'.format(
+    logger.info('notify equipment consumables expiration date {}, {}'.format(
         equipment.asset.asset_id, equipment.family.model))
