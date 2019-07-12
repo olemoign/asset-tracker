@@ -80,17 +80,17 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
 
     template_data = {
         'app_name': app_name,
-        'model': model,
         'asset_id': equipment.asset.asset_id,
         'asset_url': asset_url,
         'expiration_date': expiration_date,
         'delay_days': delay_days,
+        'model': model,
     }
 
     # Template generation
     emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
 
-    # We cannot translate variables inside a gettext string with Babel, so we have to translate them afterwards
+    # Babel doesn't automatically translate variables inside a gettext string, so we have to translate them afterwards
     for locale in AVAILABLE_LOCALES:
         pyramid_localizer = make_localizer(current_locale_name=locale, translation_directories=[TRANSLATIONS_PATH])
         model_translation = pyramid_localizer.translate(equipment.family.model)
