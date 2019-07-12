@@ -69,7 +69,12 @@ class AssetsExtract(object):
         # Each equipment is identified by a name and a serial number.
         equipment_columns = [
             label for i in range(1, max_equipment_per_asset + 1)
-            for label in {'equipment_{}_name'.format(i), 'equipment_{}_serial_number'.format(i)}
+            for label in {
+                'equipment_{}_name'.format(i),
+                'equipment_{}_serial_number'.format(i),
+                'equipment_{}_expiration_date_1'.format(i),
+                'equipment_{}_expiration_date_2'.format(i),
+            }
         ]
 
         return asset_columns + software_columns + equipment_columns
@@ -150,17 +155,22 @@ class AssetsExtract(object):
                     row += [None, None]
 
             # Equipment information.
-            asset_equipment = db_session.query(models.EquipmentFamily.model, models.Equipment.serial_number) \
+            asset_equipment = db_session.query(
+                    models.EquipmentFamily.model,
+                    models.Equipment.serial_number,
+                    models.Equipment.expiration_date_1,
+                    models.Equipment.expiration_date_2
+                ) \
                 .join(models.Equipment) \
                 .filter(models.Equipment.asset_id == asset.id).all()
 
             for equipment_name in unique_equipment:
                 equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
                 if equipment:
-                    row += [equipment]
+                    row += [*equipment]
                 else:
                     # Fill with None values to maintain column alignment.
-                    row += [None, None]
+                    row += [None, None, None, None]
 
             rows.append(row)
 
