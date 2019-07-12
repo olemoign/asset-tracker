@@ -155,8 +155,12 @@ class AssetsExtract(object):
                     row += [None, None]
 
             # Equipment information.
-            asset_equipment = db_session.query(models.EquipmentFamily.model, models.Equipment.serial_number,
-                                               models.Equipment.expiration_date_1, models.Equipment.expiration_date_2) \
+            asset_equipment = db_session.query(
+                    models.EquipmentFamily.model,
+                    models.Equipment.serial_number,
+                    models.Equipment.expiration_date_1,
+                    models.Equipment.expiration_date_2
+                ) \
                 .join(models.Equipment) \
                 .filter(models.Equipment.asset_id == asset.id).all()
 
