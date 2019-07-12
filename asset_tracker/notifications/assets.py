@@ -1,8 +1,9 @@
 import logging
 
+from parsys_utilities import AVAILABLE_LOCALES
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.notifications import emails_renderer_offline, notify_offline
-from pyramid.i18n import TranslationString as _
+from pyramid.i18n import make_localizer, TranslationString as _
 from pyramid.settings import asbool
 
 from asset_tracker.config import DEFAULT_CONFIG
@@ -75,10 +76,11 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         ini_configuration['app:main'].get('asset_tracker.server_url'),
         equipment.asset.id,
     )
+    model = equipment.family.model
 
     template_data = {
         'app_name': app_name,
-        'model': equipment.family.model,
+        'model': model,
         'asset_id': equipment.asset.asset_id,
         'asset_url': asset_url,
         'expiration_date': expiration_date,
@@ -87,6 +89,14 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
 
     # Template generation
     emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
+
+    # We cannot translate variables inside a gettext string with Babel, so we have to translate them afterwards
+    for locale in AVAILABLE_LOCALES:
+        pyramid_localizer = make_localizer(current_locale_name=locale, translation_directories=[TRANSLATIONS_PATH])
+        model_translation = pyramid_localizer.translate(equipment.family.model)
+        emails[locale]['text'] = emails[locale]['text'].replace(model, model_translation)
+        emails[locale]['html'] = emails[locale]['html'].replace(model, model_translation)
+
     messages = {'email': emails}
 
     # Asynchronous POST
@@ -99,4 +109,4 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         notify_offline(ini_configuration, json)
 
     logger.info('notify equipment consumables expiration date {}, {}'.format(
-        equipment.asset.asset_id, equipment.family.model))
+        equipment.asset.asset_id, model))
