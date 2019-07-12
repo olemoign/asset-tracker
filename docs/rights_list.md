@@ -6,6 +6,8 @@ Rights list
 - assets-read
 - assets-update
 
+- notifications-calibration
+- notifications-consumables
 
 - sites-create
 - sites-list
