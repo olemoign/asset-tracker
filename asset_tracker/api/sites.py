@@ -1,4 +1,3 @@
-from parsys_utilities.api import DataTablesAPI
 from parsys_utilities.authorization import Right
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.security import Allow
@@ -9,12 +8,15 @@ from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
-class Sites(DataTablesAPI):
+class Sites(object):
     """(Cloud) get site info in consultation."""
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, ADMIN_PRINCIPAL, 'sites-list'),
     ]
+
+    def __init__(self, request):
+        self.request = request
 
     @view_config(route_name='api-sites-read', request_method='GET', renderer='sites-information.html')
     def read_get(self):
