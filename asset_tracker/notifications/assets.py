@@ -30,12 +30,11 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
 
     # Because we are in offline, we have to build the URLs by hand ... This is brittle, it would be nice to do this in
     # a better way.
-    assets_url = '{server_url}/assets'.format(server_url=ini_configuration['asset_tracker.server_url'])
-
+    server_url = ini_configuration['app:main']['asset_tracker.server_url']
     template_data = {
         'app_name': app_name,
         'assets': assets,
-        'assets_url': assets_url,
+        'assets_url': '{}/assets'.format(server_url),
         'calibration_date': calibration_date,
     }
 
