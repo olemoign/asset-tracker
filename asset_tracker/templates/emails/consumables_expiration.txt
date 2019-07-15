@@ -1,7 +1,7 @@
 {{ gettext('Dear user') }},
 
-{{ gettext('The equipment "%(model)s" of your asset %(asset_id)s has consumables that expires in %(delay_days)s days on %(expiration_date)s.',
-                model=model, asset_id=asset_id, delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
+{{ gettext('The equipment') }} {{ gettext(model) }} {{ gettext('of your asset %(asset_id)s has consumables that expires in %(delay_days)s days on %(expiration_date)s.',
+                asset_id=asset_id, delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 
 {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the expiration date has passed.') }}
 
