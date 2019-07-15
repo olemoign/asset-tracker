@@ -50,8 +50,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
         json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
         notify_offline(ini_configuration, json)
 
-    logging_info = ['notify calibration date', [asset.id for asset in assets]]
-    logger.info(logging_info)
+    logger.info(['notify calibration date', [asset.id for asset in assets]])
 
 
 def consumables_expiration(ini_configuration, equipment, expiration_date, delay_days):
@@ -62,6 +61,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         equipment (asset_tracker.models.Equipment)).
         expiration_date (str): consumable expiration date (YYYY-MM-DD).
         delay_days (int): number of days before expiration.
+
     """
     tenant_id = equipment.asset.tenant_id
 
@@ -71,16 +71,12 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     text = 'emails/consumables_expiration.txt'
     html = 'emails/consumables_expiration.html'
 
-    asset_url = '{}/assets/{}'.format(
-        ini_configuration['app:main'].get('asset_tracker.server_url'),
-        equipment.asset.id,
-    )
+    server_url = ini_configuration['app:main']['asset_tracker.server_url']
     model = equipment.family.model
-
     template_data = {
         'app_name': app_name,
         'asset_id': equipment.asset.asset_id,
-        'asset_url': asset_url,
+        'asset_url': '{}/assets/{}'.format(server_url, equipment.asset.id),
         'expiration_date': expiration_date,
         'delay_days': delay_days,
         'model': model,
@@ -89,7 +85,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     # Template generation
     emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
 
-    # Babel doesn't automatically translate variables inside a gettext string, so we have to translate them afterwards
+    # Babel doesn't automatically translate variables inside a gettext string, so we have to translate them afterwards.
     for locale in AVAILABLE_LOCALES:
         pyramid_localizer = make_localizer(current_locale_name=locale, translation_directories=[TRANSLATIONS_PATH])
         model_translation = pyramid_localizer.translate(equipment.family.model)
@@ -103,9 +99,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     if disable_notifications:
         logger.debug('Notifications are disabled.')
     else:
-        json = {'level': 'info', 'message': messages,
-                'rights': ['notifications-consumables'], 'tenant': tenant_id}
+        json = {'level': 'info', 'message': messages, 'rights': ['notifications-consumables'], 'tenant': tenant_id}
         notify_offline(ini_configuration, json)
 
-    logger.info('notify equipment consumables expiration date {}, {}'.format(
-        equipment.asset.asset_id, model))
+    logger.info(['notify consumables expiration', equipment.id])
