@@ -8,34 +8,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-02-12 17:14+0100\n"
+"POT-Creation-Date: 2019-07-15 19:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: notifications.py:26
+#: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
 msgstr ""
 
-#: templates/assets-create_update.html:206
+#: notifications/assets.py:69
+msgid "${app_name} - Equipment consumables expiration reminder"
+msgstr ""
+
+#: templates/assets-create_update.html:208
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:201
+#: templates/assets-create_update.html:203
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:141
+#: templates/assets-create_update.html:143
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:152
+#: templates/assets-create_update.html:154
 msgid "Add Event"
 msgstr ""
 
@@ -52,28 +56,28 @@ msgstr ""
 msgid "Assets"
 msgstr ""
 
-#: configuration.json:5
+#: config.json:5
 msgid "Biosys - Parsys"
 msgstr ""
 
-#: configuration.json:33
+#: config.json:33
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: templates/assets-create_update.html:91
+#: templates/assets-create_update.html:93
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:221
+#: templates/assets-create_update.html:223
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr ""
 
-#: configuration.json:25
+#: config.json:25
 msgid "Cardialys - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:45
+#: templates/assets-create_update.html:59
 msgid "Cart"
 msgstr ""
 
@@ -81,11 +85,11 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-#: configuration.json:85
+#: config.json:85
 msgid "Connected"
 msgstr ""
 
-#: configuration.json:53
+#: config.json:53
 msgid "Consumables case VCS - Parsys"
 msgstr ""
 
@@ -93,7 +97,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: templates/assets-create_update.html:86
+#: templates/assets-create_update.html:88
 msgid "Current location"
 msgstr ""
 
@@ -101,37 +105,39 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: templates/assets-create_update.html:65
+#: templates/assets-create_update.html:67
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/assets-create_update.html:68
+#: templates/assets-create_update.html:70
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:162 templates/macros.html:64
+#: templates/assets-create_update.html:164 templates/macros.html:64
 #: templates/macros.html:69
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/assets-create_update.html:162
+#: templates/assets-create_update.html:164
 msgid "Date"
 msgstr ""
 
 #: templates/emails/calibration_reminder.html:2
 #: templates/emails/calibration_reminder.txt:1
+#: templates/emails/consumables_expiration.html:2
+#: templates/emails/consumables_expiration.txt:1
 msgid "Dear user"
 msgstr ""
 
-#: configuration.json:125
+#: config.json:125
 msgid "Decommissioned"
 msgstr ""
 
-#: configuration.json:49
+#: config.json:49
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: configuration.json:105
+#: config.json:105
 msgid "Distributor checkup"
 msgstr ""
 
@@ -139,7 +145,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/assets-create_update.html:170
+#: templates/assets-create_update.html:172
 msgid "Equipments"
 msgstr ""
 
@@ -159,11 +165,15 @@ msgstr ""
 msgid "Extract"
 msgstr ""
 
-#: configuration.json:21
+#: config.json:21
 msgid "Glucometer - Beurer GL50"
 msgstr ""
 
-#: templates/assets-create_update.html:197
+#: templates/assets-create_update.html:64
+msgid "Hardware version"
+msgstr ""
+
+#: templates/assets-create_update.html:199
 msgid "History"
 msgstr ""
 
@@ -175,75 +185,75 @@ msgstr ""
 msgid "Hospital"
 msgstr ""
 
-#: configuration.json:115
+#: config.json:115
 msgid "In calibration"
 msgstr ""
 
-#: configuration.json:120
+#: config.json:120
 msgid "In repair"
 msgstr ""
 
-#: configuration.json:90
+#: config.json:90
 msgid "In service"
 msgstr ""
 
-#: configuration.json:60
+#: config.json:60
 msgid "In stock - Parsys"
 msgstr ""
 
-#: configuration.json:70
+#: config.json:70
 msgid "In stock - distributor"
 msgstr ""
 
-#: configuration.json:110
+#: config.json:110
 msgid "In transit to Parsys"
 msgstr ""
 
-#: configuration.json:75
+#: config.json:75
 msgid "In transit to customer"
 msgstr ""
 
-#: configuration.json:65
+#: config.json:65
 msgid "In transit to distributor"
 msgstr ""
 
-#: configuration.json:95
+#: config.json:95
 msgid "Incident declared"
 msgstr ""
 
-#: views/assets.py:473
+#: views/assets.py:325
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:463
+#: views/assets.py:315
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:488
+#: views/assets.py:340
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:366
+#: views/assets.py:218
 msgid "Invalid equipments."
 msgstr ""
 
-#: views/assets.py:479
+#: views/assets.py:331
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:505
+#: views/assets.py:357
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:494 views/assets.py:500
+#: views/assets.py:346 views/assets.py:352
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:468
+#: views/assets.py:320
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:459 views/sites.py:80
+#: views/assets.py:311 views/sites.py:81
 msgid "Invalid tenant."
 msgstr ""
 
@@ -251,7 +261,7 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:142
+#: templates/assets-create_update.html:144
 msgid "Last calibration"
 msgstr ""
 
@@ -259,7 +269,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views/assets.py:395
+#: views/assets.py:247
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -267,11 +277,11 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: views/sites.py:89
+#: views/sites.py:90
 msgid "Name already exists."
 msgstr ""
 
-#: views/sites.py:84
+#: views/sites.py:85
 msgid "Name is required."
 msgstr ""
 
@@ -287,11 +297,11 @@ msgstr ""
 msgid "New site"
 msgstr ""
 
-#: templates/assets-create_update.html:143 templates/assets-list.html:37
+#: templates/assets-create_update.html:145 templates/assets-list.html:37
 msgid "Next calibration"
 msgstr ""
 
-#: templates/assets-create_update.html:115
+#: templates/assets-create_update.html:117
 msgid "No software registered."
 msgstr ""
 
@@ -299,7 +309,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:190
+#: templates/assets-create_update.html:192
 msgid "Notes"
 msgstr ""
 
@@ -307,11 +317,11 @@ msgstr ""
 msgid "Nursing home"
 msgstr ""
 
-#: configuration.json:80
+#: config.json:80
 msgid "On site"
 msgstr ""
 
-#: configuration.json:45
+#: config.json:45
 msgid "Otoscope - Firefly DE500A"
 msgstr ""
 
@@ -323,11 +333,18 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: templates/assets-create_update.html:140
+#: templates/emails/consumables_expiration.html:10
+#: templates/emails/consumables_expiration.txt:6
+msgid ""
+"Please know that there is no guarantee that diagnoses will be reliable if"
+" the expiration date has passed."
+msgstr ""
+
+#: templates/assets-create_update.html:142
 msgid "Production"
 msgstr ""
 
-#: configuration.json:100
+#: config.json:100
 msgid "Replacement ordered"
 msgstr ""
 
@@ -345,14 +362,16 @@ msgstr ""
 
 #: templates/emails/calibration_reminder.html:17
 #: templates/emails/calibration_reminder.txt:10
+#: templates/emails/consumables_expiration.html:15
+#: templates/emails/consumables_expiration.txt:10
 msgid "Sincerely"
 msgstr ""
 
-#: templates/assets-create_update.html:82 templates/assets-list.html:36
+#: templates/assets-create_update.html:84 templates/assets-list.html:36
 msgid "Site"
 msgstr ""
 
-#: views/sites.py:93
+#: views/sites.py:94
 msgid "Site type is required."
 msgstr ""
 
@@ -361,11 +380,11 @@ msgstr ""
 msgid "Sites"
 msgstr ""
 
-#: configuration.json:130
+#: config.json:130
 msgid "Software update"
 msgstr ""
 
-#: templates/assets-create_update.html:110
+#: templates/assets-create_update.html:112
 msgid "Software versions"
 msgstr ""
 
@@ -373,46 +392,51 @@ msgstr ""
 msgid "Sorry, but the page you were trying to view does not exist."
 msgstr ""
 
-#: configuration.json:41
+#: config.json:41
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr ""
 
-#: templates/assets-create_update.html:46
+#: templates/assets-create_update.html:60
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:127 templates/assets-list.html:38
+#: templates/assets-create_update.html:129 templates/assets-list.html:38
 msgid "Status"
 msgstr ""
 
-#: views/assets.py:621
+#: views/assets.py:474
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
-#: configuration.json:13
+#: config.json:13
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:222
+#: templates/assets-create_update.html:224
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr ""
 
-#: templates/assets-create_update.html:47
+#: templates/assets-create_update.html:61
 msgid "Telecardia"
 msgstr ""
 
-#: configuration.json:9
+#: config.json:9
 msgid "Telecardia - Parsys"
 msgstr ""
 
-#: configuration.json:37
+#: config.json:37
 msgid "Telecardia charging base - Parsys"
 msgstr ""
 
-#: templates/assets-create_update.html:51 templates/assets-list.html:34
+#: templates/assets-create_update.html:43 templates/assets-list.html:34
 #: templates/sites-create_update.html:42 templates/sites-list.html:28
 msgid "Tenant"
+msgstr ""
+
+#: templates/emails/consumables_expiration.html:6
+#: templates/emails/consumables_expiration.txt:3
+msgid "The equipment"
 msgstr ""
 
 #: templates/emails/calibration_reminder.html:6
@@ -421,28 +445,33 @@ msgstr ""
 msgid "The following assets must be calibrated before %(calibration_date)s"
 msgstr ""
 
-#: configuration.json:17
+#: config.json:17
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
-#: views/assets.py:454
+#: views/assets.py:306
 msgid "This asset id already exists."
+msgstr ""
+
+#: templates/emails/consumables_expiration.html:12
+#: templates/emails/consumables_expiration.txt:8
+msgid "To view the asset, follow "
 msgstr ""
 
 #: templates/menu.html:5
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/assets-create_update.html:43 templates/sites-create_update.html:53
+#: templates/assets-create_update.html:57 templates/sites-create_update.html:53
 #: templates/sites-list.html:27
 msgid "Type"
 msgstr ""
 
-#: configuration.json:29
+#: config.json:29
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:144
+#: templates/assets-create_update.html:146
 msgid "Warranty end"
 msgstr ""
 
@@ -458,11 +487,24 @@ msgstr ""
 msgid "is not authorized to access this page."
 msgstr ""
 
+#: templates/emails/consumables_expiration.html:6
+#: templates/emails/consumables_expiration.txt:3
+#, python-format
+msgid ""
+"of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
+" days on %(expiration_date)s."
+msgstr ""
+
 #: templates/errors/403.html:13
 msgid "or go to"
 msgstr ""
 
-#: templates/assets-create_update.html:96
+#: templates/emails/consumables_expiration.html:12
+#: templates/emails/consumables_expiration.txt:8
+msgid "this link"
+msgstr ""
+
+#: templates/assets-create_update.html:98
 msgid "years"
 msgstr ""
 
