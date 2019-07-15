@@ -8,20 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-11 16:13+0200\n"
+"POT-Creation-Date: 2019-07-15 19:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
 msgstr ""
 
-#: notifications/assets.py:70
+#: notifications/assets.py:69
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr ""
 
@@ -337,7 +337,7 @@ msgstr ""
 #: templates/emails/consumables_expiration.txt:6
 msgid ""
 "Please know that there is no guarantee that diagnoses will be reliable if"
-" the expiration date passes."
+" the expiration date has passed."
 msgstr ""
 
 #: templates/assets-create_update.html:142
@@ -434,6 +434,11 @@ msgstr ""
 msgid "Tenant"
 msgstr ""
 
+#: templates/emails/consumables_expiration.html:6
+#: templates/emails/consumables_expiration.txt:3
+msgid "The equipment"
+msgstr ""
+
 #: templates/emails/calibration_reminder.html:6
 #: templates/emails/calibration_reminder.txt:3
 #, python-format
@@ -470,14 +475,6 @@ msgstr ""
 msgid "Warranty end"
 msgstr ""
 
-#: templates/emails/consumables_expiration.html:6
-#: templates/emails/consumables_expiration.txt:3
-#, python-format
-msgid ""
-"Your equipment \"%(model)s\" of your asset %(asset_id)s has consumables "
-"that will expire in %(delay_days)s days on %(expiration_date)s."
-msgstr ""
-
 #: templates/errors/404.html:148
 msgid "a mistyped address"
 msgstr ""
@@ -488,6 +485,14 @@ msgstr ""
 
 #: templates/errors/403.html:11
 msgid "is not authorized to access this page."
+msgstr ""
+
+#: templates/emails/consumables_expiration.html:6
+#: templates/emails/consumables_expiration.txt:3
+#, python-format
+msgid ""
+"of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
+" days on %(expiration_date)s."
 msgstr ""
 
 #: templates/errors/403.html:13
