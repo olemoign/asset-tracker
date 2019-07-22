@@ -172,8 +172,12 @@ class Software(object):
         product_latest = product_versions.popitem(last=True)
 
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
-        if current and sort_versions(current) > sort_versions(product_latest[0]):
-            return {}
+        try:
+            if current and sort_versions(current) > sort_versions(product_latest[0]):
+                return {}
+        except TypeError:
+            # In case the current version wasn't in an expected format, discard it.
+            pass
 
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
         return OrderedDict(version=product_latest[0], url=download_url)
