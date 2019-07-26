@@ -31,6 +31,9 @@ def notify_expiring_consumables(db_session, expiration_date, delay_days):
         expiration_date (str): a reminder is sent x months before equipment expiration.
         delay_days (int): days before expiration.
 
+    Returns:
+        int: number of equipments with expiring consumables.
+
     """
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
@@ -43,6 +46,8 @@ def notify_expiring_consumables(db_session, expiration_date, delay_days):
 
     for equipment in equipments:
         notifications_assets.consumables_expiration(pyramid_config, equipment, expiration_date, delay_days)
+
+    return len(equipments)
 
 
 @app.task()
@@ -69,8 +74,11 @@ def consumables_expiration():
     with transaction.manager:
         db_session = models.get_tm_session(session_factory, transaction.manager)
 
+        total_assets = 0
         for delay_days, expiration_date in expiration_delays_and_dates:
-            notify_expiring_consumables(db_session, expiration_date, delay_days)
+            total_assets += notify_expiring_consumables(db_session, expiration_date, delay_days)
+
+        return total_assets
 
 
 @app.task()
@@ -114,3 +122,5 @@ def next_calibration(months=3):
 
         for tenant_id, assets in groupby_tenant:
             notifications_assets.next_calibration(pyramid_config, tenant_id, assets, calibration_date)
+
+        return len(assets)
