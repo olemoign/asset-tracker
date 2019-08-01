@@ -5,20 +5,24 @@ from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import Allow
+from pyramid.settings import asbool
 from pyramid.view import view_config
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, capture_message
 
 from asset_tracker import models
 from asset_tracker.api.assets import Assets as AssetsAPI
 from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
-class Assets(DataTablesAPI):
+class Assets(object):
     """List assets for dataTables."""
     __acl__ = [
         (Allow, None, 'assets-list', 'assets-list'),
         (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
     ]
+
+    def __init__(self, request):
+        self.request = request
 
     def tenanting(self, q):
         """Filter assets according to user's rights/tenants.
@@ -42,6 +46,11 @@ class Assets(DataTablesAPI):
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
         """List assets and format output according to dataTables requirements."""
+        # Return if API is called by somebody other than dataTables.
+        if not asbool(self.request.GET.get('datatables')):
+            capture_message('Invalid API call.')
+            return []
+
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
