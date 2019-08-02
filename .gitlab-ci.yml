@@ -12,7 +12,7 @@ variables:
 
 flake8:
   stage: test
-  image: python:3.5
+  image: python:3.6
   tags:
     - docker
 
@@ -28,7 +28,7 @@ flake8:
 
 pytest:
   stage: test
-  image: python:3.5
+  image: python:3.6
   tags:
     - docker
 
@@ -45,7 +45,7 @@ pytest:
 
 build:
   stage: build
-  image: python:3.5
+  image: python:3.6
   tags:
     - docker
 
