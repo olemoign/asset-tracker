@@ -295,7 +295,7 @@ class Assets(object):
 
     def validate_form(self):
         """Validate form data."""
-        # don't check asset_id and tenant_id if asset is linked
+        # Don't check asset_id and tenant_id if asset is linked.
         if self.asset and self.asset.is_linked:
             tenant_id = self.asset.tenant_id
         else:
@@ -330,9 +330,9 @@ class Assets(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        for family_id, expiration_date_1, expiration_date_2 in zip(self.form['equipment-family'],
-                                                                   self.form['equipment-expiration_date_1'],
-                                                                   self.form['equipment-expiration_date_2']):
+        expirations = zip(self.form['equipment-family'], self.form['equipment-expiration_date_1'],
+                          self.form['equipment-expiration_date_2'])
+        for family_id, expiration_date_1, expiration_date_2 in expirations:
             # form['equipment-family'] can be ['', '']
             if family_id:
                 db_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()

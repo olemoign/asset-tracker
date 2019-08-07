@@ -152,12 +152,16 @@ class Sites(object):
                 **self.get_base_form_data(),
             }
 
-        # required
+        # If the site changed tenant, remove it from assets with the old tenant.
+        if self.site.tenant_id != self.form['tenant_id']:
+            self.site.assets = []
+
+        # Required.
         self.site.tenant_id = self.form['tenant_id']
         self.site.name = self.form['name']
         self.site.site_type = self.form['site_type']
 
-        # optional
+        # Optional.
         self.site.contact = self.form.get('contact')
         self.site.phone = self.form.get('phone')
         self.site.email = self.form.get('email')

@@ -27,7 +27,7 @@ class Asset(Model, CreationDateTimeMixin):
     customer_name = Column(String)
 
     site_id = Column(Integer, ForeignKey('site.id'))
-    site = relationship('Site', foreign_keys=site_id, uselist=False)
+    site = relationship('Site', foreign_keys=site_id, backref='assets', uselist=False)
 
     current_location = Column(String)
     notes = Column(String)
