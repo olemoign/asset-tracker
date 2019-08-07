@@ -7,7 +7,7 @@ RESET_TEXT="\033[0m"
 # In macOS, readlink is replaced by greadlink.
 if [[ "$OSTYPE" == "darwin"* ]]; then
     readlink() {
-        greadlink $@
+        greadlink "$@"
     }
     export -f readlink
 fi
@@ -28,10 +28,10 @@ if [[ "$missing_programs" -ne 0 ]]; then
     exit 1
 fi
 
-SCRIPT=$(readlink -f ${BASH_SOURCE})
-SCRIPTPATH=$(dirname ${SCRIPT})
+SCRIPT=$(readlink -f "${BASH_SOURCE[0]}")
+SCRIPTPATH=$(dirname "${SCRIPT}")
 
-cd ${SCRIPTPATH}/..
+cd "${SCRIPTPATH}"/.. || exit
 pybabel extract -F locale/babel.ini -o locale/messages.pot --sort-output .
 pybabel update -i locale/messages.pot -d locale --previous --no-fuzzy-matching
 
