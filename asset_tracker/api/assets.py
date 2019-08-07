@@ -29,22 +29,20 @@ class Assets(object):
             creator_alias (str): '{first_name} {last_name}'
 
         """
-        # IF asset exists in both Asset Tracker and RTA...
+        # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
 
         if asset:
-            if asset.asset_id != login:
-                asset.asset_id = login
-
             if asset.tenant_id != tenant_id:
-                asset.tenant_id = tenant_id
                 # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
                 # be valid anymore.
                 asset.site_id = None
 
+            asset.asset_id = login
+            asset.tenant_id = tenant_id
             return
 
-        # ...ELSE IF asset exists only in Asset Tracker...
+        # If the asset only exists in the Asset Tracker.
         asset = self.request.db_session.query(models.Asset).filter_by(asset_id=login).first()
 
         if asset:
@@ -53,18 +51,16 @@ class Assets(object):
                 capture_message('Trying to link asset {} which is already linked: {}/{}.'.format(*data))
                 return
 
-            asset.user_id = user_id
-
             if asset.tenant_id != tenant_id:
-                asset.tenant_id = tenant_id
                 # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
                 # be valid anymore.
                 asset.site_id = None
 
+            asset.tenant_id = tenant_id
+            asset.user_id = user_id
             return
 
-        # ...ELSE create a new Asset
-        # status selection for new Asset
+        # New Asset.
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
 
         # Marlink has only one calibration frequency so they don't want to see the input.
