@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from parsys_utilities.authorization import Right
-from parsys_utilities.form import replace_newline
 from pyramid.security import Allow
 from pyramid.view import view_config
 from sqlalchemy import desc
@@ -109,7 +108,7 @@ class AssetsExtract(object):
                 asset.current_location,
                 asset.calibration_frequency,
                 asset.status.label,
-                replace_newline(asset.notes),
+                asset.notes,
                 asset.production,
                 asset.activation_first,
                 asset.calibration_last,
