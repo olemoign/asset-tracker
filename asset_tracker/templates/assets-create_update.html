@@ -204,6 +204,9 @@
                                                            software=event.extra_json.get('software_name')|capitalize,
                                                            version=event.extra_json.get('software_version'),
                                                            date=event.date|format_date(locale)) }}
+                                            {% elif event.status.status_id == 'config_update' %}
+                                                {{ gettext('<b>%(date)s</b> Configuration file updated.',
+                                                        date=event.date|format_date(locale)) }}
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                            creator=event.creator_alias,

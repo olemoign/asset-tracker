@@ -3,6 +3,7 @@ import os
 import re
 from collections import OrderedDict
 from datetime import datetime
+from hashlib import sha256
 from json import dumps, JSONDecodeError
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
@@ -214,6 +215,32 @@ class Software(object):
             asset._history.append(new_event)
             self.request.db_session.add(new_event)
 
+    def create_update_config_event(self, json, asset):
+        file_config = json.get('fileConfig')
+        if not file_config:
+            raise HTTPBadRequest(json='Missing configuration data.')
+        encoded_file_config = sha256(file_config.encode('utf-8')).hexdigest()
+
+        try:
+            config_status = self.request.db_session.query(models.EventStatus) \
+                .filter(models.EventStatus.status_id == 'config_update').one()
+        except (MultipleResultsFound, NoResultFound) as error:
+            capture_exception(error)
+            self.request.logger_technical.info('asset status error')
+            raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+
+        if not asset.file_config or asset.file_config != encoded_file_config:
+            new_event = models.Event(
+                status=config_status,
+                date=datetime.utcnow().date(),
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+            )
+
+            # noinspection PyProtectedMember
+            asset._history.append(new_event)
+            self.request.db_session.add(new_event)
+
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
     def software_update_post(self):
@@ -250,6 +277,8 @@ class Software(object):
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
         self.create_update_version_event(json, asset)
+
+        self.create_update_config_event(json, asset)
         
         return HTTPOk(json='Information received.')
 
