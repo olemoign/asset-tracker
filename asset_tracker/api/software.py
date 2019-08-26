@@ -279,7 +279,7 @@ class Software(object):
         self.create_update_version_event(json, asset)
 
         self.create_update_config_event(json, asset)
-        
+
         return HTTPOk(json='Information received.')
 
 
