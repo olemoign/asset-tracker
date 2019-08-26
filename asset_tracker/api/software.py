@@ -182,6 +182,38 @@ class Software(object):
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
         return OrderedDict(version=product_latest[0], url=download_url)
 
+    def create_update_version_event(self, json, asset):
+        software_version = json.get('version')
+        if not software_version:
+            raise HTTPBadRequest(json='Missing software version.')
+
+        latest_events = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
+
+        last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
+        last_event = next(last_event_generator, None)
+
+        if not last_event or last_event.extra_json['software_version'] != software_version:
+            try:
+                software_status = self.request.db_session.query(models.EventStatus) \
+                    .filter(models.EventStatus.status_id == 'software_update').one()
+            except (MultipleResultsFound, NoResultFound) as error:
+                capture_exception(error)
+                self.request.logger_technical.info('asset status error')
+                raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+
+            new_event = models.Event(
+                status=software_status,
+                date=datetime.utcnow().date(),
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+                extra=dumps({'software_name': self.product, 'software_version': software_version}),
+            )
+
+            # noinspection PyProtectedMember
+            asset._history.append(new_event)
+            self.request.db_session.add(new_event)
+
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
     def software_update_post(self):
@@ -217,39 +249,9 @@ class Software(object):
         if not asset:
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
-        software_version = json.get('version')
-        if software_version:
-            latest_events = asset.history(order='desc') \
-                .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
-
-            last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
-            last_event = next(last_event_generator, None)
-
-            if not last_event or last_event.extra_json['software_version'] != software_version:
-                try:
-                    software_status = self.request.db_session.query(models.EventStatus) \
-                        .filter(models.EventStatus.status_id == 'software_update').one()
-                except (MultipleResultsFound, NoResultFound) as error:
-                    capture_exception(error)
-                    self.request.logger_technical.info('asset status error')
-                    raise HTTPInternalServerError(json={'error': 'Internal server error.'})
-
-                new_event = models.Event(
-                    status=software_status,
-                    date=datetime.utcnow().date(),
-                    creator_id=self.request.user.id,
-                    creator_alias=self.request.user.alias,
-                    extra=dumps({'software_name': self.product, 'software_version': software_version}),
-                )
-
-                # noinspection PyProtectedMember
-                asset._history.append(new_event)
-
-                self.request.db_session.add(new_event)
-
-            return HTTPOk(json='Information received.')
-
-        raise HTTPBadRequest(json='Missing software version.')
+        self.create_update_version_event(json, asset)
+        
+        return HTTPOk(json='Information received.')
 
 
 def includeme(config):
