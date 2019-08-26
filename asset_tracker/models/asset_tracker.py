@@ -34,6 +34,8 @@ class Asset(Model, CreationDateTimeMixin):
 
     equipments = relationship('Equipment', backref='asset')
 
+    file_config = Column(String)
+
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
     def history(self, order, filter_software=False):
