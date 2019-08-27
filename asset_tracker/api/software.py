@@ -219,7 +219,7 @@ class Software(object):
         config = json.get('config')
         if not config:
             raise HTTPBadRequest(json='Missing configuration data.')
-        encoded_config = sha256(config.encode('utf-8')).hexdigest()
+        encoded_config = sha256(dumps(config).encode('utf-8')).hexdigest()
 
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
@@ -230,6 +230,8 @@ class Software(object):
             raise HTTPInternalServerError(json={'error': 'Internal server error.'})
 
         if not asset.config_hash or asset.config_hash != encoded_config:
+            asset.config_hash = encoded_config
+
             new_event = models.Event(
                 status=config_status,
                 date=datetime.utcnow().date(),
