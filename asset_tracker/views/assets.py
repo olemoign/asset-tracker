@@ -490,9 +490,21 @@ class Assets(object):
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
 
+    @view_config(route_name='assets-config', request_method='GET', renderer='json', permission='assets-read')
+    def config_get(self):
+        event_id = self.request.matchdict.get('event_id')
+        event = self.asset.history(order='desc') \
+            .filter(models.EventStatus.status_id == 'config_update',
+                    models.Event.id == event_id).one()
+        if not event:
+            return HTTPNotFound()
+
+        return event.extra_json['config']
+
 
 def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
+    config.add_route(pattern=r'assets/{asset_id:\d+}/history/{event_id:\d+}/config/', name='assets-config', factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)
