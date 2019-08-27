@@ -219,7 +219,6 @@ class Software(object):
         config = json.get('config')
         if not config:
             raise HTTPBadRequest(json='Missing configuration data.')
-        encoded_config = sha256(dumps(config).encode('utf-8')).hexdigest()
 
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
@@ -229,14 +228,16 @@ class Software(object):
             self.request.logger_technical.info('asset status error')
             raise HTTPInternalServerError(json={'error': 'Internal server error.'})
 
-        if not asset.config_hash or asset.config_hash != encoded_config:
-            asset.config_hash = encoded_config
+        last_events = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').all()
 
+        if not last_events or last_events[-1].extra_json['config'] != config:
             new_event = models.Event(
                 status=config_status,
                 date=datetime.utcnow().date(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
+                extra=dumps({'config': config}),
             )
 
             # noinspection PyProtectedMember
