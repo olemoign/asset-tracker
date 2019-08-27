@@ -246,7 +246,7 @@ class Software(object):
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
     def software_update_post(self):
-        """Receive software(s) version.
+        """Receive software(s) version and/or software(s) configuration file.
 
         Query string:
             product (mandatory).
@@ -278,8 +278,10 @@ class Software(object):
         if not asset:
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
+        # Handle software version update
         self.create_update_version_event(json, asset)
 
+        # Handle software configuration file update
         self.create_update_config_event(json, asset)
 
         return HTTPOk(json='Information received.')
