@@ -34,7 +34,7 @@ class Asset(Model, CreationDateTimeMixin):
 
     equipments = relationship('Equipment', backref='asset')
 
-    file_config = Column(String)
+    config_hash = Column(String)
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 

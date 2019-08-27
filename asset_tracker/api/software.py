@@ -216,10 +216,10 @@ class Software(object):
             self.request.db_session.add(new_event)
 
     def create_update_config_event(self, json, asset):
-        file_config = json.get('fileConfig')
-        if not file_config:
+        config = json.get('config')
+        if not config:
             raise HTTPBadRequest(json='Missing configuration data.')
-        encoded_file_config = sha256(file_config.encode('utf-8')).hexdigest()
+        encoded_config = sha256(config.encode('utf-8')).hexdigest()
 
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
@@ -229,7 +229,7 @@ class Software(object):
             self.request.logger_technical.info('asset status error')
             raise HTTPInternalServerError(json={'error': 'Internal server error.'})
 
-        if not asset.file_config or asset.file_config != encoded_file_config:
+        if not asset.config_hash or asset.config_hash != encoded_config:
             new_event = models.Event(
                 status=config_status,
                 date=datetime.utcnow().date(),
