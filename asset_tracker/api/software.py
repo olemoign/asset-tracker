@@ -3,7 +3,6 @@ import os
 import re
 from collections import OrderedDict
 from datetime import datetime
-from hashlib import sha256
 from json import dumps, JSONDecodeError
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk

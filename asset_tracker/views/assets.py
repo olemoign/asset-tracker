@@ -505,6 +505,7 @@ class Assets(object):
 def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
-    config.add_route(pattern=r'assets/{asset_id:\d+}/history/{event_id:\d+}/config/', name='assets-config', factory=Assets)
+    config.add_route(pattern=r'assets/{asset_id:\d+}/history/{event_id:\d+}/config/', name='assets-config',
+                     factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)
