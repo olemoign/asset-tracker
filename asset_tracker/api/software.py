@@ -239,12 +239,11 @@ class Software(object):
                  require_csrf=False, renderer='json')
     def software_update_post(self):
         """Receive software(s) version and/or software(s) configuration file.
-        The body should contain either a version information or configuration information.
 
         Query string:
             product (mandatory).
 
-        Body (json):
+        Body (json, it is mandatory to provide at least one of the following):
             version.
             config.
         """
