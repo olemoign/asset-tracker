@@ -182,11 +182,7 @@ class Software(object):
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
         return OrderedDict(version=product_latest[0], url=download_url)
 
-    def create_update_version_event(self, json, asset):
-        software_version = json.get('version')
-        if not software_version:
-            raise HTTPBadRequest(json='Missing software version.')
-
+    def create_version_update_event(self, software_version, asset):
         latest_events = asset.history(order='desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
 
@@ -214,11 +210,7 @@ class Software(object):
             asset._history.append(new_event)
             self.request.db_session.add(new_event)
 
-    def create_update_config_event(self, json, asset):
-        config = json.get('config')
-        if not config:
-            raise HTTPBadRequest(json='Missing configuration data.')
-
+    def create_config_update_event(self, config, asset):
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
                 .filter(models.EventStatus.status_id == 'config_update').one()
@@ -247,13 +239,14 @@ class Software(object):
                  require_csrf=False, renderer='json')
     def software_update_post(self):
         """Receive software(s) version and/or software(s) configuration file.
+        The body should contain either a version information or configuration information.
 
         Query string:
             product (mandatory).
 
         Body (json):
-            version (mandatory).
-
+            version.
+            config.
         """
         # Get product name (medcapture, camagent).
         if not self.request.GET.get('product'):
@@ -278,11 +271,16 @@ class Software(object):
         if not asset:
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
+        software_version = json.get('version')
+        config = json.get('config')
+        if not config and not software_version:
+            raise HTTPBadRequest(json='Missing configuration data.')
+
         # Handle software version update
-        self.create_update_version_event(json, asset)
+        self.create_version_update_event(software_version, asset)
 
         # Handle software configuration file update
-        self.create_update_config_event(json, asset)
+        self.create_config_update_event(config, asset)
 
         return HTTPOk(json='Information received.')
 
