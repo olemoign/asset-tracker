@@ -132,7 +132,7 @@
     {
       "status_id": "config_update",
       "position": "16",
-      "label": "Config update"
+      "label": "Configuration update"
     }
   ]
 }
