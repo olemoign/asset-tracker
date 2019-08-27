@@ -495,7 +495,7 @@ class Assets(object):
         event_id = self.request.matchdict.get('event_id')
         event = self.asset.history(order='desc') \
             .filter(models.EventStatus.status_id == 'config_update',
-                    models.Event.id == event_id).one()
+                    models.Event.id == event_id).first()
         if not event:
             return HTTPNotFound()
 

@@ -227,10 +227,10 @@ class Software(object):
             self.request.logger_technical.info('asset status error')
             raise HTTPInternalServerError(json={'error': 'Internal server error.'})
 
-        last_events = asset.history(order='desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').all()
+        last_event = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
 
-        if not last_events or last_events[-1].extra_json['config'] != config:
+        if not last_event or last_event.extra_json['config'] != config:
             new_event = models.Event(
                 status=config_status,
                 date=datetime.utcnow().date(),
