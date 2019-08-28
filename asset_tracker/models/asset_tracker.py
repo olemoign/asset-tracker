@@ -7,7 +7,7 @@ from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Uni
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
-from asset_tracker.constants import WARRANTY_DURATION_YEARS
+from asset_tracker.constants import CONFIG_STATUS, WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
@@ -36,12 +36,12 @@ class Asset(Model, CreationDateTimeMixin):
 
     _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
 
-    def history(self, order, filter_software=False):
+    def history(self, order, filter_config=False):
         """Filter removed events from history.
 
         Args:
             order (str): asc/desc.
-            filter_software (bool): should we get software update or not?
+            filter_config (bool): should we get config updates?
 
         """
         if order == 'asc':
@@ -49,8 +49,8 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
-        if filter_software:
-            history = history.join(EventStatus).filter(EventStatus.status_id != 'software_update')
+        if filter_config:
+            history = history.join(EventStatus).filter(EventStatus.status_id.notin_(CONFIG_STATUS))
 
         return history
 

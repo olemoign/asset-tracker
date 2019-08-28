@@ -275,10 +275,10 @@ class Software(object):
         if not config and not software_version:
             raise HTTPBadRequest(json='Missing configuration data.')
 
-        # Handle software version update
+        # Handle software version update.
         self.create_version_update_event(software_version, asset)
 
-        # Handle software configuration file update
+        # Handle software configuration file update.
         self.create_config_update_event(config, asset)
 
         return HTTPOk(json='Information received.')

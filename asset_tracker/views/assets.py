@@ -261,7 +261,7 @@ class Assets(object):
     @staticmethod
     def update_status_and_calibration_next(asset, specific):
         """Update asset status and next calibration date according to functional rules."""
-        asset.status = asset.history('desc', filter_software=True).first().status
+        asset.status = asset.history('desc', filter_config=True).first().status
 
         if 'marlink' in specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
@@ -492,11 +492,12 @@ class Assets(object):
 
     @view_config(route_name='assets-config', request_method='GET', renderer='json', permission='assets-read')
     def config_get(self):
-        """Get configuration JSON for a given configuration update event"""
+        """Get configuration JSON for a given configuration update event."""
         event_id = self.request.matchdict.get('event_id')
-        event = self.asset.history(order='desc') \
-            .filter(models.EventStatus.status_id == 'config_update',
-                    models.Event.id == event_id).first()
+        event = self.asset.history(order='desc').filter(
+            models.EventStatus.status_id == 'config_update',
+            models.Event.id == event_id,
+        ).first()
         if not event:
             return HTTPNotFound()
 
