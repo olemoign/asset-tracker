@@ -182,6 +182,31 @@ class Software(object):
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
         return OrderedDict(version=product_latest[0], url=download_url)
 
+    def create_config_update_event(self, config, asset):
+        try:
+            config_status = self.request.db_session.query(models.EventStatus) \
+                .filter(models.EventStatus.status_id == 'config_update').one()
+        except (MultipleResultsFound, NoResultFound) as error:
+            capture_exception(error)
+            self.request.logger_technical.info('Missing status: config update.')
+            raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+
+        last_event = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
+
+        if not last_event or last_event.extra_json['config'] != config:
+            new_event = models.Event(
+                status=config_status,
+                date=datetime.utcnow().date(),
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+                extra=dumps({'config': config}),
+            )
+
+            # noinspection PyProtectedMember
+            asset._history.append(new_event)
+            self.request.db_session.add(new_event)
+
     def create_version_update_event(self, software_version, asset):
         latest_events = asset.history(order='desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
@@ -195,7 +220,7 @@ class Software(object):
                     .filter(models.EventStatus.status_id == 'software_update').one()
             except (MultipleResultsFound, NoResultFound) as error:
                 capture_exception(error)
-                self.request.logger_technical.info('asset status error')
+                self.request.logger_technical.info('Missing status: software update.')
                 raise HTTPInternalServerError(json={'error': 'Internal server error.'})
 
             new_event = models.Event(
@@ -204,31 +229,6 @@ class Software(object):
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
                 extra=dumps({'software_name': self.product, 'software_version': software_version}),
-            )
-
-            # noinspection PyProtectedMember
-            asset._history.append(new_event)
-            self.request.db_session.add(new_event)
-
-    def create_config_update_event(self, config, asset):
-        try:
-            config_status = self.request.db_session.query(models.EventStatus) \
-                .filter(models.EventStatus.status_id == 'config_update').one()
-        except (MultipleResultsFound, NoResultFound) as error:
-            capture_exception(error)
-            self.request.logger_technical.info('asset status error')
-            raise HTTPInternalServerError(json={'error': 'Internal server error.'})
-
-        last_event = asset.history(order='desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
-
-        if not last_event or last_event.extra_json['config'] != config:
-            new_event = models.Event(
-                status=config_status,
-                date=datetime.utcnow().date(),
-                creator_id=self.request.user.id,
-                creator_alias=self.request.user.alias,
-                extra=dumps({'config': config}),
             )
 
             # noinspection PyProtectedMember
