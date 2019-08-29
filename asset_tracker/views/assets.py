@@ -2,7 +2,9 @@
 from datetime import datetime
 from operator import attrgetter
 
+import json
 from dateutil.relativedelta import relativedelta
+from depot.manager import DepotManager
 from parsys_utilities.authorization import Right
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -490,24 +492,29 @@ class Assets(object):
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
 
-    @view_config(route_name='assets-config', request_method='GET', renderer='json', permission='assets-read')
+    @view_config(route_name='files-asset-config', request_method='GET', renderer='json', permission='assets-read')
     def config_get(self):
         """Get configuration JSON for a given configuration update event."""
-        event_id = self.request.matchdict.get('event_id')
-        event = self.asset.history(order='desc').filter(
-            models.EventStatus.status_id == 'config_update',
-            models.Event.id == event_id,
-        ).first()
-        if not event:
-            return HTTPNotFound()
+        file_id = self.request.matchdict.get('file_id')
+        if not file_id:
+            self.request.logger_technical.info(['missing file_id'])
+            raise HTTPNotFound()
 
-        return event.extra_json['config']
+        try:
+            file = DepotManager.get().get(file_id)
+        except (IOError, ValueError) as error:
+            capture_exception(error)
+            self.request.logger_technical.info(['unknown file requested'])
+            raise HTTPNotFound()
 
+        config = file.read().decode('utf-8')
+        file.close()
+
+        return json.loads(config)
 
 def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
-    config.add_route(pattern=r'assets/{asset_id:\d+}/history/{event_id:\d+}/config/', name='assets-config',
-                     factory=Assets)
+    config.add_route(pattern=r'files/asset/{file_id}/', name='files-asset-config', factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)

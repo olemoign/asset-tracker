@@ -5,6 +5,7 @@ from collections import OrderedDict
 from datetime import datetime
 from json import dumps, JSONDecodeError
 
+from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.view import view_config
@@ -195,13 +196,23 @@ class Software(object):
         last_event = asset.history(order='desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
 
-        if not last_event or last_event.extra_json['config'] != config:
+        depot = DepotManager.get()
+
+        if last_event:
+            try:
+                last_config = depot.get(last_event.extra_json['config'])
+            except (IOError, ValueError):
+                pass
+
+        if not last_event or (last_config and last_config != config):
+            file_id = depot.create(bytes(dumps(config), 'utf-8'), 'file', 'application/json')
+
             new_event = models.Event(
                 status=config_status,
                 date=datetime.utcnow().date(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
-                extra=dumps({'config': config}),
+                extra=dumps({'config': file_id}),
             )
 
             # noinspection PyProtectedMember

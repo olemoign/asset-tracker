@@ -207,7 +207,7 @@
                                             {% elif event.status.status_id == 'config_update' %}
                                                 {{ gettext('<b>%(date)s</b> Configuration file updated.',
                                                         date=event.date|format_date(locale)) }}
-                                                <a href="{{ 'assets-config'|route_path(asset_id=asset.id, event_id=event.id) }}">
+                                                <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
                                                     <span class="glyphicon glyphicon-file"></span>
                                                 </a>
                                             {% else %}
