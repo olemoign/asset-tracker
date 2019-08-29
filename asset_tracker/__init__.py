@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 import pkg_resources
 import sentry_sdk
+from depot.manager import DepotManager
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
     OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities import celery_app
@@ -108,6 +109,9 @@ def main(global_config, assets_configuration=True, **settings):
         integrations = [CeleryIntegration(), PyramidIntegration(), RedisIntegration()]
         sentry_sdk.init(dsn=dsn, integrations=integrations, attach_stacktrace=True)
         ignore_logger('asset_tracker_technical')
+
+    if not DepotManager.get():
+        DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     config_file = global_config['__file__']
     here = global_config['here']
