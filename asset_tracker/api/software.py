@@ -184,7 +184,12 @@ class Software(object):
         return OrderedDict(version=product_latest[0], url=download_url)
 
     def create_config_update_event(self, config, asset):
-        """Create event if configuration file changed"""
+        """Create event if configuration file changed
+
+        Args:
+            config (dict):
+            asset (asset_tracker.models.Asset).
+        """
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
                 .filter(models.EventStatus.status_id == 'config_update').one()
@@ -222,7 +227,12 @@ class Software(object):
             self.request.db_session.add(new_event)
 
     def create_version_update_event(self, software_version, asset):
-        """Create event if software version was updated"""
+        """Create event if software version was updated
+
+        Args:
+            software_version (str).
+            asset (asset_tracker.models.Asset).
+        """
         latest_events = asset.history(order='desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
 
