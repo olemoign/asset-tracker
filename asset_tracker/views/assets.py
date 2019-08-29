@@ -512,6 +512,7 @@ class Assets(object):
 
         return json.loads(config)
 
+
 def includeme(config):
     config.add_route(pattern='assets/create/', name='assets-create', factory=Assets)
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
