@@ -3,7 +3,7 @@ import os
 import re
 from collections import OrderedDict
 from datetime import datetime
-from json import dumps, JSONDecodeError
+from json import dumps, loads, JSONDecodeError
 
 from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
@@ -200,9 +200,11 @@ class Software(object):
 
         if last_event:
             try:
-                last_config = depot.get(last_event.extra_json['config'])
+                config_file = depot.get(last_event.extra_json['config'])
             except (IOError, ValueError):
                 pass
+
+            last_config = loads(config_file.read().decode('utf-8'))
 
         if not last_event or (last_config and last_config != config):
             file_id = depot.create(bytes(dumps(config), 'utf-8'), 'file', 'application/json')
