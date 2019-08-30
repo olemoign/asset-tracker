@@ -1,10 +1,11 @@
 """Asset Tracker software management."""
+import json
 import os
 import re
 from collections import OrderedDict
-from datetime import datetime
-from json import dumps, JSONDecodeError
+from datetime import date, datetime
 
+from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.view import view_config
@@ -182,16 +183,96 @@ class Software(object):
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
         return OrderedDict(version=product_latest[0], url=download_url)
 
+    def create_config_update_event(self, config, asset):
+        """Create event if configuration file changed.
+
+        Args:
+            config (dict):
+            asset (asset_tracker.models.Asset).
+
+        """
+        try:
+            config_status = self.request.db_session.query(models.EventStatus) \
+                .filter(models.EventStatus.status_id == 'config_update').one()
+        except (MultipleResultsFound, NoResultFound) as error:
+            capture_exception(error)
+            self.request.logger_technical.info('Missing status: config update.')
+            raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+
+        depot = DepotManager.get()
+        last_config = None
+
+        last_event = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
+
+        if last_event:
+            try:
+                config_file = depot.get(last_event.extra_json['config'])
+                last_config = json.loads(config_file.read().decode('utf-8'))
+            except (IOError, json.JSONDecodeError, TypeError, ValueError):
+                pass
+
+        if not last_event or (last_config and last_config != config):
+            file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'file', 'application/json')
+
+            new_event = models.Event(
+                status=config_status,
+                date=date.today(),
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+                extra=json.dumps({'config': file_id}),
+            )
+
+            # noinspection PyProtectedMember
+            asset._history.append(new_event)
+            self.request.db_session.add(new_event)
+
+    def create_version_update_event(self, software_version, asset):
+        """Create event if software version was updated.
+
+        Args:
+            software_version (str).
+            asset (asset_tracker.models.Asset).
+
+        """
+        latest_events = asset.history(order='desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
+
+        last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
+        last_event = next(last_event_generator, None)
+
+        if not last_event or last_event.extra_json['software_version'] != software_version:
+            try:
+                software_status = self.request.db_session.query(models.EventStatus) \
+                    .filter(models.EventStatus.status_id == 'software_update').one()
+            except (MultipleResultsFound, NoResultFound) as error:
+                capture_exception(error)
+                self.request.logger_technical.info('Missing status: software update.')
+                raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+
+            new_event = models.Event(
+                status=software_status,
+                date=datetime.utcnow().date(),
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+                extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
+            )
+
+            # noinspection PyProtectedMember
+            asset._history.append(new_event)
+            self.request.db_session.add(new_event)
+
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',
                  require_csrf=False, renderer='json')
     def software_update_post(self):
-        """Receive software(s) version.
+        """Receive software(s) version and/or software(s) configuration file.
 
         Query string:
             product (mandatory).
 
-        Body (json):
-            version (mandatory).
+        Body (json, it is mandatory to provide at least one of the following):
+            version.
+            config.
 
         """
         # Get product name (medcapture, camagent).
@@ -202,8 +283,8 @@ class Software(object):
 
         # Make sure the JSON provided is valid.
         try:
-            json = self.request.json
-        except JSONDecodeError as error:
+            post_json = self.request.json
+        except json.JSONDecodeError as error:
             capture_exception(error)
             raise HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
@@ -217,39 +298,18 @@ class Software(object):
         if not asset:
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
-        software_version = json.get('version')
-        if software_version:
-            latest_events = asset.history(order='desc') \
-                .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
+        software_version = post_json.get('version')
+        config = post_json.get('config')
+        if not config and not software_version:
+            raise HTTPBadRequest(json='No data received.')
 
-            last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
-            last_event = next(last_event_generator, None)
+        # Handle software version update.
+        self.create_version_update_event(software_version, asset)
 
-            if not last_event or last_event.extra_json['software_version'] != software_version:
-                try:
-                    software_status = self.request.db_session.query(models.EventStatus) \
-                        .filter(models.EventStatus.status_id == 'software_update').one()
-                except (MultipleResultsFound, NoResultFound) as error:
-                    capture_exception(error)
-                    self.request.logger_technical.info('asset status error')
-                    raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+        # Handle software configuration file update.
+        self.create_config_update_event(config, asset)
 
-                new_event = models.Event(
-                    status=software_status,
-                    date=datetime.utcnow().date(),
-                    creator_id=self.request.user.id,
-                    creator_alias=self.request.user.alias,
-                    extra=dumps({'software_name': self.product, 'software_version': software_version}),
-                )
-
-                # noinspection PyProtectedMember
-                asset._history.append(new_event)
-
-                self.request.db_session.add(new_event)
-
-            return HTTPOk(json='Information received.')
-
-        raise HTTPBadRequest(json='Missing software version.')
+        return HTTPOk(json='Information received.')
 
 
 def includeme(config):

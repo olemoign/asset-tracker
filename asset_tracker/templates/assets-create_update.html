@@ -204,6 +204,12 @@
                                                            software=event.extra_json.get('software_name')|capitalize,
                                                            version=event.extra_json.get('software_version'),
                                                            date=event.date|format_date(locale)) }}
+                                            {% elif event.status.status_id == 'config_update' %}
+                                                {{ gettext('<b>%(date)s</b> Configuration updated.',
+                                                        date=event.date|format_date(locale)) }}
+                                                <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
+                                                    <span class="glyphicon glyphicon-file"></span>
+                                                </a>
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                            creator=event.creator_alias,

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-13 13:28+0200\n"
+"POT-Creation-Date: 2019-08-30 10:14+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -26,7 +26,7 @@ msgstr "${app_name} - Rappel d'étalonnage du matériel"
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr "${app_name} - Rappel date de péremption du matériel consommable"
 
-#: templates/assets-create_update.html:208
+#: templates/assets-create_update.html:214
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr "<b>%(date)s</b> %(creator)s a défini le statut <b>%(status)s</b>."
@@ -35,6 +35,11 @@ msgstr "<b>%(date)s</b> %(creator)s a défini le statut <b>%(status)s</b>."
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr "<b>%(date)s</b> %(software)s mis à jour en version %(version)s."
+
+#: templates/assets-create_update.html:208
+#, python-format
+msgid "<b>%(date)s</b> Configuration updated."
+msgstr "<b>%(date)s</b> Configuration mise à jour."
 
 #: templates/assets-create_update.html:143
 msgid "Activation"
@@ -69,7 +74,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:223
+#: templates/assets-create_update.html:229
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr "Annuler"
@@ -82,9 +87,13 @@ msgstr "Cardialys - Parsys"
 msgid "Cart"
 msgstr "Chariot"
 
-#: constants.py:20
+#: constants.py:21
 msgid "Company"
 msgstr "Entreprise"
+
+#: config.json:135
+msgid "Configuration update"
+msgstr "Mise à jour de la configuration"
 
 #: config.json:85
 msgid "Connected"
@@ -182,7 +191,7 @@ msgstr "Historique"
 msgid "Home"
 msgstr "Accueil"
 
-#: constants.py:21
+#: constants.py:22
 msgid "Hospital"
 msgstr "Hôpital"
 
@@ -222,39 +231,39 @@ msgstr "En transit vers le distributeur"
 msgid "Incident declared"
 msgstr "Incident déclaré"
 
-#: views/assets.py:325
+#: views/assets.py:327
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:315
+#: views/assets.py:317
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:340
+#: views/assets.py:342
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:218
+#: views/assets.py:220
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views/assets.py:331
+#: views/assets.py:333
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:357
+#: views/assets.py:359
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:346 views/assets.py:352
+#: views/assets.py:348 views/assets.py:354
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:320
+#: views/assets.py:322
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:311 views/sites.py:81
+#: views/assets.py:313 views/sites.py:81
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -270,7 +279,7 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views/assets.py:247
+#: views/assets.py:249
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -314,7 +323,7 @@ msgstr "Non trouvée"
 msgid "Notes"
 msgstr "Notes"
 
-#: constants.py:22
+#: constants.py:23
 msgid "Nursing home"
 msgstr "EHPAD"
 
@@ -355,7 +364,7 @@ msgstr "Remplacement demandé"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: constants.py:23
+#: constants.py:24
 msgid "Ship"
 msgstr "Bateau"
 
@@ -407,7 +416,7 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: views/assets.py:474
+#: views/assets.py:476
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -415,7 +424,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:224
+#: templates/assets-create_update.html:230
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr "Valider"
@@ -452,7 +461,7 @@ msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)
 msgid "Thermometer - Foracare IR21"
 msgstr "Thermomètre - Foracare IR21"
 
-#: views/assets.py:306
+#: views/assets.py:308
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
@@ -497,8 +506,8 @@ msgid ""
 "of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
 " days on %(expiration_date)s."
 msgstr ""
-"de votre asset %(asset_id)s comporte du matériel consommable dont la date"
-" de péremption est dans %(delay_days)s jours soit le %(expiration_date)s."
+"de votre asset %(asset_id)s contient des consommables dont la date"
+" de péremption est dans %(delay_days)s jours, le %(expiration_date)s."
 
 #: templates/errors/403.html:13
 msgid "or go to"
