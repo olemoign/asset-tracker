@@ -213,7 +213,7 @@ class Software(object):
                 pass
 
         if not last_event or (last_config and last_config != config):
-            file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'file', 'application/json')
+            file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
 
             new_event = models.Event(
                 status=config_status,
