@@ -21,6 +21,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.pyramid import PyramidIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from asset_tracker.config import update_configuration
 from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
@@ -106,7 +107,7 @@ def main(global_config, assets_configuration=True, **settings):
     # Configure Sentry.
     dsn = settings.get('sentry.dsn')
     if dsn:
-        integrations = [CeleryIntegration(), PyramidIntegration(), RedisIntegration()]
+        integrations = [CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()]
         sentry_sdk.init(dsn=dsn, integrations=integrations, attach_stacktrace=True)
         ignore_logger('asset_tracker_technical')
 
