@@ -103,6 +103,22 @@
                             {% endif %}
                         </div>
 
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="last_configuration">{{ gettext('Last configuration') }}</label>
+                                    {% if last_config %}
+                                        <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}">
+                                            <span class="glyphicon glyphicon-file"></span>
+                                        </a>
+                                    {% else %}
+                                        <p>{{ gettext('No configuration registered yet.') }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
                         {% if update %}
                             <hr>
 
