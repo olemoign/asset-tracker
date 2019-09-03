@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-30 10:14+0200\n"
+"POT-Creation-Date: 2019-09-03 18:55+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.6.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
@@ -26,26 +26,26 @@ msgstr ""
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr ""
 
-#: templates/assets-create_update.html:214
+#: templates/assets-create_update.html:230
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:203
+#: templates/assets-create_update.html:219
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:208
+#: templates/assets-create_update.html:224
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr ""
 
-#: templates/assets-create_update.html:143
+#: templates/assets-create_update.html:159
 msgid "Activation"
 msgstr ""
 
-#: templates/assets-create_update.html:154
+#: templates/assets-create_update.html:170
 msgid "Add Event"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:229
+#: templates/assets-create_update.html:245
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr ""
@@ -123,12 +123,12 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/assets-create_update.html:164 templates/macros.html:64
+#: templates/assets-create_update.html:180 templates/macros.html:64
 #: templates/macros.html:69
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/assets-create_update.html:164
+#: templates/assets-create_update.html:180
 msgid "Date"
 msgstr ""
 
@@ -155,7 +155,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/assets-create_update.html:172
+#: templates/assets-create_update.html:188
 msgid "Equipments"
 msgstr ""
 
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Hardware version"
 msgstr ""
 
-#: templates/assets-create_update.html:199
+#: templates/assets-create_update.html:215
 msgid "History"
 msgstr ""
 
@@ -231,39 +231,39 @@ msgstr ""
 msgid "Incident declared"
 msgstr ""
 
-#: views/assets.py:327
+#: views/assets.py:337
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:317
+#: views/assets.py:327
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:342
+#: views/assets.py:352
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:220
+#: views/assets.py:230
 msgid "Invalid equipments."
 msgstr ""
 
-#: views/assets.py:333
+#: views/assets.py:343
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:359
+#: views/assets.py:369
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:348 views/assets.py:354
+#: views/assets.py:358 views/assets.py:364
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:322
+#: views/assets.py:332
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:313 views/sites.py:81
+#: views/assets.py:323 views/sites.py:81
 msgid "Invalid tenant."
 msgstr ""
 
@@ -271,15 +271,19 @@ msgstr ""
 msgid "It looks like this was the result of either:"
 msgstr ""
 
-#: templates/assets-create_update.html:144
+#: templates/assets-create_update.html:160
 msgid "Last calibration"
+msgstr ""
+
+#: templates/assets-create_update.html:110
+msgid "Last configuration"
 msgstr ""
 
 #: templates/errors/403.html:13 templates/menu.html:29
 msgid "Logout"
 msgstr ""
 
-#: views/assets.py:249
+#: views/assets.py:259
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -307,11 +311,15 @@ msgstr ""
 msgid "New site"
 msgstr ""
 
-#: templates/assets-create_update.html:145 templates/assets-list.html:37
+#: templates/assets-create_update.html:161 templates/assets-list.html:37
 msgid "Next calibration"
 msgstr ""
 
-#: templates/assets-create_update.html:117
+#: templates/assets-create_update.html:116
+msgid "No configuration registered yet."
+msgstr ""
+
+#: templates/assets-create_update.html:133
 msgid "No software registered."
 msgstr ""
 
@@ -319,7 +327,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:192
+#: templates/assets-create_update.html:208
 msgid "Notes"
 msgstr ""
 
@@ -350,7 +358,7 @@ msgid ""
 " the expiration date has passed."
 msgstr ""
 
-#: templates/assets-create_update.html:142
+#: templates/assets-create_update.html:158
 msgid "Production"
 msgstr ""
 
@@ -394,7 +402,7 @@ msgstr ""
 msgid "Software update"
 msgstr ""
 
-#: templates/assets-create_update.html:112
+#: templates/assets-create_update.html:128
 msgid "Software versions"
 msgstr ""
 
@@ -410,11 +418,11 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/assets-create_update.html:129 templates/assets-list.html:38
+#: templates/assets-create_update.html:145 templates/assets-list.html:38
 msgid "Status"
 msgstr ""
 
-#: views/assets.py:476
+#: views/assets.py:487
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -422,7 +430,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:230
+#: templates/assets-create_update.html:246
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr ""
@@ -459,7 +467,7 @@ msgstr ""
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
-#: views/assets.py:308
+#: views/assets.py:318
 msgid "This asset id already exists."
 msgstr ""
 
@@ -481,7 +489,7 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: templates/assets-create_update.html:146
+#: templates/assets-create_update.html:162
 msgid "Warranty end"
 msgstr ""
 

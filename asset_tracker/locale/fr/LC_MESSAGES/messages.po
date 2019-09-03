@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-30 10:14+0200\n"
+"POT-Creation-Date: 2019-09-03 18:55+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.6.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
@@ -26,26 +26,26 @@ msgstr "${app_name} - Rappel d'étalonnage du matériel"
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr "${app_name} - Rappel date de péremption du matériel consommable"
 
-#: templates/assets-create_update.html:214
+#: templates/assets-create_update.html:230
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr "<b>%(date)s</b> %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:203
+#: templates/assets-create_update.html:219
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr "<b>%(date)s</b> %(software)s mis à jour en version %(version)s."
 
-#: templates/assets-create_update.html:208
+#: templates/assets-create_update.html:224
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr "<b>%(date)s</b> Configuration mise à jour."
 
-#: templates/assets-create_update.html:143
+#: templates/assets-create_update.html:159
 msgid "Activation"
 msgstr "Mise en service"
 
-#: templates/assets-create_update.html:154
+#: templates/assets-create_update.html:170
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
@@ -74,7 +74,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:229
+#: templates/assets-create_update.html:245
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr "Annuler"
@@ -123,12 +123,12 @@ msgstr "ID Client (Souscription)"
 msgid "Customer name"
 msgstr "Nom du client"
 
-#: templates/assets-create_update.html:164 templates/macros.html:64
+#: templates/assets-create_update.html:180 templates/macros.html:64
 #: templates/macros.html:69
 msgid "DD/MM/YYYY"
 msgstr "JJ/MM/AAAA"
 
-#: templates/assets-create_update.html:164
+#: templates/assets-create_update.html:180
 msgid "Date"
 msgstr "Date"
 
@@ -155,7 +155,7 @@ msgstr "Vérification distributeur"
 msgid "Email"
 msgstr "Email"
 
-#: templates/assets-create_update.html:172
+#: templates/assets-create_update.html:188
 msgid "Equipments"
 msgstr "Équipements"
 
@@ -183,7 +183,7 @@ msgstr "Glucomètre - Beurer GL50"
 msgid "Hardware version"
 msgstr "Version du matériel"
 
-#: templates/assets-create_update.html:199
+#: templates/assets-create_update.html:215
 msgid "History"
 msgstr "Historique"
 
@@ -231,39 +231,39 @@ msgstr "En transit vers le distributeur"
 msgid "Incident declared"
 msgstr "Incident déclaré"
 
-#: views/assets.py:327
+#: views/assets.py:337
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:317
+#: views/assets.py:327
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:342
+#: views/assets.py:352
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:220
+#: views/assets.py:230
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views/assets.py:333
+#: views/assets.py:343
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:359
+#: views/assets.py:369
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:348 views/assets.py:354
+#: views/assets.py:358 views/assets.py:364
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:322
+#: views/assets.py:332
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:313 views/sites.py:81
+#: views/assets.py:323 views/sites.py:81
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -271,15 +271,19 @@ msgstr "Tenant invalide."
 msgid "It looks like this was the result of either:"
 msgstr "Cela peut être le résultat:"
 
-#: templates/assets-create_update.html:144
+#: templates/assets-create_update.html:160
 msgid "Last calibration"
 msgstr "Dernière calibration"
+
+#: templates/assets-create_update.html:110
+msgid "Last configuration"
+msgstr "Dernière configuration"
 
 #: templates/errors/403.html:13 templates/menu.html:29
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views/assets.py:249
+#: views/assets.py:259
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -307,11 +311,15 @@ msgstr "Nouveau matériel"
 msgid "New site"
 msgstr "Nouveau site"
 
-#: templates/assets-create_update.html:145 templates/assets-list.html:37
+#: templates/assets-create_update.html:161 templates/assets-list.html:37
 msgid "Next calibration"
 msgstr "Prochaine calibration"
 
-#: templates/assets-create_update.html:117
+#: templates/assets-create_update.html:116
+msgid "No configuration registered yet."
+msgstr "Aucune configuration enregistrée."
+
+#: templates/assets-create_update.html:133
 msgid "No software registered."
 msgstr "Aucun logiciel enregistré."
 
@@ -319,7 +327,7 @@ msgstr "Aucun logiciel enregistré."
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:192
+#: templates/assets-create_update.html:208
 msgid "Notes"
 msgstr "Notes"
 
@@ -352,7 +360,7 @@ msgstr ""
 "Nous ne pouvons garantir la fiabilité des résultats de diagnostic si la "
 "date de péremption du matériel consommable est dépassée."
 
-#: templates/assets-create_update.html:142
+#: templates/assets-create_update.html:158
 msgid "Production"
 msgstr "Production"
 
@@ -396,7 +404,7 @@ msgstr "Sites"
 msgid "Software update"
 msgstr "MAJ logicielle"
 
-#: templates/assets-create_update.html:112
+#: templates/assets-create_update.html:128
 msgid "Software versions"
 msgstr "Versions logicielles"
 
@@ -412,11 +420,11 @@ msgstr "Spiromètre - Spiromir MiniSpir Light"
 msgid "Station"
 msgstr "Station"
 
-#: templates/assets-create_update.html:129 templates/assets-list.html:38
+#: templates/assets-create_update.html:145 templates/assets-list.html:38
 msgid "Status"
 msgstr "Statut"
 
-#: views/assets.py:476
+#: views/assets.py:487
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -424,7 +432,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:230
+#: templates/assets-create_update.html:246
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr "Valider"
@@ -461,7 +469,7 @@ msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)
 msgid "Thermometer - Foracare IR21"
 msgstr "Thermomètre - Foracare IR21"
 
-#: views/assets.py:308
+#: views/assets.py:318
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
@@ -483,7 +491,7 @@ msgstr "Type"
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
-#: templates/assets-create_update.html:146
+#: templates/assets-create_update.html:162
 msgid "Warranty end"
 msgstr "Fin de garantie"
 
@@ -506,8 +514,8 @@ msgid ""
 "of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
 " days on %(expiration_date)s."
 msgstr ""
-"de votre asset %(asset_id)s contient des consommables dont la date"
-" de péremption est dans %(delay_days)s jours, le %(expiration_date)s."
+"de votre asset %(asset_id)s contient des consommables dont la date de "
+"péremption est dans %(delay_days)s jours, le %(expiration_date)s."
 
 #: templates/errors/403.html:13
 msgid "or go to"
