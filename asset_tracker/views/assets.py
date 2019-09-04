@@ -182,6 +182,16 @@ class Assets(object):
 
         return softwares
 
+    def get_last_config(self):
+        """Get last version of configuration updates."""
+        last_config = self.asset.history('desc') \
+            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
+
+        if last_config is None:
+            return None
+
+        return last_config.extra_json.get('config', None)
+
     def get_site_data(self, tenants):
         """Get all sites corresponding to current tenants.
 
@@ -414,6 +424,7 @@ class Assets(object):
         return {
             'asset': self.asset,
             'asset_softwares': self.get_latest_softwares_version(),
+            'last_config': self.get_last_config(),
             **self.get_base_form_data(),
         }
 

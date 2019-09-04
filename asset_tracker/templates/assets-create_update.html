@@ -103,13 +103,29 @@
                             {% endif %}
                         </div>
 
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="last_configuration">{{ gettext('Configuration') }}</label>
+                                    {% if last_config %}
+                                        <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}">
+                                            <span class="glyphicon glyphicon-file"></span>
+                                        </a>
+                                    {% else %}
+                                        <p>{{ gettext('No configuration registered.') }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
                         {% if update %}
                             <hr>
 
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>{{ gettext('Software versions') }}</label>
+                                        <label>{{ gettext('Softwares versions') }}</label>
                                         <p>
                                             {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
                                                 {{ software|capitalize }}: {{ version }}{% if not loop.last %}<br/>{% endif %}
@@ -166,7 +182,6 @@
 
                         <hr>
 
-                        {# Equipment management - clone the model below in equipment_list #}
                         <div class="row">
                             <div class="col-sm-12 equipments__header">
                                 <label class="equipments__label">{{ gettext('Equipments') }}</label>
@@ -175,7 +190,7 @@
                                 </button>
                             </div>
 
-                            {# (macro) its purpose is to be cloned in equipment_list #}
+                            {# Reference: its purpose is to be cloned in equipment_list. #}
                             {{ equipment_box(reference=True) }}
 
                             <div id="equipments__list" class="auto-clear">
