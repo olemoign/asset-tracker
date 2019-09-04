@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-03 18:55+0200\n"
+"POT-Creation-Date: 2019-09-04 11:33+0200\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
@@ -26,17 +26,17 @@ msgstr ""
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr ""
 
-#: templates/assets-create_update.html:230
+#: templates/assets-create_update.html:229
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/assets-create_update.html:219
+#: templates/assets-create_update.html:218
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/assets-create_update.html:224
+#: templates/assets-create_update.html:223
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/assets-create_update.html:245
+#: templates/assets-create_update.html:244
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr ""
@@ -89,6 +89,10 @@ msgstr ""
 
 #: constants.py:21
 msgid "Company"
+msgstr ""
+
+#: templates/assets-create_update.html:110
+msgid "Configuration"
 msgstr ""
 
 #: config.json:135
@@ -155,7 +159,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/assets-create_update.html:188
+#: templates/assets-create_update.html:187
 msgid "Equipments"
 msgstr ""
 
@@ -183,7 +187,7 @@ msgstr ""
 msgid "Hardware version"
 msgstr ""
 
-#: templates/assets-create_update.html:215
+#: templates/assets-create_update.html:214
 msgid "History"
 msgstr ""
 
@@ -275,10 +279,6 @@ msgstr ""
 msgid "Last calibration"
 msgstr ""
 
-#: templates/assets-create_update.html:110
-msgid "Last configuration"
-msgstr ""
-
 #: templates/errors/403.html:13 templates/menu.html:29
 msgid "Logout"
 msgstr ""
@@ -316,7 +316,7 @@ msgid "Next calibration"
 msgstr ""
 
 #: templates/assets-create_update.html:116
-msgid "No configuration registered yet."
+msgid "No configuration registered."
 msgstr ""
 
 #: templates/assets-create_update.html:133
@@ -327,7 +327,7 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/assets-create_update.html:208
+#: templates/assets-create_update.html:207
 msgid "Notes"
 msgstr ""
 
@@ -403,7 +403,7 @@ msgid "Software update"
 msgstr ""
 
 #: templates/assets-create_update.html:128
-msgid "Software versions"
+msgid "Softwares versions"
 msgstr ""
 
 #: templates/errors/404.html:145
@@ -430,7 +430,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/assets-create_update.html:246
+#: templates/assets-create_update.html:245
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr ""

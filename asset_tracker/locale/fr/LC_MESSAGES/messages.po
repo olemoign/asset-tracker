@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-03 18:55+0200\n"
+"POT-Creation-Date: 2019-09-04 11:33+0200\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
@@ -26,17 +26,17 @@ msgstr "${app_name} - Rappel d'étalonnage du matériel"
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr "${app_name} - Rappel date de péremption du matériel consommable"
 
-#: templates/assets-create_update.html:230
+#: templates/assets-create_update.html:229
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr "<b>%(date)s</b> %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:219
+#: templates/assets-create_update.html:218
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr "<b>%(date)s</b> %(software)s mis à jour en version %(version)s."
 
-#: templates/assets-create_update.html:224
+#: templates/assets-create_update.html:223
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr "<b>%(date)s</b> Configuration mise à jour."
@@ -74,7 +74,7 @@ msgstr "Analyseur sanguin - PTS Cardiochek"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:245
+#: templates/assets-create_update.html:244
 #: templates/sites-create_update.html:75
 msgid "Cancel"
 msgstr "Annuler"
@@ -91,9 +91,13 @@ msgstr "Chariot"
 msgid "Company"
 msgstr "Entreprise"
 
+#: templates/assets-create_update.html:110
+msgid "Configuration"
+msgstr "Configuration"
+
 #: config.json:135
 msgid "Configuration update"
-msgstr "Mise à jour de la configuration"
+msgstr "Mise à jour de configuration"
 
 #: config.json:85
 msgid "Connected"
@@ -155,7 +159,7 @@ msgstr "Vérification distributeur"
 msgid "Email"
 msgstr "Email"
 
-#: templates/assets-create_update.html:188
+#: templates/assets-create_update.html:187
 msgid "Equipments"
 msgstr "Équipements"
 
@@ -183,7 +187,7 @@ msgstr "Glucomètre - Beurer GL50"
 msgid "Hardware version"
 msgstr "Version du matériel"
 
-#: templates/assets-create_update.html:215
+#: templates/assets-create_update.html:214
 msgid "History"
 msgstr "Historique"
 
@@ -275,10 +279,6 @@ msgstr "Cela peut être le résultat:"
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
-#: templates/assets-create_update.html:110
-msgid "Last configuration"
-msgstr "Dernière configuration"
-
 #: templates/errors/403.html:13 templates/menu.html:29
 msgid "Logout"
 msgstr "Déconnexion"
@@ -316,7 +316,7 @@ msgid "Next calibration"
 msgstr "Prochaine calibration"
 
 #: templates/assets-create_update.html:116
-msgid "No configuration registered yet."
+msgid "No configuration registered."
 msgstr "Aucune configuration enregistrée."
 
 #: templates/assets-create_update.html:133
@@ -327,7 +327,7 @@ msgstr "Aucun logiciel enregistré."
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:208
+#: templates/assets-create_update.html:207
 msgid "Notes"
 msgstr "Notes"
 
@@ -405,7 +405,7 @@ msgid "Software update"
 msgstr "MAJ logicielle"
 
 #: templates/assets-create_update.html:128
-msgid "Software versions"
+msgid "Softwares versions"
 msgstr "Versions logicielles"
 
 #: templates/errors/404.html:145
@@ -432,7 +432,7 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:246
+#: templates/assets-create_update.html:245
 #: templates/sites-create_update.html:76
 msgid "Submit"
 msgstr "Valider"
