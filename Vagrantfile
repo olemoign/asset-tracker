@@ -17,5 +17,5 @@ Vagrant::Config.run do |config|
   config.vm.provision :shell, :path => "vagrant.sh"
 
   # PostgreSQL Server port forwarding
-  config.vm.forward_port 5432, 15432
+  config.vm.forward_port 5432, 15434
 end
