@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<html lang="{{ locale }}">
     <head>
+        <title>Site</title>
         <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
     </head>
     <style>
@@ -8,37 +10,37 @@
         }
     </style>
     <body class="site-info-body">
-    {% if name %}
-        <div class="site-title">
-            <h3 class="panel-title">{{ name }}</h3>
-        </div>
-    {% endif %}
+        {% if name %}
+            <div class="site-title">
+                <h3 class="panel-title">{{ name }}</h3>
+            </div>
+        {% endif %}
 
-    {% if site_type or contact or phone or email %}
-        <div class="site-info">
-            {% if site_type %}<p><span class="glyphicon glyphicon-tag"></span> {{ gettext(site_type) }}</p>{% endif %}
-            {% if contact %}<p><span class="glyphicon glyphicon-user"></span> {{ contact }}</p>{% endif %}
-            {% if phone %}<p><span class="glyphicon glyphicon-earphone"></span> {{ phone }}</p>{% endif %}
-            {% if email %}<p><span class="glyphicon glyphicon-send"></span> {{ email }}</p>{% endif %}
-        </div>
-    {% endif %}
+        {% if site_type or contact or phone or email %}
+            <div class="site-info">
+                {% if site_type %}<p><span class="glyphicon glyphicon-tag"></span> {{ gettext(site_type) }}</p>{% endif %}
+                {% if contact %}<p><span class="glyphicon glyphicon-user"></span> {{ contact }}</p>{% endif %}
+                {% if phone %}<p><span class="glyphicon glyphicon-earphone"></span> {{ phone }}</p>{% endif %}
+                {% if email %}<p><span class="glyphicon glyphicon-send"></span> {{ email }}</p>{% endif %}
+            </div>
+        {% endif %}
 
-    <script>
-        'use strict';
+        <script>
+            'use strict';
 
-        function postSize() {
-            /**
-             * Send body height to the Cloud to adjust iframe height.
-             */
-            var data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
-            var targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
-            window.parent.postMessage(data, targetOrigin);
-        }
+            function postSize() {
+                /**
+                 * Send body height to the Cloud to adjust iframe height.
+                 */
+                const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};  {# must be Integer #}
+                const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
+                window.parent.postMessage(data, targetOrigin);
+            }
 
-        // Continue sending height on window resize as long lines can be split and change the iframe height.
-        postSize();
-        window.onresize = postSize;
-    </script>
+            // Continue sending height on window resize as long lines can be split and change the iframe height.
+            postSize();
+            window.onresize = postSize;
+        </script>
     </body>
 </html>
 
