@@ -220,9 +220,8 @@ function createDataTables() {
     const filterLabel = table.data('custom-filter-label');
     const tableState = initialisedDataTable.state.loaded();
 
-    const filterInit = table.data('custom-filter-default') === true;
-    // If table didn't yet store state in local storage, take default value, otherwise, use local storage.
-    const inputIsChecked = (!tableState && !filterInit) || (tableState && !tableState.customFilter) ? ' checked' : '';
+    // If table didn't yet store state in local storage, input is checked, otherwise, use local storage.
+    const inputIsChecked = !tableState || !tableState.customFilter ? ' checked' : '';
 
     const filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
     tableContainer.find('.custom_filter').html(filterHTML);
@@ -255,14 +254,11 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
       // This is the HTML node wrapping around the table with the special search, filter, etc.
       const dataTableContainer = $(table.DataTable().table().container());
       const customFilterInput = dataTableContainer.find('.custom_filter__input');
-      const filterInit = table.data('custom-filter-default') === true;
 
       // 1: the filter checkbox is visible.
       if ((customFilterInput.length && !customFilterInput.is(':checked'))
         // 2: the table isn't visible yet but a filter value is present in the local storage.
-        || (!customFilterInput.length && state && state.customFilter)
-        // 3: this is the first time we load the table, use the default value.
-        || (!customFilterInput.length && !state && filterInit)) {
+        || (!customFilterInput.length && state && state.customFilter)) {
         // noinspection JSUndefinedPropertyAssignment
         data.filter = customFilter;
       }
