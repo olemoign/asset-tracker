@@ -1,12 +1,12 @@
-import os
 import subprocess
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.txt')) as f:
+here = Path(__file__).resolve().parent
+with open(here / 'README.txt') as f:
     README = f.read()
-with open(os.path.join(here, 'CHANGES.txt')) as f:
+with open(here / 'CHANGES.txt') as f:
     CHANGES = f.read()
 
 requires = [

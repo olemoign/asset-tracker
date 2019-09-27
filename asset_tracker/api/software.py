@@ -1,9 +1,9 @@
 """Asset Tracker software management."""
 import json
-import os
 import re
 from collections import OrderedDict
 from datetime import date, datetime
+from pathlib import Path
 
 from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
@@ -20,15 +20,14 @@ def get_archi_from_file(file_name):
     """Get architecture (32 or 64 bits) version from file name.
 
     Args:
-        file_name (str): file name.
+        file_name (pathlib.Path): file name.
 
     Returns:
         int: software architecture, 32 or 64.
 
     """
     # Remove file extension.
-    file_name = os.path.splitext(file_name)[0]
-    product_name = file_name.split('-')[0]
+    product_name = file_name.stem.split('-')[0]
     # noinspection PyTypeChecker
     return 32 if product_name.endswith('32') else 64
 
@@ -37,15 +36,14 @@ def get_version_from_file(file_name):
     """Get software version from file name.
 
     Args:
-        file_name (str): file name.
+        file_name (pathlib.Path): file name.
 
     Returns:
         str: software version.
 
     """
     # Remove file extension.
-    file_name = os.path.splitext(file_name)[0]
-    return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name).group()
+    return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name.stem).group()
 
 
 def sort_versions(version):
@@ -123,19 +121,19 @@ class Software(object):
         archi_32_bits = self.request.user_agent and 'Windows NT 6.3' in self.request.user_agent
 
         # If storage folder wasn't set up, can't return link.
-        storage = self.request.registry.settings.get('asset_tracker.software_storage')
-        if not storage:
+        storage_path = self.request.registry.settings.get('asset_tracker.software_storage')
+        if not storage_path:
             return {}
 
+        storage = Path(storage_path)
+
         # Products are stored in sub-folders in the storage path.
-        # As os.walk is recursive, we need to work the results a bit.
-        products = next(os.walk(storage), [])
-        products = products[1] if products else []
-        if self.product not in products:
+        products_folders = [item for item in storage.iterdir() if item.is_dir()]
+        if self.product not in products_folders:
             raise HTTPNotFound(json={'error': 'Unknown product.'})
 
-        product_folder = os.path.join(storage, self.product)
-        product_files = next(os.walk(product_folder))[2]
+        product_folder = storage / self.product
+        product_files = [item for item in product_folder.iterdir() if item.is_file()]
 
         product_versions = {}
         for product_file in product_files:

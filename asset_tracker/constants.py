@@ -1,5 +1,5 @@
-import os
 from collections import OrderedDict
+from pathlib import Path
 
 import pkg_resources
 from pyramid.i18n import TranslationString as _
@@ -25,6 +25,6 @@ SITE_TYPES = [
 ]
 WARRANTY_DURATION_YEARS = 2
 
-FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-TEMPLATES_PATH = os.path.join(FILE_PATH, 'templates')
-TRANSLATIONS_PATH = os.path.join(FILE_PATH, 'locale')
+FILE_PATH = Path(__file__).resolve().parent
+TEMPLATES_PATH = FILE_PATH / 'templates'
+TRANSLATIONS_PATH = FILE_PATH / 'locale'
