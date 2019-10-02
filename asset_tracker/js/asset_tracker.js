@@ -266,13 +266,6 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
   }
 });
 
-$(document).on('click', '.paginate_button', function animateTablePaginate() {
-  /**
-   * Scroll to top of dataTable when changing page.
-   */
-  $('body').animate({ scrollTop: 0 }, 'slow');
-});
-
 $(document).on('click', '.event__delete', function removeEvent() {
   /**
    * When the user removes an event, store this action in the form then hide the event.
