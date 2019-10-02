@@ -15,7 +15,6 @@ requires = [
     'celery[redis]',
     'filedepot',
     'jinja2',
-    'kombu==4.6.3',
     'parsys-utilities',
     'paste',
     'plaster-pastedeploy',
