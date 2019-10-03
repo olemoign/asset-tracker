@@ -11,9 +11,9 @@
     {% set submit_url = 'assets-create'|route_path %}
 {% endif %}
 
-{% block title %}
+{% block title -%}
     {{ title }}
-{% endblock %}
+{%- endblock %}
 
 {% block page %}
     {% include 'menu.html' %}
