@@ -108,7 +108,7 @@ def main(global_config, assets_configuration=True, **settings):
     dsn = settings.get('sentry.dsn')
     if dsn:
         integrations = [CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()]
-        sentry_sdk.init(dsn=dsn, integrations=integrations, attach_stacktrace=True)
+        sentry_sdk.init(dsn=dsn, integrations=integrations, send_default_pii=True, attach_stacktrace=True)
         ignore_logger('asset_tracker_technical')
 
     if not DepotManager.get():
