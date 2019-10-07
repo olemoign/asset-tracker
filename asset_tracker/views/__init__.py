@@ -10,7 +10,11 @@ from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING, GLU
 def tag_user_for_sentry(event):
     """Tag the user in Sentry."""
     with configure_scope() as scope:
-        scope.user = {'email': event.request.user.login if event.request.user else None}
+        # noinspection PyDunderSlots,PyUnresolvedReferences
+        scope.user = {
+            'id': event.request.user.id if event.request.user else None,
+            'username': event.request.user.login if event.request.user else None,
+        }
 
 
 @subscriber(NewResponse)
