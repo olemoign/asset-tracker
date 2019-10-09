@@ -39,8 +39,10 @@ class Assets(object):
             return q
 
         else:
-            authorized_tenants = {right.tenant for right in self.request.effective_principals
-                                  if isinstance(right, Right) and right.name == 'assets-list'}
+            authorized_tenants = {
+                right.tenant for right in self.request.effective_principals
+                if isinstance(right, Right) and right.name == 'assets-list'
+            }
             return q.filter(models.Asset.tenant_id.in_(authorized_tenants))
 
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
@@ -139,7 +141,7 @@ class Assets(object):
         Receive information from RTA about station to create/update Asset.
 
         """
-        AssetsAPI(self.request).rta_link_post()
+        return AssetsAPI(self.request).rta_link_post()
 
 
 class Sites(DataTablesAPI):
@@ -164,8 +166,10 @@ class Sites(DataTablesAPI):
             return q
 
         else:
-            authorized_tenants = {right.tenant for right in self.request.effective_principals
-                                  if isinstance(right, Right) and right.name == 'sites-list'}
+            authorized_tenants = {
+                right.tenant for right in self.request.effective_principals
+                if isinstance(right, Right) and right.name == 'sites-list'
+            }
             return q.filter(models.Site.tenant_id.in_(authorized_tenants))
 
     @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
@@ -192,7 +196,9 @@ class Sites(DataTablesAPI):
             tenants.c.tenant_name,
         ]
 
-        joined_tables = [(tenants, tenants.c.tenant_id == models.Site.tenant_id)]
+        joined_tables = [
+            (tenants, tenants.c.tenant_id == models.Site.tenant_id),
+        ]
 
         specific_attributes = {'tenant_name': tenants.c.tenant_name}
 
