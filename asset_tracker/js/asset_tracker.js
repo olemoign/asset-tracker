@@ -11,7 +11,7 @@ function manageSites() {
   $('#site__reference').clone()
     .prop('id', 'site_id').prop('name', 'site_id')
     .addClass('custom_select2')
-    .show()
+    .removeClass('hidden')
     .appendTo('#site__options');
 
   const tenantIdSelected = $('#tenant_id').find('option:selected').val();
@@ -63,7 +63,7 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   /**
    * Add a new equipment when the user clicks the '+' sign.
    */
-  $('#equipment__reference').clone().removeAttr('id').show()
+  $('#equipment__reference').clone().removeAttr('id').removeClass('hidden')
     .appendTo('#equipments__list');
 });
 
@@ -81,9 +81,9 @@ $(document).on('change', '.equipment__select', function addGlucometerExpirations
   const expirationDateFields = $(this).parents('.equipment__block').find('.expiration_date_fields');
 
   if ($(this).val() === GLUCOMETER_FAMILY_ID) {
-    expirationDateFields.show();
+    expirationDateFields.removeClass('hidden');
   } else {
-    expirationDateFields.hide();
+    expirationDateFields.addClass('hidden');
     expirationDateFields.find('input').val('');
   }
 });
