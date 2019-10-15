@@ -20,8 +20,9 @@ def upgrade():
     with op.batch_alter_table('asset', schema=None) as batch_op:
         batch_op.add_column(sa.Column('calibration_next', sa.Date(), nullable=True))
         batch_op.add_column(sa.Column('status_id', sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(batch_op.f('fk_asset_status_id_event_status'),
-                                    'event_status', ['status_id'], ['id'])
+        batch_op.create_foreign_key(
+            batch_op.f('fk_asset_status_id_event_status'), 'event_status', ['status_id'], ['id']
+        )
 
         batch_op.alter_column('type', new_column_name='asset_type', existing_type=sa.Unicode(), nullable=False)
 

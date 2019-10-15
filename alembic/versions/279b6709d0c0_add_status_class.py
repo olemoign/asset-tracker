@@ -23,7 +23,7 @@ def upgrade():
         sa.Column('status_id', sa.Unicode(), nullable=True),
         sa.Column('position', sa.Integer(), nullable=True),
         sa.Column('label', sa.Unicode(), nullable=True),
-        sa.PrimaryKeyConstraint('id', name=op.f('pk_status'))
+        sa.PrimaryKeyConstraint('id', name=op.f('pk_status')),
     )
 
     with op.batch_alter_table('equipment_family', schema=None) as batch_op:
@@ -32,8 +32,9 @@ def upgrade():
     with op.batch_alter_table('event', schema=None) as batch_op:
         batch_op.add_column(sa.Column('created_at', sa.DateTime(), nullable=False))
         batch_op.add_column(sa.Column('status_id', sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(batch_op.f('fk_event_status_id_event_status'), 'event_status', ['status_id'],
-                                    ['id'])
+        batch_op.create_foreign_key(
+            batch_op.f('fk_event_status_id_event_status'), 'event_status', ['status_id'], ['id']
+        )
         batch_op.drop_column('status')
 
 

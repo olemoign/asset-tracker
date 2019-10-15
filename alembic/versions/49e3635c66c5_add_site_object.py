@@ -30,7 +30,7 @@ def upgrade():
         sa.Column('phone', sa.Unicode(), nullable=True),
         sa.Column('email', sa.Unicode(), nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_site')),
-        sa.UniqueConstraint('name', name=op.f('uq_site_name'))
+        sa.UniqueConstraint('name', name=op.f('uq_site_name')),
     )
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
