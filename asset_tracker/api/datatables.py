@@ -40,7 +40,8 @@ class Assets(object):
 
         else:
             authorized_tenants = {
-                right.tenant for right in self.request.effective_principals
+                right.tenant
+                for right in self.request.effective_principals
                 if isinstance(right, Right) and right.name == 'assets-list'
             }
             return q.filter(models.Asset.tenant_id.in_(authorized_tenants))
@@ -167,7 +168,8 @@ class Sites(DataTablesAPI):
 
         else:
             authorized_tenants = {
-                right.tenant for right in self.request.effective_principals
+                right.tenant
+                for right in self.request.effective_principals
                 if isinstance(right, Right) and right.name == 'sites-list'
             }
             return q.filter(models.Site.tenant_id.in_(authorized_tenants))

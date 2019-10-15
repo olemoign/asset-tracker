@@ -63,5 +63,5 @@ def includeme(config):
         # r.tm is the transaction manager used by pyramid_tm
         lambda r: get_tm_session(session_factory, r.tm),
         'db_session',
-        reify=True
+        reify=True,
     )

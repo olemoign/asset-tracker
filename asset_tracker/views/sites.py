@@ -62,16 +62,20 @@ class Sites(object):
         else:
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
-            tenants_ids = {tenant['id'] for tenant in user_tenants
-                           if Right(name='sites-create', tenant=tenant['id']) in user_rights or
-                           (self.site and self.site.tenant_id == tenant['id'])}
+            tenants_ids = {
+                tenant['id']
+                for tenant in user_tenants
+                if Right(name='sites-create', tenant=tenant['id']) in user_rights
+                or (self.site and self.site.tenant_id == tenant['id'])
+            }
 
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
     def read_form(self):
         """Format form content."""
-        self.form = {key: (value.strip() if value.strip() != '' else None)
-                     for key, value in self.request.POST.mixed().items()}
+        self.form = {
+            key: (value.strip() if value.strip() != '' else None) for key, value in self.request.POST.mixed().items()
+        }
 
     def validate_form(self):
         """Validate form data."""
@@ -168,8 +172,7 @@ class Sites(object):
 
         return HTTPFound(location=self.request.route_path('sites-list'))
 
-    @view_config(route_name='sites-list', request_method='GET', permission='sites-list',
-                 renderer='sites-list.html')
+    @view_config(route_name='sites-list', request_method='GET', permission='sites-list', renderer='sites-list.html')
     def list_get(self):
         """List sites. No work done here as dataTables will call the API to get the sites list."""
         return {}

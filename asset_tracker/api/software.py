@@ -84,6 +84,7 @@ class Software(object):
     softwares versions a given asset is using.
 
     """
+
     __acl__ = [
         (Allow, None, 'api-software-update', 'api-software-update'),
         (Allow, None, ADMIN_PRINCIPAL, 'api-software-update'),

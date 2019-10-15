@@ -61,13 +61,15 @@ class AssetsExtract(object):
 
         # Each software is identified by a name and a version.
         software_columns = [
-            label for i in range(1, max_software_per_asset + 1)
+            label
+            for i in range(1, max_software_per_asset + 1)
             for label in {'software_{}_name'.format(i), 'software_{}_version'.format(i)}
         ]
 
         # Each equipment is identified by a name and a serial number.
         equipment_columns = [
-            label for i in range(1, max_equipment_per_asset + 1)
+            label
+            for i in range(1, max_equipment_per_asset + 1)
             for label in {
                 'equipment_{}_name'.format(i),
                 'equipment_{}_serial_number'.format(i),
@@ -183,7 +185,8 @@ class AssetsExtract(object):
 
         else:
             return {
-                tenant['id']: tenant['name'] for tenant in self.request.user.tenants
+                tenant['id']: tenant['name']
+                for tenant in self.request.user.tenants
                 if Right(name='assets-extract', tenant=tenant['id']) in self.request.effective_principals
             }
 

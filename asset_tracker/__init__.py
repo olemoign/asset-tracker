@@ -67,8 +67,7 @@ def main(global_config, assets_configuration=True, **settings):
 
     # Authentication/Authorization policies.
     authentication_policy = OpenIDConnectAuthenticationPolicy(
-        callback=partial(get_effective_principals, allow_admins=True),
-        authorize_services=True,
+        callback=partial(get_effective_principals, allow_admins=True), authorize_services=True
     )
     authorization_policy = TenantedAuthorizationPolicy()
     config.set_authentication_policy(authentication_policy)

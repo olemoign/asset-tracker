@@ -155,9 +155,10 @@ class Assets(object):
             user_rights = self.request.effective_principals
             user_tenants = self.request.user.tenants
             return [
-                tenant for tenant in user_tenants
-                if Right(name='assets-create', tenant=tenant['id']) in user_rights or
-                (self.asset and self.asset.tenant_id == tenant['id'])
+                tenant
+                for tenant in user_tenants
+                if Right(name='assets-create', tenant=tenant['id']) in user_rights
+                or (self.asset and self.asset.tenant_id == tenant['id'])
             ]
 
     def get_latest_softwares_version(self):
@@ -251,11 +252,14 @@ class Assets(object):
         has_calibration_frequency = 'marlink' in self.specific or self.form.get('calibration_frequency')
 
         # We don't need asset_id or tenant_id if asset is linked.
-        is_linked = (self.asset and self.asset.is_linked)
-        if not is_linked and (not self.form.get('asset_id') or not self.form.get('tenant_id')) \
-                or not self.form.get('asset_type') \
-                or not has_creation_event \
-                or not has_calibration_frequency:
+        is_linked = self.asset and self.asset.is_linked
+        needed_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        if (
+            not is_linked and not needed_data
+            or not self.form.get('asset_type')
+            or not has_creation_event
+            or not has_calibration_frequency
+        ):
             raise FormException(_('Missing mandatory data.'), log=False)
 
     def remove_events(self):
@@ -342,8 +346,11 @@ class Assets(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        expirations = zip(self.form['equipment-family'], self.form['equipment-expiration_date_1'],
-                          self.form['equipment-expiration_date_2'])
+        expirations = zip(
+            self.form['equipment-family'],
+            self.form['equipment-expiration_date_1'],
+            self.form['equipment-expiration_date_2'],
+        )
         for family_id, expiration_date_1, expiration_date_2 in expirations:
             # form['equipment-family'] can be ['', '']
             if family_id:
