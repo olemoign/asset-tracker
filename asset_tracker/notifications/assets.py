@@ -19,7 +19,6 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
         tenant_id (str).
         assets (list(asset_tracker.models.Asset)).
         calibration_date (str): precise calibration date (YYYY-MM-DD).
-
     """
     tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
     app_name = tenant_config.get_for_tenant('asset_tracker.cloud_name', tenant_id)
@@ -60,7 +59,6 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         equipment (asset_tracker.models.Equipment)).
         expiration_date (str): consumable expiration date (YYYY-MM-DD).
         delay_days (int): number of days before expiration.
-
     """
     tenant_id = equipment.asset.tenant_id
 

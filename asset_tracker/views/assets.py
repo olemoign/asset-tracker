@@ -194,10 +194,8 @@ class Assets(object):
         return last_config.extra_json.get('config', None)
 
     def get_site_data(self, tenants):
-        """Get all sites corresponding to current tenants.
-
-        Sites will be filtered according to selected tenant in front/js.
-
+        """Get all sites corresponding to current tenants. Sites will be filtered according to selected tenant in
+        front/js.
         """
         tenants_list = (tenant['id'] for tenant in tenants)
 
@@ -210,7 +208,6 @@ class Assets(object):
     def read_form(self):
         """Format form content according to our needs.
         In particular, make sure that inputs which can be list are lists in all cases, even if no data was inputed.
-
         """
         self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
@@ -265,7 +262,6 @@ class Assets(object):
     def remove_events(self):
         """Remove events.
         Actually, events are not removed but marked as removed in the db, so that they can be filtered later.
-
         """
         for event_id in self.form['event-removed']:
             event = self.request.db_session.query(models.Event).filter_by(event_id=event_id).first()

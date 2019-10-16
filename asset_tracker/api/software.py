@@ -24,7 +24,6 @@ def get_archi_from_file(file_name):
 
     Returns:
         int: software architecture, 32 or 64.
-
     """
     # Remove file extension.
     product_name = file_name.stem.split('-')[0]
@@ -40,7 +39,6 @@ def get_version_from_file(file_name):
 
     Returns:
         str: software version.
-
     """
     # Remove file extension.
     return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name.stem).group()
@@ -61,7 +59,6 @@ def sort_versions(version):
 
     Returns
         list: split string, with text as str and numbers as int.
-
     """
     # 'if text' allows us to remove the empty strings always occuring for the first and last element of the re.split().
     sort_key = []
@@ -82,7 +79,6 @@ def sort_versions(version):
 class Software(object):
     """Software update WebServices: tell the assets what is the latest version and url of a given product + store what
     softwares versions a given asset is using.
-
     """
 
     __acl__ = [
@@ -104,7 +100,6 @@ class Software(object):
             product (mandatory).
             channel (optional): product channel (in 'alpha', 'beta', 'dev', 'stable').
             version (optional): if we want the url of one specific version.
-
         """
         product = self.request.GET.get('product')
         if not product:
@@ -188,7 +183,6 @@ class Software(object):
         Args:
             config (dict):
             asset (asset_tracker.models.Asset).
-
         """
         try:
             config_status = self.request.db_session.query(models.EventStatus) \
@@ -232,7 +226,6 @@ class Software(object):
         Args:
             software_version (str).
             asset (asset_tracker.models.Asset).
-
         """
         latest_events = asset.history(order='desc') \
             .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
@@ -272,7 +265,6 @@ class Software(object):
         Body (json, it is mandatory to provide at least one of the following):
             version.
             config.
-
         """
         # Get product name (medcapture, camagent).
         if not self.request.GET.get('product'):

@@ -34,7 +34,6 @@ class AssetsExtract(object):
 
         Returns:
             csv header (list): columns name.
-
         """
         asset_columns = [
             'asset_id',
@@ -92,7 +91,6 @@ class AssetsExtract(object):
 
         Returns:
             csv body (list): information on the assets.
-
         """
         assets = db_session.query(models.Asset) \
             .options(joinedload(models.Asset.site), joinedload(models.Asset.status)) \
@@ -196,7 +194,6 @@ class AssetsExtract(object):
 
         Returns:
             (dict): header (list) and rows (list) of csv file
-
         """
         # Authorized tenants.
         tenants = self.get_extract_tenants()

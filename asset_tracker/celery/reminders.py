@@ -33,7 +33,6 @@ def notify_expiring_consumables(db_session, expiration_date, delay_days):
 
     Returns:
         int: number of equipments with expiring consumables.
-
     """
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
@@ -87,7 +86,6 @@ def next_calibration(months=3):
 
     Args:
         months (int): a reminder is sent x months before a calibration is needed.
-
     """
     try:
         # Validate all mandatory config is present.

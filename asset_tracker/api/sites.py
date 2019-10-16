@@ -24,7 +24,6 @@ class Sites(object):
 
         Always returns a 200, even if the site doesn't exist or the user hasn't got the rights. This way the user
         doesn't get an error message, just an empty iframe.
-
         """
         site_id = self.request.matchdict.get('site_id')
 

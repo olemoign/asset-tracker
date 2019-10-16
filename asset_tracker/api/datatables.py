@@ -33,7 +33,6 @@ class Assets(object):
 
         Returns:
             sqlalchemy.orm.query.Query: filtered query.
-
         """
         if self.request.user.is_admin:
             return q
@@ -140,7 +139,6 @@ class Assets(object):
     def rta_link_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
         Receive information from RTA about station to create/update Asset.
-
         """
         return AssetsAPI(self.request).rta_link_post()
 
@@ -161,7 +159,6 @@ class Sites(DataTablesAPI):
 
         Returns:
             sqlalchemy.orm.query.Query: filtered query.
-
         """
         if self.request.user.is_admin:
             return q

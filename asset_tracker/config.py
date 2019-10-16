@@ -2,7 +2,6 @@
 
 These functions are run during each function startup to make sure families and statuses in the db are up to date with
 the content of config.json.
-
 """
 import logging
 from json import loads
@@ -27,7 +26,6 @@ def update_equipment_families(db_session, config):
     Args:
         db_session (sqlalchemy.orm.session.Session).
         config (dict).
-
     """
     config_families = config['equipment_families']
     db_families = db_session.query(EquipmentFamily).all()
@@ -63,7 +61,6 @@ def update_statuses(db_session, config):
     Args:
         db_session (sqlalchemy.orm.session.Session).
         config (dict).
-
     """
     config_statuses = config['status']
     db_statuses = db_session.query(EventStatus).all()

@@ -27,7 +27,6 @@ class Assets(object):
             tenant_id (str): unique id to identify the tenant
             creator_id (str): unique id to identify the user
             creator_alias (str): '{first_name} {last_name}'
-
         """
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()

@@ -41,7 +41,6 @@ def add_global_variables(event):
 class FormException(Exception):
     """Custom exception to handle form validation of Assets and Sites.
     The addditional parameter (log) indicates if logging is required.
-
     """
 
     def __init__(self, message, log=True):

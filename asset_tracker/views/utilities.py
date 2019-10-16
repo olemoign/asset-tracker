@@ -27,7 +27,6 @@ def exception_view(request):
     """Catch exceptions.
     In dev reraise them to be caught by pyramid_debugtoolbar/sentry.
     In production log them then return a 500 page to the user, the exception is automatically caught by sentry.
-
     """
     # In dev.
     debug_exceptions = asbool(request.registry.settings.get('asset_tracker.dev.debug_exceptions', False))

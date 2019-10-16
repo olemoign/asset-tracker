@@ -42,7 +42,6 @@ class Asset(Model, CreationDateTimeMixin):
         Args:
             order (str): asc/desc.
             filter_config (bool): should we get config updates?
-
         """
         if order == 'asc':
             history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
