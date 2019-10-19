@@ -34,11 +34,11 @@ def main():
         for row_number, row in enumerate(csv_reader):
             vessel, kit_id, base_id, telecardia_id, calibration_date = row
             if not vessel or not kit_id or not base_id or not telecardia_id or not calibration_date:
-                print('Row {} is invalid.'.format(row_number))
+                print(f'Row {row_number} is invalid.')
                 db_session.rollback()
                 sys.exit()
 
-            print('Added asset for vessel {}'.format(vessel))
+            print(f'Added asset for vessel {vessel}')
             kit = Asset(
                 asset_id=kit_id,
                 tenant_id=args.tenant_id,

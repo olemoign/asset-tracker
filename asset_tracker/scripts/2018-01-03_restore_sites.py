@@ -25,7 +25,7 @@ def main():
             asset = db_session.query(Asset).filter_by(asset_id=asset_id).first()
 
             if not asset:
-                print('Asset {} not found.'.format(asset_id))
+                print(f'Asset {asset_id} not found.')
                 continue
 
             if site_name:
@@ -42,10 +42,10 @@ def main():
                     db_session.add(site)
 
                 asset.site = site
-                print('Site {} added for asset {}.'.format(site_name, asset_id))
+                print(f'Site {site_name} added for asset {asset_id}.')
 
             else:
-                print('No site for asset {}.'.format(asset_id))
+                print(f'No site for asset {asset_id}.')
 
     print('Done.')
 

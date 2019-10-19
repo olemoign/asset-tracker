@@ -21,7 +21,7 @@ def main():
 
         assets = db_session.query(models.Asset)
         for asset in assets:
-            print('Asset {}.'.format(asset.id))
+            print(f'Asset {asset.id}.')
             # Update calibration_frequency
             asset.calibration_frequency = 3
 
@@ -33,7 +33,7 @@ def main():
                 .filter(models.EventStatus.status_id == 'service').order_by(models.Event.date).first()
 
             if in_service_event is first_event:
-                print('Adding "in stock" event.'.format(asset.id))
+                print(f'Adding "in stock" event for asset {asset.id}.')
                 in_stock_event = models.Event(
                     date=in_service_event.date,
                     creator_id='59EcBjjl',

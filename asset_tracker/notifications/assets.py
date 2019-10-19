@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urljoin
 
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.notifications import emails_renderer_offline, notify_offline
@@ -32,7 +33,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     template_data = {
         'app_name': app_name,
         'assets': assets,
-        'assets_url': '{}/assets'.format(server_url),
+        'assets_url': urljoin(server_url, '/assets/'),
         'calibration_date': calibration_date,
     }
 
@@ -73,7 +74,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     template_data = {
         'app_name': app_name,
         'asset_id': equipment.asset.asset_id,
-        'asset_url': '{}/assets/{}'.format(server_url, equipment.asset.id),
+        'asset_url': urljoin(server_url, f'/assets/{equipment.asset.id}/'),
         'expiration_date': expiration_date,
         'delay_days': delay_days,
         'model': model,

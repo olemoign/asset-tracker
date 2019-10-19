@@ -26,7 +26,7 @@ def main():
         for site in sites:
             writer.writerow([site.tenant_id, site.name, site.site_id])
 
-    print('Exported {} sites.'.format(count))
+    print(f'Exported {count} sites.')
 
 
 if __name__ == '__main__':

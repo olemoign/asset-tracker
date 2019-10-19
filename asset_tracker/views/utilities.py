@@ -35,7 +35,7 @@ def exception_view(request):
 
     # In production.
     else:
-        error_header = 'Time: {}\nUrl: {}\nMethod: {}\n'.format(datetime.utcnow(), request.url, request.method)
+        error_header = f'Time: {datetime.utcnow()}\nUrl: {request.url}\nMethod: {request.method}\n'
         error_text = error_header + format_exc()
         request.logger_technical.error(error_text)
 

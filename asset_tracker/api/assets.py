@@ -46,8 +46,7 @@ class Assets(object):
 
         if asset:
             if asset.user_id:
-                data = [asset.id, asset.user_id, user_id]
-                capture_message('Trying to link asset {} which is already linked: {}/{}.'.format(*data))
+                capture_message(f'Trying to link asset {asset.id} which is already linked: {asset.user_id}/{user_id}.')
                 return
 
             if asset.tenant_id != tenant_id:

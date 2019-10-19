@@ -62,7 +62,7 @@ class AssetsExtract(object):
         software_columns = [
             label
             for i in range(1, max_software_per_asset + 1)
-            for label in {'software_{}_name'.format(i), 'software_{}_version'.format(i)}
+            for label in {f'software_{i}_name', f'software_{i}_version'}
         ]
 
         # Each equipment is identified by a name and a serial number.
@@ -70,10 +70,10 @@ class AssetsExtract(object):
             label
             for i in range(1, max_equipment_per_asset + 1)
             for label in {
-                'equipment_{}_name'.format(i),
-                'equipment_{}_serial_number'.format(i),
-                'equipment_{}_expiration_date_1'.format(i),
-                'equipment_{}_expiration_date_2'.format(i),
+                f'equipment_{i}_name',
+                f'equipment_{i}_serial_number',
+                f'equipment_{i}_expiration_date_1',
+                f'equipment_{i}_expiration_date_2',
             }
         ]
 
@@ -221,7 +221,7 @@ class AssetsExtract(object):
         unique_equipment = tuple(e[1] for e in equipment_names)
 
         # Override attributes of response.
-        filename = '{:%Y%m%d}_assets.csv'.format(datetime.now())
+        filename = f'{datetime.now():%Y%m%d}_assets.csv'
         self.request.response.content_disposition = 'attachment;filename=' + filename
 
         return {
