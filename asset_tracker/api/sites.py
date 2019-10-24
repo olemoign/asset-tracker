@@ -50,4 +50,4 @@ class Sites(object):
 
 
 def includeme(config):
-    config.add_route(pattern='sites/{site_id}/', name='api-sites-read', factory=Sites)
+    config.add_route(pattern=r'sites/{site_id:\w{8}}/', name='api-sites-read', factory=Sites)
