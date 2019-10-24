@@ -59,7 +59,7 @@ setup(
     name='asset-tracker',
     version=version,
     description='Asset Tracker',
-    long_description=README + '\n\n' + CHANGES,
+    long_description=f'{README}\n\n{CHANGES}',
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Pyramid',
