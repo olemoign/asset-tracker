@@ -222,7 +222,7 @@ class AssetsExtract(object):
 
         # Override attributes of response.
         filename = f'{datetime.now():%Y%m%d}_assets.csv'
-        self.request.response.content_disposition = 'attachment;filename=' + filename
+        self.request.response.content_disposition = f'attachment;filename={filename}'
 
         return {
             'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
