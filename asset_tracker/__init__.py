@@ -24,7 +24,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from asset_tracker.config import update_configuration
-from asset_tracker.constants import STATIC_FILES_CACHE, USER_INACTIVITY_MAX
+from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 # Celery runs celery.app.
 celery = celery_app
@@ -135,8 +135,7 @@ def main(global_config, assets_configuration=True, **settings):
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=STATIC_FILES_CACHE)
 
     # Log app version on startup.
-    asset_tracker_version = pkg_resources.require(__package__)[0].version
-    logging.getLogger('asset_tracker_actions').info('Starting asset tracker version %s', asset_tracker_version)
+    logging.getLogger('asset_tracker_actions').info(f'Starting asset tracker version {ASSET_TRACKER_VERSION}.')
 
     # In dev, log requests.
     log_requests = asbool(settings.get('asset_tracker.dev.log_requests', False))
