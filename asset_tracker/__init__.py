@@ -4,7 +4,6 @@ import logging
 from functools import partial
 from urllib.parse import urljoin
 
-import pkg_resources
 import sentry_sdk
 from depot.manager import DepotManager
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
