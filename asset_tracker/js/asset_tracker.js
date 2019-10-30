@@ -89,7 +89,7 @@ $(document).on('change', '.equipment__select', function addGlucometerExpirations
 });
 
 // Datatables.
-const dataTablesTranslations = {
+const DATATABLES_TRANSLATIONS = {
   fr: {
     sProcessing: 'Traitement en cours...',
     sSearch: 'Rechercher&nbsp;:',
@@ -185,15 +185,11 @@ function createDataTables() {
     // Show 'processing' message.
     processing: true,
     columns: columns,
-    columnDefs: [{
-      targets: '_all',
-      render: $.fn.dataTable.render.text()
-    }],
     rowCallback: assetTrackerCallback
   };
 
-  if (userLocale !== 'en') {
-    dataTableParameters.language = dataTablesTranslations[userLocale];
+  if (window.userLocale in DATATABLES_TRANSLATIONS) {
+    dataTableParameters.language = DATATABLES_TRANSLATIONS[window.userLocale];
   }
 
   // If there is a custom filter, change the organization of the special divs around the dataTable (page size to

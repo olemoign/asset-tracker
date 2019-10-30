@@ -22,10 +22,10 @@ def main():
         assets = db_session.query(models.Asset)
         for asset in assets:
             print(f'Asset {asset.id}.')
-            # Update calibration_frequency
+            # Update calibration_frequency.
             asset.calibration_frequency = 3
 
-            # Add 'in stock' as first event
+            # Add 'in stock' as first event.
             # noinspection PyProtectedMember
             first_event = asset._history.order_by(models.Event.date).first()
             # noinspection PyProtectedMember
@@ -44,10 +44,10 @@ def main():
                 asset._history.append(in_stock_event)
                 db_session.add(in_stock_event)
 
-            # Update status
+            # Update status.
             asset.status = asset.history('desc').first().status
 
-            # Update calibration_next
+            # Update calibration_next.
             if asset.calibration_last:
                 asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
 
