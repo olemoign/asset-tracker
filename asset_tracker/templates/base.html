@@ -47,7 +47,7 @@
 
         {% block page %}{% endblock %}
 
-        {% set footer = 'branding/footer-' + branding + '.html' %}
+        {% set footer = 'branding/footer-{}.html'.format(branding) %}
         {% include footer ignore missing %}
     </body>
 </html>
