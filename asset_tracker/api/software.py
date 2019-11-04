@@ -13,7 +13,6 @@ from sentry_sdk import capture_exception
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
 def get_archi_from_file(file_name):
@@ -83,7 +82,6 @@ class Software(object):
 
     __acl__ = [
         (Allow, None, 'api-software-update', 'api-software-update'),
-        (Allow, None, ADMIN_PRINCIPAL, 'api-software-update'),
     ]
 
     def __init__(self, request):
