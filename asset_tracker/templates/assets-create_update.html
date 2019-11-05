@@ -95,7 +95,7 @@
                                     <select class="form-control" id="calibration_frequency" name="calibration_frequency">
                                         {% for frequency in calibration_frequencies.values() %}
                                             <option value="{{ frequency }}"{% if update and asset.calibration_frequency == frequency %} selected{% endif %}>
-                                                {{- frequency ~ ' ' ~ gettext('years') -}}
+                                                {{- '{} {}'.format(frequency, gettext('years')) -}}
                                             </option>
                                         {% endfor %}
                                     </select>
