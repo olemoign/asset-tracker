@@ -1,7 +1,6 @@
-from logging.config import fileConfig
-
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from pyramid.paster import get_appsettings, setup_logging
+from sqlalchemy import engine_from_config
 
 from asset_tracker.models.asset_tracker import Model
 
@@ -11,9 +10,9 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.config_file_name:
-    fileConfig(config.config_file_name)
+setup_logging(config.config_file_name)
 
+settings = get_appsettings(config.config_file_name)
 # add your model's MetaData object here
 # for 'autogenerate' support
 target_metadata = Model.metadata
@@ -37,8 +36,13 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
-    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, render_as_batch=True)
+    context.configure(
+        url=settings['sqlalchemy.url'],
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={'paramstyle': 'named'},
+        render_as_batch=True,
+    )
 
     with context.begin_transaction():
         context.run_migrations()
@@ -51,13 +55,13 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
+    # During tests, we use in memory sqlite, so we need to keep the same engine.
     if config.attributes.get('engine'):
-        connectable = config.attributes['engine']
-
+        engine = config.attributes['engine']
     else:
-        connectable = engine_from_config(config.get_section(config.config_ini_section), poolclass=pool.NullPool)
+        engine = engine_from_config(settings, prefix='sqlalchemy.')
 
-    with connectable.connect() as connection:
+    with engine.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata, render_as_batch=True)
 
         with context.begin_transaction():
