@@ -29,7 +29,7 @@ from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, U
 celery = celery_app
 
 
-def main(global_config, assets_configuration=True, **settings):
+def main(global_config, **settings):
     """This function returns a Pyramid WSGI application."""
     assert settings.get('rta.server_url')
     assert settings.get('rta.client_id')
@@ -38,7 +38,7 @@ def main(global_config, assets_configuration=True, **settings):
     assert settings.get('sqlalchemy.url')
 
     # During tests, the app is created BEFORE the db, so we can't do this.
-    if assets_configuration:
+    if not settings.get('asset_tracker.tests.disable_configuration', False):
         update_configuration(settings)
 
     # noinspection PyShadowingNames
@@ -73,17 +73,13 @@ def main(global_config, assets_configuration=True, **settings):
     config.set_authorization_policy(authorization_policy)
 
     # Redis sessions configuration.
-    cookie_signature = settings['asset_tracker.cookie_signature']
-    if settings.get('redis.sessions.callable'):
-        session_factory = RedisSessionFactory(cookie_signature, client_callable=settings['redis.sessions.callable'])
-    else:
-        session_factory = RedisSessionFactory(
-            cookie_signature,
-            timeout=USER_INACTIVITY_MAX,
-            cookie_name='asset_tracker_session',
-            cookie_secure=not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False)),
-            url=settings['asset_tracker.sessions_broker_url'],
-        )
+    session_factory = RedisSessionFactory(
+        settings['asset_tracker.cookie_signature'],
+        timeout=USER_INACTIVITY_MAX,
+        cookie_name='asset_tracker_session',
+        cookie_secure=not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False)),
+        url=settings['asset_tracker.sessions_broker_url'],
+    )
     config.set_session_factory(session_factory)
 
     # Add request methods.

@@ -25,6 +25,6 @@ SITE_TYPES = [
 ]
 WARRANTY_DURATION_YEARS = 2
 
-FILE_PATH = Path(__file__).resolve().parent
-TEMPLATES_PATH = FILE_PATH / 'templates'
-TRANSLATIONS_PATH = FILE_PATH / 'locale'
+PATH = Path(__file__).resolve().parent
+TEMPLATES_PATH = PATH / 'templates'
+TRANSLATIONS_PATH = PATH / 'locale'
