@@ -107,7 +107,7 @@ body {
     padding-left: 30px;
     margin-right: calc(50% - 30px);
 
-    & .btn-default {
+    .btn-default {
         border: none;
         background-color: $marlink-orange;
         color: white;
@@ -118,7 +118,7 @@ body {
 
 .forgot-pwd {
     text-align: left;
-    & a {
+    a {
         color: white;
     }
 }
@@ -147,13 +147,13 @@ footer {
     justify-content: center;
     align-items: center;
 
-    & > div {
+    > div {
         flex-grow: 2;
         color: white;
         font-size: 13px;
         margin: 0 10px;
 
-        & > a {
+        > a {
             color: white;
         }
     }
@@ -212,7 +212,7 @@ footer {
         flex-direction: column;
         height: auto;
 
-        & > div {
+        > div {
             font-size: 15px !important;
             padding: 10px 0;
 
@@ -276,15 +276,15 @@ footer {
 /****************/
 
 .panel-heading {
-    & a {
+    a {
         color: white;
     }
 
-    & a:active, a:focus, a:hover {
+    a:active, a:focus, a:hover {
         color: $marlink-light-grey;
     }
 
-    & a.btn {
+    a.btn {
         color: black;
     }
 }
