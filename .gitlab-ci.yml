@@ -1,9 +1,9 @@
 stages:
- - test
- - build
- - dist
- - release
- - deploy
+  - test
+  - build
+  - dist
+  - release
+  - deploy
 
 variables:
   CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
@@ -111,7 +111,7 @@ deploy_dev:
     url: https://at.dev.parsys.com
 
   only:
-  - develop
+    - develop
 
 deploy_demo:
   stage: deploy
@@ -126,4 +126,4 @@ deploy_demo:
     url: https://at.demo.parsys.com
 
   only:
-  - master
+    - master
