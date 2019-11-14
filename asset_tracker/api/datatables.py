@@ -56,7 +56,7 @@ class Assets(object):
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
-        except KeyError as error:
+        except (KeyError, TypeError) as error:
             capture_exception(error)
             raise HTTPBadRequest()
 
@@ -178,7 +178,7 @@ class Sites(DataTablesAPI):
         try:
             search_parameters = manage_datatables_queries(self.request.GET)
             draw = search_parameters.pop('draw')
-        except KeyError as error:
+        except (KeyError, TypeError) as error:
             capture_exception(error)
             raise HTTPBadRequest()
 
