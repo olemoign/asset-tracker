@@ -9,7 +9,7 @@ class CSVRenderer(object):
         pass
 
     def __call__(self, value, system):
-        """ Returns a plain CSV-encoded string with content-type ``text/csv``. The content-type may be overridden by
+        """Return a plain CSV-encoded string with content-type ``text/csv``. The content-type may be overridden by
         setting ``request.response.content_type``.
         """
         request = system.get('request')
