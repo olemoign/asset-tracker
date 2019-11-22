@@ -33,7 +33,6 @@ def add_global_variables(event):
 
     event['principals'] = event['request'].effective_principals
     event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
-    event['locale'] = event['request'].locale_name
 
     event['GLUCOMETER_ID'] = GLUCOMETER_ID
 
