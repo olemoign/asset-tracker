@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ request.locale_name }}">
+<html lang="{{ locale }}">
     <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
     <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
     <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -38,7 +38,7 @@
         <script>$.fn.select2 || document.write('<script src="/static/scripts/vendor/select2-4.0.12.min.js"><\/script>')</script>
 
         <!--suppress JSUnusedLocalSymbols -->
-        <script>const userLocale = '{{ request.locale_name }}';</script>
+        <script>const userLocale = '{{ locale }}';</script>
         <script src="/static/scripts/asset_tracker.min.js"></script>
 
         <div class="img-background-fixed"></div>
