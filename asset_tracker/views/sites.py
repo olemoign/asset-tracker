@@ -98,13 +98,13 @@ class Sites(object):
             raise FormException(_('Site type is required.'))
 
     @view_config(route_name='sites-create', request_method='GET', permission='sites-create',
-                 renderer='sites-create_update.html')
+                 renderer='pages/sites-create_update.html')
     def create_get(self):
         """Get site create form."""
         return self.get_base_form_data()
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
-                 renderer='sites-create_update.html')
+                 renderer='pages/sites-create_update.html')
     def create_post(self):
         """Post site create form."""
         try:
@@ -134,13 +134,13 @@ class Sites(object):
         return HTTPFound(location=self.request.route_path('sites-list'))
 
     @view_config(route_name='sites-update', request_method='GET', permission='sites-read',
-                 renderer='sites-create_update.html')
+                 renderer='pages/sites-create_update.html')
     def update_get(self):
         """Get site update form: we need the site data."""
         return {'site': self.site, **self.get_base_form_data()}
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
-                 renderer='sites-create_update.html')
+                 renderer='pages/sites-create_update.html')
     def update_post(self):
         """Post site update form."""
         try:
@@ -172,7 +172,8 @@ class Sites(object):
 
         return HTTPFound(location=self.request.route_path('sites-list'))
 
-    @view_config(route_name='sites-list', request_method='GET', permission='sites-list', renderer='sites-list.html')
+    @view_config(route_name='sites-list', request_method='GET', permission='sites-list',
+                 renderer='pages/sites-list.html')
     def list_get(self):
         """List sites. No work done here as dataTables will call the API to get the sites list."""
         return {}

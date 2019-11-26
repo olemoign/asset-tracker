@@ -372,13 +372,13 @@ class Assets(object):
                 raise FormException(_('Invalid event.'))
 
     @view_config(route_name='assets-create', request_method='GET', permission='assets-create',
-                 renderer='assets-create_update.html')
+                 renderer='pages/assets-create_update.html')
     def create_get(self):
         """Get asset create form: we only need the base form data."""
         return self.get_base_form_data()
 
     @view_config(route_name='assets-create', request_method='POST', permission='assets-create',
-                 renderer='assets-create_update.html')
+                 renderer='pages/assets-create_update.html')
     def create_post(self):
         """Post asset create form."""
         try:
@@ -421,7 +421,7 @@ class Assets(object):
         return HTTPFound(location=self.request.route_path('assets-list'))
 
     @view_config(route_name='assets-update', request_method='GET', permission='assets-read',
-                 renderer='assets-create_update.html')
+                 renderer='pages/assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
         return {
@@ -432,7 +432,7 @@ class Assets(object):
         }
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
-                 renderer='assets-create_update.html')
+                 renderer='pages/assets-create_update.html')
     def update_post(self):
         """Post asset update form."""
         try:
@@ -497,7 +497,8 @@ class Assets(object):
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
-    @view_config(route_name='assets-list', request_method='GET', permission='assets-list', renderer='assets-list.html')
+    @view_config(route_name='assets-list', request_method='GET', permission='assets-list',
+                 renderer='pages/assets-list.html')
     def list_get(self):
         """List assets. No work done here as dataTables will call the API to get the assets list."""
         return {}
@@ -506,7 +507,7 @@ class Assets(object):
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
 
-    @view_config(route_name='files-asset-config', request_method='GET', renderer='json', permission='assets-read')
+    @view_config(route_name='files-asset-config', request_method='GET', permission='assets-read', renderer='json')
     def config_get(self):
         """Get configuration JSON for a given configuration update event."""
         file_id = self.request.matchdict.get('file_id')
