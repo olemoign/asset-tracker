@@ -43,6 +43,8 @@
 
         <div class="img-background-fixed"></div>
 
+        {% include 'pages/menu.html' %}
+
         {% block page %}{% endblock %}
 
         {% set footer = 'branding/footer-{}.html'.format(branding) %}
