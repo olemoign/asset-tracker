@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title -%}
+    {{ gettext('Settings') }}
+{%- endblock %}
+
+{% block page %}
+    <iframe id="user_settings-iframe" src="{{ rta_settings_url }}"></iframe>
+{% endblock %}

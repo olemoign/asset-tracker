@@ -214,3 +214,13 @@ td {
 .site-info {
     padding: 20px 15px;
 }
+
+/**********************************/
+/************ Settings ************/
+/**********************************/
+
+#user_settings-iframe {
+    border: 0;
+    height: calc(100% - 65px);
+    width: 100%;
+}
