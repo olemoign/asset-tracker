@@ -223,7 +223,7 @@ class AssetsExtract(object):
         unique_equipment = tuple(e[1] for e in equipment_names)
 
         # Override attributes of response.
-        filename = f'{datetime.now():%Y%m%d}_assets.csv'
+        filename = f'{datetime.utcnow():%Y%m%d}_assets.csv'
         self.request.response.content_disposition = f'attachment;filename={filename}'
 
         return {
