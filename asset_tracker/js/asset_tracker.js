@@ -7,7 +7,7 @@ function manageSites() {
   /**
    * Show sites corresponding to the selected tenant.
    */
-  // Copy list of options (site__reference) in site__options
+  // Copy list of options (site__reference) in site__options.
   $('#site__reference').clone()
     .prop('id', 'site_id').prop('name', 'site_id')
     .addClass('custom_select2')
@@ -16,7 +16,7 @@ function manageSites() {
 
   const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
-  // Filter Sites - remove irrelevant options
+  // Filter Sites - remove irrelevant options.
   $('#site_id').children('option').each(function removeSitesFromOtherTenants() {
     if ($(this).data('tenant_id') && $(this).data('tenant_id') !== tenantIdSelected) {
       $(this).remove();

@@ -59,7 +59,7 @@
             </div>
 
             {# Expiration date fields. #}
-            <div class="form-group expiration_date_fields{% if reference or (equipment and equipment.family.family_id != GLUCOMETER_ID) %}hidden{% endif %}">
+            <div class="form-group expiration_date_fields{% if reference or (equipment and equipment.family.family_id != GLUCOMETER_ID) %} hidden{% endif %}">
                 <div class="form-group" >
                     <label for="equipment-expiration_date_1">{{ gettext('Expiration date - lancets') }}</label>
                     <input type="date" class="form-control" name="equipment-expiration_date_1" id="equipment-expiration_date_1" placeholder="{{ gettext('DD/MM/YYYY') }}"
