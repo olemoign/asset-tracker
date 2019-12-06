@@ -109,8 +109,7 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     config_file = global_config['__file__']
-    here = global_config['here']
-    celery_app.configure_celery_app(config_file, here=here)
+    celery_app.configure_celery_app(config_file)
 
     # Add app routes.
     config.include('asset_tracker.models')
