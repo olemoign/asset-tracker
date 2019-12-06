@@ -10,7 +10,7 @@ RUN pip3 install -q --ignore-installed /opt/* \
  && mkdir -p /opt/files
 
 # Copy config files.
-COPY production.ini /opt/files
+COPY config/production.ini /opt/files
 COPY supervisord.conf /opt/files
 COPY alembic /opt/alembic
 

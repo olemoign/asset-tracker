@@ -41,7 +41,6 @@ pytest:
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 -q install '.[tests]'
-    - cp development.ini.sample development.ini
     - py.test --cov=asset_tracker
 
 build:
