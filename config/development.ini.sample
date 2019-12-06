@@ -1,3 +1,6 @@
+[DEFAULT]
+tmp = %(here)s/../tmp
+
 ###
 # wsgi server configuration
 ###
@@ -22,14 +25,14 @@ pyramid.includes = pyramid_debugtoolbar
 pyramid.reload_templates = true
 
 # sqlalchemy.url = postgresql://asset:asset@localhost:15434/asset
-sqlalchemy.url = sqlite:///%(here)s/tmp/asset_tracker.sqlite
+sqlalchemy.url = sqlite:///%(tmp)s/asset_tracker.sqlite
 
-asset_tracker.blobstore_path = %(here)s/tmp/
+asset_tracker.blobstore_path = %(tmp)s/
 asset_tracker.cloud_name = Parsys Cloud
 asset_tracker.cookie_signature = onceuponatimeinthewildwildwest
 asset_tracker.server_url = http://localhost:6455
-asset_tracker.sessions_broker_url = unix://%(here)s/tmp/redis.sock
-asset_tracker.software_storage = /%(here)s/tmp/software/
+asset_tracker.sessions_broker_url = unix://%(tmp)s/redis.sock
+asset_tracker.software_storage = /%(tmp)s/software/
 
 asset_tracker.dev.debug_exceptions = true
 asset_tracker.dev.disable_notifications = true
@@ -49,10 +52,10 @@ rta.secret = assets_secretassets_secret123456
 # Path to migration scripts.
 script_location = alembic
 # sqlalchemy.url = postgresql://asset:asset@localhost:15434/asset
-sqlalchemy.url = sqlite:///%(here)s/tmp/asset_tracker.sqlite
+sqlalchemy.url = sqlite:///%(tmp)s/asset_tracker.sqlite
 
 [celery]
-broker_url = redis+socket:///%(here)s/tmp/redis.sock
+broker_url = redis+socket:///%(tmp)s/redis.sock
 
 ###
 # logging configuration
