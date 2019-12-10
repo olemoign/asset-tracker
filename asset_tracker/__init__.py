@@ -34,6 +34,7 @@ def main(global_config, **settings):
     assert settings.get('rta.server_url')
     assert settings.get('rta.client_id')
     assert settings.get('rta.secret')
+    assert settings.get('asset_tracker.blobstore_path')
     assert settings.get('asset_tracker.sessions_broker_url')
     assert settings.get('sqlalchemy.url')
 
