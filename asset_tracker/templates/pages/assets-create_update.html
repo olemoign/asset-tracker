@@ -59,6 +59,7 @@
                                     <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
                                     <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
                                     <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                                    <option value="backpack"{% if update and asset.asset_type == 'backpack' %} selected{% endif %}>{{ gettext('Backpack') }}</option>
                                 </select>
                             </div>
 
