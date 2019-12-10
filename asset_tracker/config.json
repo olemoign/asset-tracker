@@ -54,63 +54,63 @@
     },
     {
       "family_id": "CJR99XSW",
-      "model": "ECG 12 Dérivations sans fil - Télécardia Parsys"
+      "model": "12-lead wireless ECG - Télécardia Parsys"
     },
     {
       "family_id": "kR059vud",
-      "model": "ECG 12 Dérivations USB - Schiller MS-12 USB"
+      "model": "12-lead USB ECG - Schiller MS-12 USB"
     },
     {
       "family_id": "56T5Xr2A",
-      "model": "ECG 12 Dérivations sans fil - Mortara WAM ECG"
+      "model": "12-lead wireless ECG - Mortara WAM ECG"
     },
     {
       "family_id": "c494zUZ0",
-      "model": "Multiparamétrique USB - Biosys Parsys"
+      "model": "Multiparametrical USB - Biosys Parsys"
     },
     {
       "family_id": "3NFYka4r",
-      "model": "Stéthoscope numérique USB - RNK PCP-USB"
+      "model": "Digital USB stethoscope - RNK PCP-USB"
     },
     {
       "family_id": "1dOrCl44",
-      "model": "Glucomètre USB - Beurer GL50"
+      "model": "USB glucometer - Beurer GL50"
     },
     {
       "family_id": "w5wDrPyZ",
-      "model": "Glucomètre sans fil - Foracare DM30b"
+      "model": "Wireless glucometer - Foracare DM30b"
     },
     {
       "family_id": "E7SQL7Mr",
-      "model": "Auto-tensiomètre sans fil - Foracare P80"
+      "model": "Automatic wireless tensiometer - Foracare P80"
     },
     {
       "family_id": "8rpM8kOh",
-      "model": "Auto-tensiomètre sans fil - A&D UA-651BLE"
+      "model": "Automatic wireless tensiometer - A&D UA-651BLE"
     },
     {
       "family_id": "upWHHgVe",
-      "model": "Oxymètre sans fil - NONIN 3230"
+      "model": "Wireless oxymeter - NONIN 3230"
     },
     {
       "family_id": "cAxWbCCz",
-      "model": "Oxymètre USB - NONIN 3231"
+      "model": "USB oxymeter - NONIN 3231"
     },
     {
       "family_id": "mX4l9sEQ",
-      "model": "Pèse-personne sans fil - A&D UC-355PBT-Ci"
+      "model": "Wireless bathroom scale - A&D UC-355PBT-Ci"
     },
     {
       "family_id": "jbVmQunF",
-      "model": "Thermomètre infrarouge sans fil - Foracare IR21b"
+      "model": "Infrared wireless thermometer - Foracare IR21b"
     },
     {
       "family_id": "Wxxy2Eb5",
-      "model": " Spiromètre numérique USB - Minispir New"
+      "model": "USB Digital spirometer - Minispir New"
     },
     {
       "family_id": "VEgX5jR5",
-      "model": "Défibrillateur Automatique Externe - Schiller FRED Easy Port"
+      "model": "External automatic defibrillator - Schiller FRED Easy Port"
     },
     {
       "family_id": "sxujnZOH",
@@ -118,23 +118,23 @@
     },
     {
       "family_id": "43fODYd7",
-      "model": "Dermatoscope polarisant numérique USB - Firefly DE300"
+      "model": "Digital USB polarizing dermatoscrope - Firefly DE300"
     },
     {
       "family_id": "TyWY8xNh",
-      "model": "Otoscope polarisant numérique USB - Firefly DE500"
+      "model": "USB digital polarizing otoscope - Firefly DE500"
     },
     {
       "family_id": "iwAXkRld",
-      "model": "Kit Caméra à main HORUS - 5 Mpx + Objectif général - MIIS DSC200P + DGC100"
+      "model": "Handheld camera kit HORUS - 5 Mpx + General lens - MIIS DSC200P + DGC100"
     },
     {
       "family_id": "PJpf8PGG",
-      "model": "Caméra à main HORUS - 2 Mpx - MIIS DSC100"
+      "model": "Handheld camera HORUS - 2 Mpx - MIIS DSC100"
     },
     {
       "family_id": "eLYiLU5p",
-      "model": "Caméra à main HORUS - 5 Mpx - MIIS DSC200P"
+      "model": "Handheld camera HORUS - 5 Mpx - MIIS DSC200P"
     },
     {
       "family_id": "8i8qFB6V",
@@ -142,63 +142,63 @@
     },
     {
       "family_id": "NwdtzWAs",
-      "model": "Objectif Ophtalmoscope - MIIS EEC100"
+      "model": "Ophtalmoscope lens - MIIS EEC100"
     },
     {
       "family_id": "laqMhCEb",
-      "model": "Objectif Otoscope - MIIS DOC100S"
+      "model": "Otoscope lens - MIIS DOC100S"
     },
     {
       "family_id": "CrV9efKR",
-      "model": "Objectif Dermatoscope - MIIS DOC100"
+      "model": "Dermatoscope lens - MIIS DOC100"
     },
     {
       "family_id": "7fxeOc1I",
-      "model": "Echographe USB - Interson SiMPLI - GP-C01"
+      "model": "USB ultrasound scanner - Interson SiMPLI - GP-C01"
     },
     {
       "family_id": "RI2xdHgC",
-      "model": "Audiomètre numérique polyvalent avec casque - ECHODIA OTOwin + DD45 HI"
+      "model": "Multipurpose digital audiometer with headset"
     },
     {
       "family_id": "ezUWLlqU",
-      "model": "Caméra de rétine pour prématurés et bébés - Welch Allyn SPOT Vision Screener"
+      "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
     },
     {
       "family_id": "Qmculje9",
-      "model": "Laryngoscope numérique USB - VIVID MEDICAL VT-A100"
+      "model": "USB digital laryngoscope - VIVID MEDICAL VT-A100"
     },
     {
       "family_id": "Oqldhs5Z",
-      "model": "Caméra intra-buccale 950 - Sopro SoproCare 950 + Dock M-USB2"
+      "model": "Intraoral camera 950 - Sopro SoproCare 950 + Dock M-USB2"
     },
     {
       "family_id": "q6UessZu",
-      "model": "Caméra intra-buccale 717 - Sopro SoproCare 717 + Dock M-USB2"
+      "model": "Intraoral camera 717 - Sopro SoproCare 717 + Dock M-USB2"
     },
     {
       "family_id": "ZHkCozV6",
-      "model": "Tests urinaires d’Urologie 10 paramètres - Nal Von Minden"
+      "model": "Urine test 10 parameters - Nal Von Minden"
     },
     {
       "family_id": "K2rCGteW",
-      "model": "Test de dépistage de stupéfiants et d’alcool - Nal Von Minden"
+      "model": "Alcohol and drug test - Nal Von Minden"
     },
     {
       "family_id": "FsJqvibI",
-      "model": "Test sanguin Troponine - Nal Von Minden"
+      "model": "Troponin blood test - Nal Von Minden"
     },
     {
       "family_id": "Nh7AGGHh",
-      "model": "Test de détection de maladies tropicales - Malaria - Nal Von Minden"
+      "model": "Tropical disease test - Malaria - Nal Von Minden"
     },
     {
       "family_id": "rRSoV4aA",
-      "model": "Test de détection de maladies tropicales - Chikungunya - Nal Von Minden"
+      "model": "Tropical disease test - Chikungunya - Nal Von Minden"
     },
     {
       "family_id": "MDXyv1ca",
-      "model": "Test de détection de maladies tropicales - Dengue Ag+IgG-IgM - Nal Von Minden"
+      "model": "Tropical disease test - Dengue fever Ag+IgG-IgM - Nal Von Minden"
     },
     {
       "family_id": "QH5cI2kL",
