@@ -133,6 +133,11 @@
       "status_id": "config_update",
       "position": "16",
       "label": "Configuration update"
+    },
+    {
+      "status_id": "site_change",
+      "position": "17",
+      "label": "Site change"
     }
   ]
 }
