@@ -126,15 +126,17 @@ class Assets(object):
         """Add asset site change event"""
         event_date = datetime.utcnow().date()
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
-        new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
 
         event = models.Event(
             date=event_date,
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
-            status_id=status.id,
-            extra=json.dumps({'site_name': new_site.name})
+            status_id=status.id
         )
+
+        new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+        if new_site:
+            event.extra=json.dumps({'site_name': new_site.name})
 
         self.asset._history.append(event)
         self.request.db_session.add(event)
@@ -487,7 +489,8 @@ class Assets(object):
         self.asset.customer_name = self.form.get('customer_name')
 
         new_site_id = self.form.get('site_id')
-        if new_site_id and new_site_id != str(self.asset.site_id):
+        old_site_id = self.asset.site_id
+        if (not new_site_id and old_site_id) or (new_site_id and int(new_site_id) != self.asset.site_id):
             self.add_site_change_event(new_site_id)
 
         self.asset.site_id = new_site_id
