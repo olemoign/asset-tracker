@@ -123,6 +123,23 @@ class Assets(object):
         self.asset._history.append(event)
         self.request.db_session.add(event)
 
+    def add_site_change_event(self, new_site_id):
+        """Add asset site change event"""
+        event_date = datetime.utcnow().date()
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
+        new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+
+        event = models.Event(
+            date=event_date,
+            creator_id=self.request.user.id,
+            creator_alias=self.request.user.alias,
+            status_id=status.id,
+            extra=json.dumps({'site_name': new_site.name})
+        )
+
+        self.asset._history.append(event)
+        self.request.db_session.add(event)
+
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
@@ -468,24 +485,9 @@ class Assets(object):
 
         new_site_id = self.form.get('site_id')
         if new_site_id != str(self.asset.site_id):
-            event_date = datetime.utcnow().date()
-            status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
-            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+            self.add_site_change_event(new_site_id)
 
-            event = models.Event(
-                date=event_date,
-                creator_id=self.request.user.id,
-                creator_alias=self.request.user.alias,
-                status_id=status.id,
-            )
-
-            if new_site:
-                event.extra=json.dumps({'site_name': new_site.name}),
-
-            self.asset._history.append(event)
-            self.request.db_session.add(event)
-
-        self.asset.site_id = self.form.get('site_id')
+        self.asset.site_id = new_site_id
 
         self.asset.current_location = self.form.get('current_location')
 
