@@ -16,7 +16,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS, CONFIG_STATUS
 from asset_tracker.views import FormException
 
 
@@ -148,7 +148,7 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(~models.EventStatus.status_id.in_(['software_update']))
+            .filter(~models.EventStatus.status_id.in_(CONFIG_STATUS))
 
         tenants = self.get_create_read_tenants()
 

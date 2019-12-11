@@ -15,7 +15,7 @@ CALIBRATION_FREQUENCIES_YEARS = OrderedDict([
     ('default', 2),
     ('maritime', 3),
 ])
-CONFIG_STATUS = ['config_update', 'software_update']
+CONFIG_STATUS = ['config_update', 'software_update', 'site_change']
 GLUCOMETER_ID = '2YUEMLmH'
 SITE_TYPES = [
     _('Company'),
