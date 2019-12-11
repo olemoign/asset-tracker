@@ -224,10 +224,16 @@
                                                     <span class="glyphicon glyphicon-file"></span>
                                                 </a>
                                             {% elif event.status.status_id == 'site_change' %}
-                                                {{ gettext("<b>%(date)s</b> %(creator)s changed site to <b>%(site)s</b>.",
-                                                            date=event.date|format_date(locale),
-                                                            creator=event.creator_alias,
-                                                            site=event.extra_json.get('site_name')) }}
+                                                {% if event.extra_json.get('site_name') %}
+                                                    {{ gettext('<b>%(date)s</b> %(creator)s changed site to <b>%(site)s</b>.',
+                                                               date=event.date|format_date(locale),
+                                                               creator=event.creator_alias,
+                                                               site=event.extra_json.get('site_name')) }}
+                                                {% else %}
+                                                    {{ gettext('<b>%(date)s</b> %(creator)s removed previous site.',
+                                                               date=event.date|format_date(locale),
+                                                               creator=event.creator_alias) }}
+                                                {% endif %}
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                            creator=event.creator_alias,
