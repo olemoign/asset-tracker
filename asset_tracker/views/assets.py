@@ -136,7 +136,7 @@ class Assets(object):
 
         new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
         if new_site:
-            event.extra=json.dumps({'site_name': new_site.name})
+            event.extra = json.dumps({'site_name': new_site.name})
 
         self.asset._history.append(event)
         self.request.db_session.add(event)
