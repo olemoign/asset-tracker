@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 17:47+0100\n"
+"POT-Creation-Date: 2020-03-10 17:51+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -42,7 +42,7 @@ msgstr "ECG 12 Dérivations sans fil - Télécardia Parsys"
 #: templates/pages/assets-create_update.html:249
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set site to"
-msgstr ""
+msgstr "<b>%(date)s</b> %(creator)s a défini le site"
 
 #: templates/pages/assets-create_update.html:257
 #, python-format
@@ -208,10 +208,6 @@ msgstr "Stéthoscope numérique USB - RNK PCP-USB"
 msgid "Distributor checkup"
 msgstr "Vérification distributeur"
 
-#: config.json:117
-msgid "Défibrillateur Automatique Externe - Schiller FRED Easy Trainer"
-msgstr ""
-
 #: templates/pages/sites-create_update.html:69
 #: templates/pages/sites-list.html:30
 msgid "Email"
@@ -237,9 +233,17 @@ msgstr "Date d'expiration - bandelettes"
 msgid "External automatic defibrillator - Schiller FRED Easy Port"
 msgstr "Défibrillateur Automatique Externe - Schiller FRED Easy Port"
 
+#: config.json:117
+msgid "External automatic defibrillator - Schiller FRED Easy Trainer"
+msgstr "Défibrillateur Automatique Externe - Schiller FRED Easy Trainer"
+
 #: templates/pages/assets-list.html:21
 msgid "Extract"
 msgstr "Extraire"
+
+#: config.json:141
+msgid "General lens - MIIS DGC100"
+msgstr "Objectif général - MIIS DGC100"
 
 #: config.json:21
 msgid "Glucometer - Beurer GL50"
@@ -449,10 +453,6 @@ msgstr "Notes"
 msgid "Nursing home"
 msgstr "EHPAD"
 
-#: config.json:141
-msgid "Objectif général - MIIS DGC100"
-msgstr ""
-
 #: config.json:236
 msgid "On site"
 msgstr "Sur site"
@@ -597,10 +597,6 @@ msgstr "Base de chargement Télécardia - Parsys"
 msgid "Tenant"
 msgstr "Tenant"
 
-#: config.json:205
-msgid "Test de détection de maladies tropicales - Ebola - Nal Von Minden"
-msgstr ""
-
 #: templates/emails/consumables_expiration.html:6
 #: templates/emails/consumables_expiration.txt:3
 msgid "The equipment"
@@ -638,6 +634,10 @@ msgid "Tropical disease test - Dengue fever Ag+IgG-IgM - Nal Von Minden"
 msgstr ""
 "Test de détection de maladies tropicales - Dengue Ag+IgG-IgM - Nal Von "
 "Minden"
+
+#: config.json:205
+msgid "Tropical disease test - Ebola - Nal Von Minden"
+msgstr "Test de détection de maladies tropicales - Ebola - Nal Von Minden"
 
 #: config.json:193
 msgid "Tropical disease test - Malaria - Nal Von Minden"
