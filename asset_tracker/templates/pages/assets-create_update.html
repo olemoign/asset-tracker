@@ -234,7 +234,6 @@
                                                                date=event.date|format_date(locale),
                                                                creator=event.creator_alias) }}
                                                 {% endif %}
-                                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                            creator=event.creator_alias,
