@@ -150,7 +150,7 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(~models.EventStatus.status_id.in_(CONFIG_STATUS))
+            .filter(models.EventStatus.status_id.notin_(CONFIG_STATUS))
 
         tenants = self.get_create_read_tenants()
 
