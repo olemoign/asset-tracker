@@ -384,7 +384,7 @@ class Assets(object):
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
-            event = self.asset.history('asc', filter_software=True).filter(models.Event.event_id == event_id).first()
+            event = self.asset.history('asc', filter_config=True).filter(models.Event.event_id == event_id).first()
             if not event:
                 raise FormException(_('Invalid event.'))
 
@@ -508,7 +508,7 @@ class Assets(object):
         # are.
         if self.form.get('event-removed'):
             nb_removed_event = len(self.form['event-removed'])
-            nb_active_event = self.asset.history('asc', filter_software=True).count()
+            nb_active_event = self.asset.history('asc', filter_config=True).count()
             if nb_active_event <= nb_removed_event:
                 return {
                     'asset': self.asset,
