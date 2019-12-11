@@ -54,7 +54,8 @@ class Assets(object):
             return
 
         asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
-            .options(joinedload(models.Asset.equipments)).first()
+            .options(joinedload(models.Asset.equipments),
+                     joinedload(models.Asset.site)).first()
         if not asset:
             raise HTTPNotFound()
 
@@ -465,7 +466,27 @@ class Assets(object):
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
+        new_site_id = self.form.get('site_id')
+        if new_site_id != str(self.asset.site_id):
+            event_date = datetime.utcnow().date()
+            status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
+            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+
+            event = models.Event(
+                date=event_date,
+                creator_id=self.request.user.id,
+                creator_alias=self.request.user.alias,
+                status_id=status.id,
+            )
+
+            if new_site:
+                event.extra=json.dumps({'site_name': new_site.name}),
+
+            self.asset._history.append(event)
+            self.request.db_session.add(event)
+
         self.asset.site_id = self.form.get('site_id')
+
         self.asset.current_location = self.form.get('current_location')
 
         self.asset.notes = self.form.get('notes')
