@@ -149,7 +149,7 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(models.EventStatus.status_id != 'software_update')
+            .filter(models.EventStatus.status_id not in ['software_update', 'configuration_update', 'site_change'])
 
         tenants = self.get_create_read_tenants()
 
