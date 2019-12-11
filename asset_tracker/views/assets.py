@@ -434,6 +434,10 @@ class Assets(object):
 
         self.add_event()
 
+        site_id = self.form.get('site_id')
+        if (site_id):
+            self.add_site_change_event(site_id)
+
         self.update_status_and_calibration_next(self.asset, self.specific)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
