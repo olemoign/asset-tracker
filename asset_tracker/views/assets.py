@@ -135,7 +135,7 @@ class Assets(object):
 
         new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
         if new_site:
-            event.extra = json.dumps({'site_name': new_site.name})
+            event.extra = json.dumps({'site_id': new_site.site_id})
 
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -154,10 +154,20 @@ class Assets(object):
 
         tenants = self.get_create_read_tenants()
 
+        sites = self.get_site_data(tenants)
+
+        assigned_site_history = {}
+        for event in self.asset.history('asc'):
+            json_site_id = event.extra_json.get('site_id')
+            site = next((site for site in sites if site.site_id == json_site_id), None)
+            if site:
+                assigned_site_history[site.site_id] = site.name
+
         return {
+            'assigned_site_history': assigned_site_history,
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
-            'sites': self.get_site_data(tenants),
+            'sites': sites,
             'statuses': statuses,
             'tenants': tenants,
         }
