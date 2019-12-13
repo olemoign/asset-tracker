@@ -224,10 +224,12 @@
                                                 </a>
                                             {% elif event.status.status_id == 'site_change' %}
                                                 {% set site_id = event.extra_json.get('site_id') %}
-                                                {{ gettext('<b>%(date)s</b> %(creator)s changed site to <b>%(site)s</b>.',
-                                                           date=event.date|format_date(locale),
-                                                           creator=event.creator_alias,
-                                                           site=assigned_site_history.get(site_id, gettext('None'))) }}
+                                                {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
+                                                {% if site_id %}
+                                                    <b><a href="{{ 'sites-update'|route_path(site_id=site_id) }}">{{ assigned_site_history[site_id] }}</a></b>.
+                                                {% else %}
+                                                    <b>{{ gettext('None') }}</b>.
+                                                {% endif %}
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                            creator=event.creator_alias,
