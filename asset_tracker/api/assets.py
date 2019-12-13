@@ -100,7 +100,6 @@ class Assets(object):
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
-
         except JSONDecodeError as error:
             self.request.logger_technical.info('Asset linking: invalid JSON.')
             capture_exception(error)
@@ -115,7 +114,6 @@ class Assets(object):
         # Create or update Asset.
         try:
             self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
-
         except SQLAlchemyError as error:
             self.request.logger_technical.info('Asset linking: db error.')
             capture_exception(error)

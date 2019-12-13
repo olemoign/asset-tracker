@@ -92,6 +92,7 @@ class Assets(object):
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
+
         except KeyError as error:
             capture_exception(error)
             raise HTTPBadRequest()
@@ -212,6 +213,7 @@ class Sites(DataTablesAPI):
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
+
         except KeyError as error:
             capture_exception(error)
             raise HTTPBadRequest()

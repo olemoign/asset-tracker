@@ -110,7 +110,6 @@ class Sites(object):
         try:
             self.read_form()
             self.validate_form()
-
         except FormException as error:
             if error.log:
                 capture_exception(error)
@@ -146,7 +145,6 @@ class Sites(object):
         try:
             self.read_form()
             self.validate_form()
-
         except FormException as error:
             if error.log:
                 capture_exception(error)
