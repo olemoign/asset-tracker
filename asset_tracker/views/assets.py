@@ -123,21 +123,21 @@ class Assets(object):
         self.request.db_session.add(event)
 
     def add_site_change_event(self, new_site_id):
-        """Add asset site change event"""
-        event_date = datetime.utcnow().date()
+        """Add asset site change event."""
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
 
         event = models.Event(
-            date=event_date,
+            date=datetime.utcnow().date(),
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
-            status_id=status.id
+            status_id=status.id,
         )
 
         new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
         if new_site:
             event.extra = json.dumps({'site_name': new_site.name})
 
+        # noinspection PyProtectedMember
         self.asset._history.append(event)
         self.request.db_session.add(event)
 
@@ -154,12 +154,10 @@ class Assets(object):
 
         tenants = self.get_create_read_tenants()
 
-        sites = self.get_site_data(tenants)
-
         return {
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
-            'sites': sites,
+            'sites': self.get_site_data(tenants),
             'statuses': statuses,
             'tenants': tenants,
         }
@@ -436,7 +434,7 @@ class Assets(object):
         self.add_event()
 
         site_id = self.form.get('site_id')
-        if (site_id):
+        if site_id:
             self.add_site_change_event(site_id)
 
         self.update_status_and_calibration_next(self.asset, self.specific)

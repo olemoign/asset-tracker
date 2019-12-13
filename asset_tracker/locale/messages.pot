@@ -3,19 +3,18 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-12-11 14:45+0100\n"
+"POT-Creation-Date: 2019-12-13 16:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: notifications/assets.py:26
 msgid "${app_name} - Device calibration reminder"
@@ -25,17 +24,12 @@ msgstr ""
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:228
+#: templates/pages/assets-create_update.html:226
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s changed site to <b>%(site)s</b>."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:233
-#, python-format
-msgid "<b>%(date)s</b> %(creator)s removed previous site."
-msgstr ""
-
-#: templates/pages/assets-create_update.html:238
+#: templates/pages/assets-create_update.html:231
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
@@ -84,7 +78,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:253
+#: templates/pages/assets-create_update.html:246
 #: templates/pages/sites-create_update.html:73
 msgid "Cancel"
 msgstr ""
@@ -247,39 +241,39 @@ msgstr ""
 msgid "Incident declared"
 msgstr ""
 
-#: views/assets.py:355
+#: views/assets.py:354
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:345
+#: views/assets.py:344
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:373
+#: views/assets.py:372
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:246
+#: views/assets.py:245
 msgid "Invalid equipments."
 msgstr ""
 
-#: views/assets.py:361
+#: views/assets.py:360
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:390
+#: views/assets.py:389
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:379 views/assets.py:385
+#: views/assets.py:378 views/assets.py:384
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:350
+#: views/assets.py:349
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:341 views/sites.py:85
+#: views/assets.py:340 views/sites.py:85
 msgid "Invalid tenant."
 msgstr ""
 
@@ -295,7 +289,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: views/assets.py:278
+#: views/assets.py:277
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -335,6 +329,10 @@ msgstr ""
 
 #: templates/pages/assets-create_update.html:131
 msgid "No software registered."
+msgstr ""
+
+#: templates/pages/assets-create_update.html:229
+msgid "None"
 msgstr ""
 
 #: templates/errors/404.html:144
@@ -451,7 +449,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:254
+#: templates/pages/assets-create_update.html:247
 #: templates/pages/sites-create_update.html:74
 msgid "Submit"
 msgstr ""
@@ -490,7 +488,7 @@ msgstr ""
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
-#: views/assets.py:336
+#: views/assets.py:335
 msgid "This asset id already exists."
 msgstr ""
 
