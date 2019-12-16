@@ -16,7 +16,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS, CONFIG_STATUS
+from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views import FormException
 
 
@@ -123,7 +123,11 @@ class Assets(object):
         self.request.db_session.add(event)
 
     def add_site_change_event(self, new_site_id):
-        """Add asset site change event."""
+        """Add asset site change event.
+
+        Args:
+            new_site_id (int).
+        """
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
 
         event = models.Event(
@@ -150,7 +154,7 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(models.EventStatus.status_id.notin_(CONFIG_STATUS))
+            .filter(models.EventStatus.status_type != 'config')
 
         tenants = self.get_create_read_tenants()
 

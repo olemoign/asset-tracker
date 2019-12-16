@@ -57,87 +57,104 @@
     {
       "status_id": "stock_parsys",
       "position": "1",
-      "label": "In stock - Parsys"
+      "label": "In stock - Parsys",
+      "status_type": "event"
     },
     {
       "status_id": "transit_distributor",
       "position": "2",
-      "label": "In transit to distributor"
+      "label": "In transit to distributor",
+      "status_type": "event"
     },
     {
       "status_id": "stock_distributor",
       "position": "3",
-      "label": "In stock - distributor"
+      "label": "In stock - distributor",
+      "status_type": "event"
     },
     {
       "status_id": "transit_customer",
       "position": "4",
-      "label": "In transit to customer"
+      "label": "In transit to customer",
+      "status_type": "event"
     },
     {
       "status_id": "on_site",
       "position": "5",
-      "label": "On site"
+      "label": "On site",
+      "status_type": "event"
     },
     {
       "status_id": "connected",
       "position": "6",
-      "label": "Connected"
+      "label": "Connected",
+      "status_type": "event"
     },
     {
       "status_id": "service",
       "position": "7",
-      "label": "In service"
+      "label": "In service",
+      "status_type": "event"
     },
     {
       "status_id": "incident",
       "position": "8",
-      "label": "Incident declared"
+      "label": "Incident declared",
+      "status_type": "event"
     },
     {
       "status_id": "replacement",
       "position": "9",
-      "label": "Replacement ordered"
+      "label": "Replacement ordered",
+      "status_type": "event"
     },
     {
       "status_id": "distributor_checkup",
       "position": "10",
-      "label": "Distributor checkup"
+      "label": "Distributor checkup",
+      "status_type": "event"
     },
     {
       "status_id": "transit_parsys",
       "position": "11",
-      "label": "In transit to Parsys"
+      "label": "In transit to Parsys",
+      "status_type": "event"
     },
     {
       "status_id": "calibration",
       "position": "12",
-      "label": "In calibration"
+      "label": "In calibration",
+      "status_type": "event"
     },
     {
       "status_id": "repair",
       "position": "13",
-      "label": "In repair"
+      "label": "In repair",
+      "status_type": "event"
     },
     {
       "status_id": "decommissioned",
       "position": "14",
-      "label": "Decommissioned"
+      "label": "Decommissioned",
+      "status_type": "event"
     },
     {
       "status_id": "software_update",
       "position": "15",
-      "label": "Software update"
+      "label": "Software update",
+      "status_type": "config"
     },
     {
       "status_id": "config_update",
       "position": "16",
-      "label": "Configuration update"
+      "label": "Configuration update",
+      "status_type": "config"
     },
     {
       "status_id": "site_change",
       "position": "17",
-      "label": "Site change"
+      "label": "Site change",
+      "status_type": "config"
     }
   ]
 }

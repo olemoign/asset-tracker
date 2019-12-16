@@ -94,6 +94,7 @@ def update_statuses(db_session, config):
 
         db_status.position = int(config_status['position'])
         db_status.label = config_status['label']
+        db_status.status_type = config_status['status_type']
 
 
 def update_configuration(settings):
