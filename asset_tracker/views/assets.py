@@ -503,8 +503,7 @@ class Assets(object):
         self.asset.customer_name = self.form.get('customer_name')
 
         new_site_id = self.form.get('site_id')
-        old_site_id = self.asset.site_id
-        if (not new_site_id and old_site_id) or (new_site_id and int(new_site_id) != self.asset.site_id):
+        if str(new_site_id) != str(self.asset.site_id):
             self.add_site_change_event(new_site_id)
 
         self.asset.site_id = new_site_id
