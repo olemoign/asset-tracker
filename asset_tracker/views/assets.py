@@ -122,6 +122,29 @@ class Assets(object):
         self.asset._history.append(event)
         self.request.db_session.add(event)
 
+    def add_site_change_event(self, new_site_id):
+        """Add asset site change event.
+
+        Args:
+            new_site_id (int).
+        """
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
+
+        event = models.Event(
+            date=datetime.utcnow().date(),
+            creator_id=self.request.user.id,
+            creator_alias=self.request.user.alias,
+            status_id=status.id,
+        )
+
+        if new_site_id:
+            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
+
+        # noinspection PyProtectedMember
+        self.asset._history.append(event)
+        self.request.db_session.add(event)
+
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
@@ -131,16 +154,14 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(models.EventStatus.status_id != 'software_update')
+            .filter(models.EventStatus.status_type != 'config').all()
 
         tenants = self.get_create_read_tenants()
-
-        sites = self.get_site_data(tenants)
 
         return {
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
-            'sites': sites,
+            'sites': self.get_site_data(tenants),
             'statuses': statuses,
             'tenants': tenants,
         }
@@ -185,11 +206,11 @@ class Assets(object):
 
     def get_last_config(self):
         """Get last version of configuration updates."""
-        last_config = self.asset.history('desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
+        last_config = self.asset.history('desc').join(models.EventStatus) \
+            .filter(models.EventStatus.status_id == 'config_update').first()
 
         if last_config is None:
-            return None
+            return
 
         return last_config.extra_json.get('config', None)
 
@@ -197,19 +218,23 @@ class Assets(object):
         """Get all sites corresponding to current tenants. Sites will be filtered according to selected tenant in
         front/js.
         """
-        tenants_list = (tenant['id'] for tenant in tenants)
+        tenants_ids = {tenant['id'] for tenant in tenants}
 
         sites = self.request.db_session.query(models.Site) \
-            .filter(models.Site.tenant_id.in_(tenants_list)) \
+            .filter(models.Site.tenant_id.in_(tenants_ids)) \
             .order_by(func.lower(models.Site.name))
 
-        return sites
+        return {site.site_id: site for site in sites}
 
     def read_form(self):
         """Format form content according to our needs.
         In particular, make sure that inputs which can be list are lists in all cases, even if no data was inputed.
         """
-        self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
+        self.form = {
+            key: value if value != '' else None
+            for key, value in self.request.POST.mixed().items()
+        }
+
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
         # doesn't behave weirdly.
         equipment_families = self.form.get('equipment-family')
@@ -367,7 +392,7 @@ class Assets(object):
                         raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
-            event = self.asset.history('asc', filter_software=True).filter(models.Event.event_id == event_id).first()
+            event = self.asset.history('asc', filter_config=True).filter(models.Event.event_id == event_id).first()
             if not event:
                 raise FormException(_('Invalid event.'))
 
@@ -416,6 +441,10 @@ class Assets(object):
 
         self.add_event()
 
+        site_id = self.form.get('site_id')
+        if site_id:
+            self.add_site_change_event(site_id)
+
         self.update_status_and_calibration_next(self.asset, self.specific)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
@@ -444,6 +473,7 @@ class Assets(object):
             return {
                 'asset': self.asset,
                 'asset_softwares': self.get_latest_softwares_version(),
+                'last_config': self.get_last_config(),
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
             }
@@ -454,7 +484,7 @@ class Assets(object):
         else:
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
-        # no manual update if asset is linked with RTA
+        # No manual update if asset is linked with RTA.
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
             self.asset.tenant_id = self.form['tenant_id']
@@ -465,7 +495,12 @@ class Assets(object):
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
-        self.asset.site_id = self.form.get('site_id')
+        new_site_id = int(self.form.get('site_id')) if self.form.get('site_id') else None
+        if new_site_id != self.asset.site_id:
+            self.add_site_change_event(new_site_id)
+
+        self.asset.site_id = new_site_id
+
         self.asset.current_location = self.form.get('current_location')
 
         self.asset.notes = self.form.get('notes')
@@ -482,7 +517,7 @@ class Assets(object):
         # are.
         if self.form.get('event-removed'):
             nb_removed_event = len(self.form['event-removed'])
-            nb_active_event = self.asset.history('asc', filter_software=True).count()
+            nb_active_event = self.asset.history('asc', filter_config=True).count()
             if nb_active_event <= nb_removed_event:
                 return {
                     'asset': self.asset,

@@ -7,7 +7,7 @@ from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Uni
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
-from asset_tracker.constants import CONFIG_STATUS, WARRANTY_DURATION_YEARS
+from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
@@ -49,7 +49,7 @@ class Asset(Model, CreationDateTimeMixin):
             history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
         if filter_config:
-            history = history.join(EventStatus).filter(EventStatus.status_id.notin_(CONFIG_STATUS))
+            history = history.join(EventStatus).filter(EventStatus.status_type != 'config')
 
         return history
 
@@ -166,6 +166,7 @@ class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
     position = Column(Integer, nullable=False, unique=True)
     label = Column(String, nullable=False, unique=True)
+    status_type = Column(String, nullable=False)
 
 
 class Site(Model, CreationDateTimeMixin):

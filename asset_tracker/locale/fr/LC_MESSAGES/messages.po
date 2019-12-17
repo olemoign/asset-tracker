@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-04 11:33+0200\n"
+"POT-Creation-Date: 2019-12-13 16:12+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -22,30 +22,35 @@ msgstr ""
 msgid "${app_name} - Device calibration reminder"
 msgstr "${app_name} - Rappel d'étalonnage du matériel"
 
-#: notifications/assets.py:69
+#: notifications/assets.py:68
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr "${app_name} - Rappel date de péremption du matériel consommable"
 
-#: templates/assets-create_update.html:229
+#: templates/pages/assets-create_update.html:226
+#, python-format
+msgid "<b>%(date)s</b> %(creator)s changed site to <b>%(site)s</b>."
+msgstr "<b>%(date)s</b> %(creator)s a assigné le matériel au site <b>%(site)s</b>."
+
+#: templates/pages/assets-create_update.html:231
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr "<b>%(date)s</b> %(creator)s a défini le statut <b>%(status)s</b>."
 
-#: templates/assets-create_update.html:218
+#: templates/pages/assets-create_update.html:216
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr "<b>%(date)s</b> %(software)s mis à jour en version %(version)s."
 
-#: templates/assets-create_update.html:223
+#: templates/pages/assets-create_update.html:221
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr "<b>%(date)s</b> Configuration mise à jour."
 
-#: templates/assets-create_update.html:159
+#: templates/pages/assets-create_update.html:157
 msgid "Activation"
 msgstr "Mise en service"
 
-#: templates/assets-create_update.html:170
+#: templates/pages/assets-create_update.html:168
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
@@ -53,12 +58,13 @@ msgstr "Ajouter Événement"
 msgid "An error occured. Please retry later."
 msgstr "Une erreur est survenue. Veuillez réessayer dans quelques instants."
 
-#: templates/assets-create_update.html:41 templates/assets-list.html:33
+#: templates/pages/assets-create_update.html:39
+#: templates/pages/assets-list.html:31
 msgid "Asset ID"
 msgstr "ID"
 
-#: templates/assets-list.html:4 templates/assets-list.html:14
-#: templates/menu.html:21
+#: templates/menu.html:21 templates/pages/assets-list.html:4
+#: templates/pages/assets-list.html:12
 msgid "Assets"
 msgstr "Matériels"
 
@@ -70,12 +76,12 @@ msgstr "Biosys - Parsys"
 msgid "Blood analyser - PTS Cardiochek"
 msgstr "Analyseur sanguin - PTS Cardiochek"
 
-#: templates/assets-create_update.html:93
+#: templates/pages/assets-create_update.html:91
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
-#: templates/assets-create_update.html:244
-#: templates/sites-create_update.html:75
+#: templates/pages/assets-create_update.html:246
+#: templates/pages/sites-create_update.html:73
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -83,7 +89,7 @@ msgstr "Annuler"
 msgid "Cardialys - Parsys"
 msgstr "Cardialys - Parsys"
 
-#: templates/assets-create_update.html:59
+#: templates/pages/assets-create_update.html:57
 msgid "Cart"
 msgstr "Chariot"
 
@@ -91,7 +97,7 @@ msgstr "Chariot"
 msgid "Company"
 msgstr "Entreprise"
 
-#: templates/assets-create_update.html:110
+#: templates/pages/assets-create_update.html:108
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -107,32 +113,33 @@ msgstr "Connecté"
 msgid "Consumables case VCS - Parsys"
 msgstr "Valise de consommables station - Parsys"
 
-#: templates/sites-create_update.html:68 templates/sites-list.html:29
+#: templates/pages/sites-create_update.html:66
+#: templates/pages/sites-list.html:27
 msgid "Contact"
 msgstr "Contact"
 
-#: templates/assets-create_update.html:88
+#: templates/pages/assets-create_update.html:86
 msgid "Current location"
 msgstr "Position actuelle"
 
-#: templates/assets-list.html:35
+#: templates/pages/assets-list.html:33
 msgid "Customer"
 msgstr "Client"
 
-#: templates/assets-create_update.html:67
+#: templates/pages/assets-create_update.html:65
 msgid "Customer ID (Subscription ID)"
 msgstr "ID Client (Souscription)"
 
-#: templates/assets-create_update.html:70
+#: templates/pages/assets-create_update.html:68
 msgid "Customer name"
 msgstr "Nom du client"
 
-#: templates/assets-create_update.html:180 templates/macros.html:64
-#: templates/macros.html:69
+#: templates/macros.html:65 templates/macros.html:70
+#: templates/pages/assets-create_update.html:178
 msgid "DD/MM/YYYY"
 msgstr "JJ/MM/AAAA"
 
-#: templates/assets-create_update.html:180
+#: templates/pages/assets-create_update.html:178
 msgid "Date"
 msgstr "Date"
 
@@ -155,11 +162,12 @@ msgstr "Dermatoscope - Firefly DE300A"
 msgid "Distributor checkup"
 msgstr "Vérification distributeur"
 
-#: templates/sites-create_update.html:70 templates/sites-list.html:31
+#: templates/pages/sites-create_update.html:68
+#: templates/pages/sites-list.html:29
 msgid "Email"
 msgstr "Email"
 
-#: templates/assets-create_update.html:187
+#: templates/pages/assets-create_update.html:185
 msgid "Equipments"
 msgstr "Équipements"
 
@@ -167,15 +175,15 @@ msgstr "Équipements"
 msgid "Error"
 msgstr "Erreur"
 
-#: templates/macros.html:63
+#: templates/macros.html:64
 msgid "Expiration date - lancets"
 msgstr "Date d'expiration - lancettes"
 
-#: templates/macros.html:68
+#: templates/macros.html:69
 msgid "Expiration date - test strips"
 msgstr "Date d'expiration - bandelettes"
 
-#: templates/assets-list.html:22
+#: templates/pages/assets-list.html:20
 msgid "Extract"
 msgstr "Extraire"
 
@@ -183,11 +191,11 @@ msgstr "Extraire"
 msgid "Glucometer - Beurer GL50"
 msgstr "Glucomètre - Beurer GL50"
 
-#: templates/assets-create_update.html:64
+#: templates/pages/assets-create_update.html:62
 msgid "Hardware version"
 msgstr "Version du matériel"
 
-#: templates/assets-create_update.html:214
+#: templates/pages/assets-create_update.html:212
 msgid "History"
 msgstr "Historique"
 
@@ -235,39 +243,39 @@ msgstr "En transit vers le distributeur"
 msgid "Incident declared"
 msgstr "Incident déclaré"
 
-#: views/assets.py:337
+#: views/assets.py:354
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:327
+#: views/assets.py:344
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:352
+#: views/assets.py:372
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:230
+#: views/assets.py:245
 msgid "Invalid equipments."
 msgstr "Équipements invalides."
 
-#: views/assets.py:343
+#: views/assets.py:360
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:369
+#: views/assets.py:389
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:358 views/assets.py:364
+#: views/assets.py:378 views/assets.py:384
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:332
+#: views/assets.py:349
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:323 views/sites.py:81
+#: views/assets.py:340 views/sites.py:85
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -275,7 +283,7 @@ msgstr "Tenant invalide."
 msgid "It looks like this was the result of either:"
 msgstr "Cela peut être le résultat:"
 
-#: templates/assets-create_update.html:160
+#: templates/pages/assets-create_update.html:158
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
@@ -283,51 +291,57 @@ msgstr "Dernière calibration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: views/assets.py:259
+#: views/assets.py:277
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
-#: templates/sites-create_update.html:39 templates/sites-list.html:26
+#: templates/pages/sites-create_update.html:37
+#: templates/pages/sites-list.html:24
 msgid "Name"
 msgstr "Nom"
 
-#: views/sites.py:90
+#: views/sites.py:94
 msgid "Name already exists."
 msgstr "Ce nom existe déjà."
 
-#: views/sites.py:85
+#: views/sites.py:89
 msgid "Name is required."
 msgstr "Le nom est requis."
 
-#: templates/assets-list.html:17 templates/sites-list.html:17
+#: templates/pages/assets-list.html:15 templates/pages/sites-list.html:15
 msgid "New"
 msgstr "Créer"
 
-#: templates/assets-create_update.html:10
+#: templates/pages/assets-create_update.html:10
 msgid "New asset"
 msgstr "Nouveau matériel"
 
-#: templates/sites-create_update.html:9
+#: templates/pages/sites-create_update.html:9
 msgid "New site"
 msgstr "Nouveau site"
 
-#: templates/assets-create_update.html:161 templates/assets-list.html:37
+#: templates/pages/assets-create_update.html:159
+#: templates/pages/assets-list.html:35
 msgid "Next calibration"
 msgstr "Prochaine calibration"
 
-#: templates/assets-create_update.html:116
+#: templates/pages/assets-create_update.html:114
 msgid "No configuration registered."
 msgstr "Aucune configuration enregistrée."
 
-#: templates/assets-create_update.html:133
+#: templates/pages/assets-create_update.html:131
 msgid "No software registered."
 msgstr "Aucun logiciel enregistré."
+
+#: templates/pages/assets-create_update.html:229
+msgid "None"
+msgstr "Aucun"
 
 #: templates/errors/404.html:144
 msgid "Not found"
 msgstr "Non trouvée"
 
-#: templates/assets-create_update.html:207
+#: templates/pages/assets-create_update.html:205
 msgid "Notes"
 msgstr "Notes"
 
@@ -347,7 +361,8 @@ msgstr "Otoscope - Firefly DE500A"
 msgid "Page Not Found"
 msgstr "Page non trouvée"
 
-#: templates/sites-create_update.html:69 templates/sites-list.html:30
+#: templates/pages/sites-create_update.html:67
+#: templates/pages/sites-list.html:28
 msgid "Phone"
 msgstr "Téléphone"
 
@@ -360,7 +375,7 @@ msgstr ""
 "Nous ne pouvons garantir la fiabilité des résultats de diagnostic si la "
 "date de péremption du matériel consommable est dépassée."
 
-#: templates/assets-create_update.html:158
+#: templates/pages/assets-create_update.html:156
 msgid "Production"
 msgstr "Production"
 
@@ -368,7 +383,7 @@ msgstr "Production"
 msgid "Replacement ordered"
 msgstr "Remplacement demandé"
 
-#: templates/menu.html:28
+#: templates/menu.html:28 templates/pages/settings.html:4
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -376,7 +391,7 @@ msgstr "Paramètres"
 msgid "Ship"
 msgstr "Bateau"
 
-#: templates/assets-list.html:30
+#: templates/pages/assets-list.html:28
 msgid "Show decommissioned assets"
 msgstr "Afficher les matériels hors service"
 
@@ -387,16 +402,21 @@ msgstr "Afficher les matériels hors service"
 msgid "Sincerely"
 msgstr "Cordialement"
 
-#: templates/assets-create_update.html:84 templates/assets-list.html:36
+#: templates/pages/assets-create_update.html:82
+#: templates/pages/assets-list.html:34
 msgid "Site"
 msgstr "Site"
 
-#: views/sites.py:94
+#: config.json:140
+msgid "Site change"
+msgstr "Changement de site"
+
+#: views/sites.py:98
 msgid "Site type is required."
 msgstr "Le type du Site est requis."
 
-#: templates/menu.html:22 templates/sites-list.html:4
-#: templates/sites-list.html:14
+#: templates/menu.html:22 templates/pages/sites-list.html:4
+#: templates/pages/sites-list.html:12
 msgid "Sites"
 msgstr "Sites"
 
@@ -404,7 +424,7 @@ msgstr "Sites"
 msgid "Software update"
 msgstr "MAJ logicielle"
 
-#: templates/assets-create_update.html:128
+#: templates/pages/assets-create_update.html:126
 msgid "Softwares versions"
 msgstr "Versions logicielles"
 
@@ -416,15 +436,16 @@ msgstr "La page que vous avez demandée n'existe pas."
 msgid "Spirometer - Spiromir MiniSpir Light"
 msgstr "Spiromètre - Spiromir MiniSpir Light"
 
-#: templates/assets-create_update.html:60
+#: templates/pages/assets-create_update.html:58
 msgid "Station"
 msgstr "Station"
 
-#: templates/assets-create_update.html:145 templates/assets-list.html:38
+#: templates/pages/assets-create_update.html:143
+#: templates/pages/assets-list.html:36
 msgid "Status"
 msgstr "Statut"
 
-#: views/assets.py:487
+#: views/assets.py:517
 msgid "Status not removed, an asset cannot have no status."
 msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut."
 
@@ -432,12 +453,12 @@ msgstr "Statuts non supprimés, un matériel ne peut pas ne pas avoir de statut.
 msgid "Stethoscope - RNK PCP-USB"
 msgstr "Stéthoscope - RNK PCP-USB"
 
-#: templates/assets-create_update.html:245
-#: templates/sites-create_update.html:76
+#: templates/pages/assets-create_update.html:247
+#: templates/pages/sites-create_update.html:74
 msgid "Submit"
 msgstr "Valider"
 
-#: templates/assets-create_update.html:61
+#: templates/pages/assets-create_update.html:59
 msgid "Telecardia"
 msgstr "Télécardia"
 
@@ -449,8 +470,10 @@ msgstr "Télécardia - Parsys"
 msgid "Telecardia charging base - Parsys"
 msgstr "Base de chargement Télécardia - Parsys"
 
-#: templates/assets-create_update.html:43 templates/assets-list.html:34
-#: templates/sites-create_update.html:42 templates/sites-list.html:28
+#: templates/pages/assets-create_update.html:41
+#: templates/pages/assets-list.html:32
+#: templates/pages/sites-create_update.html:40
+#: templates/pages/sites-list.html:26
 msgid "Tenant"
 msgstr "Tenant"
 
@@ -469,7 +492,7 @@ msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)
 msgid "Thermometer - Foracare IR21"
 msgstr "Thermomètre - Foracare IR21"
 
-#: views/assets.py:318
+#: views/assets.py:335
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
@@ -482,8 +505,9 @@ msgstr "Pour accéder à l'asset, suivez "
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: templates/assets-create_update.html:57 templates/sites-create_update.html:53
-#: templates/sites-list.html:27
+#: templates/pages/assets-create_update.html:55
+#: templates/pages/sites-create_update.html:51
+#: templates/pages/sites-list.html:25
 msgid "Type"
 msgstr "Type"
 
@@ -491,7 +515,7 @@ msgstr "Type"
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
-#: templates/assets-create_update.html:162
+#: templates/pages/assets-create_update.html:160
 msgid "Warranty end"
 msgstr "Fin de garantie"
 
@@ -526,7 +550,7 @@ msgstr "ou accéder à"
 msgid "this link"
 msgstr "ce lien"
 
-#: templates/assets-create_update.html:98
+#: templates/pages/assets-create_update.html:96
 msgid "years"
 msgstr "ans"
 

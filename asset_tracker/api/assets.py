@@ -17,6 +17,19 @@ class Assets(object):
     def __init__(self, request):
         self.request = request
 
+    def add_site_change_event(self, asset, creator_id, creator_alias):
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one()
+
+        event = models.Event(
+            date=datetime.utcnow().date(),
+            creator_id=creator_id,
+            creator_alias=creator_alias,
+            status=status,
+        )
+        # noinspection PyProtectedMember
+        asset._history.append(event)
+        self.request.db_session.add(event)
+
     def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
         """Create/Update an asset based on information from RTA.
         Find and update asset information if asset exists in AssetTracker or create it.
@@ -28,11 +41,21 @@ class Assets(object):
             creator_id (str): unique id to identify the user
             creator_alias (str): '{first_name} {last_name}'
         """
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
+        if 'marlink' in specific:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+        else:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
+
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
 
         if asset:
             if asset.tenant_id != tenant_id:
+                if asset.site_id:
+                    self.add_site_change_event(asset, creator_id, creator_alias)
+
                 # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
                 # be valid anymore.
                 asset.site_id = None
@@ -50,6 +73,9 @@ class Assets(object):
                 return
 
             if asset.tenant_id != tenant_id:
+                if asset.site_id:
+                    self.add_site_change_event(asset, creator_id, creator_alias)
+
                 # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
                 # be valid anymore.
                 asset.site_id = None
@@ -60,13 +86,6 @@ class Assets(object):
 
         # New Asset.
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
-
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
-        if 'marlink' in specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
-        else:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
         asset = models.Asset(
             asset_type='station',
