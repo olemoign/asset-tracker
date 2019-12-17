@@ -162,12 +162,10 @@ class Assets(object):
 
         tenants = self.get_create_read_tenants()
 
-        sites = self.get_site_data(tenants)
-
         return {
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
-            'sites': sites,
+            'sites': self.get_site_data(tenants),
             'statuses': statuses,
             'tenants': tenants,
         }
@@ -236,7 +234,11 @@ class Assets(object):
         """Format form content according to our needs.
         In particular, make sure that inputs which can be list are lists in all cases, even if no data was inputed.
         """
-        self.form = {key: (value if value != '' else None) for key, value in self.request.POST.mixed().items()}
+        self.form = {
+            key: value if value != '' else None
+            for key, value in self.request.POST.mixed().items()
+        }
+
         # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
         # doesn't behave weirdly.
         equipment_families = self.form.get('equipment-family')
@@ -495,7 +497,7 @@ class Assets(object):
         else:
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
-        # no manual update if asset is linked with RTA
+        # No manual update if asset is linked with RTA.
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
             self.asset.tenant_id = self.form['tenant_id']
@@ -506,8 +508,8 @@ class Assets(object):
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
 
-        new_site_id = self.form.get('site_id')
-        if str(new_site_id) != str(self.asset.site_id):
+        new_site_id = int(self.form.get('site_id')) if self.form.get('site_id') else None
+        if new_site_id != self.asset.site_id:
             self.add_site_change_event(new_site_id)
 
         self.asset.site_id = new_site_id
