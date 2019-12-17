@@ -14,7 +14,6 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
-from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
@@ -138,12 +137,9 @@ class Assets(object):
             status_id=status.id,
         )
 
-        try:
-            self.request.db_session.query(models.Site).filter_by(id=new_site_id).one()
-            event.extra = json.dumps({'site_id': new_site_id})
-        except (MultipleResultsFound, NoResultFound) as error:
-            capture_exception(error)
-            self.request.logger_technical.info(f'Invalid site: {new_site_id}.')
+        if new_site_id:
+            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
 
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -158,7 +154,7 @@ class Assets(object):
             family.model_translated = self.request.localizer.translate(family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(models.EventStatus.status_type != 'config')
+            .filter(models.EventStatus.status_type != 'config').all()
 
         tenants = self.get_create_read_tenants()
 
@@ -210,11 +206,11 @@ class Assets(object):
 
     def get_last_config(self):
         """Get last version of configuration updates."""
-        last_config = self.asset.history('desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'config_update').first()
+        last_config = self.asset.history('desc').join(models.EventStatus) \
+            .filter(models.EventStatus.status_id == 'config_update').first()
 
         if last_config is None:
-            return None
+            return
 
         return last_config.extra_json.get('config', None)
 
@@ -222,13 +218,13 @@ class Assets(object):
         """Get all sites corresponding to current tenants. Sites will be filtered according to selected tenant in
         front/js.
         """
-        tenants_list = (tenant['id'] for tenant in tenants)
+        tenants_ids = {tenant['id'] for tenant in tenants}
 
         sites = self.request.db_session.query(models.Site) \
-            .filter(models.Site.tenant_id.in_(tenants_list)) \
+            .filter(models.Site.tenant_id.in_(tenants_ids)) \
             .order_by(func.lower(models.Site.name))
 
-        return sites
+        return {site.site_id: site for site in sites}
 
     def read_form(self):
         """Format form content according to our needs.
@@ -457,21 +453,11 @@ class Assets(object):
                  renderer='pages/assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
-        base_form_data = self.get_base_form_data()
-        assigned_site_history = {}
-
-        for event in self.asset.history('asc'):
-            json_site_id = event.extra_json.get('site_id')
-            site = next((site for site in base_form_data['sites'] if str(site.id) == json_site_id), None)
-            if site:
-                assigned_site_history[json_site_id] = site.name
-
         return {
-            'assigned_site_history': assigned_site_history,
             'asset': self.asset,
             'asset_softwares': self.get_latest_softwares_version(),
             'last_config': self.get_last_config(),
-            **base_form_data,
+            **self.get_base_form_data(),
         }
 
     @view_config(route_name='assets-update', request_method='POST', permission='assets-update',
@@ -487,6 +473,7 @@ class Assets(object):
             return {
                 'asset': self.asset,
                 'asset_softwares': self.get_latest_softwares_version(),
+                'last_config': self.get_last_config(),
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
             }

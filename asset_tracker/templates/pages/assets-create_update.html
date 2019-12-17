@@ -71,7 +71,7 @@
                             <!--suppress HtmlFormInputWithoutLabel -->
                             <select class="form-control hidden" id="site__reference">
                                 <option></option>
-                                {% for site in sites %}
+                                {% for site_id, site in sites.items() %}
                                     <option value="{{ site.id }}" data-tenant_id="{{ site.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
                                         {{- site.name -}}
                                     </option>
@@ -224,11 +224,12 @@
                                                 </a>
                                             {% elif event.status.status_id == 'site_change' %}
                                                 {% set site_id = event.extra_json.get('site_id') %}
-                                                {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
-                                                {% if site_id %}
-                                                    <b><a href="{{ 'sites-update'|route_path(site_id=site_id) }}">{{ assigned_site_history[site_id] }}</a></b>.
-                                                {% else %}
+                                                {% if site_id == None %}
+                                                    {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
                                                     <b>{{ gettext('None') }}</b>.
+                                                {% elif site_id in sites.keys() %}
+                                                    {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
+                                                    <b><a href="{{ 'sites-update'|route_path(site_id=sites[site_id].id) }}">{{ sites[site_id].name }}</a></b>.
                                                 {% endif %}
                                             {% else %}
                                                 {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
