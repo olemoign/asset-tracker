@@ -68,6 +68,14 @@
                             {{ input(gettext('Email'), 'email') }}
                         </div>
 
+                        <hr>
+                        <h3>{{ gettext('Assets') }}</h3>
+                        {% for asset in site.assets %}
+                            <p><a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">{{ '{} ({})'.format(asset.asset_id, gettext(asset.asset_type|capitalize)) }}</a></p>
+                        {% else %}
+                            {{ gettext('No asset registered.') }}
+                        {% endfor %}
+
                         {% if not update or request.user.is_admin or ('sites-update', site.tenant_id) in principals %}
                             <div class="btn-group pull-right">
                                 <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
