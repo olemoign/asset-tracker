@@ -14,6 +14,7 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
@@ -137,9 +138,12 @@ class Assets(object):
             status_id=status.id,
         )
 
-        new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
-        if new_site:
+        try:
+            self.request.db_session.query(models.Site).filter_by(id=new_site_id).one()
             event.extra = json.dumps({'site_id': new_site_id})
+        except (MultipleResultsFound, NoResultFound) as error:
+            capture_exception(error)
+            self.request.logger_technical.info(f'Invalid site: {new_site_id}.')
 
         # noinspection PyProtectedMember
         self.asset._history.append(event)
