@@ -24,6 +24,13 @@ SITE_TYPES = [
 ]
 WARRANTY_DURATION_YEARS = 2
 
+ASSET_TYPES = [
+    ('backpack', _('Backpack')),
+    ('cart', _('Cart')),
+    ('station', _('Station')),
+    ('telecardia', _('Telecardia')),
+]
+
 PATH = Path(__file__).resolve().parent
 TEMPLATES_PATH = PATH / 'templates'
 TRANSLATIONS_PATH = PATH / 'locale'

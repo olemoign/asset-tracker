@@ -16,7 +16,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views import FormException
 
 
@@ -158,7 +158,10 @@ class Assets(object):
 
         tenants = self.get_create_read_tenants()
 
+        asset_types = [(item[0], self.request.localizer.translate(item[1])) for item in ASSET_TYPES]
+
         return {
+            'asset_types': sorted(asset_types, key=lambda item: item[1]),
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
             'sites': self.get_site_data(tenants),
@@ -455,6 +458,7 @@ class Assets(object):
                  renderer='pages/assets-create_update.html')
     def update_get(self):
         """Get asset update form: we need the base form data + the asset data."""
+
         return {
             'asset': self.asset,
             'asset_softwares': self.get_latest_softwares_version(),

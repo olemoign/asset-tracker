@@ -56,10 +56,9 @@
                             <div class="col-sm-6 form-group">
                                 <label for="asset_type">{{ gettext('Type') }} *</label>
                                 <select class="form-control" id="asset_type" name="asset_type">
-                                    <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
-                                    <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                    <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
-                                    <option value="backpack"{% if update and asset.asset_type == 'backpack' %} selected{% endif %}>{{ gettext('Backpack') }}</option>
+                                    {% for asset_type in asset_types %}
+                                        <option value="{{ asset_type[0] }}"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ asset_type[1] }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
 
