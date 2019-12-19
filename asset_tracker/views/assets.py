@@ -158,10 +158,11 @@ class Assets(object):
 
         tenants = self.get_create_read_tenants()
 
-        asset_types = [(item[0], self.request.localizer.translate(item[1])) for item in ASSET_TYPES]
+        for asset_type in ASSET_TYPES:
+            asset_type['label_translated'] = self.request.localizer.translate(asset_type['label'])
 
         return {
-            'asset_types': sorted(asset_types, key=lambda item: item[1]),
+            'asset_types': ASSET_TYPES,
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'equipments_families': equipments_families,
             'sites': self.get_site_data(tenants),
