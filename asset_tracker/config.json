@@ -205,6 +205,18 @@
       "model": "Tropical disease test - Ebola - Nal Von Minden"
     }
   ],
+  "consumable_families": [
+    {
+      "family_id": "GZQ2bAmW",
+      "model": "Lancets",
+      "equipment_family_id": "2YUEMLmH"
+    },
+    {
+      "family_id": "6piDwmZt",
+      "model": "Test strips",
+      "equipment_family_id": "2YUEMLmH"
+    }
+  ],
   "status": [
     {
       "status_id": "stock_parsys",

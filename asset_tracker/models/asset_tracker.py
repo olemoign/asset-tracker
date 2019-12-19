@@ -118,6 +118,22 @@ class Asset(Model, CreationDateTimeMixin):
         return self.asset_dates['warranty_end']
 
 
+class Consumable(Model):
+    family_id = Column(Integer, ForeignKey('consumable_family.id'))
+    family = relationship('ConsumableFamily', foreign_keys=family_id, uselist=False)
+
+    equipment_id = Column(Integer, ForeignKey('equipment.id'), nullable=False)
+
+    expiration_date = Column(Date)
+
+
+class ConsumableFamily(Model):
+    family_id = Column(String, nullable=False, unique=True)
+    model = Column(String, nullable=False, unique=True)
+
+    equipment_family_id = Column(Integer, ForeignKey('equipment_family.id'))
+
+
 class Equipment(Model):
     family_id = Column(Integer, ForeignKey('equipment_family.id'))
     family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
