@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import date, equipment_box, input with context %}
+{% from 'macros.html' import date, equipment_box, equipment_consumables_reference, input with context %}
 
 {% set is_linked = asset and asset.is_linked %}
 {% set update = asset and asset.id %}
@@ -204,6 +204,7 @@
 
                             {# Reference: its purpose is to be cloned in equipment_list. #}
                             {{ equipment_box(reference=True) }}
+                            {{ equipment_consumables_reference() }}
 
                             <div id="equipments__list" class="auto-clear">
                                 {% for equipment in (asset or {}).equipments %}

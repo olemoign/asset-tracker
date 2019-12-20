@@ -72,17 +72,33 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
   $(this).parents('.equipment__block').remove();
 });
 
-$(document).on('change', '.equipment__select', function addGlucometerExpirations() {
+$(document).on('change', '.equipment__select', function addConsumableExpirationDates(event) {
   /**
-   * Add expiration dates for Glucometer equipment
+   * Add expiration dates for equipments that possess consumables
    */
-  const expirationDateFields = $(this).parents('.equipment__block').find('.expiration_date_fields');
+  var expirationDatesContainer = $(this).parents('.equipment__block').find('.expiration_date_fields');
 
-  if ($(this).val() === GLUCOMETER_FAMILY_ID) {
-    expirationDateFields.removeClass('hidden');
-  } else {
-    expirationDateFields.addClass('hidden');
-    expirationDateFields.find('input').val('');
+  var selectedValue = event.target.value;
+  var consumablesModels = $('#equipment__reference').data('consumablesModels');
+
+  if (consumablesModels[selectedValue]) {
+    var equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
+
+    equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
+      var consumableEl = $('#equipment_consumables__reference').clone().removeAttr('id').removeClass('hidden');
+      var consumableId = 'expiration_date_' + element[0];
+
+      var consumableLabel = consumableEl.find('label');
+      consumableLabel.attr('for', consumableId);
+      consumableLabel.text(consumableLabel.text() + element[1]);
+
+      var consumableInput = consumableEl.find('input');
+      consumableInput.attr('id', consumableId);
+      consumableInput.attr('name', consumableId);
+      consumableInput.val();
+
+      expirationDatesContainer.append(consumableEl);
+    });
   }
 });
 

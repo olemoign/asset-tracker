@@ -29,7 +29,8 @@
 {%- endmacro %}
 
 {% macro equipment_box(equipment=None, reference=False) -%}
-    <div{% if reference %} id="equipment__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
+    <div{% if reference %} id="equipment__reference" data-consumables-models='{{ consumables_models|tojson }}'{% else %}id="equipment__{{ equipment.family.family_id }}"{% endif %}
+            class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
         <div class="well well-sm">
 
             {# Select equipment. #}
@@ -59,19 +60,31 @@
             </div>
 
             {# Expiration date fields. #}
-            <div class="form-group expiration_date_fields{% if reference or (equipment and equipment.family.family_id != GLUCOMETER_ID) %} hidden{% endif %}">
-                <div class="form-group" >
-                    <label for="equipment-expiration_date_1">{{ gettext('Expiration date - lancets') }}</label>
-                    <input type="date" class="form-control" name="equipment-expiration_date_1" id="equipment-expiration_date_1" placeholder="{{ gettext('DD/MM/YYYY') }}"
-                        {% if equipment and equipment.expiration_date_1 %} value="{{ equipment.expiration_date_1 }}"{% endif %}>
-                </div>
-                <div class="form-group" >
-                    <label for="equipment-expiration_date_2">{{ gettext('Expiration date - test strips') }}</label>
-                    <input type="date" class="form-control" name="equipment-expiration_date_2" id="equipment-expiration_date_2" placeholder="{{ gettext('DD/MM/YYYY') }}"
-                        {% if equipment and equipment.expiration_date_2 %} value="{{ equipment.expiration_date_2 }}"{% endif %}>
-                </div>
+            <div class="form-group expiration_date_fields">
+                {% if not reference %}
+                    {% for consumable_family_id in consumables_models[equipment.family.family_id] %}
+                        {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family_id] %}
+                        {% set expiration_date_id = 'expiration_date_' ~ consumable_family_id %}
+                        {% if consumable_family_id in expiration_dates[equipment.family.family_id] %}
+                            {% set expiration_date = expiration_dates[equipment.family.family_id][consumable_family_id] %}
+                        {% endif %}
+                         <div class="form-group">
+                            <label for={{ expiration_date_id }}>{{ gettext('Expiration date') }} - {{ consumable_family_model }}</label>
+                            <input type="date" class="form-control" name={{ expiration_date_id }} id={{ expiration_date_id }} placeholder="{{ gettext('DD/MM/YYYY') }}"
+                               {% if expiration_date %}value="{{ expiration_date }}"{% endif %}>
+                         </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-
         </div>
+    </div>
+{%- endmacro %}
+
+{% macro equipment_consumables_reference() %}
+    <div id="equipment_consumables__reference" class="form-group equipment_consumables hidden">
+         <div class="form-group">
+            <label>{{ gettext('Expiration date') }} - </label>
+            <input type="date" class="form-control" placeholder="{{ gettext('DD/MM/YYYY') }}">
+         </div>
     </div>
 {%- endmacro %}

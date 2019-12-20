@@ -132,6 +132,8 @@ class ConsumableFamily(Model):
     model = Column(String, nullable=False, unique=True)
 
     equipment_family_id = Column(Integer, ForeignKey('equipment_family.id'))
+    equipment_family = relationship('EquipmentFamily', foreign_keys=equipment_family_id, backref='consumable_families',
+                                    uselist=False)
 
 
 class Equipment(Model):
@@ -144,6 +146,8 @@ class Equipment(Model):
 
     expiration_date_1 = Column(Date)
     expiration_date_2 = Column(Date)
+
+    consumables = relationship('Consumable', backref='equipment')
 
 
 class EquipmentFamily(Model):
