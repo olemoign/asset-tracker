@@ -71,35 +71,37 @@ class Assets(object):
 
     def add_equipments(self):
         """Add asset's equipments."""
-        # Equipment box can be completely empty.
-        zip_equipment = zip(
-            self.form['equipment-family'],
-            self.form['equipment-serial_number'],
-            self.form['equipment-expiration_date_1'],
-            self.form['equipment-expiration_date_2'],
-        )
+        groups = []
+        for field in self.form:
+            if field.startswith('equipment-family'):
+                split_field_name = field.split('#')
+                if len(split_field_name) > 1:
+                    groups.append(split_field_name[1])
 
-        for family_id, serial_number, expiration_date_1, expiration_date_2 in zip_equipment:
-            if not family_id and not serial_number:
+        for group in groups:
+            family_id = self.form.get(f'equipment-family#{group}')
+            if not family_id:
                 continue
 
-            if expiration_date_1:
-                expiration_date_1 = datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
-            else:
-                expiration_date_1 = None
-
-            if expiration_date_2:
-                expiration_date_2 = datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
-            else:
-                expiration_date_2 = None
-
             family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
+
             equipment = models.Equipment(
                 family=family,
-                serial_number=serial_number,
-                expiration_date_1=expiration_date_1,
-                expiration_date_2=expiration_date_2,
+                serial_number=self.form.get(f'equipment-serial_number#{group}'),
             )
+
+            if family.consumable_families:
+                for c_family in family.consumable_families:
+                    expiration_date = self.form.get(f'equipment-expiration_date-{c_family.family_id}#{group}')
+
+                    if expiration_date:
+                        equipment.consumables.append(
+                            models.Consumable(
+                                family=c_family,
+                                expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date()
+                            )
+                        )
+
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -186,10 +188,9 @@ class Assets(object):
 
         for equipment in self.asset.equipments:
             if equipment.consumables:
-                expiration_dates[equipment.family.family_id] = {}
+                expiration_dates[equipment.id] = {}
                 for consumable in equipment.consumables:
-                    expiration_dates[equipment.family.family_id][consumable.family.family_id] = \
-                        consumable.expiration_date
+                    expiration_dates[equipment.id][consumable.family.family_id] = consumable.expiration_date
 
         return expiration_dates
 
@@ -262,7 +263,7 @@ class Assets(object):
             for key, value in self.request.POST.mixed().items()
         }
 
-        # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
+        # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipments
         # doesn't behave weirdly.
         equipment_families = self.form.get('equipment-family')
         if not equipment_families:
@@ -278,18 +279,6 @@ class Assets(object):
 
         if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
             raise FormException(_('Invalid equipments.'))
-
-        expiration_dates_1 = self.form.get('equipment-expiration_date_1')
-        if not expiration_dates_1:
-            self.form['equipment-expiration_date_1'] = ['']
-        elif not isinstance(expiration_dates_1, list):
-            self.form['equipment-expiration_date_1'] = [expiration_dates_1]
-
-        expiration_dates_2 = self.form.get('equipment-expiration_date_2')
-        if not expiration_dates_2:
-            self.form['equipment-expiration_date_2'] = ['']
-        elif not isinstance(expiration_dates_2, list):
-            self.form['equipment-expiration_date_2'] = [expiration_dates_2]
 
         events_removed = self.form.get('event-removed')
         if not events_removed:
@@ -394,29 +383,20 @@ class Assets(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        expirations = zip(
-            self.form['equipment-family'],
-            self.form['equipment-expiration_date_1'],
-            self.form['equipment-expiration_date_2'],
-        )
-        for family_id, expiration_date_1, expiration_date_2 in expirations:
-            # form['equipment-family'] can be ['', '']
+        for idx, family_id in enumerate(self.form.get('equipment-family')):
+            # Can contain empty strings
             if family_id:
                 db_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
                 if not db_family:
                     raise FormException(_('Invalid equipment family.'))
 
-                if expiration_date_1:
-                    try:
-                        datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
-                    except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'))
-
-                if expiration_date_2:
-                    try:
-                        datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
-                    except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'))
+                for c_family in db_family.consumable_families:
+                    expiration_date = self.form.get(f'equipment-expiration_date-{c_family.family_id}#{idx}')
+                    if expiration_date:
+                        try:
+                            datetime.strptime(expiration_date, '%Y-%m-%d').date()
+                        except (TypeError, ValueError):
+                            raise FormException(_('Invalid expiration date.'))
 
         for event_id in self.form['event-removed']:
             event = self.asset.history('asc', filter_config=True).filter(models.Event.event_id == event_id).first()
@@ -540,6 +520,9 @@ class Assets(object):
         self.asset.notes = self.form.get('notes')
 
         for equipment in self.asset.equipments:
+            if equipment.consumables:
+                for consumable in equipment.consumables:
+                    self.request.db_session.delete(consumable)
             self.request.db_session.delete(equipment)
         self.add_equipments()
 

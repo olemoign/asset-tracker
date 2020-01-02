@@ -39,7 +39,7 @@
                 {% else %}
                     {% set equipment_family_id = 'equipment-family#' ~ index  %}
                 {% endif %}
-                <select class="form-control equipment__select" name="{{ equipment_family_id }}" title="equipment-family">
+                <select class="form-control equipment__select" name="{{ equipment_family_id }}" id="{{ equipment_family_id }}" title="equipment-family">
                     <option></option>
                     {% for family in equipments_families|sort(attribute='model_translated') %}
                         <option value="{{ family.family_id }}"{% if equipment and equipment.family_id == family.id %} selected{% endif %}>
@@ -72,11 +72,11 @@
             {# Expiration date fields. #}
             <div class="form-group expiration_date_fields">
                 {% if not reference %}
-                    {% for consumable_family_id in consumables_models[equipment.family.family_id] %}
-                        {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family_id] %}
-                        {% set expiration_date_id = 'equipment-expiration_date-' ~ consumable_family_id ~ '#' ~ index %}
-                        {% if consumable_family_id in expiration_dates[equipment.family.family_id] %}
-                            {% set expiration_date = expiration_dates[equipment.family.family_id][consumable_family_id] %}
+                    {% for consumable_family in equipment.family.consumable_families %}
+                        {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family.family_id] %}
+                        {% set expiration_date_id = 'equipment-expiration_date-' ~ consumable_family.family_id ~ '#' ~ index %}
+                        {% if consumable_family.family_id in expiration_dates[equipment.id] %}
+                            {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
                         {% endif %}
                          <div class="form-group">
                             <label for="{{ expiration_date_id }}">{{ gettext('Expiration date') }} - {{ consumable_family_model }}</label>
@@ -84,6 +84,7 @@
                                {% if expiration_date %}value="{{ expiration_date }}"{% endif %}>
                          </div>
                     {% endfor %}
+
                 {% endif %}
             </div>
         </div>
