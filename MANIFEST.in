@@ -1,5 +1,4 @@
-include *.cfg *.ini *.rst *.txt
-recursive-include asset_tracker *.css *.gif .htaccess *.ico *.jpg *.js *.json *.html *.mak *.mako *.png *.pt *.txt *.xml
+recursive-include asset_tracker/locale *.mo
 recursive-include asset_tracker/static *
-recursive-include asset_tracker/locale *
 recursive-include asset_tracker/templates *
+include asset_tracker/config.json
