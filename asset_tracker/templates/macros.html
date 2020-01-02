@@ -29,8 +29,7 @@
 {%- endmacro %}
 
 {% macro equipment_box(equipment=None, reference=False) -%}
-    <div{% if reference %} id="equipment__reference" data-consumables-models='{{ consumables_models|tojson }}'{% else %}id="equipment__{{ equipment.family.family_id }}"{% endif %}
-            class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
+    <div id="{% if reference %}equipment__reference{% endif %}" class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
         <div class="well well-sm">
 
             {# Select equipment. #}

@@ -79,7 +79,7 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
   var expirationDatesContainer = $(this).parents('.equipment__block').find('.expiration_date_fields');
 
   var selectedValue = event.target.value;
-  var consumablesModels = $('#equipment__reference').data('consumablesModels');
+  var consumablesModels = $('#equipments__container').data('consumablesModels');
 
   if (consumablesModels[selectedValue]) {
     var equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
