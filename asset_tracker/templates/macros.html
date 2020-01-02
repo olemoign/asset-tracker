@@ -74,7 +74,7 @@
                 {% if not reference %}
                     {% for consumable_family_id in consumables_models[equipment.family.family_id] %}
                         {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family_id] %}
-                        {% set expiration_date_id = 'equipment-_expiration_date-' ~ consumable_family_id ~ '#' ~ index %}
+                        {% set expiration_date_id = 'equipment-expiration_date-' ~ consumable_family_id ~ '#' ~ index %}
                         {% if consumable_family_id in expiration_dates[equipment.family.family_id] %}
                             {% set expiration_date = expiration_dates[equipment.family.family_id][consumable_family_id] %}
                         {% endif %}

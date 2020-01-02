@@ -96,10 +96,11 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
 
   if (consumablesModels[selectedValue]) {
     const equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
+    equipmentsConsumablesEntries.sort((a, b) => a[1].localeCompare(b[1]));
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
       const consumableEl = $('#equipment_consumables__reference').clone().removeAttr('id').removeClass('hidden');
-      const consumableId = 'expiration_date-' + element[0] + '#' + equipmentBlockDigit;
+      const consumableId = 'equipment-expiration_date-' + element[0] + '#' + equipmentBlockDigit;
 
       const consumableLabel = consumableEl.find('label');
       consumableLabel.attr('for', consumableId);
