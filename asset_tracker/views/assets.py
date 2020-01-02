@@ -160,8 +160,7 @@ class Assets(object):
             if family.consumable_families:
                 consumables_models[family.family_id] = {}
                 for c_family in family.consumable_families:
-                    consumables_models[family.family_id][c_family.family_id] = \
-                        localizer.translate(c_family.model)
+                    consumables_models[family.family_id][c_family.family_id] = localizer.translate(c_family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()

@@ -1,7 +1,5 @@
 'use strict';
 
-const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
-
 
 function manageSites() {
   /**
@@ -61,8 +59,21 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   /**
    * Add a new equipment when the user clicks the '+' sign.
    */
-  $('#equipment__reference').clone().removeAttr('id').removeClass('hidden')
-    .appendTo('#equipments__list');
+  const equipmentBlock = $('#equipment__reference').clone();
+  const nextDigit = $('.equipment__block').length;
+
+  const equipmentSelect = equipmentBlock.find('.equipment__select');
+
+  const newSelectName = equipmentSelect.eq(0).attr('name') + '#' + nextDigit;
+  $('label[for="' + equipmentSelect.eq(0).attr('name') + '"]').attr('for', newSelectName);
+  equipmentSelect.attr('name', newSelectName);
+
+  const serialNumberInput = equipmentBlock.find('.equipment__serial_number_id');
+  const newSerialNumberName = serialNumberInput.eq(0).attr('name') + '#' + nextDigit;
+  $('label[for="' + serialNumberInput.eq(0).attr('name') + '"]').attr('for', newSerialNumberName);
+  serialNumberInput.attr('id', newSerialNumberName).attr('name', newSerialNumberName);
+
+  equipmentBlock.removeAttr('id').removeClass('hidden').appendTo('#equipments__list');
 });
 
 $(document).on('click', '.equipment__remove', function removeEquipment() {
@@ -76,23 +87,25 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
   /**
    * Add expiration dates for equipments that possess consumables
    */
-  var expirationDatesContainer = $(this).parents('.equipment__block').find('.expiration_date_fields');
+  const expirationDatesContainer = $(this).parents('.equipment__block').find('.expiration_date_fields');
 
-  var selectedValue = event.target.value;
-  var consumablesModels = $('#equipments__container').data('consumablesModels');
+  const equipmentBlockDigit = $(this).attr('name').split('#')[1];
+
+  const selectedValue = event.target.value;
+  const consumablesModels = $('#equipments__container').data('consumablesModels');
 
   if (consumablesModels[selectedValue]) {
-    var equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
+    const equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
-      var consumableEl = $('#equipment_consumables__reference').clone().removeAttr('id').removeClass('hidden');
-      var consumableId = 'expiration_date_' + element[0];
+      const consumableEl = $('#equipment_consumables__reference').clone().removeAttr('id').removeClass('hidden');
+      const consumableId = 'expiration_date-' + element[0] + '#' + equipmentBlockDigit;
 
-      var consumableLabel = consumableEl.find('label');
+      const consumableLabel = consumableEl.find('label');
       consumableLabel.attr('for', consumableId);
       consumableLabel.text(consumableLabel.text() + element[1]);
 
-      var consumableInput = consumableEl.find('input');
+      const consumableInput = consumableEl.find('input');
       consumableInput.attr('id', consumableId);
       consumableInput.attr('name', consumableId);
       consumableInput.val();
