@@ -70,7 +70,7 @@
             </div>
 
             {# Expiration date fields. #}
-            <div class="form-group">
+            <div class="form-group expiration_date_fields">
                 {% if not reference %}
                     {% for consumable_family in equipment.family.consumable_families %}
                         {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family.family_id] %}

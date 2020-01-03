@@ -93,6 +93,15 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
   const equipmentBlockDigit = $(this).attr('id').split('#')[1];
 
   const selectedValue = event.target.value;
+  const previousValue = $(this).data('prev');
+
+  if (previousValue === selectedValue) {
+    return;
+  }
+
+  $(this).data('prev', selectedValue);
+  expirationDatesContainer.find('.expiration_date_fields').remove();
+
   const consumablesModels = $('#equipments__container').data('consumablesModels');
 
   if (consumablesModels[selectedValue]) {
