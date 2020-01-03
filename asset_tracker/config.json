@@ -62,15 +62,11 @@
     },
     {
       "family_id": "56T5Xr2A",
-      "model": "12-lead wireless ECG - Mortara WAM ECG"
+      "model": "12-lead wireless ECG - Mortara RSCRIBE WAM ECG"
     },
     {
       "family_id": "c494zUZ0",
       "model": "Multiparametrical USB - Biosys Parsys"
-    },
-    {
-      "family_id": "3NFYka4r",
-      "model": "Digital USB stethoscope - RNK PCP-USB"
     },
     {
       "family_id": "1dOrCl44",
@@ -125,6 +121,10 @@
       "model": "USB digital polarizing otoscope - Firefly DE500"
     },
     {
+      "family_id": "aNJN1pqt",
+      "model": "Handheld camera kit SMARTSCROPE - Olphtamoscope - OPTOMED M5 + EY4"
+    },
+    {
       "family_id": "iwAXkRld",
       "model": "Handheld camera kit HORUS - 5 Mpx + General lens - MIIS DSC200P + DGC100"
     },
@@ -177,44 +177,140 @@
       "model": "Intraoral camera 717 - Sopro SoproCare 717 + Dock M-USB2"
     },
     {
-      "family_id": "ZHkCozV6",
-      "model": "Urine test 10 parameters - Nal Von Minden"
-    },
-    {
-      "family_id": "K2rCGteW",
-      "model": "Alcohol and drug test - Nal Von Minden"
-    },
-    {
-      "family_id": "FsJqvibI",
-      "model": "Troponin blood test - Nal Von Minden"
-    },
-    {
-      "family_id": "Nh7AGGHh",
-      "model": "Tropical disease test - Malaria - Nal Von Minden"
-    },
-    {
-      "family_id": "rRSoV4aA",
-      "model": "Tropical disease test - Chikungunya - Nal Von Minden"
-    },
-    {
-      "family_id": "MDXyv1ca",
-      "model": "Tropical disease test - Dengue fever Ag+IgG-IgM - Nal Von Minden"
-    },
-    {
-      "family_id": "QH5cI2kL",
-      "model": "Tropical disease test - Ebola - Nal Von Minden"
+      "family_id": "YpHdh0bj",
+      "model": "Blood tests - Nal Von Minden"
     }
   ],
   "consumable_families": [
     {
       "family_id": "GZQ2bAmW",
-      "model": "Lancets",
+      "model": "Lancets (legacy)",
       "equipment_family_id": "2YUEMLmH"
     },
     {
       "family_id": "6piDwmZt",
-      "model": "Test strips",
+      "model": "Blood glucose test strips",
       "equipment_family_id": "2YUEMLmH"
+    },
+    {
+      "family_id": "7pxKvnE0",
+      "model": "Controle solution for blood glucose meter",
+      "equipment_family_id": "2YUEMLmH"
+    },
+    {
+      "family_id": "8bw8z3pb",
+      "model": "Secure lancing devices",
+      "equipment_family_id": "2YUEMLmH"
+    },
+    {
+      "family_id": "9oL6q5O5",
+      "model": "Blood glucose test strips",
+      "equipment_family_id": "w5wDrPyZ"
+    },
+    {
+      "family_id": "SHkfxK4Y",
+      "model": "Controle solution for blood glucose meter",
+      "equipment_family_id": "w5wDrPyZ"
+    },
+    {
+      "family_id": "6HXBFchC",
+      "model": "Secure lancing devices",
+      "equipment_family_id": "w5wDrPyZ"
+    },
+    {
+      "family_id": "1oIvGBMK",
+      "model": "Adult ECG electrodes with tab (x5000)",
+      "equipment_family_id": "56T5Xr2A"
+    },
+    {
+      "family_id": "6mt6kz7U",
+      "model": "Adult ECG electrodes with tab (x500)",
+      "equipment_family_id": "56T5Xr2A"
+    },
+    {
+      "family_id": "tArmQCE7",
+      "model": "Adult ECG electrodes with tab (x100)",
+      "equipment_family_id": "56T5Xr2A"
+    },
+    {
+      "family_id": "lWETgAY6",
+      "model": "Spirometer nose clip",
+      "equipment_family_id": "Wxxy2Eb5"
+    },
+    {
+      "family_id": "y7QIajC0",
+      "model": "Spirometer disposable turbines",
+      "equipment_family_id": "Wxxy2Eb5"
+    },
+    {
+      "family_id": "ozOhfp0H",
+      "model": "Adult PAD electrodes",
+      "equipment_family_id": "VEgX5jR5"
+    },
+    {
+      "family_id": "mulRy3lG",
+      "model": "Children PAD electrodes",
+      "equipment_family_id": "VEgX5jR5"
+    },
+    {
+      "family_id": "UKKFTDOB",
+      "model": "Defibrillator lithium battery",
+      "equipment_family_id": "VEgX5jR5"
+    },
+    {
+      "family_id": "stNIUezG",
+      "model": "Defibrillator lithium battery",
+      "equipment_family_id": "sxujnZOH"
+    },
+    {
+      "family_id": "1o1MSesM",
+      "model": "Single use ear specula",
+      "equipment_family_id": "TyWY8xNh"
+    },
+    {
+      "family_id": "XKDj2BOi",
+      "model": "Intraoral camera casing",
+      "equipment_family_id": "Oqldhs5Z"
+    },
+    {
+      "family_id": "cgoKw0Pp",
+      "model": "Intraoral camera casing",
+      "equipment_family_id": "q6UessZu"
+    },
+    {
+      "family_id": "ZHkCozV6",
+      "model": "Urine test 10 parameters",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "K2rCGteW",
+      "model": "Alcohol and drug test",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "FsJqvibI",
+      "model": "Troponin blood test",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "Nh7AGGHh",
+      "model": "Tropical disease test - Malaria",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "rRSoV4aA",
+      "model": "Tropical disease test - Chikungunya",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "MDXyv1ca",
+      "model": "Tropical disease test - Dengue fever Ag+IgG-IgM",
+      "equipment_family_id": "YpHdh0bj"
+    },
+    {
+      "family_id": "QH5cI2kL",
+      "model": "Tropical disease test - Ebola",
+      "equipment_family_id": "YpHdh0bj"
     }
   ],
   "status": [
