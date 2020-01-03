@@ -144,9 +144,6 @@ class Equipment(Model):
 
     serial_number = Column(String)
 
-    expiration_date_1 = Column(Date)
-    expiration_date_2 = Column(Date)
-
     consumables = relationship('Consumable', backref='equipment')
 
 
