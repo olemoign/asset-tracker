@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 17:54+0100\n"
+"POT-Creation-Date: 2020-03-10 17:56+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -200,7 +200,7 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/macros.html:80 templates/pages/assets-create_update.html:188
+#: templates/macros.html:81 templates/pages/assets-create_update.html:188
 #: templates/pages/assets-create_update.html:205
 msgid "DD/MM/YYYY"
 msgstr ""
@@ -253,8 +253,8 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: templates/macros.html:79 templates/pages/assets-create_update.html:204
-msgid "Expiration date"
+#: templates/macros.html:71
+msgid "Expiration dates"
 msgstr ""
 
 #: config.json:109

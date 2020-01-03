@@ -120,7 +120,10 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
       consumableInput.attr('id', consumableId).attr('name', consumableId).val();
 
       expirationDatesContainer.append(consumableEl);
+      expirationDatesContainer.find('.equipment__expiration_date_label').removeClass('hidden');
     });
+  } else {
+    expirationDatesContainer.find('.equipment__expiration_date_label').addClass('hidden');
   }
 });
 
