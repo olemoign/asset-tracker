@@ -45,7 +45,7 @@
                                     {% endif %}
                                     {% for tenant in tenants|sort(attribute='name') %}
                                         <option value="{{ tenant.id }}"{% if update and asset.tenant_id == tenant.id %} selected{% endif %}>
-                                            {{- tenant.name -}}
+                                            {{- tenant.parsys_key -}}
                                         </option>
                                     {% endfor %}
                                 </select>

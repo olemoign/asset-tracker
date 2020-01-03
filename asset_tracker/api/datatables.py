@@ -60,7 +60,7 @@ class Assets(object):
             capture_exception(error)
             raise HTTPBadRequest()
 
-        # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
+        # Simulate the user's tenants as a table so that we can filter/sort on tenant_key.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
         full_text_search_attributes = [
@@ -78,7 +78,7 @@ class Assets(object):
         specific_attributes = {
             'site': models.Site.name,
             'status': models.EventStatus.status_id,
-            'tenant_name': tenants.c.tenant_name,
+            'tenant_key': tenants.c.tenant_parsys_key,
         }
 
         try:
@@ -97,7 +97,7 @@ class Assets(object):
             capture_exception(error)
             raise HTTPBadRequest()
 
-        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
+        tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
         assets = []
@@ -118,7 +118,7 @@ class Assets(object):
                 'is_active': is_active,
                 'site': asset.site.name if asset.site else None,
                 'status': status,
-                'tenant_name': tenant_names[asset.tenant_id],
+                'tenant_key': tenant_keys[asset.tenant_id],
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -183,7 +183,7 @@ class Sites(DataTablesAPI):
             capture_exception(error)
             raise HTTPBadRequest()
 
-        # Simulate the user's tenants as a table so that we can filter/sort on tenant_name.
+        # Simulate the user's tenants as a table so that we can filter/sort on tenant_key.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
         # SQL query parameters.
@@ -193,14 +193,14 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            tenants.c.tenant_name,
+            tenants.c.tenant_parsys_key,
         ]
 
         joined_tables = [
             (tenants, tenants.c.tenant_id == models.Site.tenant_id),
         ]
 
-        specific_attributes = {'tenant_name': tenants.c.tenant_name}
+        specific_attributes = {'tenant_key': tenants.c.tenant_parsys_key}
 
         try:
             # noinspection PyTypeChecker
@@ -219,7 +219,7 @@ class Sites(DataTablesAPI):
             raise HTTPBadRequest()
 
         # dict to get tenant name from tenant id
-        tenant_names = {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
+        tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
         sites = []
@@ -234,7 +234,7 @@ class Sites(DataTablesAPI):
                 'name': site.name,
                 'phone': site.phone,
                 'site_type': site_type,
-                'tenant_name': tenant_names[site.tenant_id],
+                'tenant_key': tenant_keys[site.tenant_id],
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.

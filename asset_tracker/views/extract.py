@@ -38,7 +38,7 @@ class AssetsExtract(object):
         asset_columns = [
             'asset_id',
             'asset_type',
-            'tenant_name',
+            'tenant_key',
             'customer_name',
             'customer_id',
             'current_location',
