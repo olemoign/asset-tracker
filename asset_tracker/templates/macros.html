@@ -70,7 +70,7 @@
             </div>
 
             {# Expiration date fields. #}
-            <div class="form-group expiration_date_fields">
+            <div class="form-group">
                 {% if not reference %}
                     {% for consumable_family in equipment.family.consumable_families %}
                         {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family.family_id] %}
@@ -78,13 +78,10 @@
                         {% if consumable_family.family_id in expiration_dates[equipment.id] %}
                             {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
                         {% endif %}
-                         <div class="form-group">
-                            <label for="{{ expiration_date_id }}">{{ gettext('Expiration date') }} - {{ consumable_family_model }}</label>
-                            <input type="date" class="form-control" name="{{ expiration_date_id }}" id="{{ expiration_date_id }}" placeholder="{{ gettext('DD/MM/YYYY') }}"
-                               {% if expiration_date %}value="{{ expiration_date }}"{% endif %}>
-                         </div>
+                        <label for="{{ expiration_date_id }}">{{ gettext('Expiration date') }} - {{ consumable_family_model }}</label>
+                        <input type="date" class="form-control" name="{{ expiration_date_id }}" id="{{ expiration_date_id }}" placeholder="{{ gettext('DD/MM/YYYY') }}"
+                           {% if expiration_date %}value="{{ expiration_date }}"{% endif %}>
                     {% endfor %}
-
                 {% endif %}
             </div>
         </div>

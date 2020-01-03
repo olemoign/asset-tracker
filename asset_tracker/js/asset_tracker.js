@@ -89,8 +89,7 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
   /**
    * Add expiration dates for equipments that possess consumables
    */
-  const expirationDatesContainer = $(this).parents('.equipment__block').find('.expiration_date_fields');
-
+  const expirationDatesContainer = $(this).parents('.well');
   const equipmentBlockDigit = $(this).attr('id').split('#')[1];
 
   const selectedValue = event.target.value;
