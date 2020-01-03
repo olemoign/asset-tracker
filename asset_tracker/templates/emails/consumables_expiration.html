@@ -3,11 +3,15 @@
 </p>
 
 <p>
-    {{ gettext('The equipment') }} {{ gettext(model) }} {{ gettext('of your asset %(asset_id)s has consumables that expires in %(delay_days)s days on %(expiration_date)s.',
+    {{ gettext('The equipment') }} {{ gettext(model) }} {{ gettext('of your asset %(asset_id)s has the following consumables which will expire in %(delay_days)s days on %(expiration_date)s:',
                 asset_id=asset_id, delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 </p>
 
-<p> {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the expiration date has passed.') }}</p>
+{% for consumable_label in consumable_labels %}
+    <p>- {{ gettext(consumable_label) }}</p>
+{% endfor %}
+
+<p> {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the consumable expiration dates have passed.') }}</p>
 
 <p> {{ gettext('To view the asset, follow ') }}<a href="{{ asset_url }}">{{ gettext('this link') }}</a>.</p>
 

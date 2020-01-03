@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 17:56+0100\n"
+"POT-Creation-Date: 2020-03-10 18:00+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -518,11 +518,11 @@ msgstr "Page non trouvée"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: templates/emails/consumables_expiration.html:10
-#: templates/emails/consumables_expiration.txt:6
+#: templates/emails/consumables_expiration.html:14
+#: templates/emails/consumables_expiration.txt:10
 msgid ""
 "Please know that there is no guarantee that diagnoses will be reliable if"
-" the expiration date has passed."
+" the consumable expiration dates have passed."
 msgstr ""
 "Nous ne pouvons garantir la fiabilité des résultats de diagnostic si la "
 "date de péremption du matériel consommable est dépassée."
@@ -561,8 +561,8 @@ msgstr "Afficher les matériels hors service"
 
 #: templates/emails/calibration_reminder.html:17
 #: templates/emails/calibration_reminder.txt:10
-#: templates/emails/consumables_expiration.html:15
-#: templates/emails/consumables_expiration.txt:10
+#: templates/emails/consumables_expiration.html:19
+#: templates/emails/consumables_expiration.txt:14
 msgid "Sincerely"
 msgstr "Cordialement"
 
@@ -672,8 +672,8 @@ msgstr "Thermomètre - Foracare IR21"
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
-#: templates/emails/consumables_expiration.html:12
-#: templates/emails/consumables_expiration.txt:8
+#: templates/emails/consumables_expiration.html:16
+#: templates/emails/consumables_expiration.txt:12
 msgid "To view the asset, follow "
 msgstr "Pour accéder à l'asset, suivez "
 
@@ -771,18 +771,19 @@ msgstr "n'est pas autorisé(e) à accéder à cette page."
 #: templates/emails/consumables_expiration.txt:3
 #, python-format
 msgid ""
-"of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
-" days on %(expiration_date)s."
+"of your asset %(asset_id)s has the following consumables which will "
+"expire in %(delay_days)s days on %(expiration_date)s:"
 msgstr ""
-"de votre asset %(asset_id)s contient des consommables dont la date de "
-"péremption est dans %(delay_days)s jours, le %(expiration_date)s."
+"de votre asset %(asset_id)s contient les consommables suivants dont la "
+"date de péremption est dans  %(delay_days)s jours, le "
+"%(expiration_date)s.:"
 
 #: templates/errors/403.html:12
 msgid "or go to"
 msgstr "ou accéder à"
 
-#: templates/emails/consumables_expiration.html:12
-#: templates/emails/consumables_expiration.txt:8
+#: templates/emails/consumables_expiration.html:16
+#: templates/emails/consumables_expiration.txt:12
 msgid "this link"
 msgstr "ce lien"
 

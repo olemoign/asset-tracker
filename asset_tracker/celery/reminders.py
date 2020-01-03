@@ -37,11 +37,10 @@ def notify_expiring_consumables(db_session, delay_days):
 
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
+        .join(models.Consumable) \
         .options(joinedload(models.Equipment.family)) \
-        .filter(or_(
-            models.Equipment.expiration_date_1 == expiration_date,
-            models.Equipment.expiration_date_2 == expiration_date,
-        )).all()
+        .filter(models.Consumable.expiration_date == expiration_date) \
+        .all()
 
     pyramid_config = app.conf.pyramid_config
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 17:56+0100\n"
+"POT-Creation-Date: 2020-03-10 18:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -516,11 +516,11 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: templates/emails/consumables_expiration.html:10
-#: templates/emails/consumables_expiration.txt:6
+#: templates/emails/consumables_expiration.html:14
+#: templates/emails/consumables_expiration.txt:10
 msgid ""
 "Please know that there is no guarantee that diagnoses will be reliable if"
-" the expiration date has passed."
+" the consumable expiration dates have passed."
 msgstr ""
 
 #: templates/pages/assets-create_update.html:166
@@ -555,8 +555,8 @@ msgstr ""
 
 #: templates/emails/calibration_reminder.html:17
 #: templates/emails/calibration_reminder.txt:10
-#: templates/emails/consumables_expiration.html:15
-#: templates/emails/consumables_expiration.txt:10
+#: templates/emails/consumables_expiration.html:19
+#: templates/emails/consumables_expiration.txt:14
 msgid "Sincerely"
 msgstr ""
 
@@ -666,8 +666,8 @@ msgstr ""
 msgid "This asset id already exists."
 msgstr ""
 
-#: templates/emails/consumables_expiration.html:12
-#: templates/emails/consumables_expiration.txt:8
+#: templates/emails/consumables_expiration.html:16
+#: templates/emails/consumables_expiration.txt:12
 msgid "To view the asset, follow "
 msgstr ""
 
@@ -765,16 +765,16 @@ msgstr ""
 #: templates/emails/consumables_expiration.txt:3
 #, python-format
 msgid ""
-"of your asset %(asset_id)s has consumables that expires in %(delay_days)s"
-" days on %(expiration_date)s."
+"of your asset %(asset_id)s has the following consumables which will "
+"expire in %(delay_days)s days on %(expiration_date)s:"
 msgstr ""
 
 #: templates/errors/403.html:12
 msgid "or go to"
 msgstr ""
 
-#: templates/emails/consumables_expiration.html:12
-#: templates/emails/consumables_expiration.txt:8
+#: templates/emails/consumables_expiration.html:16
+#: templates/emails/consumables_expiration.txt:12
 msgid "this link"
 msgstr ""
 
