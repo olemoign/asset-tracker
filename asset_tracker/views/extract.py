@@ -74,8 +74,6 @@ class AssetsExtract(object):
             for label in {
                 f'equipment_{i}_name',
                 f'equipment_{i}_serial_number',
-                f'equipment_{i}_expiration_date_1',
-                f'equipment_{i}_expiration_date_2',
             }
         ]
 
@@ -160,8 +158,6 @@ class AssetsExtract(object):
             asset_equipment = db_session.query(
                     models.EquipmentFamily.model,
                     models.Equipment.serial_number,
-                    models.Equipment.expiration_date_1,
-                    models.Equipment.expiration_date_2
                 ) \
                 .join(models.Equipment) \
                 .filter(models.Equipment.asset_id == asset.id).all()
