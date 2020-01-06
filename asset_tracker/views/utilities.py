@@ -13,7 +13,7 @@ from asset_tracker import models
 def status_get(request):
     """Display app status."""
     # noinspection PyTypeChecker
-    return status_endpoint(request, 'asset_tracker', models.Asset, check_rta=True)
+    return status_endpoint(request, 'asset_tracker', models.Asset)
 
 
 @notfound_view_config(append_slash=True, renderer='errors/404.html')
