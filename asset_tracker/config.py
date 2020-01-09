@@ -30,7 +30,7 @@ def update_consumable_families(db_session, config):
     config_families = config['consumable_families']
     db_families = db_session.query(ConsumableFamily).all()
 
-    # Remove existing family if it was removed from the config and no equipment is from this family.
+    # Remove existing family if it was removed from the config and no consumable is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
 
