@@ -17,6 +17,7 @@ branch_labels = None
 depends_on = None
 
 
+# noinspection PyTypeChecker
 def upgrade():
     op.create_table(
         'consumable_family',
@@ -25,8 +26,11 @@ def upgrade():
         sa.Column('model', sa.Unicode(), nullable=True),
         sa.Column('equipment_family_id', sa.Integer, nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_consumable_family')),
-        sa.ForeignKeyConstraint(['equipment_family_id'], ['equipment_family.id'],
-                                name=op.f('fk_consumable_equipment_family_id_equipment_family')),
+        sa.ForeignKeyConstraint(
+            ['equipment_family_id'],
+            ['equipment_family.id'],
+            name=op.f('fk_consumable_equipment_family_id_equipment_family'),
+        ),
     )
 
     op.create_table(

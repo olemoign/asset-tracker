@@ -251,8 +251,9 @@ class AssetsExtract(object):
 
         return {
             'header': self.get_csv_header(len(unique_software), max_equipments, max_consumables),
-            'rows': self.get_csv_rows(self.request.db_session, unique_software, max_equipments, max_consumables,
-                                      tenants),
+            'rows': self.get_csv_rows(
+                self.request.db_session, unique_software, max_equipments, max_consumables, tenants
+            ),
         }
 
 

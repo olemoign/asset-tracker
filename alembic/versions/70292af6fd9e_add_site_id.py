@@ -21,6 +21,7 @@ depends_on = None
 
 def upgrade():
     connection = op.get_bind()
+    # noinspection PyUnresolvedReferences
     session = sa.orm.session.Session(bind=connection)
 
     with op.batch_alter_table('site', schema=None) as batch_op:
