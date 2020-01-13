@@ -181,7 +181,7 @@ class AssetsExtract(object):
                     equipment[0],
                     equipment[1].serial_number,
                     *[data for consumable_tuple in consumables for data in consumable_tuple],
-                    *[None for i in range(empty_consumables_count * 2)],
+                    *[None for _i in range(empty_consumables_count * 2)],
                 ]
 
             empty_equipment_count = max_equipment_per_asset - len(asset_equipment)

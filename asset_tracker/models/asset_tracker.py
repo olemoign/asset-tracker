@@ -132,8 +132,9 @@ class ConsumableFamily(Model):
     model = Column(String, nullable=False, unique=True)
 
     equipment_family_id = Column(Integer, ForeignKey('equipment_family.id'))
-    equipment_family = relationship('EquipmentFamily', foreign_keys=equipment_family_id, backref='consumable_families',
-                                    uselist=False)
+    equipment_family = relationship(
+        'EquipmentFamily', foreign_keys=equipment_family_id, backref='consumable_families', uselist=False
+    )
 
 
 class Equipment(Model):
