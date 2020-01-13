@@ -58,7 +58,7 @@ table.dataTable td a {
 }
 
 // Remove the margin top added by bootstrap to checkboxes below sm.
-.custom_filter .checkbox {
+.custom_filter, .custom_filter .checkbox {
   margin-top: 0;
 }
 
@@ -67,61 +67,6 @@ table.dataTable td a {
     padding-left: 10px;
     margin-bottom: 10px;
   }
-}
-
-.filter_container {
-  display: flex;
-  margin-left: -15px;
-  margin-right: -15px;
-  padding-top: 10px;
-}
-
-.custom_filter_container {
-  flex-grow: 1;
-  display: flex;
-  justify-content: flex-start;
-}
-
-.dataTables_filter_container {
-  padding-left: 10px;
-}
-
-#c_filter {
-  padding-right: 15px;
-}
-
-.root-container div.filter_container {
-  flex-direction: row;
-  @media (max-width: $screen-sm-max) {
-    flex-direction: column;
-  }
-}
-
-.root-container div.custom_filter_container {
-  flex-direction: row;
-  padding-left: 15px;
-  @media (max-width: $screen-sm-max) {
-    flex-direction: column;
-  }
-}
-
-.root-container div.dataTables_filter_container {
-  padding-right: 15px;
-}
-
-.root-container div.dataTables_info_container {
-  @extend .col-md-12;
-  @include center-below($screen-sm-max);
-}
-
-.root-container div.dataTables_length_container {
-  @extend .col-md-4;
-  @include center-below($screen-sm-max);
-}
-
-.root-container div.dataTables_paginate_container {
-  @extend .col-md-8;
-  @include center-below($screen-sm-max);
 }
 
 .root-container div.custom_filter {
@@ -185,4 +130,35 @@ div.dataTables_wrapper div.dataTables_info {
     padding-left: 10px;
     padding-right: 10px;
   }
+}
+
+@media (min-width: $screen-sm-min) {
+  .panel .custom_filter,
+  .panel .dataTables_info,
+  .panel .dataTables_length {
+    padding-left: 10px;
+  }
+
+  .panel .dataTables_filter,
+  .panel .dataTables_paginate {
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .panel .custom_filter {
+    text-align: center;
+  }
+
+  .panel .dataTables_info {
+    padding-bottom: 8px;
+  }
+}
+
+.panel .custom_filter,
+.panel .dataTables_info,
+.panel .dataTables_filter,
+.panel .dataTables_length,
+.panel .dataTables_paginate {
+  overflow-y: hidden;
 }

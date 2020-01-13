@@ -80,64 +80,6 @@ table td a {
   overflow-x: auto;
 }
 
-// Add padding to datatables tools in case we are in a panel.
-.panel .dataTables_wrapper .row:first-child {
-  padding-top: 10px;
-}
-
-@media (min-width: $screen-sm-min) {
-  .panel .custom_filter,
-  .panel .dataTables_info,
-  .panel .dataTables_length {
-    padding-left: 10px;
-  }
-
-  .panel .dataTables_filter,
-  .panel .dataTables_paginate {
-    padding-right: 10px;
-  }
-}
-
-.custom_filter {
-  margin-top: 0;
-}
-
-@media (max-width: $screen-xs-max) {
-  .panel .custom_filter {
-    text-align: center;
-  }
-
-  .panel .dataTables_info {
-    padding-bottom: 8px;
-  }
-}
-
-.panel .custom_filter,
-.panel .dataTables_info,
-.panel .dataTables_filter,
-.panel .dataTables_length,
-.panel .dataTables_paginate {
-  overflow-y: hidden;
-}
-
-div.dataTables_wrapper div.dataTables_processing {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: calc(100% - 31px);
-  border: none;
-  transform: translate(-50%, -50%);
-  height: 100%;
-  opacity: 0.90;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-  font-weight: 600;
-  margin-top: 0;
-  margin-left: 0;
-}
-
 td {
   overflow: hidden;
   word-break: break-all;
@@ -156,7 +98,7 @@ td {
 }
 
 .equipment__expiration_date_label {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .event__delete {
