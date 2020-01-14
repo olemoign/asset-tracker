@@ -37,7 +37,7 @@ def notify_expiring_consumables(db_session, delay_days):
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
         .join(models.Consumable) \
-        .options(joinedload(models.Equipment.family)) \
+        .options(joinedload(models.Equipment.family), joinedload(models.Consumable.family)) \
         .filter(models.Consumable.expiration_date == expiration_date) \
         .all()
 
