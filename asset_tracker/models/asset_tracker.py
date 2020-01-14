@@ -5,7 +5,7 @@ from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
@@ -33,10 +33,6 @@ class Asset(Model, CreationDateTimeMixin):
 
     current_location = Column(String)
     notes = Column(String)
-
-    equipments = relationship('Equipment', backref='asset')
-
-    _history = relationship('Event', foreign_keys='Event.asset_id', backref='asset', lazy='dynamic')
 
     def history(self, order, filter_config=False):
         """Filter removed events from history.
@@ -123,6 +119,7 @@ class Consumable(Model):
     family = relationship('ConsumableFamily', foreign_keys=family_id, uselist=False)
 
     equipment_id = Column(Integer, ForeignKey('equipment.id'), nullable=False)
+    equipment = relationship('Equipment', foreign_keys=equipment_id, backref='consumables', uselist=False)
 
     expiration_date = Column(Date)
 
@@ -142,10 +139,9 @@ class Equipment(Model):
     family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
+    asset = relationship('Asset', foreign_keys=asset_id, backref='equipments', uselist=False)
 
     serial_number = Column(String)
-
-    consumables = relationship('Consumable', backref='equipment')
 
 
 class EquipmentFamily(Model):
@@ -154,9 +150,10 @@ class EquipmentFamily(Model):
 
 
 class Event(Model, CreationDateTimeMixin):
-    event_id = Column(String, nullable=False, unique=True, default=random_id)
+    event_id = Column(String, default=random_id, nullable=False, unique=True)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
+    asset = relationship('Asset', foreign_keys=asset_id, backref=backref('_history', lazy='dynamic'), uselist=False)
 
     date = Column(Date, nullable=False)
 
@@ -190,7 +187,7 @@ class EventStatus(Model):
 
 
 class Site(Model, CreationDateTimeMixin):
-    site_id = Column(String, nullable=False, unique=True, default=random_id)
+    site_id = Column(String, default=random_id, nullable=False, unique=True)
 
     tenant_id = Column(String, nullable=False)
     name = Column(String, nullable=False, unique=True)
