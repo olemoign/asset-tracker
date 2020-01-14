@@ -45,7 +45,7 @@ build:
   script:
     - pip3 install -q -U pip setuptools wheel
     - python3 setup.py bdist_wheel
-    - pip3 wheel -w dist/ '.[prod]'
+    - pip3 wheel -w dist/ .
 
   artifacts:
     name: $CI_BUILD_NAME_$CI_BUILD_REF_NAME

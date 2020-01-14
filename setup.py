@@ -18,6 +18,7 @@ requires = [
     'parsys-utilities',
     'paste',
     'plaster-pastedeploy',
+    'psycopg2-binary',
     'pyramid',
     'pyramid-assetviews',
     'pyramid-jinja2',
@@ -37,9 +38,6 @@ optional = {
         'babel',
         'pybabel-json-md',
         'pyramid-debugtoolbar',
-    ],
-    'prod': [
-        'psycopg2-binary',
     ],
     'qa': [
         'flake8',
