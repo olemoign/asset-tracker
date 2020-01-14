@@ -18,7 +18,7 @@
     },
     {
       "family_id": "2YUEMLmH",
-      "model": "Glucometer - Beurer GL50"
+      "model": "Glucose meter - Beurer GL50"
     },
     {
       "family_id": "R7osm3Qa",
@@ -70,11 +70,11 @@
     },
     {
       "family_id": "1dOrCl44",
-      "model": "USB glucometer - Beurer GL50"
+      "model": "USB glucose meter - Beurer GL50"
     },
     {
       "family_id": "w5wDrPyZ",
-      "model": "Wireless glucometer - Foracare DM30b"
+      "model": "Wireless glucose meter - Foracare DM30b"
     },
     {
       "family_id": "E7SQL7Mr",
@@ -194,7 +194,7 @@
     },
     {
       "family_id": "7pxKvnE0",
-      "model": "Controle solution for blood glucose meter",
+      "model": "Control solution for blood glucose meter",
       "equipment_family_id": "2YUEMLmH"
     },
     {
@@ -209,7 +209,7 @@
     },
     {
       "family_id": "SHkfxK4Y",
-      "model": "Controle solution for blood glucose meter",
+      "model": "Control solution for blood glucose meter",
       "equipment_family_id": "w5wDrPyZ"
     },
     {

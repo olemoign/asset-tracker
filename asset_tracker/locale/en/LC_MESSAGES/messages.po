@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 18:00+0100\n"
+"POT-Creation-Date: 2020-03-10 18:05+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -38,23 +38,23 @@ msgstr ""
 msgid "12-lead wireless ECG - Télécardia Parsys"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:245
-#: templates/pages/assets-create_update.html:252
+#: templates/pages/assets-create_update.html:246
+#: templates/pages/assets-create_update.html:253
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set site to"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:260
+#: templates/pages/assets-create_update.html:261
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:229
+#: templates/pages/assets-create_update.html:230
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:236
+#: templates/pages/assets-create_update.html:237
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr ""
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Automatic wireless tensiometer - Foracare P80"
 msgstr ""
 
-#: constants.py:28
+#: constants.py:27
 msgid "Backpack"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgstr ""
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:278
+#: templates/pages/assets-create_update.html:279
 #: templates/pages/sites-create_update.html:102
 msgid "Cancel"
 msgstr ""
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Cardialys - Parsys"
 msgstr ""
 
-#: constants.py:29
+#: constants.py:28
 msgid "Cart"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Children PAD electrodes"
 msgstr ""
 
-#: constants.py:20
+#: constants.py:19
 msgid "Company"
 msgstr ""
 
@@ -177,7 +177,7 @@ msgid "Contact"
 msgstr ""
 
 #: config.json:197 config.json:212
-msgid "Controle solution for blood glucose meter"
+msgid "Control solution for blood glucose meter"
 msgstr ""
 
 #: templates/pages/sites-create_update.html:76
@@ -201,7 +201,7 @@ msgid "Customer name"
 msgstr ""
 
 #: templates/macros.html:81 templates/pages/assets-create_update.html:188
-#: templates/pages/assets-create_update.html:205
+#: templates/pages/assets-create_update.html:206
 msgid "DD/MM/YYYY"
 msgstr ""
 
@@ -274,7 +274,7 @@ msgid "General lens - MIIS DGC100"
 msgstr ""
 
 #: config.json:21
-msgid "Glucometer - Beurer GL50"
+msgid "Glucose meter - Beurer GL50"
 msgstr ""
 
 #: config.json:133
@@ -297,7 +297,7 @@ msgstr ""
 msgid "Hardware version"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:225
+#: templates/pages/assets-create_update.html:226
 #: templates/pages/sites-create_update.html:87
 msgid "History"
 msgstr ""
@@ -306,7 +306,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: constants.py:21
+#: constants.py:20
 msgid "Hospital"
 msgstr ""
 
@@ -362,39 +362,39 @@ msgstr ""
 msgid "Intraoral camera casing"
 msgstr ""
 
-#: views/assets.py:378
+#: views/assets.py:380
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:368
+#: views/assets.py:370
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:391
+#: views/assets.py:393
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:281
+#: views/assets.py:283
 msgid "Invalid equipments."
 msgstr ""
 
-#: views/assets.py:384
+#: views/assets.py:386
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:404
+#: views/assets.py:406
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:399
+#: views/assets.py:401
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:373
+#: views/assets.py:375
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:364 views/sites.py:120
+#: views/assets.py:366 views/sites.py:120
 msgid "Invalid tenant."
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 msgid "MAC address (wifi)"
 msgstr ""
 
-#: views/assets.py:301
+#: views/assets.py:303
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -477,7 +477,7 @@ msgstr ""
 msgid "No software registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:250
+#: templates/pages/assets-create_update.html:251
 msgid "None"
 msgstr ""
 
@@ -485,11 +485,11 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:219
+#: templates/pages/assets-create_update.html:220
 msgid "Notes"
 msgstr ""
 
-#: constants.py:22
+#: constants.py:21
 msgid "Nursing home"
 msgstr ""
 
@@ -547,7 +547,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: constants.py:23
+#: constants.py:22
 msgid "Ship"
 msgstr ""
 
@@ -608,7 +608,7 @@ msgstr ""
 msgid "Spirometer nose clip"
 msgstr ""
 
-#: constants.py:30
+#: constants.py:29
 msgid "Station"
 msgstr ""
 
@@ -617,7 +617,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: views/assets.py:542
+#: views/assets.py:544
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -625,12 +625,12 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:279
+#: templates/pages/assets-create_update.html:280
 #: templates/pages/sites-create_update.html:103
 msgid "Submit"
 msgstr ""
 
-#: constants.py:31
+#: constants.py:30
 msgid "Telecardia"
 msgstr ""
 
@@ -664,7 +664,7 @@ msgstr ""
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
-#: views/assets.py:359
+#: views/assets.py:361
 msgid "This asset id already exists."
 msgstr ""
 
@@ -716,7 +716,7 @@ msgid "USB digital polarizing otoscope - Firefly DE500"
 msgstr ""
 
 #: config.json:73
-msgid "USB glucometer - Beurer GL50"
+msgid "USB glucose meter - Beurer GL50"
 msgstr ""
 
 #: config.json:93
@@ -744,7 +744,7 @@ msgid "Wireless bathroom scale - A&D UC-355PBT-Ci"
 msgstr ""
 
 #: config.json:77
-msgid "Wireless glucometer - Foracare DM30b"
+msgid "Wireless glucose meter - Foracare DM30b"
 msgstr ""
 
 #: config.json:89
