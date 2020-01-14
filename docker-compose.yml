@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  web:
+    image: tracker.parsys.com:1337/parsys/asset_tracker
+    depends_on:
+      - postgres
+      - redis
+    links:
+      - postgres
+      - redis
+    volumes:
+      - .:/srv
+    restart: always
+
+  celery:
+    image: tracker.parsys.com:1337/parsys/asset_tracker
+    entrypoint: []
+    command: [
+      "/usr/local/bin/celery", "worker", "-A", "asset_tracker", "-B", "-Q", "celery", "--ini", "/srv/production.ini",
+      "--logfile=/srv/log/celery/celery.log", "--loglevel=info"
+    ]
+    depends_on:
+      - postgres
+      - redis
+    links:
+      - postgres
+      - redis
+    volumes:
+      - .:/srv
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "ping", "-A", "asset_tracker", "--ini", "/srv/production.ini"]
+      start_period: 30s
+    restart: always
+
+  postgres:
+    image: postgres:12
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+    restart: always
+
+  redis:
+    image: redis:5
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./data/redis:/data
+    restart: always

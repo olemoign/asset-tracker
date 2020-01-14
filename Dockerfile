@@ -1,4 +1,4 @@
-FROM parsys/python-redis-supervisord
+FROM parsys/python
 
 # This fix an annoying bug between python3 and ubuntu.
 ENV LANG C.UTF-8
@@ -6,18 +6,15 @@ ENV LANG C.UTF-8
 COPY dist/ /opt
 
 # Install app.
-RUN pip3 install -q --ignore-installed /opt/* \
- && mkdir -p /opt/files
+RUN pip3 install -q --ignore-installed /opt/*
+RUN rm /opt/*
 
 # Copy config files.
-COPY config/production.ini /opt/files
-COPY supervisord.conf /opt/files
+COPY docker-compose.yml /opt
+COPY docker-entrypoint.sh /opt
+COPY config/production.ini /opt
 COPY alembic /opt/alembic
 
-WORKDIR /srv
+ENTRYPOINT ["/opt/docker-entrypoint.sh"]
 
-CMD mkdir -p /srv/log/ /srv/log/celery/ /srv/log/nginx/ /srv/log/supervisor/ \
- && mkdir -p /srv/socket/ /srv/data/ \
- && cp -n /opt/files/* /srv || true \
- && alembic -c /srv/production.ini upgrade head \
- && supervisord -n -c /srv/supervisord.conf
+CMD ["pserve", "/srv/production.ini"]
