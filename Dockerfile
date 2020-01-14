@@ -11,10 +11,10 @@ RUN rm /opt/*
 
 # Copy config files.
 COPY docker-compose.yml /opt
-COPY docker-entrypoint.sh /opt
 COPY config/production.ini /opt
 COPY alembic /opt/alembic
 
-ENTRYPOINT ["/opt/docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["pserve", "/srv/production.ini"]
