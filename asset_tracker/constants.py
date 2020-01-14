@@ -15,7 +15,6 @@ CALIBRATION_FREQUENCIES_YEARS = OrderedDict([
     ('default', 2),
     ('maritime', 3),
 ])
-GLUCOMETER_ID = '2YUEMLmH'
 SITE_TYPES = [
     _('Company'),
     _('Hospital'),
