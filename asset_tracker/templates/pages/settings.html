@@ -5,5 +5,7 @@
 {%- endblock %}
 
 {% block page %}
+    {% include 'menu.html' %}
+
     <iframe id="user_settings-iframe" src="{{ rta_settings_url }}"></iframe>
 {% endblock %}
