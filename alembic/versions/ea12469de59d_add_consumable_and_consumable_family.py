@@ -1,4 +1,4 @@
-"""add consumable and consumable family
+"""Add consumable and consumable family
 
 Revision ID: ea12469de59d
 Revises: 80c54335e8c0
