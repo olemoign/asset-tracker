@@ -3,7 +3,7 @@ from json import loads
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
-from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
+from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -124,14 +124,21 @@ class Consumable(Model):
     expiration_date = Column(Date)
 
 
+# Association table between consumable families and equipment families (n to n).
+consumable_families_equipment_families = Table(
+    'consumable_families_equipment_families',
+    Model.metadata,
+    Column('consumable_family_id', Integer, ForeignKey('consumable_family.id'), nullable=False),
+    Column('equipment_family_id', Integer, ForeignKey('equipment_family.id'), nullable=False),
+    UniqueConstraint('consumable_family_id', 'equipment_family_id'),
+)
+
+
 class ConsumableFamily(Model):
     family_id = Column(String, nullable=False, unique=True)
     model = Column(String, nullable=False, unique=True)
-
-    equipment_family_id = Column(Integer, ForeignKey('equipment_family.id'))
-    equipment_family = relationship(
-        'EquipmentFamily', foreign_keys=equipment_family_id, backref='consumable_families', uselist=False
-    )
+    equipment_families = relationship('EquipmentFamily',
+                                      secondary=consumable_families_equipment_families, backref='consumable_families')
 
 
 class Equipment(Model):

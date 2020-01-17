@@ -185,132 +185,107 @@
     {
       "family_id": "GZQ2bAmW",
       "model": "Lancets (legacy)",
-      "equipment_family_id": "2YUEMLmH"
+      "equipment_family_ids": ["2YUEMLmH"]
     },
     {
       "family_id": "6piDwmZt",
       "model": "Blood glucose test strips",
-      "equipment_family_id": "2YUEMLmH"
+      "equipment_family_ids": ["2YUEMLmH", "w5wDrPyZ"]
     },
     {
       "family_id": "7pxKvnE0",
       "model": "Control solution for blood glucose meter",
-      "equipment_family_id": "2YUEMLmH"
+      "equipment_family_ids": ["2YUEMLmH", "w5wDrPyZ"]
     },
     {
       "family_id": "8bw8z3pb",
       "model": "Secure lancing devices",
-      "equipment_family_id": "2YUEMLmH"
-    },
-    {
-      "family_id": "9oL6q5O5",
-      "model": "Blood glucose test strips",
-      "equipment_family_id": "w5wDrPyZ"
-    },
-    {
-      "family_id": "SHkfxK4Y",
-      "model": "Control solution for blood glucose meter",
-      "equipment_family_id": "w5wDrPyZ"
-    },
-    {
-      "family_id": "6HXBFchC",
-      "model": "Secure lancing devices",
-      "equipment_family_id": "w5wDrPyZ"
+      "equipment_family_ids": ["2YUEMLmH", "w5wDrPyZ"]
     },
     {
       "family_id": "1oIvGBMK",
       "model": "Adult ECG electrodes with tab (x5000)",
-      "equipment_family_id": "56T5Xr2A"
+      "equipment_family_ids": ["56T5Xr2A"]
     },
     {
       "family_id": "6mt6kz7U",
       "model": "Adult ECG electrodes with tab (x500)",
-      "equipment_family_id": "56T5Xr2A"
+      "equipment_family_ids": ["56T5Xr2A"]
     },
     {
       "family_id": "tArmQCE7",
       "model": "Adult ECG electrodes with tab (x100)",
-      "equipment_family_id": "56T5Xr2A"
+      "equipment_family_ids": ["56T5Xr2A"]
     },
     {
       "family_id": "lWETgAY6",
       "model": "Spirometer nose clip",
-      "equipment_family_id": "Wxxy2Eb5"
+      "equipment_family_ids": ["utFdsO8S"]
     },
     {
       "family_id": "y7QIajC0",
       "model": "Spirometer disposable turbines",
-      "equipment_family_id": "Wxxy2Eb5"
+      "equipment_family_ids": ["utFdsO8S"]
     },
     {
       "family_id": "ozOhfp0H",
       "model": "Adult PAD electrodes",
-      "equipment_family_id": "VEgX5jR5"
+      "equipment_family_ids": ["VEgX5jR5"]
     },
     {
       "family_id": "mulRy3lG",
       "model": "Children PAD electrodes",
-      "equipment_family_id": "VEgX5jR5"
+      "equipment_family_ids": ["VEgX5jR5"]
     },
     {
       "family_id": "UKKFTDOB",
       "model": "Defibrillator lithium battery",
-      "equipment_family_id": "VEgX5jR5"
-    },
-    {
-      "family_id": "stNIUezG",
-      "model": "Defibrillator lithium battery",
-      "equipment_family_id": "sxujnZOH"
+      "equipment_family_ids": ["VEgX5jR5", "sxujnZOH"]
     },
     {
       "family_id": "1o1MSesM",
       "model": "Single use ear specula",
-      "equipment_family_id": "TyWY8xNh"
+      "equipment_family_ids": ["TyWY8xNh"]
     },
     {
       "family_id": "XKDj2BOi",
       "model": "Intraoral camera casing",
-      "equipment_family_id": "Oqldhs5Z"
-    },
-    {
-      "family_id": "cgoKw0Pp",
-      "model": "Intraoral camera casing",
-      "equipment_family_id": "q6UessZu"
+      "equipment_family_ids": ["Oqldhs5Z", "q6UessZu"]
     },
     {
       "family_id": "ZHkCozV6",
       "model": "Urine test 10 parameters",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "K2rCGteW",
       "model": "Alcohol and drug test",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "FsJqvibI",
       "model": "Troponin blood test",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "Nh7AGGHh",
       "model": "Tropical disease test - Malaria",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "rRSoV4aA",
       "model": "Tropical disease test - Chikungunya",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "MDXyv1ca",
       "model": "Tropical disease test - Dengue fever Ag+IgG-IgM",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     },
     {
       "family_id": "QH5cI2kL",
       "model": "Tropical disease test - Ebola",
-      "equipment_family_id": "YpHdh0bj"
+      "equipment_family_ids": ["YpHdh0bj"]
     }
   ],
   "status": [

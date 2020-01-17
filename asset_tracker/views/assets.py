@@ -155,6 +155,7 @@ class Assets(object):
         consumables_models = {}
 
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
+            .outerjoin(models.consumable_families_equipment_families) \
             .outerjoin(models.ConsumableFamily) \
             .order_by(models.EquipmentFamily.model).all()
 
