@@ -38,7 +38,7 @@
     },
     {
       "family_id": "utFdsO8S",
-      "model": "Spirometer - Spiromir MiniSpir Light"
+      "model": "USB Digital spirometer - Minispir Light"
     },
     {
       "family_id": "VhCLz9FY",
@@ -62,7 +62,7 @@
     },
     {
       "family_id": "56T5Xr2A",
-      "model": "12-lead wireless ECG - Mortara RSCRIBE WAM ECG"
+      "model": "12-lead wireless ECG - Welch Allyn RSCRIBE WAM ECG"
     },
     {
       "family_id": "c494zUZ0",
@@ -99,10 +99,6 @@
     {
       "family_id": "jbVmQunF",
       "model": "Infrared wireless thermometer - Foracare IR21b"
-    },
-    {
-      "family_id": "Wxxy2Eb5",
-      "model": "USB Digital spirometer - Minispir New"
     },
     {
       "family_id": "VEgX5jR5",
@@ -170,11 +166,15 @@
     },
     {
       "family_id": "Oqldhs5Z",
-      "model": "Intraoral camera 950 - Sopro SoproCare 950 + Dock M-USB2"
+      "model": "Intraoral camera 950 - Acteon SoproCare 950 + Dock M-USB2"
     },
     {
       "family_id": "q6UessZu",
-      "model": "Intraoral camera 717 - Sopro SoproCare 717 + Dock M-USB2"
+      "model": "Intraoral camera 717 - Acteon SoproCare 717 + Dock M-USB2"
+    },
+    {
+      "family_id": "Riof1XI5",
+      "model": "Intraoral camera OWandyCam - Owandy"
     },
     {
       "family_id": "YpHdh0bj",
@@ -250,7 +250,7 @@
     {
       "family_id": "XKDj2BOi",
       "model": "Intraoral camera casing",
-      "equipment_family_ids": ["Oqldhs5Z", "q6UessZu"]
+      "equipment_family_ids": ["Oqldhs5Z", "q6UessZu", "Riof1XI5"]
     },
     {
       "family_id": "ZHkCozV6",

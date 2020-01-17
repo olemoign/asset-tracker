@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-10 18:05+0100\n"
+"POT-Creation-Date: 2020-03-10 18:08+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -30,12 +30,12 @@ msgstr ""
 msgid "12-lead USB ECG - Schiller MS-12 USB"
 msgstr ""
 
-#: config.json:65
-msgid "12-lead wireless ECG - Mortara RSCRIBE WAM ECG"
-msgstr ""
-
 #: config.json:57
 msgid "12-lead wireless ECG - Télécardia Parsys"
+msgstr ""
+
+#: config.json:65
+msgid "12-lead wireless ECG - Welch Allyn RSCRIBE WAM ECG"
 msgstr ""
 
 #: templates/pages/assets-create_update.html:246
@@ -67,23 +67,23 @@ msgstr ""
 msgid "Add Event"
 msgstr ""
 
-#: config.json:232
+#: config.json:217
 msgid "Adult ECG electrodes with tab (x100)"
 msgstr ""
 
-#: config.json:227
+#: config.json:212
 msgid "Adult ECG electrodes with tab (x500)"
 msgstr ""
 
-#: config.json:222
+#: config.json:207
 msgid "Adult ECG electrodes with tab (x5000)"
 msgstr ""
 
-#: config.json:247
+#: config.json:232
 msgid "Adult PAD electrodes"
 msgstr ""
 
-#: config.json:287
+#: config.json:262
 msgid "Alcohol and drug test"
 msgstr ""
 
@@ -122,7 +122,7 @@ msgstr ""
 msgid "Blood analyser - PTS Cardiochek"
 msgstr ""
 
-#: config.json:192 config.json:207
+#: config.json:192
 msgid "Blood glucose test strips"
 msgstr ""
 
@@ -147,7 +147,7 @@ msgstr ""
 msgid "Cart"
 msgstr ""
 
-#: config.json:252
+#: config.json:237
 msgid "Children PAD electrodes"
 msgstr ""
 
@@ -159,11 +159,11 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: config.json:410
+#: config.json:385
 msgid "Configuration update"
 msgstr ""
 
-#: config.json:350
+#: config.json:325
 msgid "Connected"
 msgstr ""
 
@@ -176,7 +176,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: config.json:197 config.json:212
+#: config.json:197
 msgid "Control solution for blood glucose meter"
 msgstr ""
 
@@ -216,11 +216,11 @@ msgstr ""
 msgid "Dear user"
 msgstr ""
 
-#: config.json:398
+#: config.json:373
 msgid "Decommissioned"
 msgstr ""
 
-#: config.json:257 config.json:262
+#: config.json:242
 msgid "Defibrillator lithium battery"
 msgstr ""
 
@@ -228,15 +228,15 @@ msgstr ""
 msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
-#: config.json:153
+#: config.json:149
 msgid "Dermatoscope lens - MIIS DOC100"
 msgstr ""
 
-#: config.json:117
+#: config.json:113
 msgid "Digital USB polarizing dermatoscrope - Firefly DE300"
 msgstr ""
 
-#: config.json:374
+#: config.json:349
 msgid "Distributor checkup"
 msgstr ""
 
@@ -257,11 +257,11 @@ msgstr ""
 msgid "Expiration dates"
 msgstr ""
 
-#: config.json:109
+#: config.json:105
 msgid "External automatic defibrillator - Schiller FRED Easy Port"
 msgstr ""
 
-#: config.json:113
+#: config.json:109
 msgid "External automatic defibrillator - Schiller FRED Easy Trainer"
 msgstr ""
 
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Extract"
 msgstr ""
 
-#: config.json:141
+#: config.json:137
 msgid "General lens - MIIS DGC100"
 msgstr ""
 
@@ -277,19 +277,19 @@ msgstr ""
 msgid "Glucose meter - Beurer GL50"
 msgstr ""
 
-#: config.json:133
+#: config.json:129
 msgid "Handheld camera HORUS - 2 Mpx - MIIS DSC100"
 msgstr ""
 
-#: config.json:137
+#: config.json:133
 msgid "Handheld camera HORUS - 5 Mpx - MIIS DSC200P"
 msgstr ""
 
-#: config.json:129
+#: config.json:125
 msgid "Handheld camera kit HORUS - 5 Mpx + General lens - MIIS DSC200P + DGC100"
 msgstr ""
 
-#: config.json:125
+#: config.json:121
 msgid "Handheld camera kit SMARTSCROPE - Olphtamoscope - OPTOMED M5 + EY4"
 msgstr ""
 
@@ -310,39 +310,39 @@ msgstr ""
 msgid "Hospital"
 msgstr ""
 
-#: config.json:386
+#: config.json:361
 msgid "In calibration"
 msgstr ""
 
-#: config.json:392
+#: config.json:367
 msgid "In repair"
 msgstr ""
 
-#: config.json:356
+#: config.json:331
 msgid "In service"
 msgstr ""
 
-#: config.json:320
+#: config.json:295
 msgid "In stock - Parsys"
 msgstr ""
 
-#: config.json:332
+#: config.json:307
 msgid "In stock - distributor"
 msgstr ""
 
-#: config.json:380
+#: config.json:355
 msgid "In transit to Parsys"
 msgstr ""
 
-#: config.json:338
+#: config.json:313
 msgid "In transit to customer"
 msgstr ""
 
-#: config.json:326
+#: config.json:301
 msgid "In transit to distributor"
 msgstr ""
 
-#: config.json:362
+#: config.json:337
 msgid "Incident declared"
 msgstr ""
 
@@ -350,51 +350,55 @@ msgstr ""
 msgid "Infrared wireless thermometer - Foracare IR21b"
 msgstr ""
 
-#: config.json:177
-msgid "Intraoral camera 717 - Sopro SoproCare 717 + Dock M-USB2"
-msgstr ""
-
 #: config.json:173
-msgid "Intraoral camera 950 - Sopro SoproCare 950 + Dock M-USB2"
+msgid "Intraoral camera 717 - Acteon SoproCare 717 + Dock M-USB2"
 msgstr ""
 
-#: config.json:272 config.json:277
+#: config.json:169
+msgid "Intraoral camera 950 - Acteon SoproCare 950 + Dock M-USB2"
+msgstr ""
+
+#: config.json:177
+msgid "Intraoral camera OWandyCam - Owandy"
+msgstr ""
+
+#: config.json:252
 msgid "Intraoral camera casing"
 msgstr ""
 
-#: views/assets.py:380
+#: views/assets.py:381
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:370
+#: views/assets.py:371
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:393
+#: views/assets.py:394
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:283
+#: views/assets.py:284
 msgid "Invalid equipments."
 msgstr ""
 
-#: views/assets.py:386
+#: views/assets.py:387
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:406
+#: views/assets.py:407
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:401
+#: views/assets.py:402
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:375
+#: views/assets.py:376
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:366 views/sites.py:120
+#: views/assets.py:367 views/sites.py:120
 msgid "Invalid tenant."
 msgstr ""
 
@@ -422,7 +426,7 @@ msgstr ""
 msgid "MAC address (wifi)"
 msgstr ""
 
-#: views/assets.py:303
+#: views/assets.py:304
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -430,7 +434,7 @@ msgstr ""
 msgid "Multiparametrical USB - Biosys Parsys"
 msgstr ""
 
-#: config.json:161
+#: config.json:157
 msgid "Multipurpose digital audiometer with headset"
 msgstr ""
 
@@ -493,11 +497,11 @@ msgstr ""
 msgid "Nursing home"
 msgstr ""
 
-#: config.json:344
+#: config.json:319
 msgid "On site"
 msgstr ""
 
-#: config.json:145
+#: config.json:141
 msgid "Ophtalmoscope lens - MIIS EEC100"
 msgstr ""
 
@@ -505,7 +509,7 @@ msgstr ""
 msgid "Otoscope - Firefly DE500A"
 msgstr ""
 
-#: config.json:149
+#: config.json:145
 msgid "Otoscope lens - MIIS DOC100S"
 msgstr ""
 
@@ -529,17 +533,17 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: config.json:368
+#: config.json:343
 msgid "Replacement ordered"
 msgstr ""
 
-#: config.json:165
+#: config.json:161
 msgid ""
 "Retina camera for babies and premature babies - Welch Allyn SPOT Vision "
 "Screener"
 msgstr ""
 
-#: config.json:202 config.json:217
+#: config.json:202
 msgid "Secure lancing devices"
 msgstr ""
 
@@ -562,7 +566,7 @@ msgstr ""
 msgid "Sincerely"
 msgstr ""
 
-#: config.json:267
+#: config.json:247
 msgid "Single use ear specula"
 msgstr ""
 
@@ -571,7 +575,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: config.json:416
+#: config.json:391
 msgid "Site change"
 msgstr ""
 
@@ -584,7 +588,7 @@ msgstr ""
 msgid "Sites"
 msgstr ""
 
-#: config.json:404
+#: config.json:379
 msgid "Software update"
 msgstr ""
 
@@ -596,15 +600,11 @@ msgstr ""
 msgid "Sorry, but the page you were trying to view does not exist."
 msgstr ""
 
-#: config.json:41
-msgid "Spirometer - Spiromir MiniSpir Light"
-msgstr ""
-
-#: config.json:242
+#: config.json:227
 msgid "Spirometer disposable turbines"
 msgstr ""
 
-#: config.json:237
+#: config.json:222
 msgid "Spirometer nose clip"
 msgstr ""
 
@@ -617,7 +617,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: views/assets.py:544
+#: views/assets.py:545
 msgid "Status not removed, an asset cannot have no status."
 msgstr ""
 
@@ -664,7 +664,7 @@ msgstr ""
 msgid "Thermometer - Foracare IR21"
 msgstr ""
 
-#: views/assets.py:361
+#: views/assets.py:362
 msgid "This asset id already exists."
 msgstr ""
 
@@ -677,23 +677,23 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: config.json:302
+#: config.json:277
 msgid "Tropical disease test - Chikungunya"
 msgstr ""
 
-#: config.json:307
+#: config.json:282
 msgid "Tropical disease test - Dengue fever Ag+IgG-IgM"
 msgstr ""
 
-#: config.json:312
+#: config.json:287
 msgid "Tropical disease test - Ebola"
 msgstr ""
 
-#: config.json:297
+#: config.json:272
 msgid "Tropical disease test - Malaria"
 msgstr ""
 
-#: config.json:292
+#: config.json:267
 msgid "Troponin blood test"
 msgstr ""
 
@@ -703,15 +703,15 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: config.json:105
-msgid "USB Digital spirometer - Minispir New"
+#: config.json:41
+msgid "USB Digital spirometer - Minispir Light"
 msgstr ""
 
-#: config.json:169
+#: config.json:165
 msgid "USB digital laryngoscope - VIVID MEDICAL VT-A100"
 msgstr ""
 
-#: config.json:121
+#: config.json:117
 msgid "USB digital polarizing otoscope - Firefly DE500"
 msgstr ""
 
@@ -723,7 +723,7 @@ msgstr ""
 msgid "USB oxymeter - NONIN 3231"
 msgstr ""
 
-#: config.json:157
+#: config.json:153
 msgid "USB ultrasound scanner - Interson SiMPLI - GP-C01"
 msgstr ""
 
@@ -731,7 +731,7 @@ msgstr ""
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr ""
 
-#: config.json:282
+#: config.json:257
 msgid "Urine test 10 parameters"
 msgstr ""
 
