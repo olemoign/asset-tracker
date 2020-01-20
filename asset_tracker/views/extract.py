@@ -238,7 +238,6 @@ class AssetsExtract(object):
 
         # Find maximum number of consumables per equipment
         most_consumables_equipment_family = self.request.db_session.query(models.EquipmentFamily).distinct() \
-            .join(models.consumable_families_equipment_families) \
             .join(models.ConsumableFamily) \
             .group_by(models.EquipmentFamily.id) \
             .order_by(func.count(models.EquipmentFamily.consumable_families).desc()) \

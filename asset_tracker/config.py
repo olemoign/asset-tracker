@@ -28,7 +28,7 @@ def update_consumable_families(db_session, config):
         config (dict).
     """
     config_families = config['consumable_families']
-    db_families = db_session.query(ConsumableFamily).join(consumable_families_equipment_families).all()
+    db_families = db_session.query(ConsumableFamily).all()
 
     # Remove existing family if it was removed from the config and no consumable is from this family.
     for db_family in db_families:
@@ -56,11 +56,10 @@ def update_consumable_families(db_session, config):
 
         db_family.model = config_family['model']
 
-        # Update equipment family / consumable family association
+        # Update equipment family / consumable family association.
         db_family.equipment_families = []
         for equipment_family_id in config_family['equipment_family_ids']:
-            equipment_family = db_session.query(EquipmentFamily) \
-                .filter_by(family_id=equipment_family_id).first()
+            equipment_family = db_session.query(EquipmentFamily).filter_by(family_id=equipment_family_id).one()
             db_family.equipment_families.append(equipment_family)
 
 
