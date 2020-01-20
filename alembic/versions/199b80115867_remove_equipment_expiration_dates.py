@@ -1,4 +1,4 @@
-"""remove equipment expiration dates
+"""Remove equipment expiration dates
 
 Revision ID: 199b80115867
 Revises: ea12469de59d
