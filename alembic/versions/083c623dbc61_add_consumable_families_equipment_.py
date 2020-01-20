@@ -45,5 +45,9 @@ def downgrade():
 
     with op.batch_alter_table('consumable_family', schema=None) as batch_op:
         batch_op.add_column(sa.Column('equipment_family_id', sa.Integer, nullable=True))
-        batch_op.create_foreign_key(batch_op.f('fk_consumable_equipment_family_id_equipment_family'),
-                                    'equipment_family', ['equipment_family_id'], ['id'])
+        batch_op.create_foreign_key(
+            batch_op.f('fk_consumable_equipment_family_id_equipment_family'),
+            'equipment_family',
+            ['equipment_family_id'],
+            ['id'],
+        )

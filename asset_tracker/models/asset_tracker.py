@@ -137,8 +137,9 @@ consumable_families_equipment_families = Table(
 class ConsumableFamily(Model):
     family_id = Column(String, nullable=False, unique=True)
     model = Column(String, nullable=False, unique=True)
-    equipment_families = relationship('EquipmentFamily',
-                                      secondary=consumable_families_equipment_families, backref='consumable_families')
+    equipment_families = relationship(
+        'EquipmentFamily', secondary=consumable_families_equipment_families, backref='consumable_families'
+    )
 
 
 class Equipment(Model):

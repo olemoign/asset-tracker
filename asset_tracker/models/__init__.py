@@ -8,8 +8,10 @@ from sqlalchemy.orm import sessionmaker
 from asset_tracker.models.asset_tracker import Asset, consumable_families_equipment_families, Consumable, \
     ConsumableFamily, Equipment, EquipmentFamily, Event, EventStatus, Site
 
-_ = (Asset, consumable_families_equipment_families, Consumable, ConsumableFamily, Equipment, EquipmentFamily, Event,
-     EventStatus, Site)
+_ = (
+    Asset, consumable_families_equipment_families, Consumable, ConsumableFamily, Equipment, EquipmentFamily, Event,
+    EventStatus, Site,
+)
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup
