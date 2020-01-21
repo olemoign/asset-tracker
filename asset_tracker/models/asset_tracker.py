@@ -75,7 +75,8 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             self._asset_dates['production'] = None
 
-        calibration_last = self.history('desc').join(Event.status).filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = self.history('desc').join(Event.status) \
+            .filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.

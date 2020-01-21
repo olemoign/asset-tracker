@@ -9,8 +9,8 @@ from json import loads
 import pkg_resources
 import transaction
 
-from asset_tracker.models import Asset, consumable_families_equipment_families, Consumable, ConsumableFamily, \
-    Equipment, EquipmentFamily, EventStatus, get_engine, get_session_factory, get_tm_session
+from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus, \
+    get_engine, get_session_factory, get_tm_session
 
 DEFAULT_CONFIG = {
     'asset_tracker.branding': 'parsys',
