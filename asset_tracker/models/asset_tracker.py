@@ -47,7 +47,7 @@ class Asset(Model, CreationDateTimeMixin):
             history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
         if filter_config:
-            history = history.join(EventStatus).filter(EventStatus.status_type != 'config')
+            history = history.join(Event.status).filter(EventStatus.status_type != 'config')
 
         return history
 
@@ -61,7 +61,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
 
-        activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
+        activation_first = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'service').first()
         if activation_first:
             self._asset_dates['activation_first'] = activation_first.date
             self._asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS)
@@ -69,13 +69,13 @@ class Asset(Model, CreationDateTimeMixin):
             self._asset_dates['activation_first'] = None
             self._asset_dates['warranty_end'] = None
 
-        production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
+        production = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
             self._asset_dates['production'] = production.date
         else:
             self._asset_dates['production'] = None
 
-        calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = self.history('desc').join(Event.status).filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.
@@ -144,7 +144,7 @@ class ConsumableFamily(Model):
 
 class Equipment(Model):
     family_id = Column(Integer, ForeignKey('equipment_family.id'))
-    family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
+    family = relationship('EquipmentFamily', foreign_keys=family_id, backref='equipments', uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
     asset = relationship('Asset', foreign_keys=asset_id, backref='equipments', uselist=False)

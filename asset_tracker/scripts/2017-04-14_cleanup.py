@@ -29,7 +29,7 @@ def main():
             # noinspection PyProtectedMember
             first_event = asset._history.order_by(models.Event.date).first()
             # noinspection PyProtectedMember
-            in_service_event = asset._history.join(models.EventStatus) \
+            in_service_event = asset._history.join(models.Event.status) \
                 .filter(models.EventStatus.status_id == 'service').order_by(models.Event.date).first()
 
             if in_service_event is first_event:

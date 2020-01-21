@@ -155,7 +155,7 @@ class Assets(object):
         consumables_models = {}
 
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
-            .outerjoin(models.ConsumableFamily) \
+            .outerjoin(models.EquipmentFamily.consumable_families) \
             .order_by(models.EquipmentFamily.model).all()
 
         for family in equipments_families:
@@ -218,7 +218,7 @@ class Assets(object):
             return None
 
         software_updates = self.asset.history('desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
 
         softwares = {}
         for event in software_updates:
@@ -236,7 +236,7 @@ class Assets(object):
 
     def get_last_config(self):
         """Get last version of configuration updates."""
-        last_config = self.asset.history('desc').join(models.EventStatus) \
+        last_config = self.asset.history('desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'config_update').first()
 
         if last_config is None:
@@ -326,7 +326,7 @@ class Assets(object):
             # Marlink rule: next calibration = activation date + calibration frequency.
             if calibration_last:
                 activation_next = asset.history('asc').filter(models.Event.date > calibration_last) \
-                    .join(models.EventStatus).filter(models.EventStatus.status_id == 'service').first()
+                    .join(models.Event.status).filter(models.EventStatus.status_id == 'service').first()
                 if activation_next:
                     asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
                 else:

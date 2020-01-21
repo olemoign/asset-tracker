@@ -140,7 +140,7 @@ class AssetsExtract(object):
 
             # Software information.
             software_updates = db_session.query(models.Event) \
-                .join(models.EventStatus) \
+                .join(models.Event.status) \
                 .filter(
                     models.Event.asset_id == asset.id,
                     models.EventStatus.status_id == 'software_update',
@@ -167,9 +167,9 @@ class AssetsExtract(object):
                     models.EquipmentFamily.model,
                     models.Equipment,
                 ) \
-                .join(models.Equipment, models.EquipmentFamily.id == models.Equipment.family_id) \
-                .join(models.Consumable) \
-                .join(models.ConsumableFamily, models.Consumable.family_id == models.ConsumableFamily.id) \
+                .join(models.EquipmentFamily.equipments) \
+                .join(models.Equipment.consumables) \
+                .join(models.Consumable.family) \
                 .filter(models.Equipment.asset_id == asset.id).all()
 
             for equipment in asset_equipment:
@@ -221,16 +221,14 @@ class AssetsExtract(object):
         # Dynamic data - software.
         # Find unique software name.
         software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Asset, models.Event.asset_id == models.Asset.id) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .join(models.EventStatus, models.Event.status_id == models.EventStatus.id) \
-            .filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.asset).filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
 
         unique_software = set(update.extra_json['software_name'] for update in software_updates)
 
         # Find maximum number of equipments per asset
         most_equipments_asset = self.request.db_session.query(models.Asset) \
-            .join(models.Equipment) \
+            .join(models.Asset.equipments) \
             .group_by(models.Asset.id) \
             .order_by(func.count(models.Asset.equipments).desc()).first()
 
@@ -238,7 +236,7 @@ class AssetsExtract(object):
 
         # Find maximum number of consumables per equipment
         most_consumables_equipment_family = self.request.db_session.query(models.EquipmentFamily).distinct() \
-            .join(models.ConsumableFamily) \
+            .join(models.EquipmentFamily.consumable_families) \
             .group_by(models.EquipmentFamily.id) \
             .order_by(func.count(models.EquipmentFamily.consumable_families).desc()) \
             .first()
