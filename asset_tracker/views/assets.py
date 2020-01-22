@@ -152,19 +152,21 @@ class Assets(object):
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         localizer = self.request.localizer
-        consumables_models = {}
+        consumables_families = {}
 
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
             .outerjoin(models.EquipmentFamily.consumable_families) \
             .order_by(models.EquipmentFamily.model).all()
 
-        for family in equipments_families:
+        for equipment_family in equipments_families:
             # Translate family models so that they can be sorted translated on the page.
-            family.model_translated = localizer.translate(family.model)
-            if family.consumable_families:
-                consumables_models[family.family_id] = {}
-                for c_family in family.consumable_families:
-                    consumables_models[family.family_id][c_family.family_id] = localizer.translate(c_family.model)
+            equipment_family.model_translated = localizer.translate(equipment_family.model)
+
+            if equipment_family.consumable_families:
+                consumables_families[equipment_family.family_id] = {}
+                for consumable_family in equipment_family.consumable_families:
+                    consumables_families[equipment_family.family_id][consumable_family.family_id] = \
+                        localizer.translate(consumable_family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()
@@ -177,7 +179,7 @@ class Assets(object):
         return {
             'asset_types': ASSET_TYPES,
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
-            'consumables_models': consumables_models,
+            'consumables_families': consumables_families,
             'equipments_families': equipments_families,
             'sites': self.get_site_data(tenants),
             'statuses': statuses,

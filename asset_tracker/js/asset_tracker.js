@@ -87,7 +87,7 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
 
 $(document).on('change', '.equipment__select', function addConsumableExpirationDates(event) {
   /**
-   * Add expiration dates for equipments that possess consumables
+   * Add expiration dates for equipments that possess consumables.
    */
   const expirationDatesContainer = $(this).parents('.well');
   const equipmentBlockDigit = $(this).attr('id').split('#')[1];
@@ -102,10 +102,10 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
   $(this).data('prev', selectedValue);
   expirationDatesContainer.find('.expiration_date_fields').remove();
 
-  const consumablesModels = $('#equipments__container').data('consumablesModels');
+  const consumablesFamilies = $('#equipments__container').data('consumablesFamilies');
 
-  if (consumablesModels[selectedValue]) {
-    const equipmentsConsumablesEntries = Object.entries(consumablesModels[selectedValue]);
+  if (consumablesFamilies[selectedValue]) {
+    const equipmentsConsumablesEntries = Object.entries(consumablesFamilies[selectedValue]);
     equipmentsConsumablesEntries.sort((a, b) => a[1].localeCompare(b[1]));
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {

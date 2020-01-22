@@ -70,11 +70,11 @@
             </div>
 
             {# Expiration date fields. #}
-            <label class="equipment__expiration_date_label {% if reference or not equipment.family.consumable_families %}hidden{% endif %}">{{ gettext('Expiration dates') }}</label>
+            <label class="equipment__expiration_date_label{% if reference or not equipment.family.consumable_families %} hidden{% endif %}">{{ gettext('Expiration dates') }}</label>
             <div class="form-group expiration_date_fields">
                 {% if not reference %}
                     {% for consumable_family in equipment.family.consumable_families %}
-                        {% set consumable_family_model = consumables_models[equipment.family.family_id][consumable_family.family_id] %}
+                        {% set consumable_family_model = consumables_families[equipment.family.family_id][consumable_family.family_id] %}
                         {% set expiration_date_id = 'equipment-expiration_date-' ~ consumable_family.family_id ~ '#' ~ index %}
                         {% if consumable_family.family_id in expiration_dates[equipment.id] %}
                             {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
