@@ -1,11 +1,11 @@
-"""19/12/2019: transfer Glucose meter consumable expiration date information on the new consumable table."""
+"""19/12/2019: transfer glucose meter consumable expiration date information on the new consumables table."""
 import argparse
 
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 from sqlalchemy import or_
 
-from asset_tracker.models import Equipment, Consumable
+from asset_tracker.models import Consumable, ConsumableFamily, Equipment
 
 
 def main():
@@ -19,21 +19,24 @@ def main():
     with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
         db_session = env['request'].db_session
 
-        equipments_to_migrate = db_session.query(Equipment).filter(
-            or_(Equipment.expiration_date_1, Equipment.expiration_date_2)
-        ).all()
+        lancets = db_session.query(ConsumableFamily).filter_by(family_id='GZQ2bAmW').one()
+        test_strips = db_session.query(ConsumableFamily).filter_by(family_id='6piDwmZt').one()
+
+        equipments_to_migrate = db_session.query(Equipment) \
+            .filter(or_(Equipment.expiration_date_1, Equipment.expiration_date_2)).all()
 
         for equipment in equipments_to_migrate:
             if equipment.expiration_date_1:
                 db_session.add(Consumable(
-                    family_id=1,
+                    family=lancets,
                     equipment_id=equipment.id,
                     expiration_date=equipment.expiration_date_1,
                 ))
                 print(f'Created lancets consumable for equipment {equipment.id}.')
+
             if equipment.expiration_date_2:
                 db_session.add(Consumable(
-                    family_id=2,
+                    family=test_strips,
                     equipment_id=equipment.id,
                     expiration_date=equipment.expiration_date_2,
                 ))
