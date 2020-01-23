@@ -83,28 +83,29 @@ class Assets(object):
                     groups.append(split_field_name[1])
 
         for group in groups:
-            family_id = self.form.get(f'equipment-family#{group}')
+            family_id = self.form.get(f'equipment#{group}-family')
             if not family_id:
                 continue
 
-            family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
+            equipment_family = self.request.db_session.query(models.EquipmentFamily) \
+                .filter_by(family_id=family_id).first()
 
             equipment = models.Equipment(
-                family=family,
-                serial_number=self.form.get(f'equipment-serial_number#{group}'),
+                family=equipment_family,
+                serial_number=self.form.get(f'equipment#{group}-serial_number') or None,
             )
 
-            if family.consumable_families:
-                for c_family in family.consumable_families:
-                    expiration_date = self.form.get(f'equipment-expiration_date-{c_family.family_id}#{group}')
+            if equipment_family.consumable_families:
+                for consumable_family in equipment_family.consumable_families:
+                    expiration_date = self.form.get(f'equipment#{group}-{consumable_family.family_id}-expiration_date')
 
                     if expiration_date:
-                        equipment.consumables.append(
-                            models.Consumable(
-                                family=c_family,
-                                expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date()
-                            )
+                        consumable = models.Consumable(
+                            family=consumable_family,
+                            expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
                         )
+                        equipment.consumables.append(consumable)
+                        self.request.db_session.add(consumable)
 
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
@@ -389,6 +390,7 @@ class Assets(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
+        # TODO.
         for idx, family_id in enumerate(self.form.get('equipment-family')):
             # Can contain empty strings
             if family_id:

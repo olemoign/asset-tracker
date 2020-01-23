@@ -37,7 +37,7 @@
                 {% if reference %}
                     {% set equipment_family_id = 'equipment-family' %}
                 {% else %}
-                    {% set equipment_family_id = 'equipment-family#' ~ index  %}
+                    {% set equipment_family_id = 'equipment#{}-family'.format(index) %}
                 {% endif %}
                 <select class="form-control equipment__select" name="{{ equipment_family_id }}" id="{{ equipment_family_id }}" title="equipment-family">
                     <option></option>
@@ -55,7 +55,7 @@
                     {% if reference %}
                         {% set serial_number_id = 'equipment-serial_number' %}
                     {% else %}
-                        {% set serial_number_id = 'equipment-serial_number#' ~ index %}
+                        {% set serial_number_id = 'equipment#{}-serial_number'.format(index) %}
                     {% endif %}
 
                     <label for="{{ serial_number_id }}" class="sr-only">Serial number</label>
@@ -75,7 +75,7 @@
                 {% if not reference %}
                     {% for consumable_family in equipment.family.consumable_families %}
                         {% set consumable_family_model = consumables_families[equipment.family.family_id][consumable_family.family_id] %}
-                        {% set expiration_date_id = 'equipment-expiration_date-' ~ consumable_family.family_id ~ '#' ~ index %}
+                        {% set expiration_date_id = 'equipment#{}-{}-expiration_date'.format(index, consumable_family.family_id) %}
                         {% if consumable_family.family_id in expiration_dates[equipment.id] %}
                             {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
                         {% endif %}
