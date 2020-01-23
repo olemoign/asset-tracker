@@ -61,12 +61,14 @@ class Assets(object):
         # By putting the translated family name at the equipment level, when can then sort equipments by translated
         # family name and serial number.
         for equipment in asset.equipments:
-            # Don't put None here or we won't be able to sort later.
-            equipment.family_translated = ''
-            if not equipment.serial_number:
-                equipment.serial_number = ''
             if equipment.family:
                 equipment.family_translated = self.request.localizer.translate(equipment.family.model)
+            else:
+                # Don't put None here or we won't be able to sort later.
+                equipment.family_translated = ''
+
+            if not equipment.serial_number:
+                equipment.serial_number = ''
 
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
