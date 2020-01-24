@@ -11,6 +11,9 @@ services:
       - redis
     volumes:
       - .:/srv
+    healthcheck:
+      test: ["CMD", "parsys_healthcheck"]
+      start_period: 30s
     restart: always
 
   celery:
@@ -39,6 +42,10 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      timeout: 5s
+      start_period: 10s
     restart: always
 
   redis:
@@ -46,4 +53,8 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 5s
+      start_period: 10s
     restart: always

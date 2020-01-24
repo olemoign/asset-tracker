@@ -80,5 +80,8 @@ setup(
         'paste.app_factory': [
             'main = asset_tracker:main',
         ],
+        'console_scripts': [
+          'parsys_healthcheck = parsys_utilities.status:healthcheck'
+        ],
     },
 )
