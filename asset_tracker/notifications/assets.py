@@ -69,21 +69,20 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     text = 'emails/consumables_expiration.txt'
     html = 'emails/consumables_expiration.html'
 
-    consumable_labels = []
+    expired_consumables = []
     for consumable in equipment.consumables:
         if consumable.expiration_date.strftime('%Y-%m-%d') == expiration_date:
-            consumable_labels.append(consumable.family.model)
+            expired_consumables.append(consumable.family.model)
 
     server_url = ini_configuration['app:main']['asset_tracker.server_url']
-    model = equipment.family.model
     template_data = {
         'app_name': app_name,
         'asset_id': equipment.asset.asset_id,
         'asset_url': urljoin(server_url, f'/assets/{equipment.asset.id}/'),
-        'consumable_labels': consumable_labels,
-        'expiration_date': expiration_date,
         'delay_days': delay_days,
-        'model': model,
+        'equipment': equipment.family.model,
+        'expired_consumables': expired_consumables,
+        'expiration_date': expiration_date,
     }
 
     # Template generation
