@@ -27,9 +27,8 @@
                 /**
                  * Send body height to the Cloud to adjust iframe height.
                  */
-                const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight}; {# must be Integer #}
-                const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
-                window.parent.postMessage(data, targetOrigin);
+                const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight};
+                window.parent.postMessage(data, '*');
             }
 
             // Continue sending height on window resize as long lines can be split and change the iframe height.
