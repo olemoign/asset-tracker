@@ -12,11 +12,11 @@
     <body class="site-info-body">
         {% if name or site_type or contact or phone or email %}
             <div class="site-info">
-                {% if name %}<p> <span class="glyphicon glyphicon-map-marker"></span> {{ name }}</>{% endif %}
-                {% if site_type %}<p><span class="glyphicon glyphicon-info-sign"></span> {{ gettext(site_type) }}</p>{% endif %}
-                {% if contact %}<p><span class="glyphicon glyphicon-user"></span> {{ contact }}</p>{% endif %}
-                {% if phone %}<p><span class="glyphicon glyphicon-earphone"></span> {{ phone }}</p>{% endif %}
-                {% if email %}<p><span class="glyphicon glyphicon-send"></span> {{ email }}</p>{% endif %}
+                {% if name %}<p> <span class="glyphicon glyphicon-map-marker site-icon"></span> {{ name }}</>{% endif %}
+                {% if site_type %}<p><span class="glyphicon glyphicon-info-sign site-icon"></span> {{ gettext(site_type) }}</p>{% endif %}
+                {% if contact %}<p><span class="glyphicon glyphicon-user site-icon"></span> {{ contact }}</p>{% endif %}
+                {% if phone %}<p><span class="glyphicon glyphicon-earphone site-icon"></span> {{ phone }}</p>{% endif %}
+                {% if email %}<p><span class="glyphicon glyphicon-send site-icon"></span> {{ email }}</p>{% endif %}
             </div>
         {% endif %}
 
