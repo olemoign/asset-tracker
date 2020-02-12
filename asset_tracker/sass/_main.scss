@@ -210,9 +210,15 @@ td {
     flex-wrap: wrap;
 }
 
+.site-text {
+    max-width: 20%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .site-icon {
     font-size: 20px;}
-
 
 /**********************************/
 /************ Settings ************/
