@@ -18,9 +18,9 @@ services:
 
   celery:
     image: tracker.parsys.com:1337/parsys/asset_tracker
-    entrypoint: []
+    entrypoint: ["docker-entrypoint.sh", "--celery"]
     command: [
-      "/usr/local/bin/celery", "worker", "-A", "asset_tracker", "-B", "-Q", "celery", "--ini", "/srv/production.ini",
+      "/usr/local/bin/celery", "worker", "-A", "asset_tracker", "-B", "--ini", "/srv/production.ini",
       "--logfile=/srv/log/celery/celery.log", "--loglevel=info"
     ]
     depends_on:
@@ -43,7 +43,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: ["CMD", "pg_isready", "-d", "postgres", "-U", "postgres"]
       timeout: 5s
       start_period: 10s
     restart: always
