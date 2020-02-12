@@ -201,18 +201,24 @@ td {
 }
 
 .site-info-body p {
-    margin: 0;
-}
-
-.site-title {
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    margin-right: 30px;
 }
 
 .site-info {
-    padding: 20px 15px;
+    padding-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.site-text {
+    max-width: 20%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.site-icon {
+    font-size: 20px;
 }
 
 /**********************************/
