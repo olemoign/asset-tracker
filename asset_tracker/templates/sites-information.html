@@ -27,7 +27,7 @@
                 /**
                  * Send body height to the Cloud to adjust iframe height.
                  */
-                const data = {'type': 'parsys_site_info', 'height': document.getElementsByClassName('site-info')[0].offsetHeight}; {# must be Integer #}
+                const data = {'type': 'parsys_site_info', 'height': document.body.scrollHeight}; {# must be Integer #}
                 const targetOrigin = '*';  {# or cloud_URL: http://localhost:6543 #}
                 window.parent.postMessage(data, targetOrigin);
             }
