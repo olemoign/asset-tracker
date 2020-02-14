@@ -29,7 +29,7 @@
 {%- endmacro %}
 
 {% macro equipment_box(equipment=None, reference=False, index=None) -%}
-    <div id="{% if reference %}equipment__reference{% endif %}" class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
+    <div{% if reference %} id="equipment__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block{% if reference %} hidden{% endif %}">
         <div class="well well-sm">
 
             {# Select equipment. #}
@@ -39,7 +39,7 @@
                 {% else %}
                     {% set equipment_family_id = 'equipment#{}-family'.format(index) %}
                 {% endif %}
-            
+
                 <select class="form-control equipment__select" name="{{ equipment_family_id }}" id="{{ equipment_family_id }}" title="equipment-family">
                     <option></option>
                     {% for family in equipments_families|sort(attribute='model_translated') %}
