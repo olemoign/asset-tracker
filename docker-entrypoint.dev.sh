@@ -20,7 +20,7 @@ pip3 install --no-deps -e /srv
 pip3 install --no-deps -e /opt/parsys_utilities
 
 host_ip=$(getent hosts host.docker.internal | awk '{print $1}')
-echo -e "${host_ip}\tlocalhost.dev" >> /etc/hosts
+echo -e "${host_ip}\tdev.localhost" >> /etc/hosts
 
 if [ "$celery" == false ]
 then
