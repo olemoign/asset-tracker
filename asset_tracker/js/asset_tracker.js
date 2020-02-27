@@ -10,7 +10,6 @@ function manageSites() {
   // Copy list of options (site__reference) in site__options.
   $('#site__reference').clone()
     .prop('id', 'site_id').prop('name', 'site_id')
-    .addClass('custom_select2')
     .removeClass('hidden')
     .appendTo('#site__options');
 
@@ -29,13 +28,13 @@ $(document).on('change', '#tenant_id', function manageSiteSelect() {
    * Manage the site dropdown when a new tenant is selected.
    * select2 doesn't understand the 'hide' attribute - select is rebuilt every time a new tenant is selected.
    */
-  const siteSelect = $('.custom_select2');
+  let siteSelect = $('#site__reference');
   siteSelect.select2('destroy');
   siteSelect.remove();
   manageSites();
 
   // Reselect div as it was removed/recreated.
-  siteSelect = $('.custom_select2');
+  siteSelect = $('#site__reference');
   // Unselect the current value if we changed tenants.
   siteSelect.val('');
 
@@ -344,7 +343,7 @@ $(function preparePageReady() {
   manageSites();
 
   // select2 overrides standard select
-  $('.custom_select2').select2({
+  $('select').select2({
     theme: 'bootstrap',
     width: '100%'
   });
