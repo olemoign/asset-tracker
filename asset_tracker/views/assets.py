@@ -431,6 +431,8 @@ class Assets(object):
             customer_id=self.form.get('customer_id'),
             customer_name=self.form.get('customer_name'),
             hardware_version=self.form.get('hardware_version'),
+            mac_ethernet=self.form.get('mac_ethernet'),
+            mac_wifi=self.form.get('mac_wifi'),
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
             tenant_id=self.form['tenant_id'],
@@ -491,6 +493,8 @@ class Assets(object):
 
         self.asset.asset_type = self.form['asset_type']
         self.asset.hardware_version = self.form.get('hardware_version')
+        self.asset.mac_ethernet = self.form.get('mac_ethernet')
+        self.asset.mac_wifi = self.form.get('mac_wifi')
 
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')

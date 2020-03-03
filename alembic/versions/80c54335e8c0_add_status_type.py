@@ -1,4 +1,4 @@
-"""add status_type
+"""Add status_type
 
 Revision ID: 80c54335e8c0
 Revises: c915540f60cb

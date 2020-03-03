@@ -61,6 +61,7 @@
                                     <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
                                 </select>
                             </div>
+
                             {{ input(gettext('Hardware version'), 'hardware_version') }}
 
                             {% if 'marlink' in specific %}
@@ -88,6 +89,14 @@
                             </div>
 
                             {{ input(gettext('Current location'), 'current_location') }}
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            {{ input(gettext('MAC address (wifi)'), 'mac_wifi') }}
+
+                            {{ input(gettext('MAC address (ethernet)'), 'mac_ethernet') }}
 
                             {% if not 'marlink' in specific %}
                                 <div class="col-sm-6 form-group">
@@ -106,6 +115,7 @@
                         </div>
 
                         <hr>
+
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -248,6 +258,7 @@
                                 </div>
                             {% endif %}
                         </div>
+
                         {% if not update or request.user.is_admin or ('assets-update', asset.tenant_id) in principals %}
                             <div class="btn-group pull-right">
                                 <a href="{{ 'assets-list'|route_path }}"

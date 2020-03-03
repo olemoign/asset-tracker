@@ -15,6 +15,8 @@ class Asset(Model, CreationDateTimeMixin):
     asset_id = Column(String, nullable=False, unique=True)
     asset_type = Column(String, nullable=False)
     hardware_version = Column(String)
+    mac_wifi = Column(String)
+    mac_ethernet = Column(String)
 
     user_id = Column(String)  # Received from RTA during station creation/update.
 
