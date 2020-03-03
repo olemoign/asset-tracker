@@ -124,7 +124,7 @@ class Assets(object):
             capture_exception(error)
             raise HTTPBadRequest()
 
-        asset_info = {'userID', 'login', 'tenantID', 'creatorID', 'creatorAlias'}
+        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'userID'}
         # Validate data.
         if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')

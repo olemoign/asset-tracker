@@ -70,15 +70,17 @@
                             {{ input(gettext('Customer name'), 'customer_name') }}
 
                             {# Site management - clone the select below in site__options #}
-                            <!--suppress HtmlFormInputWithoutLabel -->
-                            <select class="form-control hidden" id="site__reference">
-                                <option></option>
-                                {% for site_id, site in sites.items() %}
-                                    <option value="{{ site.id }}" data-tenant_id="{{ site.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
-                                        {{- site.name -}}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                            <div class="hidden">
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                <select class="form-control" id="site__reference">
+                                    <option></option>
+                                    {% for site_id, site in sites.items() %}
+                                        <option value="{{ site.id }}" data-tenant_id="{{ site.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
+                                            {{- site.name -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
                             <div id="site__options" class="col-sm-6 form-group">
                                 <label for="site_id">{{ gettext('Site') }}</label>

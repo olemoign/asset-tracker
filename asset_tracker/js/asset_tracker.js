@@ -10,7 +10,6 @@ function manageSites() {
   // Copy list of options (site__reference) in site__options.
   $('#site__reference').clone()
     .prop('id', 'site_id').prop('name', 'site_id')
-    .removeClass('hidden')
     .appendTo('#site__options');
 
   const tenantIdSelected = $('#tenant_id').find('option:selected').val();
