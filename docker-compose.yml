@@ -37,7 +37,7 @@ services:
     restart: always
 
   postgres:
-    image: postgres:12
+    image: postgres:12.1
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
