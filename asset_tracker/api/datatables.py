@@ -16,6 +16,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL
 
 class Assets(object):
     """List assets for dataTables."""
+
     __acl__ = [
         (Allow, None, 'assets-list', 'assets-list'),
         (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
@@ -146,6 +147,7 @@ class Assets(object):
 
 class Sites(DataTablesAPI):
     """List sites for dataTables."""
+
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, ADMIN_PRINCIPAL, 'sites-list'),

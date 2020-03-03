@@ -10,6 +10,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL
 
 class Sites(object):
     """(Cloud) get site info in consultation."""
+
     __acl__ = [
         (Allow, None, 'sites-list', 'sites-list'),
         (Allow, None, ADMIN_PRINCIPAL, 'sites-list'),

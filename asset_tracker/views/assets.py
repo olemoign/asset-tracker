@@ -28,7 +28,7 @@ class Assets(object):
             (Allow, None, 'assets-create', 'assets-create'),
             (Allow, None, 'assets-extract', 'assets-extract'),
             (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-read', 'assets-update', 'assets-list'))
+            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
         ]
 
         if self.asset:

@@ -13,6 +13,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL
 
 class AssetsExtract(object):
     """Extract assets."""
+
     __acl__ = [
         (Allow, None, 'assets-extract', 'assets-extract'),
         (Allow, None, ADMIN_PRINCIPAL, 'assets-extract'),

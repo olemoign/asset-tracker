@@ -37,8 +37,9 @@ def update_equipment_families(db_session, config):
         if not config_family:
             equipment = db_session.query(Equipment).filter_by(family=db_family).first()
             if equipment:
-                logger.info(f'Equipment family {db_family.model} was removed from the config but can\'t be removed '
-                            f'from the db.')
+                logger.info(
+                    f'Equipment family {db_family.model} was removed from the config but can\'t be removed from the db.'
+                )
             else:
                 db_session.delete(db_family)
                 logger.info(f'Deleting equipment family {db_family.model}.')
