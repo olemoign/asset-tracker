@@ -9,6 +9,12 @@ from pyramid.view import exception_view_config, notfound_view_config, view_confi
 from asset_tracker import models
 
 
+@view_config(route_name='health', request_method='GET', renderer='json')
+def health_get(_request):
+    """Simple docker healthcheck."""
+    return 'healthy'
+
+
 @view_config(route_name='status', request_method='GET', renderer='json')
 def status_get(request):
     """Display app status."""
@@ -44,4 +50,5 @@ def exception_view(request):
 
 
 def includeme(config):
+    config.add_route(pattern='health/', name='health')
     config.add_route(pattern='status/', name='status')
