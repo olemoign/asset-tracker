@@ -79,7 +79,7 @@ class Assets(object):
         specific_attributes = {
             'site': models.Site.name,
             'status': models.EventStatus.status_id,
-            'tenant_key': tenants.c.tenant_parsys_key,
+            'tenant_key': tenants.c.parsys_key,
         }
 
         try:
@@ -195,14 +195,14 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            tenants.c.tenant_parsys_key,
+            tenants.c.parsys_key,
         ]
 
         joined_tables = [
             (tenants, tenants.c.tenant_id == models.Site.tenant_id),
         ]
 
-        specific_attributes = {'tenant_key': tenants.c.tenant_parsys_key}
+        specific_attributes = {'tenant_key': tenants.c.parsys_key}
 
         try:
             # noinspection PyTypeChecker
