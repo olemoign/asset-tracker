@@ -227,29 +227,43 @@
                                     {% for event in asset.history('asc') %}
                                         <p class="history_event">
                                             {% if event.status.status_id == 'software_update' %}
-                                                {{ gettext('<b>%(date)s</b> %(software)s updated to version %(version)s.',
-                                                           software=event.extra_json.get('software_name')|capitalize,
-                                                           version=event.extra_json.get('software_version'),
-                                                           date=event.date|format_date(locale)) }}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> %(software)s updated to version %(version)s.',
+                                                    software=event.extra_json.get('software_name')|capitalize,
+                                                    version=event.extra_json.get('software_version'),
+                                                    date=event.date|format_date(locale)
+                                                ) }}
                                             {% elif event.status.status_id == 'config_update' %}
-                                                {{ gettext('<b>%(date)s</b> Configuration updated.', date=event.date|format_date(locale)) }}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> Configuration updated.', date=event.date|format_date(locale)
+                                                ) }}
                                                 <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
                                                     <span class="glyphicon glyphicon-file"></span>
                                                 </a>
                                             {% elif event.status.status_id == 'site_change' %}
                                                 {% set site_id = event.extra_json.get('site_id') %}
                                                 {% if site_id == None %}
-                                                    {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
+                                                    {{ gettext(
+                                                        '<b>%(date)s</b> %(creator)s changed site to',
+                                                        date=event.date|format_date(locale),
+                                                        creator=event.creator_alias
+                                                    ) }}
                                                     <b>{{ gettext('None') }}</b>.
                                                 {% elif site_id in sites.keys() %}
-                                                    {{ gettext('<b>%(date)s</b> %(creator)s changed site to', date=event.date|format_date(locale), creator=event.creator_alias) }}
+                                                    {{ gettext(
+                                                        '<b>%(date)s</b> %(creator)s changed site to',
+                                                        date=event.date|format_date(locale),
+                                                        creator=event.creator_alias
+                                                    ) }}
                                                     <b><a href="{{ 'sites-update'|route_path(site_id=sites[site_id].id) }}">{{ sites[site_id].name }}</a></b>.
                                                 {% endif %}
                                             {% else %}
-                                                {{ gettext('<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
-                                                           creator=event.creator_alias,
-                                                           status=gettext(event.status.label),
-                                                           date=event.date|format_date(locale)) }}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
+                                                    creator=event.creator_alias,
+                                                    status=gettext(event.status.label),
+                                                    date=event.date|format_date(locale)
+                                                ) }}
                                                 <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
                                             {% endif %}
                                         </p>
