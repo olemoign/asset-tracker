@@ -71,7 +71,7 @@ class Assets(object):
         ]
 
         joined_tables = [
-            (tenants, tenants.c.tenant_id == models.Asset.tenant_id),
+            (tenants, tenants.c.id == models.Asset.tenant_id),
             models.EventStatus,
             models.Site,
         ]
@@ -199,7 +199,7 @@ class Sites(DataTablesAPI):
         ]
 
         joined_tables = [
-            (tenants, tenants.c.tenant_id == models.Site.tenant_id),
+            (tenants, tenants.c.id == models.Site.tenant_id),
         ]
 
         specific_attributes = {'tenant_key': tenants.c.parsys_key}
