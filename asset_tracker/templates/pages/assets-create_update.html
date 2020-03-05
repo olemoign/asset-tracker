@@ -244,14 +244,14 @@
                                                 {% set site_id = event.extra_json.get('site_id') %}
                                                 {% if site_id == None %}
                                                     {{ gettext(
-                                                        '<b>%(date)s</b> %(creator)s changed site to',
+                                                        '<b>%(date)s</b> %(creator)s set site to',
                                                         date=event.date|format_date(locale),
                                                         creator=event.creator_alias
                                                     ) }}
                                                     <b>{{ gettext('None') }}</b>.
                                                 {% elif site_id in sites.keys() %}
                                                     {{ gettext(
-                                                        '<b>%(date)s</b> %(creator)s changed site to',
+                                                        '<b>%(date)s</b> %(creator)s set site to',
                                                         date=event.date|format_date(locale),
                                                         creator=event.creator_alias
                                                     ) }}

@@ -27,7 +27,7 @@ msgstr ""
 #: templates/pages/assets-create_update.html:237
 #: templates/pages/assets-create_update.html:240
 #, python-format
-msgid "<b>%(date)s</b> %(creator)s changed site to"
+msgid "<b>%(date)s</b> %(creator)s set site to"
 msgstr ""
 
 #: templates/pages/assets-create_update.html:244

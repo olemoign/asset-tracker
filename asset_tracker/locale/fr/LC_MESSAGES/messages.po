@@ -29,8 +29,8 @@ msgstr "${app_name} - Rappel date de péremption du matériel consommable"
 #: templates/pages/assets-create_update.html:237
 #: templates/pages/assets-create_update.html:240
 #, python-format
-msgid "<b>%(date)s</b> %(creator)s changed site to"
-msgstr "<b>%(date)s</b> %(creator)s a changé le site en"
+msgid "<b>%(date)s</b> %(creator)s set site to"
+msgstr "<b>%(date)s</b> %(creator)s a défini le site"
 
 #: templates/pages/assets-create_update.html:244
 #, python-format
