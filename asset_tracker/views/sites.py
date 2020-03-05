@@ -1,4 +1,6 @@
 """Site tracker views: sites lists and read/update."""
+from operator import itemgetter
+
 from parsys_utilities.authorization import Right
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -71,6 +73,39 @@ class Sites(object):
 
             return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
+    def get_past_assets(self):
+        """Retrieve which assets were ever present on the site."""
+        past_assets = []
+
+        # Get all assets who have ever been on a site (this includes current assets).
+        # site_id is stored in models.Event.extra in JSON. Filtering gets complicated.
+        # noinspection PyProtectedMember
+        assets_ever_on_site = self.request.db_session.query(models.Asset) \
+            .join(models.Asset._history).filter(models.Event.extra.ilike(f'%"site_id": "{self.site.site_id}"%')) \
+            .join(models.Event.status).filter(models.EventStatus.status_id == 'site_change')
+
+        # For each asset, check if there is a site change AFTER arrival on the site. This could happen multiple times.
+        for asset in assets_ever_on_site:
+            # noinspection PyProtectedMember
+            site_changes = self.request.db_session.query(models.Event) \
+                .filter(models.Event.asset == asset) \
+                .join(models.Event.status).filter(models.EventStatus.status_id == 'site_change').all()
+
+            for index, site_change in enumerate(site_changes):
+                if index == 0:
+                    continue
+
+                if site_changes[index - 1].extra_json.get('site_id') == self.site.site_id:
+                    past_assets.append({
+                        'asset_id': asset.asset_id,
+                        'asset_type': asset.asset_type,
+                        'id': asset.id,
+                        'start': site_changes[index - 1].created_at,
+                        'end': site_change.created_at,
+                    })
+                    
+        return sorted(past_assets, key=itemgetter('start'))
+
     def read_form(self):
         """Format form content."""
         self.form = {
@@ -136,7 +171,11 @@ class Sites(object):
                  renderer='pages/sites-create_update.html')
     def update_get(self):
         """Get site update form: we need the site data."""
-        return {'site': self.site, **self.get_base_form_data()}
+        return {
+            'past_assets': self.get_past_assets(),
+            'site': self.site,
+            **self.get_base_form_data(),
+        }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
                  renderer='pages/sites-create_update.html')

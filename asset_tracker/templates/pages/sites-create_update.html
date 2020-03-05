@@ -72,9 +72,27 @@
 
                         {% if update %}
                             <hr>
+
                             <h3>{{ gettext('Assets') }}</h3>
+                            <h4>{{ gettext('Current') }}</h4>
                             {% for asset in site.assets %}
-                                <p><a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">{{ '{} ({})'.format(asset.asset_id, gettext(asset.asset_type|capitalize)) }}</a></p>
+                                <p>
+                                    <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
+                                        {{ '{} ({})'.format(asset.asset_id, gettext(asset.asset_type|capitalize)) }}
+                                    </a>
+                                </p>
+                            {% else %}
+                                {{ gettext('No asset registered.') }}
+                            {% endfor %}
+
+                            <h4>{{ gettext('History') }}</h4>
+                            {% for asset in past_assets %}
+                                <p>
+                                    {{ '{} / {}:'.format(asset['start']|format_date(locale), asset['end']|format_date(locale)) }}
+                                    <a href="{{ 'assets-update'|route_path(asset_id=asset['id']) }}">
+                                        {{ '{} ({})'.format(asset['asset_id'], gettext(asset['asset_type']|capitalize)) }}
+                                    </a>
+                                </p>
                             {% else %}
                                 {{ gettext('No asset registered.') }}
                             {% endfor %}

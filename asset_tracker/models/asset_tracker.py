@@ -36,7 +36,7 @@ class Asset(Model, CreationDateTimeMixin):
 
     equipments = relationship('Equipment', backref='asset')
 
-    _history = relationship('Event', foreign_keys='Event.asset_id', lazy='dynamic')
+    _history = relationship('Event', foreign_keys='Event.asset_id', backref='asset', lazy='dynamic')
 
     def history(self, order, filter_config=False):
         """Filter removed events from history.
