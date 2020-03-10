@@ -103,7 +103,7 @@ class Sites(object):
                         'start': site_changes[index - 1].created_at,
                         'end': site_change.created_at,
                     })
-                    
+
         return sorted(past_assets, key=itemgetter('start'))
 
     def read_form(self):
