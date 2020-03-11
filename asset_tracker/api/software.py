@@ -122,8 +122,7 @@ class Software(object):
         storage = Path(storage_path)
 
         # Products are stored in sub-folders in the storage path.
-        products_folders = [item for item in storage.iterdir() if item.is_dir()]
-        if self.product not in products_folders:
+        if not (storage / self.product).is_dir():
             raise HTTPNotFound(json={'error': 'Unknown product.'})
 
         product_folder = storage / self.product
@@ -143,7 +142,7 @@ class Software(object):
             wanted_archi = archi_32_bits == (archi == 32)
 
             if wanted_channel and wanted_archi:
-                product_versions[version] = product_file
+                product_versions[version] = product_file.name
 
         if not product_versions:
             return {}
