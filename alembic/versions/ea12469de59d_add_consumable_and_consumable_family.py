@@ -1,7 +1,7 @@
 """Add consumable and consumable family
 
 Revision ID: ea12469de59d
-Revises: 80c54335e8c0
+Revises: 5d889b6e1931
 Create Date: 2019-12-18 19:19:12.054826
 
 """
@@ -12,7 +12,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'ea12469de59d'
-down_revision = '80c54335e8c0'
+down_revision = '5d889b6e1931'
 branch_labels = None
 depends_on = None
 
@@ -22,8 +22,8 @@ def upgrade():
     op.create_table(
         'consumable_family',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('family_id', sa.Integer(), nullable=True),
-        sa.Column('model', sa.Unicode(), nullable=True),
+        sa.Column('family_id', sa.Unicode(), nullable=False),
+        sa.Column('model', sa.Unicode(), nullable=False),
         sa.Column('equipment_family_id', sa.Integer, nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_consumable_family')),
         sa.ForeignKeyConstraint(
@@ -36,8 +36,8 @@ def upgrade():
     op.create_table(
         'consumable',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('family_id', sa.Integer(), nullable=True),
-        sa.Column('equipment_id', sa.Integer(), nullable=True),
+        sa.Column('family_id', sa.Integer(), nullable=False),
+        sa.Column('equipment_id', sa.Integer(), nullable=False),
         sa.Column('expiration_date', sa.Date(), nullable=True),
         sa.ForeignKeyConstraint(['equipment_id'], ['equipment.id'], name=op.f('fk_consumable_equipment_id_equipment')),
         sa.ForeignKeyConstraint(

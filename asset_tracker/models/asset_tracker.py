@@ -116,7 +116,7 @@ class Asset(Model, CreationDateTimeMixin):
 
 
 class Consumable(Model):
-    family_id = Column(Integer, ForeignKey('consumable_family.id'))
+    family_id = Column(Integer, ForeignKey('consumable_family.id'), nullable=False)
     family = relationship('ConsumableFamily', foreign_keys=family_id, uselist=False)
 
     equipment_id = Column(Integer, ForeignKey('equipment.id'), nullable=False)
@@ -144,7 +144,7 @@ class ConsumableFamily(Model):
 
 
 class Equipment(Model):
-    family_id = Column(Integer, ForeignKey('equipment_family.id'))
+    family_id = Column(Integer, ForeignKey('equipment_family.id'), nullable=False)
     family = relationship('EquipmentFamily', foreign_keys=family_id, backref='equipments', uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
