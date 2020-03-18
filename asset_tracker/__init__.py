@@ -79,6 +79,7 @@ def main(global_config, **settings):
         timeout=USER_INACTIVITY_MAX,
         cookie_name='asset_tracker_session',
         cookie_secure=not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False)),
+        cookie_samesite='Lax',
         url=settings['asset_tracker.sessions_broker_url'],
     )
     config.set_session_factory(session_factory)
