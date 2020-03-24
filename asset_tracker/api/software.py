@@ -26,7 +26,6 @@ def get_archi_from_file(file_name):
     """
     # Remove file extension.
     product_name = file_name.stem.split('-')[0]
-    # noinspection PyTypeChecker
     return 32 if product_name.endswith('32') else 64
 
 
@@ -107,23 +106,26 @@ class Software(object):
 
         # The station can indicate what version of the software it is using.
         current = self.request.GET.get('current')
+        try:
+            current = sort_versions(current)
+        except TypeError:
+            # The current version wasn't in an expected format.
+            raise HTTPBadRequest(json={'error': 'Invalid current version.'})
 
         # Release channel (alpha, beta, dev, stable).
         channel = self.request.GET.get('channel', 'stable')
-
         # 32 or 64 bits?
         archi_32_bits = self.request.user_agent and 'Windows NT 6.3' in self.request.user_agent
 
         # If storage folder wasn't set up, can't return link.
         storage_path = self.request.registry.settings.get('asset_tracker.software_storage')
         if not storage_path:
-            return {}
+            return {'updateAvailable': False} if current else {}
 
         storage = Path(storage_path)
-
         # Products are stored in sub-folders in the storage path.
         if not (storage / self.product).is_dir():
-            raise HTTPNotFound(json={'error': 'Unknown product.'})
+            return {'updateAvailable': False} if current else {}
 
         product_folder = storage / self.product
         product_files = [item for item in product_folder.iterdir() if item.is_file()]
@@ -145,7 +147,7 @@ class Software(object):
                 product_versions[version] = product_file.name
 
         if not product_versions:
-            return {}
+            return {'updateAvailable': False} if current else {}
 
         # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
@@ -162,17 +164,15 @@ class Software(object):
 
         # We return only the latest version.
         product_latest = product_versions.popitem(last=True)
-
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
-        try:
-            if current and sort_versions(current) > sort_versions(product_latest[0]):
-                return {}
-        except TypeError:
-            # In case the current version wasn't in an expected format, discard it.
-            pass
+        if current and current > sort_versions(product_latest[0]):
+            return {'updateAvailable': False}
 
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
-        return OrderedDict(version=product_latest[0], url=download_url)
+        if current:
+            return {'updateAvailable': True, 'version': product_latest[0], 'url': download_url}
+        else:
+            return {'version': product_latest[0], 'url': download_url}
 
     def create_config_update_event(self, config, asset):
         """Create event if configuration file changed.
