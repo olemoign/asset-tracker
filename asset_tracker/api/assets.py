@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from json import JSONDecodeError
 
 from parsys_utilities.authorization import authenticate_rta
@@ -21,7 +21,7 @@ class Assets(object):
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one()
 
         event = models.Event(
-            date=datetime.utcnow().date(),
+            date=datetime.now(timezone.utc).date(),
             creator_id=creator_id,
             creator_alias=creator_alias,
             status=status,
@@ -99,7 +99,7 @@ class Assets(object):
         # Add Event
         event = models.Event(
             status=status,
-            date=datetime.utcnow().date(),
+            date=datetime.now(timezone.utc).date(),
             creator_id=creator_id,
             creator_alias=creator_alias,
         )

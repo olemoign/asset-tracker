@@ -94,7 +94,7 @@ def next_calibration(months=3):
         return -1
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    calibration_date = arrow.utcnow().shift(days=months * 30).format('YYYY-MM-DD')
+    calibration_date = arrow.utcnow().shift(days=months * 30).datetime
 
     # Set up db connection.
     session_factory = get_session_factory()

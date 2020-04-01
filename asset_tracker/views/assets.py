@@ -1,5 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
-from datetime import datetime
+from datetime import datetime, timezone
 from operator import attrgetter
 
 import json
@@ -108,7 +108,7 @@ class Assets(object):
         if self.form.get('event_date'):
             event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
-            event_date = datetime.utcnow().date()
+            event_date = datetime.now(timezone.utc).date()
 
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
 
@@ -131,7 +131,7 @@ class Assets(object):
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
 
         event = models.Event(
-            date=datetime.utcnow().date(),
+            date=datetime.now(timezone.utc).date(),
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
             status_id=status.id,
@@ -291,7 +291,7 @@ class Assets(object):
         for event_id in self.form['event-removed']:
             event = self.request.db_session.query(models.Event).filter_by(event_id=event_id).first()
             event.removed = True
-            event.removed_at = datetime.utcnow()
+            event.removed_at = datetime.now(timezone.utc)
             event.remover_id = self.request.user.id
             event.remover_alias = self.request.user.alias
 
