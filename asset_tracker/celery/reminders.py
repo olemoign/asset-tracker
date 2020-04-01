@@ -23,23 +23,25 @@ MANDATORY_CONFIG = {
 logger = get_task_logger(__name__)
 
 
-def notify_expiring_consumables(db_session, expiration_date, delay_days):
+def notify_expiring_consumables(db_session, delay_days):
     """Get equipments with consumables that will expire and send a notification to involved users.
 
     Args:
         db_session (sqlalchemy.orm.session.Session): sqlalchemy db session.
-        expiration_date (str): a reminder is sent x months before equipment expiration.
         delay_days (int): days before expiration.
 
     Returns:
         int: number of equipments with expiring consumables.
     """
+    expiration_date = arrow.utcnow().shift(days=delay_days).datetime
+
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
         .options(joinedload(models.Equipment.family)) \
-        .filter(or_(models.Equipment.expiration_date_1 == expiration_date,
-                    models.Equipment.expiration_date_2 == expiration_date)) \
-        .all()
+        .filter(or_(
+            models.Equipment.expiration_date_1 == expiration_date,
+            models.Equipment.expiration_date_2 == expiration_date,
+        )).all()
 
     pyramid_config = app.conf.pyramid_config
 
@@ -61,11 +63,7 @@ def consumables_expiration():
         return -1
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    expiration_delays_and_dates = [
-        (180, arrow.utcnow().shift(days=180).format('YYYY-MM-DD')),
-        (30, arrow.utcnow().shift(days=30).format('YYYY-MM-DD')),
-        (0, arrow.utcnow().format('YYYY-MM-DD')),
-    ]
+    expiration_delays = (0, 30, 180)
 
     # Set up db connection.
     session_factory = get_session_factory()
@@ -74,8 +72,8 @@ def consumables_expiration():
         db_session = models.get_tm_session(session_factory, transaction.manager)
 
         total_assets = 0
-        for delay_days, expiration_date in expiration_delays_and_dates:
-            total_assets += notify_expiring_consumables(db_session, expiration_date, delay_days)
+        for delay_days in expiration_delays:
+            total_assets += notify_expiring_consumables(db_session, delay_days)
 
         return total_assets
 
