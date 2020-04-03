@@ -33,7 +33,7 @@ def notify_expiring_consumables(db_session, delay_days):
     Returns:
         int: number of equipments with expiring consumables.
     """
-    expiration_date = arrow.utcnow().shift(days=delay_days).datetime
+    expiration_date = arrow.utcnow().shift(days=delay_days).naive
 
     equipments = db_session.query(models.Equipment) \
         .join(models.Asset) \
@@ -94,7 +94,7 @@ def next_calibration(months=3):
         return -1
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    calibration_date = arrow.utcnow().shift(days=months * 30).datetime
+    calibration_date = arrow.utcnow().shift(days=months * 30).naive
 
     # Set up db connection.
     session_factory = get_session_factory()

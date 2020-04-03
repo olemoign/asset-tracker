@@ -1,5 +1,5 @@
 """Generic views (status, 404, 500)."""
-from datetime import datetime, timezone
+from datetime import datetime
 from traceback import format_exc
 
 from parsys_utilities.status import status_endpoint
@@ -41,7 +41,7 @@ def exception_view(request):
 
     # In production.
     else:
-        error_header = f'Time: {datetime.now(timezone.utc)}\nUrl: {request.url}\nMethod: {request.method}\n'
+        error_header = f'Time: {datetime.utcnow()}\nUrl: {request.url}\nMethod: {request.method}\n'
         error_text = error_header + format_exc()
         request.logger_technical.error(error_text)
 

@@ -2,7 +2,7 @@
 import json
 import re
 from collections import OrderedDict
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from pathlib import Path
 
 from depot.manager import DepotManager
@@ -241,7 +241,7 @@ class Software(object):
 
             new_event = models.Event(
                 status=software_status,
-                date=datetime.now(timezone.utc).date(),
+                date=datetime.utcnow().date(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
                 extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
