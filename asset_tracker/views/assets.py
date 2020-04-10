@@ -53,8 +53,7 @@ class Assets(object):
         if not asset_id:
             return
 
-        asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
-            .options(joinedload(models.Asset.equipments)).first()
+        asset = self.request.db_session.query(models.Asset).options(joinedload(models.Asset.equipments)).get(asset_id)
         if not asset:
             raise HTTPNotFound()
 
@@ -145,7 +144,7 @@ class Assets(object):
         )
 
         if new_site_id:
-            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+            new_site = self.request.db_session.query(models.Site).get(new_site_id)
             event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
 
         # noinspection PyProtectedMember
