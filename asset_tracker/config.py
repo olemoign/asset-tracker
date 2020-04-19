@@ -59,7 +59,7 @@ def update_consumable_families(db_session, config):
         # Update equipment family / consumable family association.
         db_family.equipment_families = []
         for equipment_family_id in config_family['equipment_family_ids']:
-            equipment_family = db_session.query(EquipmentFamily).filter_by(family_id=equipment_family_id).one()
+            equipment_family = db_session.query(EquipmentFamily).filter_by(family_id=equipment_family_id).first()
             db_family.equipment_families.append(equipment_family)
 
 

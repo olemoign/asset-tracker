@@ -6,11 +6,10 @@ from datetime import date, datetime
 from pathlib import Path
 
 from depot.manager import DepotManager
-from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError, HTTPNotFound, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.view import view_config
 from sentry_sdk import capture_exception
-from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from asset_tracker import models
 
@@ -181,13 +180,7 @@ class Software(object):
             config (dict):
             asset (asset_tracker.models.Asset).
         """
-        try:
-            config_status = self.request.db_session.query(models.EventStatus) \
-                .filter(models.EventStatus.status_id == 'config_update').one()
-        except (MultipleResultsFound, NoResultFound) as error:
-            capture_exception(error)
-            self.request.logger_technical.info('Missing status: config update.')
-            raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+        config_status = self.request.db_session.query(models.EventStatus).filter_by(status_id='config_update').first()
 
         depot = DepotManager.get()
         last_config = None
@@ -231,13 +224,8 @@ class Software(object):
         last_event = next(last_event_generator, None)
 
         if not last_event or last_event.extra_json['software_version'] != software_version:
-            try:
-                software_status = self.request.db_session.query(models.EventStatus) \
-                    .filter(models.EventStatus.status_id == 'software_update').one()
-            except (MultipleResultsFound, NoResultFound) as error:
-                capture_exception(error)
-                self.request.logger_technical.info('Missing status: software update.')
-                raise HTTPInternalServerError(json={'error': 'Internal server error.'})
+            software_status = self.request.db_session.query(models.EventStatus) \
+                .filter_by(status_id='software_update').first()
 
             new_event = models.Event(
                 status=software_status,

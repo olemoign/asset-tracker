@@ -18,7 +18,7 @@ class Assets(object):
         self.request = request
 
     def add_site_change_event(self, asset, creator_id, creator_alias):
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one()
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
 
         event = models.Event(
             date=datetime.utcnow().date(),
@@ -85,7 +85,7 @@ class Assets(object):
             return
 
         # New Asset.
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
+        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()
 
         asset = models.Asset(
             asset_type='station',

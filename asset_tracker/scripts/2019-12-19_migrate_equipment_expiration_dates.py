@@ -19,8 +19,8 @@ def main():
     with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
         db_session = env['request'].db_session
 
-        lancets = db_session.query(ConsumableFamily).filter_by(family_id='GZQ2bAmW').one()
-        test_strips = db_session.query(ConsumableFamily).filter_by(family_id='6piDwmZt').one()
+        lancets = db_session.query(ConsumableFamily).filter_by(family_id='GZQ2bAmW').first()
+        test_strips = db_session.query(ConsumableFamily).filter_by(family_id='6piDwmZt').first()
 
         equipments_to_migrate = db_session.query(Equipment) \
             .filter(or_(Equipment.expiration_date_1, Equipment.expiration_date_2)).all()
