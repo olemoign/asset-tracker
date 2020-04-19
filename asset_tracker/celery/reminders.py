@@ -35,10 +35,13 @@ def notify_expiring_consumables(db_session, delay_days):
     expiration_date = arrow.utcnow().shift(days=delay_days).naive
 
     equipments = db_session.query(models.Equipment) \
-        .join(models.Equipment.asset) \
         .join(models.Equipment.consumables) \
-        .options(joinedload(models.Equipment.family), joinedload(models.Consumable.family)) \
         .filter(models.Consumable.expiration_date == expiration_date) \
+        .options(
+            joinedload(models.Equipment.asset),
+            joinedload(models.Equipment.family),
+            joinedload(models.Consumable.family),
+        ) \
         .all()
 
     pyramid_config = app.conf.pyramid_config

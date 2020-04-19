@@ -1,4 +1,4 @@
-"""Add_consumable_families_equipment_families_
+"""Add consumable_families_equipment_families
 
 Revision ID: 083c623dbc61
 Revises: 199b80115867
@@ -8,7 +8,6 @@ Create Date: 2020-01-16 17:16:11.167896
 
 import sqlalchemy as sa
 from alembic import op
-
 
 # revision identifiers, used by Alembic.
 revision = '083c623dbc61'
