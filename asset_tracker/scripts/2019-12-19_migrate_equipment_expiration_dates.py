@@ -7,6 +7,9 @@ from sqlalchemy import or_
 
 from asset_tracker.models import Consumable, ConsumableFamily, Equipment
 
+LANCETS_ID = 'GZQ2bAmW'
+TEST_STRIPS_ID = '6piDwmZt'
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -19,8 +22,8 @@ def main():
     with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
         db_session = env['request'].db_session
 
-        lancets = db_session.query(ConsumableFamily).filter_by(family_id='GZQ2bAmW').first()
-        test_strips = db_session.query(ConsumableFamily).filter_by(family_id='6piDwmZt').first()
+        lancets = db_session.query(ConsumableFamily).filter_by(family_id=LANCETS_ID).first()
+        test_strips = db_session.query(ConsumableFamily).filter_by(family_id=TEST_STRIPS_ID).first()
 
         equipments_to_migrate = db_session.query(Equipment) \
             .filter(or_(Equipment.expiration_date_1, Equipment.expiration_date_2)).all()
