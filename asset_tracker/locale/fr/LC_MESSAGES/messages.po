@@ -237,7 +237,7 @@ msgid "Dermatoscope lens - MIIS DOC100"
 msgstr "Objectif dermatoscope - MIIS DOC100"
 
 #: config.json:109
-msgid "Digital USB polarizing dermatoscrope - Firefly DE300"
+msgid "USB digital polarizing dermatoscope - Firefly DE300"
 msgstr "Dermatoscope polarisant numérique USB - Firefly DE300"
 
 #: config.json:411
@@ -713,7 +713,7 @@ msgid "Type"
 msgstr "Type"
 
 #: config.json:41
-msgid "USB Digital spirometer - Minispir Light"
+msgid "USB digital spirometer - Minispir Light"
 msgstr "Spiromètre numérique USB - Minispir Light"
 
 #: config.json:161
