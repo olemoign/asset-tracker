@@ -2,14 +2,12 @@
 set -Eeuo pipefail
 
 celery=false
-if [ "$1" == "--celery" ]
-then
+if [ "$1" == "--celery" ]; then
   celery=true
   set -- "${@:2}"
 fi
 
-if [ "$celery" == true ]
-then
+if [ "$celery" == true ]; then
   mkdir -p /srv/log/ /srv/log/celery/
   mkdir -p /srv/data/ /srv/data/redis/
   cp -n /opt/production.ini /srv
