@@ -39,7 +39,7 @@ $(document).on('change', '#tenant_id', function manageSiteSelect() {
 
   siteSelect.select2({
     theme: 'bootstrap',
-    width: '100%'
+    width: '100%',
   });
 });
 
@@ -103,13 +103,13 @@ const DATATABLES_TRANSLATIONS = {
       sFirst: 'Premier',
       sPrevious: 'Pr&eacute;c&eacute;dent',
       sNext: 'Suivant',
-      sLast: 'Dernier'
+      sLast: 'Dernier',
     },
     oAria: {
       sSortAscending: ': activer pour trier la colonne par ordre croissant',
-      sSortDescending: ': activer pour trier la colonne par ordre d&eacute;croissant'
-    }
-  }
+      sSortDescending: ': activer pour trier la colonne par ordre d&eacute;croissant',
+    },
+  },
 };
 
 function addHref(row, data) {
@@ -171,19 +171,19 @@ function createDataTables() {
   const dataTableParameters = {
     serverSide: true,
     ajax: {
-      url: table.data('ajax-url')
+      url: table.data('ajax-url'),
     },
     stateSave: true,
     pageLength: 50,
     lengthChange: false,
     // Remove annoying dataTables responsive behavior when some columns are hidden.
     responsive: {
-      details: false
+      details: false,
     },
     // Show 'processing' message.
     processing: true,
     columns: columns,
-    rowCallback: assetTrackerCallback
+    rowCallback: assetTrackerCallback,
   };
 
   if (window.userLocale in DATATABLES_TRANSLATIONS) {
@@ -193,9 +193,9 @@ function createDataTables() {
   // If there is a custom filter, change the organization of the special divs around the dataTable (page size to
   // the bottom).
   if (customFilter) {
-    dataTableParameters.dom = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>'
-      + '<"row"<"col-sm-12"tr>>'
-      + '<"row"<"col-sm-5"i><"col-sm-7"p>>';
+    dataTableParameters.dom = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>' +
+      '<"row"<"col-sm-12"tr>>' +
+      '<"row"<"col-sm-5"i><"col-sm-7"p>>';
   }
 
   const initialisedDataTable = table.DataTable(dataTableParameters);
@@ -250,9 +250,9 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
       const customFilterInput = dataTableContainer.find('.custom_filter__input');
 
       // 1: the filter checkbox is visible.
-      if ((customFilterInput.length && !customFilterInput.is(':checked'))
+      if ((customFilterInput.length && !customFilterInput.is(':checked')) ||
         // 2: the table isn't visible yet but a filter value is present in the local storage.
-        || (!customFilterInput.length && state && state.customFilter)) {
+        (!customFilterInput.length && state && state.customFilter)) {
         // noinspection JSUndefinedPropertyAssignment
         data.filter = customFilter;
       }
@@ -314,7 +314,9 @@ function restoreDates() {
   if (!Modernizr.inputtypes.date) {
     $('input[type="date"]').each(function standardizeDates() {
       // If date is null.
-      if (!this.value) return;
+      if (!this.value) {
+        return;
+      }
 
       // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
       const isStandardDate = this.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -344,6 +346,6 @@ $(function preparePageReady() {
   // select2 overrides standard select
   $('select').select2({
     theme: 'bootstrap',
-    width: '100%'
+    width: '100%',
   });
 });

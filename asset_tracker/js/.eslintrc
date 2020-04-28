@@ -1,20 +1,25 @@
 {
-  "extends": "airbnb/legacy",
+  "extends": [
+    "standard",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
   "parserOptions": {
+    "ecmaVersion": 6,
     "sourceType": "script"
   },
   "rules": {
-    "max-len": [
-      "error",
-      {
-        "code": 140
-      }
-    ],
-    "space-before-function-paren": [
-      "error",
-      "never"
-    ],
-    "vars-on-top": "off"
+    "curly": ["warn", "all"],
+    "brace-style": ["warn", "1tbs"],
+    "semi": ["warn", "always"],
+    "space-before-function-paren": ["warn", "never"],
+    "max-len": ["warn", { "code": 140 }],
+    "comma-dangle": ["warn", "always-multiline"],
+    "node/no-deprecated-api": ["error"],
+    "no-return-assign": ["error"],
+    "no-multiple-empty-lines": ["warn", { "max": 2 }],
+    "prefer-promise-reject-errors": "off",
+    "no-case-declarations": "off"
   },
   "env": {
     "browser": true,

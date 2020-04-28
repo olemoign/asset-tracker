@@ -9,12 +9,12 @@ $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
 [class^='select2'] {
-    border-radius: 0 !important;
+  border-radius: 0 !important;
 }
 
 // minimum height for select2 options = 20px (line-height) + 12px (padding)
 ul.select2-results__options > li {
-    min-height: 32px;
+  min-height: 32px;
 }
 
 $grid-float-breakpoint: 1100px;
@@ -26,94 +26,90 @@ $navbar-margin-bottom: 9px;
 @import 'datatables';
 
 body, html {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .img-background-fixed {
-    height: 100%;
-    width: 100%;
-    background-repeat: no-repeat;
-    position: fixed;
-    top: 50px;
-    z-index: -1;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 50px;
+  z-index: -1;
 }
 
 .root-container {
-    width: 100%;
+  width: 100%;
 }
 
 // Login page.
 .login-container.login-container {
-    max-width: 500px;
+  max-width: 500px;
 }
 
 .main-logo {
-    width: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.forgot-pwd {
-    margin-top: 50px;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .panel__title {
-    margin: 0;
-    display: inline;
+  margin: 0;
+  display: inline;
 }
 
 table td a {
+  text-decoration: none;
+  color: $black;
+
+  // Even if text doesn't cover the whole td, the whole space is clickable.
+  display: block;
+  margin-left: -8px;
+  padding-left: 8px;
+  margin-right: -8px;
+  padding-right: 8px;
+
+  &:active, &:focus, &:hover {
     text-decoration: none;
-    color: $black;
-
-    // Even if text doesn't cover the whole td, the whole space is clickable.
-    display: block;
-    margin-left: -8px;
-    padding-left: 8px;
-    margin-right: -8px;
-    padding-right: 8px;
-
-    &:active, &:focus, &:hover {
-        text-decoration: none;
-    }
+  }
 }
 
 // Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
 .table-responsive {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 
 // Add padding to datatables tools in case we are in a panel.
 .panel .dataTables_wrapper .row:first-child {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 @media (min-width: $screen-sm-min) {
-    .panel .custom_filter,
-    .panel .dataTables_info,
-    .panel .dataTables_length {
-        padding-left: 10px;
-    }
+  .panel .custom_filter,
+  .panel .dataTables_info,
+  .panel .dataTables_length {
+    padding-left: 10px;
+  }
 
-    .panel .dataTables_filter,
-    .panel .dataTables_paginate {
-        padding-right: 10px;
-    }
+  .panel .dataTables_filter,
+  .panel .dataTables_paginate {
+    padding-right: 10px;
+  }
 }
 
 .custom_filter {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 @media (max-width: $screen-xs-max) {
-    .panel .custom_filter {
-        text-align: center;
-    }
+  .panel .custom_filter {
+    text-align: center;
+  }
 
-    .panel .dataTables_info {
-        padding-bottom: 8px;
-    }
+  .panel .dataTables_info {
+    padding-bottom: 8px;
+  }
 }
 
 .panel .custom_filter,
@@ -121,75 +117,75 @@ table td a {
 .panel .dataTables_filter,
 .panel .dataTables_length,
 .panel .dataTables_paginate {
-    overflow-y: hidden;
+  overflow-y: hidden;
 }
 
 div.dataTables_wrapper div.dataTables_processing {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: calc(100% - 31px);
-    border: none;
-    transform: translate(-50%, -50%);
-    height: 100%;
-    opacity: 0.90;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    font-weight: 600;
-    margin-top: 0;
-    margin-left: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(100% - 31px);
+  border: none;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  opacity: 0.90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-left: 0;
 }
 
 td {
-    overflow: hidden;
-    word-break: break-all;
+  overflow: hidden;
+  word-break: break-all;
 }
 
 .equipments__header {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .equipments__label {
-    vertical-align: bottom;
+  vertical-align: bottom;
 }
 
 .equipment__add {
-    margin: 0 0 5px 5px;
+  margin: 0 0 5px 5px;
 }
 
 .event__delete {
-    opacity: 0.5;
+  opacity: 0.5;
 
-    &:hover {
-        transition-duration: .3s;
-        transition-property: opacity;
-        opacity: 1;
-        cursor: pointer;
-    }
+  &:hover {
+    transition-duration: .3s;
+    transition-property: opacity;
+    opacity: 1;
+    cursor: pointer;
+  }
 }
 
 // to avoid equipment block "overlap" when they have a different height
 @media (min-width: $screen-md-min) {
-    .auto-clear .col-md-4:nth-child(3n+1) {
-        clear: left;
-    }
+  .auto-clear .col-md-4:nth-child(3n+1) {
+    clear: left;
+  }
 }
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    .auto-clear .col-sm-6:nth-child(odd) {
-        clear: left;
-    }
+  .auto-clear .col-sm-6:nth-child(odd) {
+    clear: left;
+  }
 }
 
 // Typically an arrow instead of not-allowed cursor
 .form-control[disabled] {
-    cursor: default;
+  cursor: default;
 }
 
 .margin-right-10 {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 /**********************/
@@ -197,28 +193,28 @@ td {
 /**********************/
 
 .site-info-body {
-    background-color: #ffffff;
+  background-color: #ffffff;
 }
 
 .site-info-body p {
-    margin-right: 30px;
+  margin-right: 30px;
 }
 
 .site-info {
-    padding-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
+  padding-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .site-text {
-    max-width: 20%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+  max-width: 20%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .site-icon {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 /**********************************/
@@ -226,7 +222,7 @@ td {
 /**********************************/
 
 #user_settings-iframe {
-    border: 0;
-    height: calc(100% - 65px);
-    width: 100%;
+  border: 0;
+  height: calc(100% - 65px);
+  width: 100%;
 }

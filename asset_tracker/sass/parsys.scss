@@ -20,22 +20,22 @@ $link-color: black;
 @import 'main';
 
 .main-logo {
-    background-image: url('/static/images/parsys/logo.png');
-    padding-top: percentage(168px / 611px);
-    margin: 50px auto;
+  background-image: url('/static/images/parsys/logo.png');
+  padding-top: percentage(168px / 611px);
+  margin: 50px auto;
 }
 
 // Navbar dropdown.
 #menu-settings .dropdown-menu {
-    background-color: $parsys-green;
+  background-color: $parsys-green;
 }
 
 #menu-settings .dropdown-menu > li > a {
-    &:hover, &:focus {
-        color: $link-grey;
+  &:hover, &:focus {
+    color: $link-grey;
 
-        @media (min-width: $grid-float-breakpoint) {
-            background-color: $parsys-green-hover;
-        }
+    @media (min-width: $grid-float-breakpoint) {
+      background-color: $parsys-green-hover;
     }
+  }
 }
