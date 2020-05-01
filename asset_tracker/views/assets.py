@@ -1,4 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
+from collections import defaultdict
 from datetime import datetime
 from operator import attrgetter
 
@@ -53,7 +54,8 @@ class Assets(object):
         if not asset_id:
             return
 
-        asset = self.request.db_session.query(models.Asset).options(joinedload(models.Asset.equipments)).get(asset_id)
+        asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
+            .options(joinedload(models.Asset.equipments)).first()
         if not asset:
             raise HTTPNotFound()
 
@@ -86,25 +88,24 @@ class Assets(object):
             if not family_id:
                 continue
 
-            equipment_family = self.request.db_session.query(models.EquipmentFamily) \
-                .filter_by(family_id=family_id).first()
+            equipment_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id) \
+                .options(joinedload(models.EquipmentFamily.consumable_families)).first()
 
             equipment = models.Equipment(
                 family=equipment_family,
                 serial_number=self.form.get(f'equipment#{group}-serial_number') or None,
             )
 
-            if equipment_family.consumable_families:
-                for consumable_family in equipment_family.consumable_families:
-                    expiration_date = self.form.get(f'equipment#{group}-{consumable_family.family_id}-expiration_date')
+            for consumable_family in equipment_family.consumable_families:
+                expiration_date = self.form.get(f'equipment#{group}-{consumable_family.family_id}-expiration_date')
 
-                    if expiration_date:
-                        consumable = models.Consumable(
-                            family=consumable_family,
-                            expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
-                        )
-                        equipment.consumables.append(consumable)
-                        self.request.db_session.add(consumable)
+                if expiration_date:
+                    consumable = models.Consumable(
+                        family=consumable_family,
+                        expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
+                    )
+                    equipment.consumables.append(consumable)
+                    self.request.db_session.add(consumable)
 
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
@@ -154,21 +155,19 @@ class Assets(object):
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
         localizer = self.request.localizer
-        consumables_families = {}
+        consumables_families = defaultdict(dict)
 
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
-            .outerjoin(models.EquipmentFamily.consumable_families) \
+            .options(joinedload(models.EquipmentFamily.consumable_families)) \
             .order_by(models.EquipmentFamily.model).all()
 
         for equipment_family in equipments_families:
             # Translate family models so that they can be sorted translated on the page.
             equipment_family.model_translated = localizer.translate(equipment_family.model)
 
-            if equipment_family.consumable_families:
-                consumables_families[equipment_family.family_id] = {}
-                for consumable_family in equipment_family.consumable_families:
-                    consumables_families[equipment_family.family_id][consumable_family.family_id] = \
-                        localizer.translate(consumable_family.model)
+            for consumable_family in equipment_family.consumable_families:
+                consumables_families[equipment_family.family_id][consumable_family.family_id] = \
+                    localizer.translate(consumable_family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()
