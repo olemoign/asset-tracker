@@ -72,8 +72,8 @@
 
                             {{ input(gettext('Customer name'), 'customer_name') }}
 
-                            {# Site: the list depends on the asset's tenant and select2 doesn't understand 'hidden' so we build
-                               the full reference here and copy the adapted list in site__options. #}
+                            {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
+                                'hidden' so we build the full reference here and copy the adapted list in site__options. #}
                             <div class="hidden">
                                 <!--suppress HtmlFormInputWithoutLabel -->
                                 <select class="form-control" id="site__reference">
@@ -205,8 +205,8 @@
                                 </button>
                             </div>
 
-                            {# Reference: its purpose is to be cloned in equipment_list. #}
-                            {{ equipment_box(reference=True) }}
+                            {# Equipment and consumables references. #}
+                            {{ equipment_box() }}
                              <div id="equipment_consumables__reference" class="form-group expiration_date_fields hidden">
                                 <label></label>
                                 <!--suppress HtmlFormInputWithoutLabel -->
