@@ -186,23 +186,10 @@
       ]
     },
     {
-      "family_id": "6piDwmZt",
-      "model": "Blood glucose test strips",
-      "equipment_family_ids": [
-        "2YUEMLmH"
-      ]
-    },
-    {
-      "family_id": "7pxKvnE0",
-      "model": "Control solution for blood glucose meter",
-      "equipment_family_ids": [
-        "2YUEMLmH"
-      ]
-    },
-    {
       "family_id": "9oL6q5O5",
       "model": "Blood glucose test strips",
       "equipment_family_ids": [
+        "2YUEMLmH",
         "w5wDrPyZ"
       ]
     },
@@ -210,6 +197,7 @@
       "family_id": "SHkfxK4Y",
       "model": "Control solution for blood glucose meter",
       "equipment_family_ids": [
+        "2YUEMLmH",
         "w5wDrPyZ"
       ]
     },
