@@ -76,6 +76,10 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
 
   equipmentBlock.removeAttr('id').removeClass('hidden').appendTo('#equipments__list');
+  equipmentBlock.find('select').select2({
+    theme: 'bootstrap',
+    width: '100%',
+  });
 });
 
 $(document).on('click', '.equipment__remove', function removeEquipment() {
@@ -384,8 +388,8 @@ $(function preparePageReady() {
   // Show sites corresponding to the selected tenant when page is ready.
   manageSites();
 
-  // select2 overrides standard select
-  $('select').select2({
+  // Activate Select2.
+  $('select:visible').select2({
     theme: 'bootstrap',
     width: '100%',
   });
