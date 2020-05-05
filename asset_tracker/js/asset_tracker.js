@@ -99,18 +99,12 @@ $(document).on('change', '.equipment__family', function addConsumableExpirationD
   /**
    * Add expiration dates for equipments that possess consumables.
    */
-  const expirationDatesContainer = $(this).parents('.well');
-  const equipmentBlockDigit = $(this).attr('id').split('#')[1];
+  const equipmentContainer = $(this).parents('.equipment__block');
+  const expirationDates = equipmentContainer.find('.expiration_dates');
+  const equipmentCounter = equipmentContainer.data('equipmentsCounter');
 
   const selectedValue = event.target.value;
-  const previousValue = $(this).data('prev');
-
-  if (previousValue === selectedValue) {
-    return;
-  }
-
-  $(this).data('prev', selectedValue);
-  expirationDatesContainer.find('.expiration_date_fields').remove();
+  expirationDates.empty();
 
   const consumablesFamilies = $('#equipments__container').data('consumablesFamilies');
 
@@ -120,20 +114,17 @@ $(document).on('change', '.equipment__family', function addConsumableExpirationD
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
       const consumableEl = $('#equipments_consumables__reference').clone().removeAttr('id').removeClass('hidden');
-      const consumableId = 'equipment-expiration_date-' + element[0] + '#' + equipmentBlockDigit;
+      const consumableId = equipmentCounter + '#' + element[0] + '-expiration_date';
 
       const consumableLabel = consumableEl.find('label');
       consumableLabel.attr('for', consumableId);
-      consumableLabel.text(consumableLabel.text() + element[1]);
+      consumableLabel.text(element[1]);
 
       const consumableInput = consumableEl.find('input');
-      consumableInput.attr('id', consumableId).attr('name', consumableId).val();
+      consumableInput.attr('id', consumableId).attr('name', consumableId);
 
-      expirationDatesContainer.append(consumableEl);
-      expirationDatesContainer.find('.equipment__expiration_date_label').removeClass('hidden');
+      expirationDates.append(consumableEl);
     });
-  } else {
-    expirationDatesContainer.find('.equipment__expiration_date_label').addClass('hidden');
   }
 });
 
