@@ -30,6 +30,7 @@ requires = [
     'sqlalchemy',
     'transaction',
     'waitress',
+    'webob',
     'zope.sqlalchemy',
 ]
 

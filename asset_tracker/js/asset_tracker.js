@@ -59,23 +59,29 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   /**
    * Add a new equipment when the user clicks the '+' sign.
    */
-  const equipmentBlock = $('#equipment__reference').clone();
-  const nextDigit = $('.equipment__block').length;
+  const equipmentBlock = $('#equipments__reference').clone();
 
-  const equipmentSelect = equipmentBlock.find('.equipment__select');
+  let equipmentsCounter = 0;
+  // Get the current biggest counter value.
+  $('.equipment__block').each(function getCounter() {
+    if ($(this).data('equipmentsCounter') > equipmentsCounter) {
+      equipmentsCounter = $(this).data('equipmentsCounter');
+    }
+  });
+  equipmentsCounter += 1;
 
-  const newSelectId = equipmentSelect.eq(0).attr('id') + '#' + nextDigit;
-
+  const equipmentSelect = equipmentBlock.find('.equipment__family');
+  const newSelectId = equipmentsCounter + '#' + equipmentSelect.eq(0).attr('id');
   $('label[for="' + equipmentSelect.eq(0).attr('id') + '"]').attr('for', newSelectId);
   equipmentSelect.attr('id', newSelectId).attr('name', newSelectId);
 
-  const serialNumberInput = equipmentBlock.find('.equipment__serial_number_id');
-  const newSerialNumberId = serialNumberInput.eq(0).attr('id') + '#' + nextDigit;
-
+  const serialNumberInput = equipmentBlock.find('.equipment__serial_number');
+  const newSerialNumberId = equipmentsCounter + '#' + serialNumberInput.eq(0).attr('id');
   $('label[for="' + serialNumberInput.eq(0).attr('id') + '"]').attr('for', newSerialNumberId);
   serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
 
-  equipmentBlock.removeAttr('id').removeClass('hidden').appendTo('#equipments__list');
+  equipmentBlock.data('equipmentsCounter', equipmentsCounter).removeAttr('id').removeClass('hidden')
+    .appendTo('#equipments__list');
   equipmentBlock.find('select').select2({
     theme: 'bootstrap',
     width: '100%',
@@ -89,7 +95,7 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
   $(this).parents('.equipment__block').remove();
 });
 
-$(document).on('change', '.equipment__select', function addConsumableExpirationDates(event) {
+$(document).on('change', '.equipment__family', function addConsumableExpirationDates(event) {
   /**
    * Add expiration dates for equipments that possess consumables.
    */
@@ -113,7 +119,7 @@ $(document).on('change', '.equipment__select', function addConsumableExpirationD
     equipmentsConsumablesEntries.sort((a, b) => a[1].localeCompare(b[1]));
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
-      const consumableEl = $('#equipment_consumables__reference').clone().removeAttr('id').removeClass('hidden');
+      const consumableEl = $('#equipments_consumables__reference').clone().removeAttr('id').removeClass('hidden');
       const consumableId = 'equipment-expiration_date-' + element[0] + '#' + equipmentBlockDigit;
 
       const consumableLabel = consumableEl.find('label');

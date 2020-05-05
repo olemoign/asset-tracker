@@ -1,4 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
+import re
 from collections import defaultdict
 from datetime import datetime
 from operator import attrgetter
@@ -15,6 +16,7 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from webob.multidict import MultiDict
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
@@ -74,27 +76,22 @@ class Assets(object):
         """Add asset's equipments."""
         groups = []
         for field in self.form:
-            if field.startswith('equipment-family'):
-                split_field_name = field.split('#')
-                if len(split_field_name) > 1:
-                    groups.append(split_field_name[1])
+            match = re.match(r'(.+?)#equipment-family', field)
+            if match:
+                groups.append(match.group(1))
 
         for group in groups:
-            family_id = self.form.get(f'equipment#{group}-family')
-            if not family_id:
-                continue
-
+            family_id = self.form.get(f'{group}#equipment-family')
             equipment_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id) \
                 .options(joinedload(models.EquipmentFamily.consumable_families)).first()
 
             equipment = models.Equipment(
                 family=equipment_family,
-                serial_number=self.form.get(f'equipment#{group}-serial_number') or None,
+                serial_number=self.form.get(f'{group}#equipment-serial_number'),
             )
 
             for consumable_family in equipment_family.consumable_families:
-                expiration_date = self.form.get(f'equipment#{group}-{consumable_family.family_id}-expiration_date')
-
+                expiration_date = self.form.get(f'{group}#{consumable_family.family_id}-expiration_date')
                 if expiration_date:
                     consumable = models.Consumable(
                         family=consumable_family,
@@ -320,7 +317,7 @@ class Assets(object):
             or not has_calibration_frequency
         ):
             raise FormException(_('Missing mandatory data.'), log=False)
-        
+
         # Don't check asset_id and tenant_id if asset is linked.
         if self.asset and self.asset.is_linked:
             tenant_id = self.asset.tenant_id
@@ -349,13 +346,23 @@ class Assets(object):
     def validate_equipments(self):
         """Validate equipments data."""
         equipments_families = []
+        expiration_dates = []
+
+        for field in self.form:
+            match = re.match(r'(.+?)#equipment-family', field)
+            if match:
+                equipments_families.append(self.form[field])
+
+            match = re.match(r'(.+?)#(.+?)-expiration_date', field)
+            if match:
+                expiration_dates.append(self.form[field])
+
         for equipments_family in equipments_families:
             db_family = self.request.db_session.query(models.EquipmentFamily) \
                 .filter_by(family_id=equipments_family).first()
             if not db_family:
                 raise FormException(_('Invalid equipment family.'))
 
-        expiration_dates = []
         for expiration_date in expiration_dates:
             try:
                 datetime.strptime(expiration_date, '%Y-%m-%d').date()
@@ -394,6 +401,11 @@ class Assets(object):
     def create_post(self):
         """Post asset create form."""
         try:
+            self.form = MultiDict([
+                (key, value)
+                for key, value in self.request.POST.mixed().items()
+                if value != ''
+            ])
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()
@@ -455,6 +467,11 @@ class Assets(object):
     def update_post(self):
         """Post asset update form."""
         try:
+            self.form = MultiDict([
+                (key, value)
+                for key, value in self.request.POST.mixed().items()
+                if value != ''
+            ])
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()
@@ -488,16 +505,13 @@ class Assets(object):
 
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
+        self.asset.current_location = self.form.get('current_location')
+        self.asset.notes = self.form.get('notes')
 
         new_site_id = int(self.form['site_id']) if self.form.get('site_id') else None
         if new_site_id != self.asset.site_id:
             self.add_site_change_event(new_site_id)
-
         self.asset.site_id = new_site_id
-
-        self.asset.current_location = self.form.get('current_location')
-
-        self.asset.notes = self.form.get('notes')
 
         for equipment in self.asset.equipments:
             if equipment.consumables:

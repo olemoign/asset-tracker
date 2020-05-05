@@ -29,22 +29,23 @@
 {%- endmacro %}
 
 {% macro equipment_box(equipment=None, index=None) -%}
-    <div{% if not equipment %} id="equipment__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block{% if not equipment %} hidden{% endif %}">
+    <div{% if not equipment %} id="equipments__reference"{% endif %} class="col-sm-6 col-md-4 equipment__block{% if not equipment %} hidden{% endif %}"
+            {% if index %}data-equipments-counter="{{ index }}"{% endif %}>
         <div class="well well-sm">
             {# Select equipment. #}
             <div class="form-group">
                 {% if equipment %}
-                    {% set equipment_family_id = 'equipment#{}-family'.format(index) %}
+                    {% set equipment_family_id = '{}#equipment-family'.format(index) %}
                 {% else %}
                     {% set equipment_family_id = 'equipment-family' %}
                 {% endif %}
 
-                <select class="form-control equipment__select"{% if equipment %} name="{{ equipment_family_id }}"{% endif %}
+                <select class="form-control equipment__family"{% if equipment %} name="{{ equipment_family_id }}"{% endif %}
                         id="{{ equipment_family_id }}" title="equipment-family">
                     <option></option>
                     {% for family in equipments_families|sort(attribute='model_translated') %}
                         <option value="{{ family.family_id }}"{% if equipment and equipment.family_id == family.id %} selected{% endif %}>
-                            {{ family.model_translated }}
+                            {{- family.model_translated -}}
                         </option>
                     {% endfor %}
                 </select>
@@ -54,13 +55,13 @@
             <div class="form-group">
                 <div class="input-group">
                     {% if equipment %}
-                        {% set serial_number_id = 'equipment#{}-serial_number'.format(index) %}
+                        {% set serial_number_id = '{}#equipment-serial_number'.format(index) %}
                     {% else %}
                         {% set serial_number_id = 'equipment-serial_number' %}
                     {% endif %}
 
                     <label for="{{ serial_number_id }}" class="sr-only">Serial number</label>
-                    <input type="text" class="form-control equipment__serial_number_id"{% if equipment %} name="{{ serial_number_id }}"{% endif %}
+                    <input type="text" class="form-control equipment__serial_number"{% if equipment %} name="{{ serial_number_id }}"{% endif %}
                             id="{{ serial_number_id }}" placeholder="S/N"
                             {% if equipment and equipment.serial_number %}value="{{ equipment.serial_number }}"{% endif %}>
                     <span class="input-group-btn equipment__remove">
@@ -73,13 +74,13 @@
 
             {# Expiration date fields. #}
             <label class="equipment__expiration_date_label{% if not equipment or not equipment.family.consumable_families %} hidden{% endif %}">
-                {{ gettext('Expiration dates') }}
+                {{- gettext('Expiration dates') -}}
             </label>
             <div class="form-group expiration_date_fields">
                 {% if equipment %}
                     {% for consumable_family in equipment.family.consumable_families %}
                         {% set consumable_family_model = consumables_families[equipment.family.family_id][consumable_family.family_id] %}
-                        {% set expiration_date_id = 'equipment#{}-{}-expiration_date'.format(index, consumable_family.family_id) %}
+                        {% set expiration_date_id = '{}#{}-expiration_date'.format(index, consumable_family.family_id) %}
                         {% if consumable_family.family_id in expiration_dates[equipment.id] %}
                             {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
                         {% endif %}
