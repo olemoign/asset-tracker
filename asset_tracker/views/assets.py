@@ -57,7 +57,10 @@ class Assets(object):
             return
 
         asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
-            .options(joinedload(models.Asset.equipments)).first()
+            .options(
+                joinedload(models.Asset.equipments).joinedload(models.Equipment.family)
+                    .joinedload(models.EquipmentFamily.consumable_families)
+            ).first()
         if not asset:
             raise HTTPNotFound()
 
