@@ -3,14 +3,12 @@
 set -Eeuo pipefail
 
 celery=false
-if [ "$1" == "--celery" ]
-then
+if [ "$1" == "--celery" ]; then
   celery=true
   set -- "${@:2}"
 fi
 
-if [ "$celery" == true ]
-then
+if [ "$celery" == true ]; then
   mkdir -p /srv/tmp /srv/tmp/redis
 else
   mkdir -p /srv/tmp /srv/tmp/postgres /srv/tmp/redis
@@ -21,10 +19,9 @@ pip3 install --no-deps -e /srv
 pip3 install --no-deps -e /opt/parsys_utilities
 
 host_ip=$(getent hosts host.docker.internal | awk '{print $1}')
-echo -e "${host_ip}\tdev.localhost" >> /etc/hosts
+echo -e "${host_ip}\tdev.localhost" >>/etc/hosts
 
-if [ "$celery" == false ]
-then
+if [ "$celery" == false ]; then
   alembic -c /srv/config/development.ini upgrade head
 fi
 

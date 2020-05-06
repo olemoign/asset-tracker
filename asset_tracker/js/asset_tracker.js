@@ -1,7 +1,5 @@
 'use strict';
 
-const GLUCOMETER_FAMILY_ID = '2YUEMLmH';
-
 
 function manageSites() {
   /**
@@ -61,8 +59,33 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   /**
    * Add a new equipment when the user clicks the '+' sign.
    */
-  $('#equipment__reference').clone().removeAttr('id').removeClass('hidden')
+  const equipmentBlock = $('#equipments__reference').clone();
+
+  let equipmentsCounter = 0;
+  // Get the current biggest counter value.
+  $('.equipment__block').each(function getCounter() {
+    if ($(this).data('equipmentsCounter') > equipmentsCounter) {
+      equipmentsCounter = $(this).data('equipmentsCounter');
+    }
+  });
+  equipmentsCounter += 1;
+
+  const equipmentSelect = equipmentBlock.find('.equipment__family');
+  const newSelectId = equipmentsCounter + '#' + equipmentSelect.eq(0).attr('id');
+  $('label[for="' + equipmentSelect.eq(0).attr('id') + '"]').attr('for', newSelectId);
+  equipmentSelect.attr('id', newSelectId).attr('name', newSelectId);
+
+  const serialNumberInput = equipmentBlock.find('.equipment__serial_number');
+  const newSerialNumberId = equipmentsCounter + '#' + serialNumberInput.eq(0).attr('id');
+  $('label[for="' + serialNumberInput.eq(0).attr('id') + '"]').attr('for', newSerialNumberId);
+  serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
+
+  equipmentBlock.data('equipmentsCounter', equipmentsCounter).removeAttr('id').removeClass('hidden')
     .appendTo('#equipments__list');
+  equipmentBlock.find('select').select2({
+    theme: 'bootstrap',
+    width: '100%',
+  });
 });
 
 $(document).on('click', '.equipment__remove', function removeEquipment() {
@@ -72,17 +95,36 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
   $(this).parents('.equipment__block').remove();
 });
 
-$(document).on('change', '.equipment__select', function addGlucometerExpirations() {
+$(document).on('change', '.equipment__family', function addConsumableExpirationDates(event) {
   /**
-   * Add expiration dates for Glucometer equipment
+   * Add expiration dates for equipments that possess consumables.
    */
-  const expirationDateFields = $(this).parents('.equipment__block').find('.expiration_date_fields');
+  const equipmentContainer = $(this).parents('.equipment__block');
+  const expirationDates = equipmentContainer.find('.expiration_dates');
+  const equipmentCounter = equipmentContainer.data('equipmentsCounter');
 
-  if ($(this).val() === GLUCOMETER_FAMILY_ID) {
-    expirationDateFields.removeClass('hidden');
-  } else {
-    expirationDateFields.addClass('hidden');
-    expirationDateFields.find('input').val('');
+  const selectedValue = event.target.value;
+  expirationDates.empty();
+
+  const consumablesFamilies = $('#equipments__container').data('consumablesFamilies');
+
+  if (consumablesFamilies[selectedValue]) {
+    const equipmentsConsumablesEntries = Object.entries(consumablesFamilies[selectedValue]);
+    equipmentsConsumablesEntries.sort((a, b) => a[1].localeCompare(b[1]));
+
+    equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
+      const consumableEl = $('#equipments_consumables__reference').clone().removeAttr('id').removeClass('hidden');
+      const consumableId = equipmentCounter + '#' + element[0] + '-expiration_date';
+
+      const consumableLabel = consumableEl.find('label');
+      consumableLabel.attr('for', consumableId);
+      consumableLabel.text(element[1]);
+
+      const consumableInput = consumableEl.find('input');
+      consumableInput.attr('id', consumableId).attr('name', consumableId);
+
+      expirationDates.append(consumableEl);
+    });
   }
 });
 
@@ -343,8 +385,8 @@ $(function preparePageReady() {
   // Show sites corresponding to the selected tenant when page is ready.
   manageSites();
 
-  // select2 overrides standard select
-  $('select').select2({
+  // Activate Select2.
+  $('select:visible').select2({
     theme: 'bootstrap',
     width: '100%',
   });

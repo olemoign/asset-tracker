@@ -3,7 +3,7 @@ from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
 from pyramid.settings import aslist
 from sentry_sdk import configure_scope
 
-from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING, GLUCOMETER_ID
+from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING
 
 
 @subscriber(NewRequest)
@@ -34,8 +34,6 @@ def add_global_variables(event):
     event['principals'] = event['request'].effective_principals
     event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
-
-    event['GLUCOMETER_ID'] = GLUCOMETER_ID
 
 
 class FormException(Exception):

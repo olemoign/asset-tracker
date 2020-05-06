@@ -42,7 +42,7 @@ class Sites(object):
         if not site_id:
             return None  # In the list page, site_id will be None and it's ok.
 
-        site = self.request.db_session.query(models.Site).filter_by(id=site_id).first()
+        site = self.request.db_session.query(models.Site).get(site_id)
         if not site:
             raise HTTPNotFound()
 

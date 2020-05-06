@@ -6,7 +6,6 @@ from celery.utils.log import get_task_logger
 from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
 from sentry_sdk import capture_exception
-from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
@@ -36,12 +35,14 @@ def notify_expiring_consumables(db_session, delay_days):
     expiration_date = arrow.utcnow().shift(days=delay_days).naive
 
     equipments = db_session.query(models.Equipment) \
-        .join(models.Asset) \
-        .options(joinedload(models.Equipment.family)) \
-        .filter(or_(
-            models.Equipment.expiration_date_1 == expiration_date,
-            models.Equipment.expiration_date_2 == expiration_date,
-        )).all()
+        .join(models.Equipment.consumables) \
+        .filter(models.Consumable.expiration_date == expiration_date) \
+        .options(
+            joinedload(models.Equipment.asset),
+            joinedload(models.Equipment.family),
+            joinedload(models.Consumable.family),
+        ) \
+        .all()
 
     pyramid_config = app.conf.pyramid_config
 

@@ -16,6 +16,7 @@ branch_labels = None
 depends_on = None
 
 
+# noinspection PyTypeChecker
 def upgrade():
     op.create_table(
         'asset',

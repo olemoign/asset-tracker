@@ -9,8 +9,8 @@ from json import loads
 import pkg_resources
 import transaction
 
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, EventStatus, get_engine, get_session_factory, \
-    get_tm_session
+from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus, \
+    get_engine, get_session_factory, get_tm_session
 
 DEFAULT_CONFIG = {
     'asset_tracker.branding': 'parsys',
@@ -18,6 +18,49 @@ DEFAULT_CONFIG = {
 }
 
 logger = logging.getLogger('asset_tracker_actions')
+
+
+def update_consumable_families(db_session, config):
+    """Update consumable families in the db according to config.json.
+
+    Args:
+        db_session (sqlalchemy.orm.session.Session).
+        config (dict).
+    """
+    config_families = config['consumable_families']
+    db_families = db_session.query(ConsumableFamily).all()
+
+    # Remove existing family if it was removed from the config and no consumable is from this family.
+    for db_family in db_families:
+        config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
+
+        if not config_family:
+            consumable = db_session.query(Consumable).filter_by(family=db_family).first()
+            if consumable:
+                logger.info(
+                    f'Consumable family {db_family.model} was removed from the config but can\'t be removed from the'
+                    f' db.'
+                )
+            else:
+                db_session.delete(db_family)
+                logger.info(f'Deleting consumable family {db_family.model}.')
+
+    # Create new families and update names.
+    for config_family in config_families:
+        db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
+
+        if not db_family:
+            db_family = ConsumableFamily(family_id=config_family['family_id'])
+            db_session.add(db_family)
+            logger.info(f'Adding consumable family {config_family["model"]}.')
+
+        db_family.model = config_family['model']
+
+        # Update equipment family / consumable family association.
+        db_family.equipment_families = []
+        for equipment_family_id in config_family['equipment_family_ids']:
+            equipment_family = db_session.query(EquipmentFamily).filter_by(family_id=equipment_family_id).first()
+            db_family.equipment_families.append(equipment_family)
 
 
 def update_equipment_families(db_session, config):
@@ -111,4 +154,5 @@ def update_configuration(settings):
         config = loads(config)
 
         update_equipment_families(db_session, config)
+        update_consumable_families(db_session, config)
         update_statuses(db_session, config)

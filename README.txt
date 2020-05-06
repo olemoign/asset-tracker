@@ -1,4 +1,4 @@
-asset_tracker README
+Asset Tracker README
 ==================
 
 Getting Started

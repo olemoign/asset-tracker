@@ -4,11 +4,14 @@ from datetime import datetime
 from parsys_utilities.authorization import Right
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL
+
+MAX_CONSUMABLES = 7
+MAX_SOFTWARES = 2
 
 
 class AssetsExtract(object):
@@ -23,15 +26,14 @@ class AssetsExtract(object):
         self.request = request
 
     @staticmethod
-    def get_csv_header(max_software_per_asset, max_equipment_per_asset):
+    def get_csv_header(max_equipments_per_asset):
         """Define the column titles for the csv file.
 
         From unique_software and unique_equipment, we know the exact number of columns required to display each
         information without extra column.
 
         Args:
-            max_software_per_asset (int): number of distinct software.
-            max_equipment_per_asset (int): number of distinct equipment.
+            max_equipments_per_asset (int): maximum number of equipment.
 
         Returns:
             csv header (list): columns name.
@@ -58,37 +60,39 @@ class AssetsExtract(object):
             'site_contact',
             'site_phone',
             'site_email',
+
+            'software_1_name',
+            'software_1_version',
+            'software_2_name',
+            'software_2_version',
         ]
 
-        # Each software is identified by a name and a version.
-        software_columns = [
-            label
-            for i in range(1, max_software_per_asset + 1)
-            for label in {f'software_{i}_name', f'software_{i}_version'}
-        ]
-
-        # Each equipment is identified by a name and a serial number.
-        equipment_columns = [
-            label
-            for i in range(1, max_equipment_per_asset + 1)
-            for label in {
+        equipment_columns = []
+        for i in range(1, max_equipments_per_asset + 1):
+            # Each equipment is identified by a name and a serial number.
+            equipment_columns += [
                 f'equipment_{i}_name',
                 f'equipment_{i}_serial_number',
-                f'equipment_{i}_expiration_date_1',
-                f'equipment_{i}_expiration_date_2',
-            }
-        ]
+                *[
+                    label
+                    for j in range(1, MAX_CONSUMABLES + 1)
+                    for label in {
+                        f'equipment_{i}_consumable_{j}_name',
+                        f'equipment_{i}_consumable_{j}_expiration_date',
+                    }
+                ]
+            ]
 
-        return asset_columns + software_columns + equipment_columns
+        return asset_columns + equipment_columns
 
     @staticmethod
-    def get_csv_rows(db_session, unique_software, unique_equipment, tenants):
+    def get_csv_rows(db_session, unique_software, max_equipment_per_asset, tenants):
         """Get the asset information for the csv file.
 
         Args:
             db_session (sqlalchemy.orm.session.Session): current db session.
             unique_software (set): all the names of the deployed software.
-            unique_equipment (tuple): all the names of the deployed equipment.
+            max_equipment_per_asset (int): maximum number of equipment.
             tenants (dict): authorized tenants to extract data.
 
         Returns:
@@ -134,7 +138,7 @@ class AssetsExtract(object):
 
             # Software information.
             software_updates = db_session.query(models.Event) \
-                .join(models.EventStatus) \
+                .join(models.Event.status) \
                 .filter(
                     models.Event.asset_id == asset.id,
                     models.EventStatus.status_id == 'software_update',
@@ -156,23 +160,30 @@ class AssetsExtract(object):
                     # Fill with None values to maintain column alignment.
                     row += [None, None]
 
-            # Equipment information.
-            asset_equipment = db_session.query(
-                    models.EquipmentFamily.model,
-                    models.Equipment.serial_number,
-                    models.Equipment.expiration_date_1,
-                    models.Equipment.expiration_date_2
+            # Equipments information.
+            equipments = db_session.query(models.Equipment) \
+                .options(
+                    joinedload(models.Equipment.family),
+                    joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
                 ) \
-                .join(models.Equipment) \
                 .filter(models.Equipment.asset_id == asset.id).all()
 
-            for equipment_name in unique_equipment:
-                equipment = next((e for e in asset_equipment if e[0] == equipment_name), None)
-                if equipment:
-                    row += [*equipment]
-                else:
-                    # Fill with None values to maintain column alignment.
-                    row += [None, None, None, None]
+            for equipment in equipments:
+                empty_consumables_count = MAX_CONSUMABLES - len(equipment.consumables)
+                consumables = [(c.family.model, c.expiration_date) for c in equipment.consumables]
+                row += [
+                    equipment.family.model,
+                    equipment.serial_number,
+                    *[element for consumable in consumables for element in consumable],
+                    *[None for _i in range(empty_consumables_count * 2)],
+                ]
+
+            empty_equipment_count = max_equipment_per_asset - len(equipments)
+            for i in range(empty_equipment_count):
+                # Fill with None values to maintain column alignment.
+                row += [None, None]
+                for j in range(MAX_CONSUMABLES):
+                    row += [None, None]
 
             rows.append(row)
 
@@ -204,32 +215,26 @@ class AssetsExtract(object):
         # Dynamic data - software.
         # Find unique software name.
         software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Asset, models.Event.asset_id == models.Asset.id) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .join(models.EventStatus, models.Event.status_id == models.EventStatus.id) \
-            .filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.asset).filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
 
         unique_software = set(update.extra_json['software_name'] for update in software_updates)
 
-        # Dynamic data - equipment.
-        # Find the name of the deployed equipment.
-        equipment_names = self.request.db_session.query(models.Equipment.family_id, models.EquipmentFamily.model) \
-            .join(models.EquipmentFamily, models.Equipment.family_id == models.EquipmentFamily.id) \
-            .join(models.Asset, models.Equipment.asset_id == models.Asset.id) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .group_by(models.Equipment.family_id, models.EquipmentFamily.model) \
-            .order_by(models.EquipmentFamily.model)
+        # Find maximum number of equipments per asset.
+        asset_with_most_equipments = self.request.db_session.query(models.Asset) \
+            .join(models.Asset.equipments) \
+            .group_by(models.Asset.id) \
+            .order_by(func.count(models.Asset.equipments).desc()).first()
 
-        # Get EquipmentFamily.model.
-        unique_equipment = tuple(e[1] for e in equipment_names)
+        max_equipments = len(asset_with_most_equipments.equipments)
 
         # Override attributes of response.
         filename = f'{datetime.utcnow():%Y%m%d}_assets.csv'
         self.request.response.content_disposition = f'attachment;filename={filename}'
 
         return {
-            'header': self.get_csv_header(len(unique_software), len(unique_equipment)),
-            'rows': self.get_csv_rows(self.request.db_session, unique_software, unique_equipment, tenants),
+            'header': self.get_csv_header(max_equipments),
+            'rows': self.get_csv_rows(self.request.db_session, unique_software, max_equipments, tenants),
         }
 
 

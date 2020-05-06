@@ -15,7 +15,6 @@ CALIBRATION_FREQUENCIES_YEARS = OrderedDict([
     ('default', 2),
     ('maritime', 3),
 ])
-GLUCOMETER_ID = '2YUEMLmH'
 SITE_TYPES = [
     _('Company'),
     _('Hospital'),
@@ -23,6 +22,13 @@ SITE_TYPES = [
     _('Ship'),
 ]
 WARRANTY_DURATION_YEARS = 2
+
+ASSET_TYPES = [
+    {'name': 'backpack', 'label': _('Backpack')},
+    {'name': 'cart', 'label': _('Cart')},
+    {'name': 'station', 'label': _('Station')},
+    {'name': 'telecardia', 'label': _('Telecardia')},
+]
 
 PATH = Path(__file__).resolve().parent
 TEMPLATES_PATH = PATH / 'templates'

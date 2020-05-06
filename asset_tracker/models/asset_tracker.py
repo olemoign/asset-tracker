@@ -3,9 +3,9 @@ from json import loads
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
-from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Unicode as String
+from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
@@ -34,10 +34,6 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Column(String)
     notes = Column(String)
 
-    equipments = relationship('Equipment', backref='asset')
-
-    _history = relationship('Event', foreign_keys='Event.asset_id', backref='asset', lazy='dynamic')
-
     def history(self, order, filter_config=False):
         """Filter removed events from history.
 
@@ -51,7 +47,7 @@ class Asset(Model, CreationDateTimeMixin):
             history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
 
         if filter_config:
-            history = history.join(EventStatus).filter(EventStatus.status_type != 'config')
+            history = history.join(Event.status).filter(EventStatus.status_type != 'config')
 
         return history
 
@@ -65,7 +61,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
 
-        activation_first = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'service').first()
+        activation_first = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'service').first()
         if activation_first:
             self._asset_dates['activation_first'] = activation_first.date
             self._asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS)
@@ -73,13 +69,14 @@ class Asset(Model, CreationDateTimeMixin):
             self._asset_dates['activation_first'] = None
             self._asset_dates['warranty_end'] = None
 
-        production = self.history('asc').join(EventStatus).filter(EventStatus.status_id == 'stock_parsys').first()
+        production = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'stock_parsys').first()
         if production:
             self._asset_dates['production'] = production.date
         else:
             self._asset_dates['production'] = None
 
-        calibration_last = self.history('desc').join(EventStatus).filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = self.history('desc').join(Event.status) \
+            .filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.
@@ -118,16 +115,42 @@ class Asset(Model, CreationDateTimeMixin):
         return self.asset_dates['warranty_end']
 
 
+class Consumable(Model):
+    family_id = Column(Integer, ForeignKey('consumable_family.id'), nullable=False)
+    family = relationship('ConsumableFamily', foreign_keys=family_id, uselist=False)
+
+    equipment_id = Column(Integer, ForeignKey('equipment.id'), nullable=False)
+    equipment = relationship('Equipment', foreign_keys=equipment_id, backref='consumables', uselist=False)
+
+    expiration_date = Column(Date)
+
+
+# Association table between consumable families and equipment families (n to n).
+consumable_families_equipment_families = Table(
+    'consumable_families_equipment_families',
+    Model.metadata,
+    Column('consumable_family_id', Integer, ForeignKey('consumable_family.id'), nullable=False),
+    Column('equipment_family_id', Integer, ForeignKey('equipment_family.id'), nullable=False),
+    UniqueConstraint('consumable_family_id', 'equipment_family_id'),
+)
+
+
+class ConsumableFamily(Model):
+    family_id = Column(String, nullable=False, unique=True)
+    model = Column(String, nullable=False, unique=True)
+    equipment_families = relationship(
+        'EquipmentFamily', secondary=consumable_families_equipment_families, backref='consumable_families'
+    )
+
+
 class Equipment(Model):
-    family_id = Column(Integer, ForeignKey('equipment_family.id'))
-    family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False)
+    family_id = Column(Integer, ForeignKey('equipment_family.id'), nullable=False)
+    family = relationship('EquipmentFamily', foreign_keys=family_id, backref='equipments', uselist=False)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
+    asset = relationship('Asset', foreign_keys=asset_id, backref='equipments', uselist=False)
 
     serial_number = Column(String)
-
-    expiration_date_1 = Column(Date)
-    expiration_date_2 = Column(Date)
 
 
 class EquipmentFamily(Model):
@@ -136,9 +159,10 @@ class EquipmentFamily(Model):
 
 
 class Event(Model, CreationDateTimeMixin):
-    event_id = Column(String, nullable=False, unique=True, default=random_id)
+    event_id = Column(String, default=random_id, nullable=False, unique=True)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
+    asset = relationship('Asset', foreign_keys=asset_id, backref=backref('_history', lazy='dynamic'), uselist=False)
 
     date = Column(Date, nullable=False)
 
@@ -172,7 +196,7 @@ class EventStatus(Model):
 
 
 class Site(Model, CreationDateTimeMixin):
-    site_id = Column(String, nullable=False, unique=True, default=random_id)
+    site_id = Column(String, default=random_id, nullable=False, unique=True)
 
     tenant_id = Column(String, nullable=False)
     name = Column(String, nullable=False, unique=True)

@@ -30,6 +30,7 @@ requires = [
     'sqlalchemy',
     'transaction',
     'waitress',
+    'webob',
     'zope.sqlalchemy',
 ]
 
@@ -81,7 +82,7 @@ setup(
             'main = asset_tracker:main',
         ],
         'console_scripts': [
-          'parsys_healthcheck = parsys_utilities.status:healthcheck'
+            'parsys_healthcheck = parsys_utilities.status:healthcheck'
         ],
     },
 )

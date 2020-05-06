@@ -56,9 +56,11 @@
                             <div class="col-sm-6 form-group">
                                 <label for="asset_type">{{ gettext('Type') }} *</label>
                                 <select class="form-control" id="asset_type" name="asset_type">
-                                    <option value="cart"{% if update and asset.asset_type == 'cart' %} selected{% endif %}>{{ gettext('Cart') }}</option>
-                                    <option value="station"{% if not update or (asset and asset.asset_type == 'station') %} selected{% endif %}>{{ gettext('Station') }}</option>
-                                    <option value="telecardia"{% if update and asset.asset_type == 'telecardia' %} selected{% endif %}>{{ gettext('Telecardia') }}</option>
+                                    {% for asset_type in asset_types|sort(attribute='label_translated') %}
+                                        <option value="{{ asset_type['name'] }}"{% if update and asset.asset_type == asset_type['name'] %} selected{% endif %}>
+                                            {{ asset_type['label_translated'] }}
+                                        </option>
+                                    {% endfor %}
                                 </select>
                             </div>
 
@@ -70,7 +72,8 @@
 
                             {{ input(gettext('Customer name'), 'customer_name') }}
 
-                            {# Site management - clone the select below in site__options #}
+                            {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
+                                'hidden' so we build the full reference here and copy the adapted list in site__options. #}
                             <div class="hidden">
                                 <!--suppress HtmlFormInputWithoutLabel -->
                                 <select class="form-control" id="site__reference">
@@ -85,7 +88,7 @@
 
                             <div id="site__options" class="col-sm-6 form-group">
                                 <label for="site_id">{{ gettext('Site') }}</label>
-                                {# site__reference will be cloned here #}
+                                {# site__reference will be cloned here. #}
                             </div>
 
                             {{ input(gettext('Current location'), 'current_location') }}
@@ -194,7 +197,7 @@
 
                         <hr>
 
-                        <div class="row">
+                        <div class="row" id="equipments__container" data-consumables-families='{{ consumables_families|tojson }}'>
                             <div class="col-sm-12 equipments__header">
                                 <label class="equipments__label">{{ gettext('Equipments') }}</label>
                                 <button type="button" class="equipment__add btn btn-default">
@@ -202,12 +205,17 @@
                                 </button>
                             </div>
 
-                            {# Reference: its purpose is to be cloned in equipment_list. #}
-                            {{ equipment_box(reference=True) }}
+                            {# Equipment and consumables references. #}
+                            {{ equipment_box() }}
+                             <div id="equipments_consumables__reference" class="form-group hidden">
+                                <label></label>
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                 <input type="date" class="form-control">
+                             </div>
 
                             <div id="equipments__list" class="auto-clear">
                                 {% for equipment in (asset or {}).equipments %}
-                                    {{ equipment_box(equipment) }}
+                                    {{ equipment_box(equipment, index=loop.index) }}
                                 {% endfor %}
                             </div>
                         </div>

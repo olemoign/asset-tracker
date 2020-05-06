@@ -1,4 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
+import re
+from collections import defaultdict
 from datetime import datetime
 from operator import attrgetter
 
@@ -14,9 +16,10 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from webob.multidict import MultiDict
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views import FormException
 
 
@@ -54,7 +57,10 @@ class Assets(object):
             return
 
         asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
-            .options(joinedload(models.Asset.equipments)).first()
+            .options(
+                joinedload(models.Asset.equipments).joinedload(models.Equipment.family)
+                    .joinedload(models.EquipmentFamily.consumable_families)
+            ).first()
         if not asset:
             raise HTTPNotFound()
 
@@ -62,44 +68,41 @@ class Assets(object):
         # family name and serial number.
         for equipment in asset.equipments:
             # Don't put None here or we won't be able to sort later.
-            equipment.family_translated = ''
-            if equipment.family:
-                equipment.family_translated = self.request.localizer.translate(equipment.family.model)
+            model = equipment.family.model
+            equipment.family_translated = self.request.localizer.translate(model) if equipment.family else ''
+            equipment.serial_number = equipment.serial_number or ''
 
         asset.equipments.sort(key=attrgetter('family_translated', 'serial_number'))
         return asset
 
     def add_equipments(self):
         """Add asset's equipments."""
-        # Equipment box can be completely empty.
-        zip_equipment = zip(
-            self.form['equipment-family'],
-            self.form['equipment-serial_number'],
-            self.form['equipment-expiration_date_1'],
-            self.form['equipment-expiration_date_2'],
-        )
+        groups = []
+        for field in self.form:
+            match = re.match(r'(.+?)#equipment-family', field)
+            if match:
+                groups.append(match.group(1))
 
-        for family_id, serial_number, expiration_date_1, expiration_date_2 in zip_equipment:
-            if not family_id and not serial_number:
-                continue
+        for group in groups:
+            family_id = self.form.get(f'{group}#equipment-family')
+            equipment_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id) \
+                .options(joinedload(models.EquipmentFamily.consumable_families)).first()
 
-            if expiration_date_1:
-                expiration_date_1 = datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
-            else:
-                expiration_date_1 = None
-
-            if expiration_date_2:
-                expiration_date_2 = datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
-            else:
-                expiration_date_2 = None
-
-            family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
             equipment = models.Equipment(
-                family=family,
-                serial_number=serial_number,
-                expiration_date_1=expiration_date_1,
-                expiration_date_2=expiration_date_2,
+                family=equipment_family,
+                serial_number=self.form.get(f'{group}#equipment-serial_number'),
             )
+
+            for consumable_family in equipment_family.consumable_families:
+                expiration_date = self.form.get(f'{group}#{consumable_family.family_id}-expiration_date')
+                if expiration_date:
+                    consumable = models.Consumable(
+                        family=consumable_family,
+                        expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
+                    )
+                    equipment.consumables.append(consumable)
+                    self.request.db_session.add(consumable)
+
             self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
@@ -138,7 +141,7 @@ class Assets(object):
         )
 
         if new_site_id:
-            new_site = self.request.db_session.query(models.Site).filter_by(id=new_site_id).first()
+            new_site = self.request.db_session.query(models.Site).get(new_site_id)
             event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
 
         # noinspection PyProtectedMember
@@ -147,24 +150,48 @@ class Assets(object):
 
     def get_base_form_data(self):
         """Get base form input data (calibration frequencies, equipments families, assets statuses, tenants)."""
+        localizer = self.request.localizer
+        consumables_families = defaultdict(dict)
+
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
+            .options(joinedload(models.EquipmentFamily.consumable_families)) \
             .order_by(models.EquipmentFamily.model).all()
-        # Translate family models so that they can be sorted translated on the page.
-        for family in equipments_families:
-            family.model_translated = self.request.localizer.translate(family.model)
+
+        for equipment_family in equipments_families:
+            # Translate family models so that they can be sorted translated on the page.
+            equipment_family.model_translated = localizer.translate(equipment_family.model)
+
+            for consumable_family in equipment_family.consumable_families:
+                consumables_families[equipment_family.family_id][consumable_family.family_id] = \
+                    localizer.translate(consumable_family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()
 
         tenants = self.get_create_read_tenants()
 
+        for asset_type in ASSET_TYPES:
+            asset_type['label_translated'] = self.request.localizer.translate(asset_type['label'])
+
         return {
+            'asset_types': ASSET_TYPES,
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
+            'consumables_families': consumables_families,
             'equipments_families': equipments_families,
             'sites': self.get_site_data(tenants),
             'statuses': statuses,
             'tenants': tenants,
         }
+
+    def get_expiration_dates_by_equipment_family(self):
+        """Get consumables expiration dates classfied by equipment family id."""
+        expiration_dates = defaultdict(dict)
+
+        for equipment in self.asset.equipments:
+            for consumable in equipment.consumables:
+                expiration_dates[equipment.id][consumable.family.family_id] = consumable.expiration_date
+
+        return expiration_dates
 
     def get_create_read_tenants(self):
         """Get for which tenants the current user can create/read assets."""
@@ -188,7 +215,7 @@ class Assets(object):
             return None
 
         software_updates = self.asset.history('desc') \
-            .join(models.EventStatus).filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
 
         softwares = {}
         for event in software_updates:
@@ -206,7 +233,7 @@ class Assets(object):
 
     def get_last_config(self):
         """Get last version of configuration updates."""
-        last_config = self.asset.history('desc').join(models.EventStatus) \
+        last_config = self.asset.history('desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'config_update').first()
 
         if last_config is None:
@@ -226,70 +253,18 @@ class Assets(object):
 
         return {site.site_id: site for site in sites}
 
-    def read_form(self):
-        """Format form content according to our needs.
-        In particular, make sure that inputs which can be list are lists in all cases, even if no data was inputed.
-        """
-        self.form = {
-            key: value if value != '' else None
-            for key, value in self.request.POST.mixed().items()
-        }
-
-        # If there is only one equipment, make sure to convert the form variables to lists so that self.add_equipements
-        # doesn't behave weirdly.
-        equipment_families = self.form.get('equipment-family')
-        if not equipment_families:
-            self.form['equipment-family'] = ['']
-        elif not isinstance(equipment_families, list):
-            self.form['equipment-family'] = [equipment_families]
-
-        equipment_serial_numbers = self.form.get('equipment-serial_number')
-        if not equipment_serial_numbers:
-            self.form['equipment-serial_number'] = ['']
-        elif not isinstance(equipment_serial_numbers, list):
-            self.form['equipment-serial_number'] = [self.form['equipment-serial_number']]
-
-        if len(self.form['equipment-family']) != len(self.form['equipment-serial_number']):
-            raise FormException(_('Invalid equipments.'))
-
-        expiration_dates_1 = self.form.get('equipment-expiration_date_1')
-        if not expiration_dates_1:
-            self.form['equipment-expiration_date_1'] = ['']
-        elif not isinstance(expiration_dates_1, list):
-            self.form['equipment-expiration_date_1'] = [expiration_dates_1]
-
-        expiration_dates_2 = self.form.get('equipment-expiration_date_2')
-        if not expiration_dates_2:
-            self.form['equipment-expiration_date_2'] = ['']
-        elif not isinstance(expiration_dates_2, list):
-            self.form['equipment-expiration_date_2'] = [expiration_dates_2]
-
-        events_removed = self.form.get('event-removed')
-        if not events_removed:
-            self.form['event-removed'] = []
-        elif not isinstance(events_removed, list):
-            self.form['event-removed'] = [self.form['event-removed']]
-
-        has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = 'marlink' in self.specific or self.form.get('calibration_frequency')
-
-        # We don't need asset_id or tenant_id if asset is linked.
-        is_linked = self.asset and self.asset.is_linked
-        needed_data = self.form.get('asset_id') and self.form.get('tenant_id')
-        if (
-            not is_linked and not needed_data
-            or not self.form.get('asset_type')
-            or not has_creation_event
-            or not has_calibration_frequency
-        ):
-            raise FormException(_('Missing mandatory data.'), log=False)
-
     def remove_events(self):
         """Remove events.
         Actually, events are not removed but marked as removed in the db, so that they can be filtered later.
         """
-        for event_id in self.form['event-removed']:
+        for event_id in self.form.getall('event-removed'):
+            if not event_id:
+                continue
+
             event = self.request.db_session.query(models.Event).filter_by(event_id=event_id).first()
+            if not event:
+                continue
+
             event.removed = True
             event.removed_at = datetime.utcnow()
             event.remover_id = self.request.user.id
@@ -308,12 +283,12 @@ class Assets(object):
             # Marlink rule: next calibration = activation date + calibration frequency.
             if calibration_last:
                 activation_next = asset.history('asc').filter(models.Event.date > calibration_last) \
-                    .join(models.EventStatus).filter(models.EventStatus.status_id == 'service').first()
+                    .join(models.Event.status).filter(models.EventStatus.status_id == 'service').first()
                 if activation_next:
                     asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
                 else:
                     # If asset was never activated, we consider it still should be calibrated.
-                    # So calibration next = calibration last + calibration frequency.
+                    # So next calibration = last calibration + calibration frequency.
                     asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
 
             # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
@@ -330,8 +305,22 @@ class Assets(object):
             if calibration_last:
                 asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
 
-    def validate_form(self):
-        """Validate form data."""
+    def validate_asset(self):
+        """Validate asset data."""
+        has_creation_event = self.asset or self.form.get('event')
+        has_calibration_frequency = 'marlink' in self.specific or self.form.get('calibration_frequency')
+
+        # We don't need asset_id or tenant_id if asset is linked.
+        is_linked = self.asset and self.asset.is_linked
+        needed_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        if (
+            not is_linked and not needed_data
+            or not self.form.get('asset_type')
+            or not has_creation_event
+            or not has_calibration_frequency
+        ):
+            raise FormException(_('Missing mandatory data.'), log=False)
+
         # Don't check asset_id and tenant_id if asset is linked.
         if self.asset and self.asset.is_linked:
             tenant_id = self.asset.tenant_id
@@ -351,11 +340,40 @@ class Assets(object):
         if calibration_frequency and not calibration_frequency.isdigit():
             raise FormException(_('Invalid calibration frequency.'))
 
-        site_id = self.form.get('site_id')
-        model_site = self.request.db_session.query(models.Site).filter_by(id=site_id, tenant_id=tenant_id).first()
-        if site_id and not model_site:
-            raise FormException(_('Invalid site.'))
+        if self.form.get('site_id'):
+            model_site = self.request.db_session.query(models.Site) \
+                .filter_by(id=self.form['site_id'], tenant_id=tenant_id).first()
+            if not model_site:
+                raise FormException(_('Invalid site.'))
 
+    def validate_equipments(self):
+        """Validate equipments data."""
+        equipments_families = []
+        expiration_dates = []
+
+        for field in self.form:
+            match = re.match(r'(.+?)#equipment-family', field)
+            if match:
+                equipments_families.append(self.form[field])
+
+            match = re.match(r'(.+?)#(.+?)-expiration_date', field)
+            if match:
+                expiration_dates.append(self.form[field])
+
+        for equipments_family in equipments_families:
+            db_family = self.request.db_session.query(models.EquipmentFamily) \
+                .filter_by(family_id=equipments_family).first()
+            if not db_family:
+                raise FormException(_('Invalid equipment family.'))
+
+        for expiration_date in expiration_dates:
+            try:
+                datetime.strptime(expiration_date, '%Y-%m-%d').date()
+            except (TypeError, ValueError):
+                raise FormException(_('Invalid expiration date.'))
+
+    def validate_events(self):
+        """Validate events data."""
         if self.form.get('event'):
             status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
             if not status:
@@ -367,31 +385,10 @@ class Assets(object):
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 
-        expirations = zip(
-            self.form['equipment-family'],
-            self.form['equipment-expiration_date_1'],
-            self.form['equipment-expiration_date_2'],
-        )
-        for family_id, expiration_date_1, expiration_date_2 in expirations:
-            # form['equipment-family'] can be ['', '']
-            if family_id:
-                db_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id).first()
-                if not db_family:
-                    raise FormException(_('Invalid equipment family.'))
+        for event_id in self.form.getall('event-removed'):
+            if not event_id:
+                continue
 
-                if expiration_date_1:
-                    try:
-                        datetime.strptime(expiration_date_1, '%Y-%m-%d').date()
-                    except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'))
-
-                if expiration_date_2:
-                    try:
-                        datetime.strptime(expiration_date_2, '%Y-%m-%d').date()
-                    except (TypeError, ValueError):
-                        raise FormException(_('Invalid expiration date.'))
-
-        for event_id in self.form['event-removed']:
             event = self.asset.history('asc', filter_config=True).filter(models.Event.event_id == event_id).first()
             if not event:
                 raise FormException(_('Invalid event.'))
@@ -407,8 +404,14 @@ class Assets(object):
     def create_post(self):
         """Post asset create form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = MultiDict([
+                (key, value)
+                for key, value in self.request.POST.mixed().items()
+                if value != ''
+            ])
+            self.validate_asset()
+            self.validate_equipments()
+            self.validate_events()
         except FormException as error:
             if error.log:
                 capture_exception(error)
@@ -443,9 +446,8 @@ class Assets(object):
 
         self.add_event()
 
-        site_id = self.form.get('site_id')
-        if site_id:
-            self.add_site_change_event(site_id)
+        if self.form.get('site_id'):
+            self.add_site_change_event(self.form['site_id'])
 
         self.update_status_and_calibration_next(self.asset, self.specific)
 
@@ -458,6 +460,7 @@ class Assets(object):
         return {
             'asset': self.asset,
             'asset_softwares': self.get_latest_softwares_version(),
+            'expiration_dates': self.get_expiration_dates_by_equipment_family(),
             'last_config': self.get_last_config(),
             **self.get_base_form_data(),
         }
@@ -467,14 +470,21 @@ class Assets(object):
     def update_post(self):
         """Post asset update form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = MultiDict([
+                (key, value)
+                for key, value in self.request.POST.mixed().items()
+                if value != ''
+            ])
+            self.validate_asset()
+            self.validate_equipments()
+            self.validate_events()
         except FormException as error:
             if error.log:
                 capture_exception(error)
             return {
                 'asset': self.asset,
                 'asset_softwares': self.get_latest_softwares_version(),
+                'expiration_dates': self.get_expiration_dates_by_equipment_family(),
                 'last_config': self.get_last_config(),
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 **self.get_base_form_data(),
@@ -498,39 +508,30 @@ class Assets(object):
 
         self.asset.customer_id = self.form.get('customer_id')
         self.asset.customer_name = self.form.get('customer_name')
-
-        new_site_id = int(self.form.get('site_id')) if self.form.get('site_id') else None
-        if new_site_id != self.asset.site_id:
-            self.add_site_change_event(new_site_id)
-
-        self.asset.site_id = new_site_id
-
         self.asset.current_location = self.form.get('current_location')
-
         self.asset.notes = self.form.get('notes')
 
+        new_site_id = int(self.form['site_id']) if self.form.get('site_id') else None
+        if new_site_id != self.asset.site_id:
+            self.add_site_change_event(new_site_id)
+        self.asset.site_id = new_site_id
+
         for equipment in self.asset.equipments:
+            if equipment.consumables:
+                for consumable in equipment.consumables:
+                    self.request.db_session.delete(consumable)
             self.request.db_session.delete(equipment)
         self.add_equipments()
 
         if self.form.get('event'):
             self.add_event()
 
-        # This should be done during validation but it's slightly easier here.
-        # We don't rollback the transaction as we prefer to persist all other data, and just leave the events as they
-        # are.
-        if self.form.get('event-removed'):
-            nb_removed_event = len(self.form['event-removed'])
+        # Make sure an asset always has a status.
+        if self.form.getall('event-removed'):
+            nb_removed_event = len(self.form.getall('event-removed'))
             nb_active_event = self.asset.history('asc', filter_config=True).count()
-            if nb_active_event <= nb_removed_event:
-                return {
-                    'asset': self.asset,
-                    'asset_softwares': self.get_latest_softwares_version(),
-                    'messages': [{'type': 'danger', 'text': _('Status not removed, an asset cannot have no status.')}],
-                    **self.get_base_form_data(),
-                }
-
-            self.remove_events()
+            if nb_active_event > nb_removed_event:
+                self.remove_events()
 
         self.update_status_and_calibration_next(self.asset, self.specific)
 
