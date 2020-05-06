@@ -10,6 +10,9 @@ from sqlalchemy.orm import joinedload
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL
 
+MAX_CONSUMABLES = 7
+MAX_SOFTWARES = 2
+
 
 class AssetsExtract(object):
     """Extract assets."""
@@ -23,16 +26,14 @@ class AssetsExtract(object):
         self.request = request
 
     @staticmethod
-    def get_csv_header(max_software_per_asset, max_equipment_per_asset, max_consumables_per_equipment):
+    def get_csv_header(max_equipments_per_asset):
         """Define the column titles for the csv file.
 
         From unique_software and unique_equipment, we know the exact number of columns required to display each
         information without extra column.
 
         Args:
-            max_software_per_asset (int): number of distinct software.
-            max_equipment_per_asset (int): maximum number of equipment.
-            max_consumables_per_equipment (int): maximum number of consumables per equipment.
+            max_equipments_per_asset (int): maximum number of equipment.
 
         Returns:
             csv header (list): columns name.
@@ -59,42 +60,39 @@ class AssetsExtract(object):
             'site_contact',
             'site_phone',
             'site_email',
-        ]
 
-        # Each software is identified by a name and a version.
-        software_columns = [
-            label
-            for i in range(1, max_software_per_asset + 1)
-            for label in {f'software_{i}_name', f'software_{i}_version'}
+            'software_1_name',
+            'software_1_version',
+            'software_2_name',
+            'software_2_version',
         ]
 
         equipment_columns = []
-        for i in range(1, max_equipment_per_asset + 1):
-            consumables_columns = [
-                (f'equipment_{i}_consumable_{j}_name', f'equipment_{i}_consumable_{j}_expiration_date')
-                for j in range(1, max_consumables_per_equipment + 1)
-            ]
+        for i in range(1, max_equipments_per_asset + 1):
             # Each equipment is identified by a name and a serial number.
             equipment_columns += [
-                label
-                for label in [
-                    f'equipment_{i}_name',
-                    f'equipment_{i}_serial_number',
-                    *[label for label_tuple in consumables_columns for label in label_tuple],
+                f'equipment_{i}_name',
+                f'equipment_{i}_serial_number',
+                *[
+                    label
+                    for j in range(1, MAX_CONSUMABLES + 1)
+                    for label in {
+                        f'equipment_{i}_consumable_{j}_name',
+                        f'equipment_{i}_consumable_{j}_expiration_date',
+                    }
                 ]
             ]
 
-        return asset_columns + software_columns + equipment_columns
+        return asset_columns + equipment_columns
 
     @staticmethod
-    def get_csv_rows(db_session, unique_software, max_equipment_per_asset, max_consumables_per_equipment, tenants):
+    def get_csv_rows(db_session, unique_software, max_equipment_per_asset, tenants):
         """Get the asset information for the csv file.
 
         Args:
             db_session (sqlalchemy.orm.session.Session): current db session.
             unique_software (set): all the names of the deployed software.
             max_equipment_per_asset (int): maximum number of equipment.
-            max_consumables_per_equipment (int): maximum number of consumables per equipment.
             tenants (dict): authorized tenants to extract data.
 
         Returns:
@@ -162,33 +160,29 @@ class AssetsExtract(object):
                     # Fill with None values to maintain column alignment.
                     row += [None, None]
 
-            # Equipment information.
-            asset_equipment = db_session.query(
-                    models.EquipmentFamily.model,
-                    models.Equipment,
+            # Equipments information.
+            equipments = db_session.query(models.Equipment) \
+                .options(
+                    joinedload(models.Equipment.family),
+                    joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
                 ) \
-                .join(models.EquipmentFamily.equipments) \
-                .join(models.Equipment.consumables) \
-                .join(models.Consumable.family) \
                 .filter(models.Equipment.asset_id == asset.id).all()
 
-            for equipment in asset_equipment:
-                empty_consumables_count = max_consumables_per_equipment - len(equipment[1].consumables)
-
-                consumables = [(c.family.model, c.expiration_date) for c in equipment[1].consumables]
-
+            for equipment in equipments:
+                empty_consumables_count = MAX_CONSUMABLES - len(equipment.consumables)
+                consumables = [(c.family.model, c.expiration_date) for c in equipment.consumables]
                 row += [
-                    equipment[0],
-                    equipment[1].serial_number,
-                    *[data for consumable_tuple in consumables for data in consumable_tuple],
+                    equipment.family.model,
+                    equipment.serial_number,
+                    *[element for consumable in consumables for element in consumable],
                     *[None for _i in range(empty_consumables_count * 2)],
                 ]
 
-            empty_equipment_count = max_equipment_per_asset - len(asset_equipment)
+            empty_equipment_count = max_equipment_per_asset - len(equipments)
             for i in range(empty_equipment_count):
                 # Fill with None values to maintain column alignment.
                 row += [None, None]
-                for j in range(max_consumables_per_equipment):
+                for j in range(MAX_CONSUMABLES):
                     row += [None, None]
 
             rows.append(row)
@@ -226,32 +220,21 @@ class AssetsExtract(object):
 
         unique_software = set(update.extra_json['software_name'] for update in software_updates)
 
-        # Find maximum number of equipments per asset
-        most_equipments_asset = self.request.db_session.query(models.Asset) \
+        # Find maximum number of equipments per asset.
+        asset_with_most_equipments = self.request.db_session.query(models.Asset) \
             .join(models.Asset.equipments) \
             .group_by(models.Asset.id) \
             .order_by(func.count(models.Asset.equipments).desc()).first()
 
-        max_equipments = len(most_equipments_asset.equipments)
-
-        # Find maximum number of consumables per equipment
-        most_consumables_equipment_family = self.request.db_session.query(models.EquipmentFamily).distinct() \
-            .join(models.EquipmentFamily.consumable_families) \
-            .group_by(models.EquipmentFamily.id) \
-            .order_by(func.count(models.EquipmentFamily.consumable_families).desc()) \
-            .first()
-
-        max_consumables = len(most_consumables_equipment_family.consumable_families)
+        max_equipments = len(asset_with_most_equipments.equipments)
 
         # Override attributes of response.
         filename = f'{datetime.utcnow():%Y%m%d}_assets.csv'
         self.request.response.content_disposition = f'attachment;filename={filename}'
 
         return {
-            'header': self.get_csv_header(len(unique_software), max_equipments, max_consumables),
-            'rows': self.get_csv_rows(
-                self.request.db_session, unique_software, max_equipments, max_consumables, tenants
-            ),
+            'header': self.get_csv_header(max_equipments),
+            'rows': self.get_csv_rows(self.request.db_session, unique_software, max_equipments, tenants),
         }
 
 
