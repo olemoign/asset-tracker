@@ -44,6 +44,8 @@ def main(global_config, **settings):
 
     # noinspection PyShadowingNames
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
+    # Activate CSRF check by default.
+    config.set_default_csrf_options()
     config.include('pyramid_tm')
 
     config.include('pyramid_jinja2')

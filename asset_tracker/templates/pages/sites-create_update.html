@@ -33,7 +33,7 @@
 
                 <div class="panel-body">
                     <form role="form" action="{{ submit_url }}" method="post">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
 
                         <div class="row">
                             {{ input(gettext('Name'), 'name', required=True) }}
