@@ -2,6 +2,7 @@
 from operator import itemgetter
 
 from parsys_utilities.authorization import Right
+from parsys_utilities.views import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
@@ -13,7 +14,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
 from asset_tracker.views import FormException
 
 
-class Sites(object):
+class Sites(metcalass=AuthenticatedEndpoint):
     """List, read and update sites."""
 
     def __acl__(self):

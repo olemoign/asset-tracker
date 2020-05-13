@@ -8,6 +8,7 @@ import json
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
 from parsys_utilities.authorization import Right
+from parsys_utilities.views import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
@@ -23,7 +24,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FR
 from asset_tracker.views import FormException
 
 
-class Assets(object):
+class Assets(metaclass=AuthenticatedEndpoint):
     """List, read and update assets."""
 
     def __acl__(self):

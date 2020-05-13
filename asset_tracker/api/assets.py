@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 from parsys_utilities.authorization import authenticate_rta
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
+from pyramid.security import Allow, Everyone
 from pyramid.settings import aslist
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
@@ -14,6 +15,15 @@ from asset_tracker.views.assets import Assets as AssetView
 
 
 class Assets(object):
+    def __acl__(self):
+        # Authenticate RTA using HTTP Basic Auth.
+        if authenticate_rta(self.request):
+            return [
+                (Allow, None, Everyone, 'api-assets-site'),
+            ]
+        else:
+            return []
+
     def __init__(self, request):
         self.request = request
 
@@ -141,13 +151,8 @@ class Assets(object):
         else:
             return HTTPOk()
 
-    @view_config(route_name='api-assets-site', request_method='GET', renderer='json')
+    @view_config(route_name='api-assets-site', request_method='GET', permission='api-assets-site', renderer='json')
     def site_id_get(self):
-        # Authenticate RTA using HTTP Basic Auth.
-        if not authenticate_rta(self.request):
-            capture_message('Forbidden RTA request.')
-            raise HTTPForbidden()
-
         user_id = self.request.matchdict.get('user_id')
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
         return {'site_id': asset.site.site_id if asset and asset.site else None}
