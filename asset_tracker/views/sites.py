@@ -14,7 +14,7 @@ from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
 from asset_tracker.views import FormException
 
 
-class Sites(metcalass=AuthenticatedEndpoint):
+class Sites(metaclass=AuthenticatedEndpoint):
     """List, read and update sites."""
 
     def __acl__(self):
