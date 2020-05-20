@@ -4,7 +4,6 @@ from pyramid.view import view_config
 from sentry_sdk import capture_message
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
 class Sites(object):
