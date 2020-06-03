@@ -85,12 +85,10 @@ class AssetsExtract(object):
 
         return asset_columns + equipment_columns
 
-    @staticmethod
-    def get_csv_rows(db_session, unique_software, max_equipment_per_asset, tenants):
+    def get_csv_rows(self, unique_software, max_equipment_per_asset, tenants):
         """Get the asset information for the csv file.
 
         Args:
-            db_session (sqlalchemy.orm.session.Session): current db session.
             unique_software (set): all the names of the deployed software.
             max_equipment_per_asset (int): maximum number of equipment.
             tenants (dict): authorized tenants to extract data.
@@ -98,7 +96,7 @@ class AssetsExtract(object):
         Returns:
             csv body (list): information on the assets.
         """
-        assets = db_session.query(models.Asset) \
+        assets = self.request.db_session.query(models.Asset) \
             .options(joinedload(models.Asset.site), joinedload(models.Asset.status)) \
             .filter(models.Asset.tenant_id.in_(tenants.keys())) \
             .order_by(models.Asset.asset_id)
@@ -137,7 +135,7 @@ class AssetsExtract(object):
                 row += [None, None, None, None, None]
 
             # Software information.
-            software_updates = db_session.query(models.Event) \
+            software_updates = self.request.db_session.query(models.Event) \
                 .join(models.Event.status) \
                 .filter(
                     models.Event.asset_id == asset.id,
@@ -161,7 +159,7 @@ class AssetsExtract(object):
                     row += [None, None]
 
             # Equipments information.
-            equipments = db_session.query(models.Equipment) \
+            equipments = self.request.db_session.query(models.Equipment) \
                 .options(
                     joinedload(models.Equipment.family),
                     joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
@@ -207,7 +205,7 @@ class AssetsExtract(object):
         """Download Asset data. Write Asset information in csv file.
 
         Returns:
-            (dict): header (list) and rows (list) of csv file
+            (dict): header (list) and rows (list) of csv file.
         """
         # Authorized tenants.
         tenants = self.get_extract_tenants()
@@ -234,7 +232,7 @@ class AssetsExtract(object):
 
         return {
             'header': self.get_csv_header(max_equipments),
-            'rows': self.get_csv_rows(self.request.db_session, unique_software, max_equipments, tenants),
+            'rows': self.get_csv_rows(unique_software, max_equipments, tenants),
         }
 
 
