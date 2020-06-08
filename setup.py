@@ -12,7 +12,7 @@ with open(here / 'CHANGES.txt') as f:
 requires = [
     'alembic',
     'arrow',
-    'celery[redis]==4.4.3',
+    'celery[redis]',
     'filedepot',
     'jinja2',
     'parsys-utilities',
