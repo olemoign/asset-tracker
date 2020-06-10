@@ -43,7 +43,7 @@
                                 <select class="form-control" id="tenant_id" name="tenant_id">
                                     {% for tenant in tenants|sort(attribute='name') %}
                                         <option value="{{ tenant.id }}"{% if update and site.tenant_id == tenant.id %} selected{% endif %}>
-                                            {{ tenant.parsys_key }}
+                                            {{- tenant.parsys_key -}}
                                         </option>
                                     {% endfor %}
                                 </select>
@@ -57,7 +57,7 @@
                                     {% endif %}
                                     {% for site_type in site_types %}
                                         <option value={{ site_type }}{% if update and site.site_type == site_type %} selected{% endif %}>
-                                            {{ gettext(site_type) }}
+                                            {{- gettext(site_type) -}}
                                         </option>
                                     {% endfor %}
                                 </select>
