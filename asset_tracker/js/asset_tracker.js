@@ -25,13 +25,13 @@ $(document).on('change', '#tenant_id', function manageSiteSelect() {
    * Manage the site dropdown when a new tenant is selected.
    * select2 doesn't understand the 'hide' attribute - select is rebuilt every time a new tenant is selected.
    */
-  let siteSelect = $('#site__reference');
+  let siteSelect = $('#site_id');
   siteSelect.select2('destroy');
   siteSelect.remove();
   manageSites();
 
   // Reselect div as it was removed/recreated.
-  siteSelect = $('#site__reference');
+  siteSelect = $('#site_id');
   // Unselect the current value if we changed tenants.
   siteSelect.val('');
 
