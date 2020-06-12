@@ -1,5 +1,4 @@
 from parsys_utilities.authorization import Right
-from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 from sentry_sdk import capture_message
 
@@ -7,17 +6,12 @@ from asset_tracker import models
 
 
 class Sites(object):
-    """(Cloud) get site info in consultation."""
-
-    __acl__ = [
-        (Allow, None, Authenticated, 'api-sites-read'),
-    ]
+    """(Cloud) Get site info in consultation."""
 
     def __init__(self, request):
         self.request = request
 
-    @view_config(route_name='api-sites-read', request_method='GET', permission='api-sites-read',
-                 renderer='sites-information.html')
+    @view_config(route_name='api-sites-read', request_method='GET', renderer='sites-information.html')
     def read_get(self):
         """Get site information for consultation, HTML response to insert directly into the consultation.
 
@@ -31,9 +25,10 @@ class Sites(object):
             capture_message('Missing site.')
             return {}
 
-        # By not putting this in the __acl__, we make sure that the user doesn't get a 403 if he doesn't have the
-        # necessary rights.
-        if Right(name='api-sites-read', tenant=site.tenant_id) not in self.request.effective_principals:
+        # Make sure that the user get an iframe in all cases. If he doesn't have the necessary rights or even if he
+        # isn't authenticated anymore (super edge case).
+        principals = self.request.effective_principals
+        if not principals or Right(name='api-sites-read', tenant=site.tenant_id) not in principals:
             capture_message('Forbidden site request.')
             return {}
 
