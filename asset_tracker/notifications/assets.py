@@ -18,7 +18,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     Args:
         ini_configuration (configparser.ConfigParser): asset tracker configuration.
         tenant_id (str).
-        assets (list(asset_tracker.models.Asset)).
+        assets (list[asset_tracker.models.Asset]).
         calibration_date (str): precise calibration date (YYYY-MM-DD).
     """
     tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
