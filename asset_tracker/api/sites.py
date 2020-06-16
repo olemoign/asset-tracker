@@ -29,7 +29,6 @@ class Sites(object):
         # isn't authenticated anymore (super edge case).
         principals = self.request.effective_principals
         if not principals or Right(name='api-sites-read', tenant=site.tenant_id) not in principals:
-            capture_message('Forbidden site request.')
             return {}
 
         return {
