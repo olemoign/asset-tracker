@@ -7,6 +7,7 @@
 {% block page %}
     <div class="login-container container">
         <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
+
         <div class="alert alert-danger text-center" role="alert">
             <b>{{ request.user.login }}</b> {{ gettext('is not authorized to access this page.') }}
             <br>
