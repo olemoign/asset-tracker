@@ -105,11 +105,12 @@ class Software(object):
 
         # The station can indicate what version of the software it is using.
         current = self.request.GET.get('current')
-        try:
-            current = sort_versions(current)
-        except TypeError:
-            # The current version wasn't in an expected format.
-            raise HTTPBadRequest(json={'error': 'Invalid current version.'})
+        if current:
+            try:
+                current = sort_versions(current)
+            except TypeError:
+                # The current version wasn't in an expected format.
+                raise HTTPBadRequest(json={'error': 'Invalid current version.'})
 
         # Release channel (alpha, beta, dev, stable).
         channel = self.request.GET.get('channel', 'stable')
