@@ -21,6 +21,8 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
         assets (list[asset_tracker.models.Asset]).
         calibration_date (str): precise calibration date (YYYY-MM-DD).
     """
+    app_configuration = ini_configuration['app:main']
+
     tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
     app_name = tenant_config.get_for_tenant('asset_tracker.cloud_name', tenant_id)
     subject = _('${app_name} - Device calibration reminder', mapping={'app_name': app_name})
@@ -29,7 +31,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
 
     # Because we are in offline, we have to build the URLs by hand ... This is brittle, it would be nice to do this in
     # a better way.
-    server_url = ini_configuration['app:main']['asset_tracker.server_url']
+    server_url = app_configuration['asset_tracker.server_url']
     template_data = {
         'app_name': app_name,
         'assets': assets,
@@ -42,7 +44,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     messages = {'email': emails}
 
     # Asynchronous POST
-    disable_notifications = asbool(ini_configuration['app:main'].get('asset_tracker.dev.disable_notifications', False))
+    disable_notifications = asbool(app_configuration.get('asset_tracker.dev.disable_notifications', 'false'))
     if disable_notifications:
         logger.debug('Notifications are disabled.')
     else:
@@ -61,6 +63,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         expiration_date (str): consumable expiration date (YYYY-MM-DD).
         delay_days (int): number of days before expiration.
     """
+    app_configuration = ini_configuration['app:main']
     tenant_id = equipment.asset.tenant_id
 
     tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
@@ -74,7 +77,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         if consumable.expiration_date.strftime('%Y-%m-%d') == expiration_date:
             expired_consumables.append(consumable.family.model)
 
-    server_url = ini_configuration['app:main']['asset_tracker.server_url']
+    server_url = app_configuration['asset_tracker.server_url']
     template_data = {
         'app_name': app_name,
         'asset_id': equipment.asset.asset_id,
@@ -90,7 +93,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     messages = {'email': emails}
 
     # Asynchronous POST
-    disable_notifications = asbool(ini_configuration['app:main'].get('asset_tracker.dev.disable_notifications', False))
+    disable_notifications = asbool(app_configuration.get('asset_tracker.dev.disable_notifications', 'false'))
     if disable_notifications:
         logger.debug('Notifications are disabled.')
     else:
