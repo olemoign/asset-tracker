@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table('event_status', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('status_type', sa.Unicode(), nullable=True))
+        batch_op.add_column(sa.Column('status_type', sa.Unicode(), nullable=True, server_default='event'))
 
 
 def downgrade():
