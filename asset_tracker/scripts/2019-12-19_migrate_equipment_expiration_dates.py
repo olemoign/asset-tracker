@@ -16,7 +16,7 @@ def main():
     parser.add_argument('config_uri')
     args, extras = parser.parse_known_args()
 
-    print('Migrate equipment expiration date data.')
+    print('Migrating equipments expiration dates.')
 
     options = parse_vars(extras)
     with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
@@ -25,8 +25,8 @@ def main():
         lancets = db_session.query(ConsumableFamily).filter_by(family_id=LANCETS_ID).first()
         test_strips = db_session.query(ConsumableFamily).filter_by(family_id=TEST_STRIPS_ID).first()
 
-        equipments_to_migrate = db_session.query(Equipment) \
-            .filter(or_(Equipment.expiration_date_1, Equipment.expiration_date_2)).all()
+        equipments_to_migrate = db_session.query(TmpEquipment) \
+            .filter(or_(TmpEquipment.expiration_date_1 != None, TmpEquipment.expiration_date_2 != None)).all()
 
         for equipment in equipments_to_migrate:
             if equipment.expiration_date_1:
