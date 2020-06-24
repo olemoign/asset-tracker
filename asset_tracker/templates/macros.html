@@ -82,7 +82,7 @@
                             {% if consumable_family.family_id in expiration_dates[equipment.id] %}
                                 {% set expiration_date = expiration_dates[equipment.id][consumable_family.family_id] %}
                             {% endif %}
-                            <label for="{{ expiration_date_id }}">{{ consumable_family_model }}</label>
+                            <label class="consumable__label" for="{{ expiration_date_id }}">{{ consumable_family_model }}</label>
                             <input type="date" class="form-control" name="{{ expiration_date_id }}" id="{{ expiration_date_id }}"
                                     {% if expiration_date %}value="{{ expiration_date }}"{% endif %}>
                         </div>
