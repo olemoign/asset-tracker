@@ -85,12 +85,12 @@ class AssetsExtract(object):
 
         return asset_columns + equipment_columns
 
-    def get_csv_rows(self, unique_software, max_equipment_per_asset, tenants):
+    def get_csv_rows(self, unique_software, max_equipments_per_asset, tenants):
         """Get the asset information for the csv file.
 
         Args:
-            unique_software (set): all the names of the deployed software.
-            max_equipment_per_asset (int): maximum number of equipment.
+            unique_software (set): names of the deployed software.
+            max_equipments_per_asset (int): maximum number of equipment.
             tenants (dict): authorized tenants to extract data.
 
         Returns:
@@ -176,7 +176,7 @@ class AssetsExtract(object):
                     *[None for _i in range(empty_consumables_count * 2)],
                 ]
 
-            empty_equipment_count = max_equipment_per_asset - len(equipments)
+            empty_equipment_count = max_equipments_per_asset - len(equipments)
             for i in range(empty_equipment_count):
                 # Fill with None values to maintain column alignment.
                 row += [None, None]
@@ -224,7 +224,7 @@ class AssetsExtract(object):
             .group_by(models.Asset.id) \
             .order_by(func.count(models.Asset.equipments).desc()).first()
 
-        max_equipments = len(asset_with_most_equipments.equipments)
+        max_equipments = len(asset_with_most_equipments.equipments) if asset_with_most_equipments else 0
 
         # Override attributes of response.
         filename = f'{datetime.utcnow():%Y%m%d}_assets.csv'
