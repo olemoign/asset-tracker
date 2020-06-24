@@ -8,7 +8,7 @@ from sqlalchemy import or_
 from asset_tracker.models import Consumable, ConsumableFamily, Equipment
 
 LANCETS_ID = 'GZQ2bAmW'
-TEST_STRIPS_ID = '6piDwmZt'
+TEST_STRIPS_ID = '9oL6q5O5'
 
 
 def main():
