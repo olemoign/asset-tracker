@@ -163,7 +163,7 @@ class Software(object):
             return {}
 
         # We return only the latest version.
-        product_latest = product_versions.popitem(last=True)
+        product_latest = product_versions.popitem()
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
         if current and current > sort_versions(product_latest[0]):
             return {'updateAvailable': False}
