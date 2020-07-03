@@ -98,18 +98,3 @@ deploy_dev:
 
   only:
     - develop
-
-deploy_demo:
-  stage: deploy
-  tags:
-    - docker-builder
-
-  script:
-    - ssh root@at.demo.parsys.com parsys upgrade at.demo.parsys.com
-
-  environment:
-    name: demo
-    url: https://at.demo.parsys.com
-
-  only:
-    - master
