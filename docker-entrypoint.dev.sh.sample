@@ -15,8 +15,8 @@ else
   pip3 install pyramid_debugtoolbar
 fi
 
-pip3 install --no-deps -e /opt/parsys_utilities
-pip3 install --no-deps -e /srv
+pip3 install --user --no-deps -e /opt/parsys_utilities
+pip3 install --user --no-deps -e /srv
 
 host_ip=$(getent hosts host.docker.internal | awk '{print $1}')
 echo -e "${host_ip}\tdev.localhost" >>/etc/hosts
