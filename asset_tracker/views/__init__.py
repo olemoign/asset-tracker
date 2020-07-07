@@ -1,6 +1,6 @@
 from parsys_utilities.authorization import rights_without_tenants
+from parsys_utilities.config import aslist
 from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
-from pyramid.settings import aslist
 from sentry_sdk import configure_scope
 
 from asset_tracker.constants import ASSET_TRACKER_VERSION, DEFAULT_BRANDING
@@ -28,7 +28,7 @@ def add_global_variables(event):
     """Templating global variables: these variables are added to all render() calls."""
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['branding'] = event['request'].registry.settings.get('asset_tracker.branding', DEFAULT_BRANDING)
-    event['specific'] = aslist(event['request'].registry.settings.get('asset_tracker.specific', []))
+    event['specific'] = aslist(event['request'].registry.settings.get('asset_tracker.specific'))
 
     event['principals'] = event['request'].effective_principals
     event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)

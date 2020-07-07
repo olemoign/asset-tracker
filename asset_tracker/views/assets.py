@@ -8,11 +8,11 @@ import json
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
 from parsys_utilities.authorization import Right
+from parsys_utilities.config import aslist
 from parsys_utilities.views import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
-from pyramid.settings import aslist
 from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
@@ -47,7 +47,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         self.request = request
         self.asset = self.get_asset()
         # Manage Marlink specifics.
-        self.specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
+        self.specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
         self.form = None
 
     def get_asset(self):

@@ -2,9 +2,9 @@ from datetime import datetime
 from json import JSONDecodeError
 
 from parsys_utilities.authorization import authenticate_rta
+from parsys_utilities.config import aslist
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 from pyramid.security import Allow, Everyone
-from pyramid.settings import aslist
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
 from sqlalchemy.exc import SQLAlchemyError
@@ -52,7 +52,7 @@ class Assets(object):
             creator_alias (str): '{first_name} {last_name}'
         """
         # Marlink has only one calibration frequency so they don't want to see the input.
-        specific = aslist(self.request.registry.settings.get('asset_tracker.specific', []))
+        specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
         if 'marlink' in specific:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
         else:
