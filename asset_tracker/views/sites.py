@@ -8,6 +8,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.view import view_config
 from sentry_sdk import capture_exception
+from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
@@ -43,7 +44,12 @@ class Sites(metaclass=AuthenticatedEndpoint):
         if not site_id:
             return None  # In the list page, site_id will be None and it's ok.
 
-        site = self.request.db_session.query(models.Site).get(site_id)
+        site = self.request.db_session.query(models.Site) \
+            .options(
+                joinedload(models.Site.assets),
+                joinedload(models.Asset.status),
+            ) \
+            .get(site_id)
         if not site:
             raise HTTPNotFound()
 
