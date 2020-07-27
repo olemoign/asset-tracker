@@ -45,10 +45,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             return None  # In the list page, site_id will be None and it's ok.
 
         site = self.request.db_session.query(models.Site) \
-            .options(
-                joinedload(models.Site.assets),
-                joinedload(models.Asset.status),
-            ) \
+            .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
             .get(site_id)
         if not site:
             raise HTTPNotFound()
