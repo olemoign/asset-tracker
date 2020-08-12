@@ -75,19 +75,20 @@ release-latest-image:
   stage: release
   tags:
     - docker-builder
+  only:
+    - master
 
   script:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
     - docker push $CONTAINER_RELEASE_IMAGE
 
-  only:
-    - master
-
 deploy_dev:
   stage: deploy
   tags:
     - docker-builder
+  only:
+    - develop
 
   script:
     - ssh root@at.dev.parsys.com parsys upgrade at.dev.parsys.com
@@ -95,6 +96,3 @@ deploy_dev:
   environment:
     name: dev
     url: https://at.dev.parsys.com
-
-  only:
-    - develop
