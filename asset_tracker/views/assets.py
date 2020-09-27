@@ -558,7 +558,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         try:
             file = DepotManager.get().get(file_id)
-        except (IOError, ValueError) as error:
+        except (OSError, ValueError) as error:
             capture_exception(error)
             self.request.logger_technical.info(['unknown file requested'])
             raise HTTPNotFound()

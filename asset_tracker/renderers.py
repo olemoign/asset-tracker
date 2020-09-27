@@ -4,7 +4,7 @@ import csv
 from io import StringIO
 
 
-class CSVRenderer(object):
+class CSVRenderer:
     def __init__(self, _info):
         pass
 

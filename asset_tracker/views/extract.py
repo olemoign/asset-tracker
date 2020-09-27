@@ -14,7 +14,7 @@ MAX_CONSUMABLES = 7
 MAX_SOFTWARES = 2
 
 
-class AssetsExtract(object):
+class AssetsExtract:
     """Extract assets."""
 
     __acl__ = [
@@ -216,7 +216,7 @@ class AssetsExtract(object):
             .join(models.Event.asset).filter(models.Asset.tenant_id.in_(tenants.keys())) \
             .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
 
-        unique_software = set(update.extra_json['software_name'] for update in software_updates)
+        unique_software = {update.extra_json['software_name'] for update in software_updates}
 
         # Find maximum number of equipments per asset.
         asset_with_most_equipments = self.request.db_session.query(models.Asset) \

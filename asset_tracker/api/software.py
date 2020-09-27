@@ -73,7 +73,7 @@ def sort_versions(version):
     return sort_key
 
 
-class Software(object):
+class Software:
     """Software update WebServices: tell the assets what is the latest version and url of a given product + store what
     softwares versions a given asset is using.
     """
@@ -193,7 +193,7 @@ class Software(object):
             try:
                 config_file = depot.get(last_event.extra_json['config'])
                 last_config = json.loads(config_file.read().decode('utf-8'))
-            except (IOError, json.JSONDecodeError, TypeError, ValueError):
+            except (json.JSONDecodeError, OSError, TypeError, ValueError):
                 pass
 
         if not last_event or (last_config and last_config != config):

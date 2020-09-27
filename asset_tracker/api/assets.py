@@ -14,7 +14,7 @@ from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views.assets import Assets as AssetView
 
 
-class Assets(object):
+class Assets:
     def __acl__(self):
         # Authenticate RTA using HTTP Basic Auth.
         if authenticate_rta(self.request):

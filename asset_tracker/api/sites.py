@@ -5,7 +5,7 @@ from sentry_sdk import capture_message
 from asset_tracker import models
 
 
-class Sites(object):
+class Sites:
     """(Cloud) Get site info in consultation."""
 
     def __init__(self, request):

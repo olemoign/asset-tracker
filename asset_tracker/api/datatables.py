@@ -14,7 +14,7 @@ from asset_tracker.api.assets import Assets as AssetsAPI
 from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
-class Assets(object):
+class Assets:
     """List assets for dataTables."""
 
     __acl__ = [
