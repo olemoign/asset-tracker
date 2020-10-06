@@ -1,10 +1,10 @@
 """Asset tracker views: assets lists and read/update."""
+import json
 import re
 from collections import defaultdict
 from datetime import datetime
 from operator import attrgetter
 
-import json
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
 from parsys_utilities.authorization import Right

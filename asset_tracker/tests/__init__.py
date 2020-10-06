@@ -1,7 +1,7 @@
 from parsys_utilities.tests import FunctionalTestBase
 
-from asset_tracker.constants import PATH
 import asset_tracker
+from asset_tracker.constants import PATH
 
 
 class FunctionalTest(FunctionalTestBase):
