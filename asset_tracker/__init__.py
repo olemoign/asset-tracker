@@ -124,6 +124,8 @@ def main(global_config, **settings):
 
     config.include('parsys_utilities.openid_client')
     config.scan('parsys_utilities.openid_client')
+    config.include('parsys_utilities.status')
+    config.scan('parsys_utilities.status')
 
     config.add_route('rta', urljoin(settings['rta.server_url'], '/{path}'))
 
