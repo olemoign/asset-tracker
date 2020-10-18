@@ -22,7 +22,7 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from asset_tracker.config import update_configuration
+from asset_tracker.config import DEFAULT_CONFIG, update_configuration
 from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 # Celery runs celery.app.
