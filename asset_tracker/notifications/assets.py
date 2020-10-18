@@ -1,7 +1,6 @@
 import logging
 from urllib.parse import urljoin
 
-from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.notifications import emails_renderer_offline, notify_offline
 from pyramid.i18n import TranslationString as _
 from pyramid.settings import asbool
@@ -12,18 +11,17 @@ from asset_tracker.constants import TEMPLATES_PATH, TRANSLATIONS_PATH
 logger = logging.getLogger('asset_tracker_technical')
 
 
-def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
+def next_calibration(tenant_config, tenant_id, assets, calibration_date):
     """Notify an asset owner that the asset needs to be calibrated.
 
     Args:
-        ini_configuration (configparser.ConfigParser): asset tracker configuration.
+        tenant_config (parsys_utilities.config.TenantConfigurator).
         tenant_id (str).
         assets (list[asset_tracker.models.Asset]).
         calibration_date (str): precise calibration date (YYYY-MM-DD).
     """
-    app_configuration = ini_configuration['app:main']
+    tenant_config.defaults = DEFAULT_CONFIG
 
-    tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
     app_name = tenant_config.get_for_tenant('asset_tracker.cloud_name', tenant_id)
     subject = _('${app_name} - Device calibration reminder', mapping={'app_name': app_name})
     text = 'emails/calibration_reminder.txt'
@@ -31,7 +29,7 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
 
     # Because we are in offline, we have to build the URLs by hand ... This is brittle, it would be nice to do this in
     # a better way.
-    server_url = app_configuration['asset_tracker.server_url']
+    server_url = tenant_config.settings['app:main']['asset_tracker.server_url']
     template_data = {
         'app_name': app_name,
         'assets': assets,
@@ -44,29 +42,30 @@ def next_calibration(ini_configuration, tenant_id, assets, calibration_date):
     messages = {'email': emails}
 
     # Asynchronous POST
-    disable_notifications = asbool(app_configuration.get('asset_tracker.dev.disable_notifications', 'false'))
+    disable_notifications = asbool(
+        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
+    )
     if disable_notifications:
         logger.debug('Notifications are disabled.')
     else:
         json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
-        notify_offline(ini_configuration, json)
+        notify_offline(tenant_config, json)
 
     logger.info(['notify calibration date', [asset.id for asset in assets]])
 
 
-def consumables_expiration(ini_configuration, equipment, expiration_date, delay_days):
+def consumables_expiration(tenant_config, equipment, expiration_date, delay_days):
     """Notify users with notifications-consumables right that the consumables of an equipment are expiring.
 
     Args:
-        ini_configuration (configparser.ConfigParser): asset tracker configuration.
+        tenant_config (parsys_utilities.config.TenantConfigurator).
         equipment (asset_tracker.models.Equipment)).
         expiration_date (str): consumable expiration date (YYYY-MM-DD).
         delay_days (int): number of days before expiration.
     """
-    app_configuration = ini_configuration['app:main']
+    tenant_config.defaults = DEFAULT_CONFIG
     tenant_id = equipment.asset.tenant_id
 
-    tenant_config = TenantConfigurator(settings=ini_configuration, defaults=DEFAULT_CONFIG)
     app_name = tenant_config.get_for_tenant('asset_tracker.cloud_name', tenant_id)
     subject = _('${app_name} - Equipment consumables expiration reminder', mapping={'app_name': app_name})
     text = 'emails/consumables_expiration.txt'
@@ -77,7 +76,7 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
         if consumable.expiration_date.strftime('%Y-%m-%d') == expiration_date:
             expired_consumables.append(consumable.family.model)
 
-    server_url = app_configuration['asset_tracker.server_url']
+    server_url = tenant_config.settings['app:main']['asset_tracker.server_url']
     template_data = {
         'app_name': app_name,
         'asset_id': equipment.asset.asset_id,
@@ -93,11 +92,13 @@ def consumables_expiration(ini_configuration, equipment, expiration_date, delay_
     messages = {'email': emails}
 
     # Asynchronous POST
-    disable_notifications = asbool(app_configuration.get('asset_tracker.dev.disable_notifications', 'false'))
+    disable_notifications = asbool(
+        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
+    )
     if disable_notifications:
         logger.debug('Notifications are disabled.')
     else:
         json = {'level': 'info', 'message': messages, 'rights': ['notifications-consumables'], 'tenant': tenant_id}
-        notify_offline(ini_configuration, json)
+        notify_offline(tenant_config, json)
 
     logger.info(['notify consumables expiration', equipment.id])

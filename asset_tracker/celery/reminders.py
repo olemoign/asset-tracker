@@ -44,10 +44,8 @@ def notify_expiring_consumables(db_session, delay_days):
         ) \
         .all()
 
-    pyramid_config = app.conf.pyramid_config
-
     for equipment in equipments:
-        notifications_assets.consumables_expiration(pyramid_config, equipment, expiration_date, delay_days)
+        notifications_assets.consumables_expiration(app.conf.tenant_config, equipment, expiration_date, delay_days)
 
     return len(equipments)
 
@@ -112,12 +110,10 @@ def next_calibration(months=3):
         if not assets:
             return
 
-        pyramid_config = app.conf.pyramid_config
-
         # Assets must be sorted by tenant_id.
         groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
 
         for tenant_id, assets in groupby_tenant:
-            notifications_assets.next_calibration(pyramid_config, tenant_id, assets, calibration_date)
+            notifications_assets.next_calibration(app.conf.tenant_config, tenant_id, assets, calibration_date)
 
         return len(assets)
