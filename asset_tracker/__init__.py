@@ -22,7 +22,7 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from asset_tracker.config import update_configuration
+from asset_tracker.config import DEFAULT_CONFIG, update_configuration
 from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 # Celery runs celery.app.
@@ -47,6 +47,9 @@ def main(global_config, **settings):
     # Activate CSRF check by default.
     config.set_default_csrf_options()
     config.include('pyramid_tm')
+
+    config_file = global_config['__file__']
+    config.registry.tenant_config = TenantConfigurator(config_file, defaults=DEFAULT_CONFIG)
 
     config.include('pyramid_jinja2')
     jinja2_settings = {
@@ -91,10 +94,6 @@ def main(global_config, **settings):
     # Add user, authenticated or not.
     config.add_request_method(get_user, 'user', reify=True)
 
-    # Add tenant configurator.
-    tenant_configurator = partial(TenantConfigurator, config_file=global_config['__file__'])
-    config.add_request_method(tenant_configurator, 'tenant_config', reify=True)
-
     # Add notifier.
     send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
     config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
@@ -113,7 +112,7 @@ def main(global_config, **settings):
     if not DepotManager.get():
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
-    config_file = global_config['__file__']
+    # Configure Celery.
     celery_app.configure_celery_app(config_file)
 
     # Add app routes.
