@@ -55,7 +55,7 @@ def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
     try:
         # Validate all mandatory config is present.
-        [app.conf.pyramid_config['app:main'][config] for config in MANDATORY_CONFIG]
+        [app.conf.tenant_config.settings['app:main'][config] for config in MANDATORY_CONFIG]
     except AttributeError as error:
         capture_exception(error)
         logger.error(error)
@@ -86,7 +86,7 @@ def next_calibration(months=3):
     """
     try:
         # Validate all mandatory config is present.
-        [app.conf.pyramid_config['app:main'][config] for config in MANDATORY_CONFIG]
+        [app.conf.tenant_config.settings['app:main'][config] for config in MANDATORY_CONFIG]
     except AttributeError as error:
         capture_exception(error)
         logger.error(error)
