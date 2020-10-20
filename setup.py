@@ -12,10 +12,10 @@ with open(here / 'CHANGES.txt') as f:
 requires = [
     'alembic',
     'arrow',
-    'celery[redis]==4.4.7',
+    'celery[redis]',
     'filedepot',
     'jinja2',
-    'parsys-utilities',
+    'parsys-utilities==3.3.1',
     'paste',
     'plaster-pastedeploy',
     'psycopg2-binary',
