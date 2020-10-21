@@ -10,15 +10,16 @@ variables:
   CONTAINER_RELEASE_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:latest
   PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
 
-cache:
-  paths:
-    - .cache/pip
-
 flake8:
   stage: test
   image: python:3.6
   tags:
     - docker
+
+  cache:
+    key: ${CI_PROJECT_ID}
+    paths:
+      - .cache/pip
 
   script:
     - pip3 install -q -U pip setuptools wheel
@@ -31,6 +32,12 @@ pytest:
   tags:
     - docker
 
+  cache:
+    key: ${CI_PROJECT_ID}
+    paths:
+      - .cache/pip
+    policy: pull
+
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 -q install '.[tests]'
@@ -41,6 +48,12 @@ build:
   image: python:3.6
   tags:
     - docker
+
+  cache:
+    key: ${CI_PROJECT_ID}
+    paths:
+      - .cache/pip
+    policy: pull
 
   script:
     - pip3 install -q -U pip setuptools wheel
