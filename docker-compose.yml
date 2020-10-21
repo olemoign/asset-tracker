@@ -20,7 +20,7 @@ services:
     image: tracker.parsys.com:1337/parsys/asset_tracker
     entrypoint: ["docker-entrypoint.sh", "--celery"]
     command: [
-      "/usr/local/bin/celery", "-A", "asset_tracker", "worker", "--ini", "/srv/production.ini",
+      "/usr/local/bin/celery", "worker", "-A", "asset_tracker", "--ini", "/srv/production.ini",
       "--logfile=/srv/log/celery/celery.log", "--loglevel=info"
     ]
     depends_on:
@@ -32,7 +32,7 @@ services:
     volumes:
       - .:/srv
     healthcheck:
-      test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/production.ini"]
+      test: ["CMD", "celery", "inspect", "ping", "-A", "asset_tracker", "--ini", "/srv/production.ini"]
       start_period: 30s
     restart: always
 
@@ -40,7 +40,7 @@ services:
     image: tracker.parsys.com:1337/parsys/asset_tracker
     entrypoint: ["docker-entrypoint.sh", "--celery"]
     command: [
-      "/usr/local/bin/celery", "-A", "asset_tracker", "beat", "--ini", "/srv/production.ini",
+      "/usr/local/bin/celery", "beat", "-A", "asset_tracker", "--ini", "/srv/production.ini",
       "--logfile=/srv/log/celery/celery.log", "--loglevel=info"
     ]
     depends_on:

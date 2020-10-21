@@ -20,21 +20,21 @@ services:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
     entrypoint: ["/srv/docker-entrypoint.dev.sh", "--celery"]
     command: [
-      "/usr/local/bin/celery", "-A", "asset_tracker", "worker", "--ini", "/srv/config/development.ini",
+      "/usr/local/bin/celery", "worker", "-A", "asset_tracker", "--ini", "/srv/config/development.ini",
       "--loglevel=info"
     ]
     volumes:
       - .:/srv
       - ../parsys_utilities:/opt/parsys_utilities
     healthcheck:
-      test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/config/development.ini"]
+      test: ["CMD", "celery", "inspect", "ping", "-A", "asset_tracker", "--ini", "/srv/config/development.ini"]
       start_period: 30s
 
   celery_beat:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
     entrypoint: ["/srv/docker-entrypoint.dev.sh", "--celery"]
     command: [
-      "/usr/local/bin/celery", "-A", "asset_tracker", "beat", "--ini", "/srv/config/development.ini",
+      "/usr/local/bin/celery", "beat", "-A", "asset_tracker", "--ini", "/srv/config/development.ini",
       "--loglevel=info"
     ]
     volumes:
