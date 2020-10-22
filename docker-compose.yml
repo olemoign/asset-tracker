@@ -6,9 +6,6 @@ services:
     depends_on:
       - postgres
       - redis
-    links:
-      - postgres
-      - redis
     volumes:
       - .:/srv
     healthcheck:
@@ -26,9 +23,6 @@ services:
     depends_on:
       - postgres
       - redis
-    links:
-      - postgres
-      - redis
     volumes:
       - .:/srv
     healthcheck:
@@ -44,9 +38,6 @@ services:
       "--logfile=/srv/log/celery/celery.log", "--loglevel=info"
     ]
     depends_on:
-      - postgres
-      - redis
-    links:
       - postgres
       - redis
     volumes:
