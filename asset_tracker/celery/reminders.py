@@ -40,7 +40,7 @@ def notify_expiring_consumables(db_session, delay_days):
         .options(
             joinedload(models.Equipment.asset),
             joinedload(models.Equipment.family),
-            joinedload(models.Consumable.family),
+            joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
         ) \
         .all()
 
