@@ -69,7 +69,7 @@ build:
 docker-image:
   stage: dist
   tags:
-    - docker-builder
+    - shell
 
   script:
     - echo creating $CONTAINER_TEST_IMAGE
@@ -78,7 +78,7 @@ docker-image:
 release-image:
   stage: release
   tags:
-    - docker-builder
+    - shell
 
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN tracker.parsys.com:1337
@@ -87,7 +87,7 @@ release-image:
 release-latest-image:
   stage: release
   tags:
-    - docker-builder
+    - shell
   only:
     - master
 
@@ -99,7 +99,7 @@ release-latest-image:
 deploy_dev:
   stage: deploy
   tags:
-    - docker-builder
+    - shell
   only:
     - develop
 
