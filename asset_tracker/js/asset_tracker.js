@@ -176,7 +176,6 @@ function addHref(row, data) {
 
 function styleInactiveObjects(row, data) {
   const hasActiveProperty = Object.prototype.hasOwnProperty.call(data, 'is_active');
-  // noinspection JSUnresolvedVariable
   if (hasActiveProperty && !data.is_active) {
     $(row).addClass('warning');
   }
@@ -295,7 +294,6 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
       if ((customFilterInput.length && !customFilterInput.is(':checked')) ||
         // 2: the table isn't visible yet but a filter value is present in the local storage.
         (!customFilterInput.length && state && state.customFilter)) {
-        // noinspection JSUndefinedPropertyAssignment
         data.filter = customFilter;
       }
     };
