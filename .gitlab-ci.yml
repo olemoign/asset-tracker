@@ -109,3 +109,31 @@ deploy_dev:
   environment:
     name: dev
     url: https://at.dev.parsys.com
+
+deploy_staging:
+  stage: deploy
+  tags:
+    - shell
+  only:
+    - master
+
+  script:
+    - ssh root@at.cloud.staging.parsys.com parsys upgrade at.cloud.staging.parsys.com
+
+  environment:
+    name: staging
+    url: https://at.cloud.staging.parsys.com
+
+deploy_staging_marlink:
+  stage: deploy
+  tags:
+    - shell
+  only:
+    - master
+
+  script:
+    - ssh root@asset.pp.telemed.marlink.com parsys upgrade asset.pp.telemed.marlink.com
+
+  environment:
+    name: staging_marlink
+    url: https://asset.pp.telemed.marlink.com
