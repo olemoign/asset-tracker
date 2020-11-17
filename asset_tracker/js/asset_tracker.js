@@ -50,8 +50,8 @@ function setActiveMenu(menuLinks) {
   // Splitting the path name allows to highlight categories (Profiles/Oauth clients/Tenants are still highlighted
   // when creating or updating objects)
   const cat = path.split('/', 2).join('/');
-  const activeLink = menuLinks.find('a[href="' + cat + '/"]');
-  activeLink.parents('li').addClass('active');
+  const activeLink = menuLinks.find(`a[href="${cat}/"]`);
+  activeLink.parent('li').addClass('active');
 }
 
 // Manage equipments.
@@ -71,13 +71,15 @@ $(document).on('click', '.equipment__add', function addEquipment() {
   equipmentsCounter += 1;
 
   const equipmentSelect = equipmentBlock.find('.equipment__family');
-  const newSelectId = equipmentsCounter + '#' + equipmentSelect.eq(0).attr('id');
-  $('label[for="' + equipmentSelect.eq(0).attr('id') + '"]').attr('for', newSelectId);
+  const modelSelectId = equipmentSelect.eq(0).attr('id');
+  const newSelectId = `${equipmentsCounter}#${modelSelectId}`;
+  $(`label[for="${modelSelectId}"]`).attr('for', newSelectId);
   equipmentSelect.attr('id', newSelectId).attr('name', newSelectId);
 
   const serialNumberInput = equipmentBlock.find('.equipment__serial_number');
-  const newSerialNumberId = equipmentsCounter + '#' + serialNumberInput.eq(0).attr('id');
-  $('label[for="' + serialNumberInput.eq(0).attr('id') + '"]').attr('for', newSerialNumberId);
+  const modelSerialNumberId = serialNumberInput.eq(0).attr('id');
+  const newSerialNumberId = `${equipmentsCounter}#${modelSerialNumberId}`;
+  $(`label[for="${modelSerialNumberId}"]`).attr('for', newSerialNumberId);
   serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
 
   equipmentBlock.data('equipmentsCounter', equipmentsCounter).removeAttr('id').removeClass('hidden')
@@ -92,14 +94,14 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
   /**
    * Remove an equipment when the user clicks the 'x' sign.
    */
-  $(this).parents('.equipment__block').remove();
+  $(this).closest('.equipment__block').remove();
 });
 
 $(document).on('change', '.equipment__family', function addConsumableExpirationDates(event) {
   /**
    * Add expiration dates for equipments that possess consumables.
    */
-  const equipmentContainer = $(this).parents('.equipment__block');
+  const equipmentContainer = $(this).closest('.equipment__block');
   const expirationDates = equipmentContainer.find('.expiration_dates');
   const equipmentCounter = equipmentContainer.data('equipmentsCounter');
 
@@ -114,7 +116,7 @@ $(document).on('change', '.equipment__family', function addConsumableExpirationD
 
     equipmentsConsumablesEntries.forEach(function cloneConsumableExpirationDate(element) {
       const consumableEl = $('#equipments_consumables__reference').clone().removeAttr('id').removeClass('hidden');
-      const consumableId = equipmentCounter + '#' + element[0] + '-expiration_date';
+      const consumableId = `${equipmentCounter}#${element[0]}-expiration_date`;
 
       const consumableLabel = consumableEl.find('label');
       consumableLabel.attr('for', consumableId);
@@ -169,7 +171,7 @@ function addHref(row, data) {
       if (!$(this).html()) {
         $(this).html('&nbsp;');
       }
-      $(this).wrapInner('<a href="' + objectLink[0].href + '"></a>');
+      $(this).wrapInner(`<a href="${objectLink[0].href}"></a>`);
     });
   }
 }
@@ -257,8 +259,7 @@ function createDataTables() {
 
     // If table didn't yet store state in local storage, input is checked, otherwise, use local storage.
     const inputIsChecked = !tableState || !tableState.customFilter ? ' checked' : '';
-
-    const filterHTML = '<label><input class="custom_filter__input" type="checkbox"' + inputIsChecked + '> ' + filterLabel + '</label>';
+    const filterHTML = `<label><input class="custom_filter__input" type="checkbox"${inputIsChecked}> ${filterLabel}</label>`;
     tableContainer.find('.custom_filter').html(filterHTML);
     initialisedDataTable.state.save();
 
@@ -305,7 +306,7 @@ $(document).on('click', '.event__delete', function removeEvent() {
    * When the user removes an event, store this action in the form then hide the event.
    */
   const eventID = $(this).data('eventid');
-  $('form').append('<input type="hidden" name="event-removed" value="' + eventID + '">');
+  $('form').append(`<input type="hidden" name="event-removed" value="${eventID}">`);
   $(this).parent().hide('fast');
 });
 
@@ -361,7 +362,7 @@ function restoreDates() {
       // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
       const isStandardDate = this.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (isStandardDate) {
-        this.value = isStandardDate[3] + '/' + isStandardDate[2] + '/' + isStandardDate[1];
+        this.value = `${isStandardDate[3]}/${isStandardDate[2]}/${isStandardDate[1]}`;
       }
     });
   }
