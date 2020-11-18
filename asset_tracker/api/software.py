@@ -57,7 +57,7 @@ def sort_versions(version):
     Returns
         list: split string, with text as str and numbers as int.
     """
-    # 'if text' allows us to remove the empty strings always occuring for the first and last element of the re.split().
+    # 'if text' allows us to remove the empty strings always occurring for the first and last element of the re.split().
     sort_key = []
 
     for substring in re.split('([0-9]+)', version):
