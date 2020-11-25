@@ -68,6 +68,7 @@ class Assets:
             models.Asset.asset_id,
             models.Asset.current_location,
             models.Site.name,
+            tenants.c.parsys_key,
         ]
 
         joined_tables = [
