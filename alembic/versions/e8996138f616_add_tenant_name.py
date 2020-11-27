@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), nullable=False))
+        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), nullable=False, server_default='Fix this'))
 
     with op.batch_alter_table('consumable_families_equipment_families', schema=None) as batch_op:
         batch_op.alter_column('consumable_family_id', existing_type=sa.Integer(), nullable=False)
@@ -36,7 +36,7 @@ def upgrade():
         batch_op.alter_column('family_id', existing_type=sa.Integer(), nullable=False)
 
     with op.batch_alter_table('site', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), nullable=False))
+        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), nullable=False, server_default='Fix this'))
 
 
 def downgrade():
