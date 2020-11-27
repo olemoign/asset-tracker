@@ -12,7 +12,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-                    <div class="flex-align-right ">
+                    <div class="flex-align-right">
                         {% if request.user.is_admin or 'assets-extract' in principals_without_tenants %}
                             <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default margin-right-10">
                                 {{ gettext('Extract') }}
