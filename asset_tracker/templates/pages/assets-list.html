@@ -12,16 +12,18 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-                    {% if request.user.is_admin or 'assets-create' in principals_without_tenants %}
-                        <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default pull-right">
-                            {{ gettext('New') }}
-                        </a>
-                    {% endif %}
-                    {% if request.user.is_admin or 'assets-extract' in principals_without_tenants %}
-                        <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default pull-right margin-right-10">
-                            {{ gettext('Extract') }}
-                        </a>
-                    {% endif %}
+                    <div class="flex-align-right ">
+                        {% if request.user.is_admin or 'assets-extract' in principals_without_tenants %}
+                            <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default margin-right-10">
+                                {{ gettext('Extract') }}
+                            </a>
+                        {% endif %}
+                        {% if request.user.is_admin or 'assets-create' in principals_without_tenants %}
+                            <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default">
+                                {{ gettext('New') }}
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <table id="assets-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
