@@ -13,6 +13,7 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 class Asset(Model, CreationDateTimeMixin):
     asset_id = Column(String, nullable=False, unique=True)
     tenant_id = Column(String, nullable=False)
+    tenant_name = Column(String, nullable=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
 
     @property
@@ -245,6 +246,7 @@ class EventStatus(Model):
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
     tenant_id = Column(String, nullable=False)
+    tenant_name = Column(String, nullable=False)
 
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
