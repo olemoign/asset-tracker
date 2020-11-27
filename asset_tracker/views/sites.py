@@ -18,20 +18,13 @@ from asset_tracker.views import FormException
 class Sites(metaclass=AuthenticatedEndpoint):
     """List, read and update sites."""
 
-    def __acl__(self):
-        acl = [
-            (Allow, None, 'sites-create', 'sites-create'),
-            (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, ADMIN_PRINCIPAL, ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
-        ]
-
-        if self.site:
-            acl.extend([
-                (Allow, self.site.tenant_id, 'sites-read', 'sites-read'),
-                (Allow, self.site.tenant_id, 'sites-update', 'sites-update'),
-            ])
-
-        return acl
+    __acl__ = [
+        (Allow, None, 'sites-create', 'sites-create'),
+        (Allow, None, 'sites-list', 'sites-list'),
+        (Allow, None, 'sites-read', 'sites-read'),
+        (Allow, None, 'sites-update', 'sites-update'),
+        (Allow, None, ADMIN_PRINCIPAL, ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
+    ]
 
     def __init__(self, request):
         self.request = request
