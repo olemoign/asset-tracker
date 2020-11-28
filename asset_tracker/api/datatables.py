@@ -1,6 +1,6 @@
 """Asset tracker datatables API."""
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
-from parsys_utilities.authorization import authenticate_rta, Right, rights_without_tenants
+from parsys_utilities.authorization import authenticate_rta, rights_without_tenants
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest
@@ -93,12 +93,10 @@ class Assets:
         # Format db return for dataTables.
         assets = []
         for asset in output['items']:
-            calibration_next = format_date(asset.calibration_next, self.request.locale_name) \
-                if asset.calibration_next else None
-
+            c_next = asset.calibration_next
             asset_output = {
                 'asset_id': asset.asset_id,
-                'calibration_next': calibration_next,
+                'calibration_next': format_date(c_next, self.request.locale_name) if c_next else None,
                 'customer_name': asset.customer_name,
                 'id': asset.id,
                 'is_active': asset.status.status_id != 'decommissioned',
@@ -150,9 +148,6 @@ class Sites(DataTablesAPI):
             capture_exception(error)
             raise HTTPBadRequest()
 
-        # Simulate the user's tenants as a table so that we can filter/sort on tenant_key.
-        tenants = table_from_dict('tenant', self.request.user.tenants)
-
         # SQL query parameters.
         full_text_search_attributes = [
             models.Site.contact,
@@ -160,14 +155,8 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            tenants.c.parsys_key,
+            models.Site.tenant_name,
         ]
-
-        joined_tables = [
-            (tenants, tenants.c.id == models.Site.tenant_id),
-        ]
-
-        specific_attributes = {'tenant_key': tenants.c.parsys_key}
 
         try:
             # noinspection PyTypeChecker
@@ -175,17 +164,12 @@ class Sites(DataTablesAPI):
                 db_session=self.request.db_session,
                 searched_object=models.Site,
                 full_text_search_attributes=full_text_search_attributes,
-                joined_tables=joined_tables,
-                specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
 
         except KeyError as error:
             capture_exception(error)
             raise HTTPBadRequest()
-
-        # dict to get tenant name from tenant id
-        tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
         sites = []
@@ -196,11 +180,11 @@ class Sites(DataTablesAPI):
                 'name': site.name,
                 'phone': site.phone,
                 'site_type': self.request.localizer.translate(site.site_type) if site.site_type else None,
-                'tenant_key': tenant_keys[site.tenant_id],
+                'tenant_name': site.tenant_name,
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
-            has_read_rights = Right(name='sites-read', tenant=site.tenant_id) in self.request.effective_principals
+            has_read_rights = 'sites-read' in rights_without_tenants(self.request.effective_principals)
             if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('sites-update', site_id=site.id)
                 site_output['links'] = [{'rel': 'self', 'href': link}]
