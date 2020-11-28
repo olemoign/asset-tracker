@@ -23,6 +23,7 @@ class Assets:
             (Allow, None, 'assets-list', 'assets-list'),
             (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
         ]
+
         if authenticate_rta(self.request):
             acl.extend([
                 (Allow, None, Everyone, 'api-assets-create'),

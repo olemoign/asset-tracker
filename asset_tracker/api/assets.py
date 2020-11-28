@@ -64,6 +64,7 @@ class Assets:
             asset_id=json['login'],
             user_id=json['userID'],
             tenant_id=json['tenantID'],
+            tenant_name=json['tenantName'],
             calibration_frequency=calibration_frequency,
         )
         # Add event.
@@ -105,6 +106,7 @@ class Assets:
         asset.user_id = json['userID']
         asset.asset_id = json['login']
         asset.tenant_id = json['tenantID']
+        asset.tenant_name = json['tenantName']
 
     def rta_link_post(self):
         """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code
@@ -117,7 +119,7 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
-        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'tenantType', 'userID'}
+        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'tenantName', 'tenantType', 'userID'}
         # Validate data.
         if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
