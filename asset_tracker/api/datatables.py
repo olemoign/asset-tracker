@@ -1,6 +1,6 @@
 """Asset tracker datatables API."""
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
-from parsys_utilities.authorization import authenticate_rta, Right
+from parsys_utilities.authorization import authenticate_rta, Right, rights_without_tenants
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest
@@ -56,27 +56,23 @@ class Assets:
         ]
         # Simulate the assets statuses as a table with translated labels so that we can filter/sort on status.
         statuses = table_from_dict('status', statuses_dict)
-        # Simulate the user's tenants as a table so that we can filter/sort on tenant_key.
-        tenants = table_from_dict('tenant', self.request.user.tenants)
 
         full_text_search_attributes = [
             models.Asset.asset_id,
             models.Asset.current_location,
+            models.Asset.tenant_name,
             models.Site.name,
-            tenants.c.parsys_key,
         ]
 
         # tables_from_dict makes all columns as strings.
         joined_tables = [
             (statuses, statuses.c.id == cast(models.Asset.status_id, String)),
-            (tenants, tenants.c.id == models.Asset.tenant_id),
             models.Site,
         ]
 
         specific_attributes = {
             'site': models.Site.name,
             'status': statuses.c.label,
-            'tenant_key': tenants.c.parsys_key,
         }
 
         try:
@@ -94,8 +90,6 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
-        tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
-
         # Format db return for dataTables.
         assets = []
         for asset in output['items']:
@@ -110,11 +104,11 @@ class Assets:
                 'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
                 'status': self.request.localizer.translate(asset.status.label(config)),
-                'tenant_key': tenant_keys[asset.tenant_id],
+                'tenant_name': asset.tenant_name,
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
-            has_read_rights = Right(name='assets-read', tenant=asset.tenant_id) in self.request.effective_principals
+            has_read_rights = 'assets-read' in rights_without_tenants(self.request.effective_principals)
             if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
                 asset_output['links'] = [{'rel': 'self', 'href': link}]
