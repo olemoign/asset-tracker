@@ -55,10 +55,12 @@ function setActiveMenu(menuLinks) {
 }
 
 // Manage equipments.
-$(document).on('click', '.equipment__add', function addEquipment() {
+$(document).on('click', '.equipment__add', function addEquipment(event) {
   /**
    * Add a new equipment when the user clicks the '+' sign.
    */
+  event.stopPropagation();
+
   const equipmentBlock = $('#equipments__reference').clone();
 
   let equipmentsCounter = 0;
