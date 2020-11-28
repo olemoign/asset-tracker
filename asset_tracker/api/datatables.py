@@ -33,27 +33,6 @@ class Assets:
     def __init__(self, request):
         self.request = request
 
-    def tenanting(self, q):
-        """Filter assets according to user's rights/tenants.
-        Admins get access to all assets.
-
-        Args:
-            q (sqlalchemy.orm.query.Query): current query.
-
-        Returns:
-            sqlalchemy.orm.query.Query: filtered query.
-        """
-        if self.request.user.is_admin:
-            return q
-
-        else:
-            authorized_tenants = {
-                right.tenant
-                for right in self.request.effective_principals
-                if isinstance(right, Right) and right.name == 'assets-list'
-            }
-            return q.filter(models.Asset.tenant_id.in_(authorized_tenants))
-
     @view_config(route_name='api-assets', request_method='GET', permission='assets-list', renderer='json')
     def list_get(self):
         """List assets and format output according to dataTables requirements."""
@@ -106,7 +85,6 @@ class Assets:
                 models.Asset,
                 full_text_search_attributes,
                 joined_tables=joined_tables,
-                tenanting=self.tenanting,
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
@@ -166,27 +144,6 @@ class Sites(DataTablesAPI):
         (Allow, None, ADMIN_PRINCIPAL, 'sites-list'),
     ]
 
-    def tenanting(self, q):
-        """Filter sites according to user's rights/tenants.
-        Admins get access to all sites.
-
-        Args:
-            q (sqlalchemy.orm.query.Query): current query.
-
-        Returns:
-            sqlalchemy.orm.query.Query: filtered query.
-        """
-        if self.request.user.is_admin:
-            return q
-
-        else:
-            authorized_tenants = {
-                right.tenant
-                for right in self.request.effective_principals
-                if isinstance(right, Right) and right.name == 'sites-list'
-            }
-            return q.filter(models.Site.tenant_id.in_(authorized_tenants))
-
     @view_config(route_name='api-sites', request_method='GET', permission='sites-list', renderer='json')
     def list_get(self):
         """List sites and format output according to dataTables requirements."""
@@ -224,7 +181,6 @@ class Sites(DataTablesAPI):
                 searched_object=models.Site,
                 full_text_search_attributes=full_text_search_attributes,
                 joined_tables=joined_tables,
-                tenanting=self.tenanting,
                 specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )

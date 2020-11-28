@@ -28,7 +28,6 @@ def add_global_variables(event):
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['config'] = event['request'].registry.settings.get('asset_tracker.config', 'parsys')
 
-    event['principals'] = event['request'].effective_principals
     event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
 
