@@ -3,10 +3,10 @@
 These functions are run during each function startup to make sure families and statuses in the db are up to date with
 the content of config.json.
 """
+import json
 import logging
-from json import loads
 
-import pkg_resources
+import importlib_resources
 import transaction
 
 from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus, \
@@ -150,8 +150,8 @@ def update_configuration(settings):
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
-        config = pkg_resources.resource_string(__name__, 'config.json').decode('utf-8')
-        config = loads(config)
+        with importlib_resources.path(__name__, 'config.json') as config_file:
+            config = json.load(config_file)
 
         update_equipment_families(db_session, config)
         update_consumable_families(db_session, config)

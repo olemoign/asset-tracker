@@ -1,10 +1,10 @@
 from collections import OrderedDict
 from pathlib import Path
 
-import pkg_resources
+import importlib_metadata
 from pyramid.i18n import TranslationString as _
 
-ASSET_TRACKER_VERSION = pkg_resources.require(__package__)[0].version
+ASSET_TRACKER_VERSION = importlib_metadata.version(__package__)
 DEFAULT_BRANDING = 'parsys'
 
 STATIC_FILES_CACHE = 60 * 60
