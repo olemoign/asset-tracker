@@ -150,7 +150,8 @@ def update_configuration(settings):
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
-        with importlib_resources.path(__name__, 'config.json') as config_file:
+        config_path = importlib_resources.files(__package__).joinpath('config.json')
+        with open(config_path) as config_file:
             config = json.load(config_file)
 
         update_equipment_families(db_session, config)

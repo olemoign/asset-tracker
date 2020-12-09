@@ -30,7 +30,7 @@ services:
   celery_beat:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
     entrypoint: ["/srv/docker-entrypoint.dev.sh", "--celery"]
-    command: [celery", "-A", "asset_tracker", "beat", "--ini", "/srv/config/development.ini", "--loglevel=info"]
+    command: ["celery", "-A", "asset_tracker", "beat", "--ini", "/srv/config/development.ini", "--loglevel=info"]
     volumes:
       - .:/srv
       - ../parsys_utilities:/opt/parsys_utilities
