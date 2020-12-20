@@ -74,7 +74,6 @@ setup(
     keywords='web pyramid pylons',
     packages=find_packages(exclude=['asset_tracker.tests']),
     include_package_data=True,
-    zip_safe=False,
     python_requires='>=3.6',
     install_requires=requires,
     tests_require=optional['tests'],
