@@ -4,9 +4,9 @@ from pathlib import Path
 from setuptools import find_packages, setup
 
 here = Path(__file__).resolve().parent
-with open(here / 'README.txt') as f:
+with open(here / 'README.md') as f:
     README = f.read()
-with open(here / 'CHANGES.txt') as f:
+with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 requires = [
