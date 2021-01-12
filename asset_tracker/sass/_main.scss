@@ -163,6 +163,12 @@ td {
   overflow: hidden;
 }
 
+@media (max-width: $screen-sm-max) {
+  .site-text {
+    width: 100%;
+  }
+}
+
 .site-icon {
   font-size: 20px;
 }
