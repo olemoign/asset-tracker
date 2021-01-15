@@ -62,20 +62,19 @@ body, html {
   margin: 0;
 }
 
-table td a {
-  text-decoration: none;
-  color: $black;
+table.dataTable tr,
+table.dataTable td {
+  height: 100%;
+}
 
+table.dataTable td a {
   // Even if text doesn't cover the whole td, the whole space is clickable.
   display: block;
-  margin-left: -8px;
-  padding-left: 8px;
-  margin-right: -8px;
-  padding-right: 8px;
-
-  &:active, &:focus, &:hover {
-    text-decoration: none;
-  }
+  // 16px = td vertical padding.
+  height: calc(100% + 16px);
+  margin: -8px;
+  padding: 8px;
+  color: black;
 }
 
 // Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
@@ -94,7 +93,7 @@ td {
 }
 
 .equipment__add {
-  margin: 0 0 0 10px;
+  margin-left: 10px;
 }
 
 .event__delete {
@@ -191,12 +190,13 @@ td {
   // Show that the full panel header is clickable to open/hide the accordion.
   cursor: pointer;
 
+  &:hover {
+    background-color: #ddd;
+  }
+
   &::after {
     //noinspection CssNoGenericFontName
     font-family: 'Glyphicons Halflings';
-    font-size: 16px;
-    line-height: 1;
-    height: 16px;
     content: '\e113';
     transform: rotate(0deg);
     transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;

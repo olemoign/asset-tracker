@@ -26,7 +26,10 @@ def main():
         test_strips = db_session.query(ConsumableFamily).filter_by(family_id=TEST_STRIPS_ID).first()
 
         equipments_to_migrate = db_session.query(Equipment) \
-            .filter(or_(Equipment.expiration_date_1 != None, Equipment.expiration_date_2 != None)).all()  # noqa: E711
+            .filter(or_(
+                Equipment.expiration_date_1.isnot(None),
+                Equipment.expiration_date_2.isnot(None),
+            )).all()
 
         for equipment in equipments_to_migrate:
             if equipment.expiration_date_1:
