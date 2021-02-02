@@ -13,7 +13,7 @@ USER_INACTIVITY_MAX = 60 * 60
 ADMIN_PRINCIPAL = 'g:admin'
 CALIBRATION_FREQUENCIES_YEARS = OrderedDict([
     ('default', 2),
-    ('maritime', 3),
+    ('marlink', 3),
 ])
 SITE_TYPES = [
     _('Company'),

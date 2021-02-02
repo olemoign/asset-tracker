@@ -71,7 +71,7 @@ def main():
             kit._history.append(activation)
 
             kit.status = activation_status
-            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['maritime'])
+            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['marlink'])
 
             db_session.add_all([kit, base, telecardia, calibration, activation])
 

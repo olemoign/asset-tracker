@@ -277,7 +277,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         asset.status = asset.history('desc', filter_config=True).first().status
 
         if 'marlink' in specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
             calibration_last = asset.calibration_last
 
             # If asset was calibrated (it should be, as production is considered a calibration).
@@ -423,7 +423,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
 
@@ -493,7 +493,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         # Marlink has only one calibration frequency so they don't want to see the input.
         if 'marlink' in self.specific:
-            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
