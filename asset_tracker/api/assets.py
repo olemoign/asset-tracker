@@ -121,11 +121,8 @@ class Assets:
         AssetView.update_status_and_calibration_next(asset, specific)
 
     def rta_link_post(self):
-        # Authentify RTA using HTTP Basic Auth.
-        if not authenticate_rta(self.request):
-            capture_message('Forbidden RTA request.')
-            raise HTTPForbidden()
-
+        """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code
+        here."""
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
@@ -134,7 +131,7 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
-        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'userID'}
+        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'tenantType', 'userID'}
         # Validate data.
         if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
@@ -142,7 +139,8 @@ class Assets:
 
         # Create or update Asset.
         try:
-            self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
+            self.link_asset(json)
+
         except SQLAlchemyError as error:
             self.request.logger_technical.info('Asset linking: db error.')
             capture_exception(error)
