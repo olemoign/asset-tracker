@@ -1,6 +1,5 @@
 import argparse
 
-from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 

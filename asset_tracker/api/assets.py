@@ -11,7 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.views.assets import Assets as AssetView
 
 
 class Assets:
@@ -43,14 +42,12 @@ class Assets:
 
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']).first()
-
         if asset:
             self.update_asset(asset, json)
             return
 
         # If the asset only exists in the Asset Tracker.
         asset = self.request.db_session.query(models.Asset).filter_by(asset_id=json['login']).first()
-
         if asset:
             if asset.user_id:
                 capture_message(
@@ -62,8 +59,6 @@ class Assets:
             return
 
         # New asset.
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()
-
         asset = models.Asset(
             asset_type='station',
             asset_id=json['login'],
@@ -71,18 +66,16 @@ class Assets:
             tenant_id=json['tenantID'],
             calibration_frequency=calibration_frequency,
         )
-        self.request.db_session.add(asset)
-
         # Add event.
         event = models.Event(
-            status=status,
+            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first(),
             date=datetime.utcnow().date(),
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
         )
         # noinspection PyProtectedMember
         asset._history.append(event)
-        self.request.db_session.add(event)
+        self.request.db_session.add_all([asset, event])
 
         # Update asset status.
         asset.status = asset.history('desc', filter_config=True).first().status

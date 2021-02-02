@@ -5,7 +5,6 @@ from collections import defaultdict
 from datetime import datetime
 from operator import attrgetter
 
-from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
 from parsys_utilities.authorization import Right
 from parsys_utilities.config import aslist

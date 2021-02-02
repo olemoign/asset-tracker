@@ -3,11 +3,9 @@ import csv
 import sys
 from datetime import datetime, timedelta
 
-from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
-from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
