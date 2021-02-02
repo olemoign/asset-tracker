@@ -115,6 +115,7 @@ class AssetsExtract:
                 asset.status.label,
                 asset.notes,
                 asset.production,
+                asset.delivery,
                 asset.activation,
                 asset.calibration_last,
                 asset.calibration_next,
