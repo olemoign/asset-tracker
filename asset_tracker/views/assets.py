@@ -272,39 +272,13 @@ class Assets(metaclass=AuthenticatedEndpoint):
             event.remover_alias = self.request.user.alias
 
     @staticmethod
-    def update_status_and_calibration_next(asset, specific):
+    def update_status_and_calibration_next(asset):
         """Update asset status and next calibration date according to functional rules."""
         asset.status = asset.history('desc', filter_config=True).first().status
 
-        if 'marlink' in specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
-            calibration_last = asset.calibration_last
-
-            # If asset was calibrated (it should be, as production is considered a calibration).
-            # Marlink rule: next calibration = activation date + calibration frequency.
-            if calibration_last:
-                activation_next = asset.history('asc').filter(models.Event.date > calibration_last) \
-                    .join(models.Event.status).filter(models.EventStatus.status_id == 'service').first()
-                if activation_next:
-                    asset.calibration_next = activation_next.date + relativedelta(years=calibration_frequency)
-                else:
-                    # If asset was never activated, we consider it still should be calibrated.
-                    # So next calibration = last calibration + calibration frequency.
-                    asset.calibration_next = calibration_last + relativedelta(years=calibration_frequency)
-
-            # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
-            # set as "produced").
-            else:
-                activation_first = asset.activation_first
-                if activation_first:
-                    asset.calibration_next = activation_first + relativedelta(years=calibration_frequency)
-
-        else:
-            # Parsys rule is straightforward: next calibration = last calibration + asset calibration frequency.
-            # Calibration last is simple to get, it's just that we consider the production date as a calibration.
-            calibration_last = asset.calibration_last
-            if calibration_last:
-                asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
+        calibration_last = asset.calibration_last
+        if calibration_last:
+            asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
 
     def validate_asset(self):
         """Validate asset data."""
@@ -450,7 +424,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         if self.form.get('site_id'):
             self.add_site_change_event(self.form['site_id'])
 
-        self.update_status_and_calibration_next(self.asset, self.specific)
+        self.update_status_and_calibration_next(self.asset)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
@@ -534,7 +508,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if nb_active_event > nb_removed_event:
                 self.remove_events()
 
-        self.update_status_and_calibration_next(self.asset, self.specific)
+        self.update_status_and_calibration_next(self.asset)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
