@@ -60,23 +60,17 @@ class Asset(Model, CreationDateTimeMixin):
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
+        asset_query = self.history('asc').join(Event.status)
 
-        activation_first = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'service').first()
-        if activation_first:
-            self._asset_dates['activation_first'] = activation_first.date
-            self._asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS)
-        else:
-            self._asset_dates['activation_first'] = None
-            self._asset_dates['warranty_end'] = None
+        activation_first = asset_query.filter(EventStatus.status_id == 'service').first()
+        self._asset_dates['activation_first'] = activation_first.date if activation_first else None
+        self._asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
+            if activation_first else None
 
-        production = self.history('asc').join(Event.status).filter(EventStatus.status_id == 'stock_parsys').first()
-        if production:
-            self._asset_dates['production'] = production.date
-        else:
-            self._asset_dates['production'] = None
+        production = asset_query.filter(EventStatus.status_id == 'stock_parsys').first()
+        self._asset_dates['production'] = production.date if production else None
 
-        calibration_last = self.history('desc').join(Event.status) \
-            .filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = asset_query.filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         # In the weird case that the asset has been calibrated but the 'stock' status has been forgotten.
@@ -84,6 +78,10 @@ class Asset(Model, CreationDateTimeMixin):
             self._asset_dates['calibration_last'] = calibration_last.date
         elif production:
             self._asset_dates['calibration_last'] = production.date
+        # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
+        # set as "produced").
+        elif activation_first:
+            self._asset_dates['calibration_last'] = activation_first.date
         else:
             self._asset_dates['calibration_last'] = None
 
