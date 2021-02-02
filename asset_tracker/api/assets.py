@@ -84,8 +84,8 @@ class Assets:
         asset._history.append(event)
         self.request.db_session.add(event)
 
-        # Update status and calibration.
-        AssetView.update_status_and_calibration_next(asset)
+        # Update asset status.
+        asset.status = asset.history('desc', filter_config=True).first().status
 
     def update_asset(self, asset, json):
         """Update asset.
