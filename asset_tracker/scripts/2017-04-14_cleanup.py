@@ -47,10 +47,6 @@ def main():
             # Update status.
             asset.status = asset.history('desc').first().status
 
-            # Update calibration_next.
-            if asset.calibration_last:
-                asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
-
             print()
 
     print('Done.')
