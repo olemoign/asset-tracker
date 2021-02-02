@@ -394,50 +394,44 @@
       "status_type": "event"
     },
     {
-      "status_id": "distributor_checkup",
-      "position": "10",
-      "label": "Distributor checkup",
-      "status_type": "event"
-    },
-    {
       "status_id": "transit_parsys",
-      "position": "11",
+      "position": "10",
       "label": "In transit to Parsys",
       "status_type": "event"
     },
     {
       "status_id": "calibration",
-      "position": "12",
+      "position": "11",
       "label": "In calibration",
       "status_type": "event"
     },
     {
       "status_id": "repair",
-      "position": "13",
+      "position": "12",
       "label": "In repair",
       "status_type": "event"
     },
     {
       "status_id": "decommissioned",
-      "position": "14",
+      "position": "13",
       "label": "Decommissioned",
       "status_type": "event"
     },
     {
       "status_id": "software_update",
-      "position": "15",
+      "position": "14",
       "label": "Software update",
       "status_type": "config"
     },
     {
       "status_id": "config_update",
-      "position": "16",
+      "position": "15",
       "label": "Configuration update",
       "status_type": "config"
     },
     {
       "status_id": "site_change",
-      "position": "17",
+      "position": "16",
       "label": "Site change",
       "status_type": "config"
     }
