@@ -61,10 +61,10 @@ class Asset(Model, CreationDateTimeMixin):
         self._asset_dates = {}
         asset_query = self.history('asc').join(Event.status)
 
-        activation_first = asset_query.filter(EventStatus.status_id == 'service').first()
-        self._asset_dates['activation_first'] = activation_first.date if activation_first else None
-        self._asset_dates['warranty_end'] = activation_first.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
-            if activation_first else None
+        activation = asset_query.filter(EventStatus.status_id == 'service').first()
+        self._asset_dates['activation'] = activation.date if activation else None
+        self._asset_dates['warranty_end'] = activation.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
+            if activation else None
 
         production = asset_query.filter(EventStatus.status_id == 'stock_parsys').first()
         self._asset_dates['production'] = production.date if production else None
@@ -79,8 +79,8 @@ class Asset(Model, CreationDateTimeMixin):
             self._asset_dates['calibration_last'] = production.date
         # If asset wasn't calibrated (usage problem, some assets have been put in service without having been
         # set as "produced").
-        elif activation_first:
-            self._asset_dates['calibration_last'] = activation_first.date
+        elif activation:
+            self._asset_dates['calibration_last'] = activation.date
         else:
             self._asset_dates['calibration_last'] = None
 
@@ -98,9 +98,9 @@ class Asset(Model, CreationDateTimeMixin):
         return self._asset_dates
 
     @property
-    def activation_first(self):
+    def activation(self):
         """Get the date of the asset first activation."""
-        return self.asset_dates['activation_first']
+        return self.asset_dates['activation']
 
     @property
     def calibration_last(self):
