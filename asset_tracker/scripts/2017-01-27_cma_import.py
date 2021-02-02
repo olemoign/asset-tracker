@@ -3,9 +3,11 @@ import csv
 import sys
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
@@ -69,6 +71,7 @@ def main():
             kit._history.append(activation)
 
             kit.status = activation_status
+            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['marlink'])
 
             db_session.add_all([kit, base, telecardia, calibration, activation])
 

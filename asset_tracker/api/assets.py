@@ -11,6 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.views.assets import Assets as AssetView
 
 
 class Assets:
@@ -77,8 +78,8 @@ class Assets:
         asset._history.append(event)
         self.request.db_session.add_all([asset, event])
 
-        # Update asset status.
-        asset.status = asset.history('desc', filter_config=True).first().status
+        # Update status and calibration.
+        AssetView.update_status_and_calibration_next(asset)
 
     def update_asset(self, asset, json):
         """Update asset.

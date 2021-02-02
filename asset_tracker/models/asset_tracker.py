@@ -55,6 +55,7 @@ class Asset(Model, CreationDateTimeMixin):
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
     calibration_frequency = Column(Integer)
+    calibration_next = Column(Date)
 
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
@@ -82,12 +83,6 @@ class Asset(Model, CreationDateTimeMixin):
         else:
             self._asset_dates['calibration_last'] = None
 
-        if self._asset_dates['calibration_last']:
-            self._asset_dates['calibration_next'] = \
-                self._asset_dates['calibration_last'] + relativedelta(years=self.calibration_frequency)
-        else:
-            self._asset_dates['calibration_next'] = None
-
     @property
     def asset_dates(self):
         if not hasattr(self, '_asset_dates'):
@@ -104,11 +99,6 @@ class Asset(Model, CreationDateTimeMixin):
     def calibration_last(self):
         """Get the date of the asset last calibration."""
         return self.asset_dates['calibration_last']
-
-    @property
-    def calibration_next(self):
-        """Get the date of the asset last calibration."""
-        return self.asset_dates['calibration_next']
 
     @property
     def delivery(self):
