@@ -27,29 +27,12 @@ class Assets:
     def __init__(self, request):
         self.request = request
 
-    def add_site_change_event(self, asset, creator_id, creator_alias):
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
-
-        event = models.Event(
-            date=datetime.utcnow().date(),
-            creator_id=creator_id,
-            creator_alias=creator_alias,
-            status=status,
-        )
-        # noinspection PyProtectedMember
-        asset._history.append(event)
-        self.request.db_session.add(event)
-
-    def link_asset(self, user_id, login, tenant_id, creator_id, creator_alias):
+    def link_asset(self, json):
         """Create/Update an asset based on information from RTA.
         Find and update asset information if asset exists in AssetTracker or create it.
 
         Args:
-            user_id (str): unique id to identify the station
-            login (str): serial number or station login/ID
-            tenant_id (str): unique id to identify the tenant
-            creator_id (str): unique id to identify the user
-            creator_alias (str): '{first_name} {last_name}'
+            json (dict).
         """
         # Marlink has only one calibration frequency so they don't want to see the input.
         specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
@@ -59,39 +42,23 @@ class Assets:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
         # If the asset exists in both the Asset Tracker and RTA.
-        asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']).first()
 
         if asset:
-            if asset.tenant_id != tenant_id:
-                if asset.site_id:
-                    self.add_site_change_event(asset, creator_id, creator_alias)
-
-                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
-                # be valid anymore.
-                asset.site_id = None
-
-            asset.asset_id = login
-            asset.tenant_id = tenant_id
+            self.update_asset(asset, json)
             return
 
         # If the asset only exists in the Asset Tracker.
-        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=login).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=json['login']).first()
 
         if asset:
             if asset.user_id:
-                capture_message(f'Trying to link asset {asset.id} which is already linked: {asset.user_id}/{user_id}.')
+                capture_message(
+                    f'Trying to link asset {asset.id} which is already linked: {asset.user_id}/{json["userID"]}.'
+                )
                 return
 
-            if asset.tenant_id != tenant_id:
-                if asset.site_id:
-                    self.add_site_change_event(asset, creator_id, creator_alias)
-
-                # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
-                # be valid anymore.
-                asset.site_id = None
-
-            asset.tenant_id = tenant_id
-            asset.user_id = user_id
+            self.update_asset(asset, json)
             return
 
         # New Asset.
@@ -99,9 +66,9 @@ class Assets:
 
         asset = models.Asset(
             asset_type='station',
-            asset_id=login,
-            user_id=user_id,
-            tenant_id=tenant_id,
+            asset_id=json['login'],
+            user_id=json['userID'],
+            tenant_id=json['tenantID'],
             calibration_frequency=calibration_frequency,
         )
         self.request.db_session.add(asset)
@@ -110,8 +77,8 @@ class Assets:
         event = models.Event(
             status=status,
             date=datetime.utcnow().date(),
-            creator_id=creator_id,
-            creator_alias=creator_alias,
+            creator_id=json['creatorID'],
+            creator_alias=json['creatorAlias'],
         )
         # noinspection PyProtectedMember
         asset._history.append(event)
@@ -120,12 +87,35 @@ class Assets:
         # Update status and calibration
         AssetView.update_status_and_calibration_next(asset, specific)
 
-    def rta_link_post(self):
-        # Authentify RTA using HTTP Basic Auth.
-        if not authenticate_rta(self.request):
-            capture_message('Forbidden RTA request.')
-            raise HTTPForbidden()
+    def update_asset(self, asset, json):
+        """Update asset.
 
+        Args:
+            asset (rta.models.Asset).
+            json (dict).
+        """
+        if asset.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
+            event = models.Event(
+                date=datetime.utcnow().date(),
+                creator_id=json['creatorID'],
+                creator_alias=json['creatorAlias'],
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first(),
+            )
+            # noinspection PyProtectedMember
+            asset._history.append(event)
+            self.request.db_session.add(event)
+
+            # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
+            # be valid anymore.
+            asset.site_id = None
+
+        asset.user_id = json['userID']
+        asset.asset_id = json['login']
+        asset.tenant_id = json['tenantID']
+
+    def rta_link_post(self):
+        """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code
+        here."""
         # Make sure the JSON provided is valid.
         try:
             json = self.request.json
@@ -134,7 +124,7 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
-        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'userID'}
+        asset_info = {'creatorAlias', 'creatorID', 'login', 'tenantID', 'tenantType', 'userID'}
         # Validate data.
         if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
@@ -142,7 +132,8 @@ class Assets:
 
         # Create or update Asset.
         try:
-            self.link_asset(json['userID'], json['login'], json['tenantID'], json['creatorID'], json['creatorAlias'])
+            self.link_asset(json)
+
         except SQLAlchemyError as error:
             self.request.logger_technical.info('Asset linking: db error.')
             capture_exception(error)

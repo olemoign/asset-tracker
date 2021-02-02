@@ -1,10 +1,10 @@
 """Asset tracker datatables API."""
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
-from parsys_utilities.authorization import Right
+from parsys_utilities.authorization import authenticate_rta, Right
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.security import Allow
+from pyramid.security import Allow, Everyone
 from pyramid.settings import asbool
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
@@ -17,10 +17,17 @@ from asset_tracker.constants import ADMIN_PRINCIPAL
 class Assets:
     """List assets for dataTables."""
 
-    __acl__ = [
-        (Allow, None, 'assets-list', 'assets-list'),
-        (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
-    ]
+    def __acl__(self):
+        acl = [
+            (Allow, None, 'assets-list', 'assets-list'),
+            (Allow, None, ADMIN_PRINCIPAL, 'assets-list'),
+        ]
+        if authenticate_rta(self.request):
+            acl.extend([
+                (Allow, None, Everyone, 'api-assets-create'),
+            ])
+
+        return acl
 
     def __init__(self, request):
         self.request = request
@@ -138,7 +145,8 @@ class Assets:
             'recordsTotal': output['recordsTotal'],
         }
 
-    @view_config(route_name='api-assets', request_method='POST', require_csrf=False)
+    @view_config(route_name='api-assets', request_method='POST', permission='api-assets-create', require_csrf=False,
+                 renderer='json')
     def rta_link_post(self):
         """Link Station (RTA) and Asset (AssetTracker).
         Receive information from RTA about station to create/update Asset.
