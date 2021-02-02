@@ -94,7 +94,7 @@ class Assets:
             asset (rta.models.Asset).
             json (dict).
         """
-        if asset.tenant_id != json['tenantID']:
+        if asset.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
             event = models.Event(
                 date=datetime.utcnow().date(),
                 creator_id=json['creatorID'],
