@@ -77,8 +77,8 @@ class Asset(Model, CreationDateTimeMixin):
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         for status in ['calibration_last', 'production', 'delivery', 'activation']:
-            if self._asset_dates[status]:
-                self._asset_dates['calibration_last'] = self._asset_dates[status]
+            if locals().get(status):
+                self._asset_dates['calibration_last'] = locals()[status].date
                 break
         else:
             self._asset_dates['calibration_last'] = None
