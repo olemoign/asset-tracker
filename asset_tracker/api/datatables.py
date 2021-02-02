@@ -116,17 +116,14 @@ class Assets:
             else:
                 calibration_next = None
 
-            status = self.request.localizer.translate(asset.status.label)
-            is_active = asset.status.status_id != 'decommissioned'
-
             asset_output = {
                 'asset_id': asset.asset_id,
                 'calibration_next': calibration_next,
                 'customer_name': asset.customer_name,
                 'id': asset.id,
-                'is_active': is_active,
+                'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
-                'status': status,
+                'status': self.request.localizer.translate(asset.status.label),
                 'tenant_key': tenant_keys[asset.tenant_id],
             }
 
@@ -235,16 +232,12 @@ class Sites(DataTablesAPI):
         # Format db return for dataTables.
         sites = []
         for site in output['items']:
-            site_type = None
-            if site.site_type:
-                site_type = self.request.localizer.translate(site.site_type)
-
             site_output = {
                 'contact': site.contact,
                 'email': site.email,
                 'name': site.name,
                 'phone': site.phone,
-                'site_type': site_type,
+                'site_type': self.request.localizer.translate(site.site_type) if site.site_type else None,
                 'tenant_key': tenant_keys[site.tenant_id],
             }
 

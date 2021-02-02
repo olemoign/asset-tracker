@@ -61,7 +61,7 @@ class Assets:
             self.update_asset(asset, json)
             return
 
-        # New Asset.
+        # New asset.
         status = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()
 
         asset = models.Asset(
@@ -73,7 +73,7 @@ class Assets:
         )
         self.request.db_session.add(asset)
 
-        # Add Event
+        # Add event.
         event = models.Event(
             status=status,
             date=datetime.utcnow().date(),
@@ -84,7 +84,7 @@ class Assets:
         asset._history.append(event)
         self.request.db_session.add(event)
 
-        # Update status and calibration
+        # Update status and calibration.
         AssetView.update_status_and_calibration_next(asset)
 
     def update_asset(self, asset, json):
@@ -130,7 +130,7 @@ class Assets:
             self.request.logger_technical.info('Asset linking: missing values.')
             raise HTTPBadRequest()
 
-        # Create or update Asset.
+        # Create or update asset.
         try:
             self.link_asset(json)
 
