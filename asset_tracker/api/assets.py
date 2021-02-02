@@ -3,7 +3,7 @@ from json import JSONDecodeError
 
 from parsys_utilities.authorization import authenticate_rta
 from parsys_utilities.config import aslist
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPOk
 from pyramid.security import Allow, Everyone
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
@@ -37,7 +37,7 @@ class Assets:
         # Marlink has only one calibration frequency so they don't want to see the input.
         specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
         if 'marlink' in specific:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['maritime']
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
@@ -85,7 +85,7 @@ class Assets:
         self.request.db_session.add(event)
 
         # Update status and calibration
-        AssetView.update_status_and_calibration_next(asset, specific)
+        AssetView.update_status_and_calibration_next(asset)
 
     def update_asset(self, asset, json):
         """Update asset.
