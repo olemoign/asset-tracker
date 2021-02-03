@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import date, equipment_box, input with context %}
 
-{% set is_linked = asset and asset.is_linked %}
 {% set update = asset and asset.id %}
 {% if update %}
+    {% set is_linked = asset.is_linked %}
     {% set title = '{} {}'.format(gettext(asset.asset_type|capitalize), asset.asset_id) %}
     {% set submit_url = 'assets-update'|route_path(asset_id=asset.id) %}
 {% else %}
@@ -31,7 +31,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#asset_panel">
                         <h3 class="panel__title">
-                            {{ title }}{% if is_linked %} <span class="glyphicon glyphicon-link"></span>{% endif %}
+                            {{ title }}
+                            {% if is_linked %}
+                                {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
+                                {% if request.user.rta_access %}<a class="rta_link" href="{{ rta_link }}">{% endif %}
+                                <span class="glyphicon glyphicon-link"></span>
+                                {% if request.user.rta_access %}</a>{% endif %}
+                            {% endif %}
                         </h3>
                     </div>
 

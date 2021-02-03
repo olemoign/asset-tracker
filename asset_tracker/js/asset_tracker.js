@@ -312,6 +312,14 @@ $(document).on('click', '.event__delete', function removeEvent() {
   $(this).parent().hide('fast');
 });
 
+$(document).on('click', '.rta_link', function followRTALink(event) {
+  /**
+   * Follow RTA link, prevent being overriden by panel collapse.
+   */
+  event.stopPropagation();
+  window.location = $(this).prop('href');
+});
+
 $(document).on('submit', 'form', function validateDates(event) {
   /**
    * Validate dates on form submit.
