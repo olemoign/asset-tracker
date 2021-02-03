@@ -17,7 +17,7 @@ requires = [
     'importlib_metadata',
     'importlib_resources',
     'jinja2',
-    'parsys-utilities==3.3.7',
+    'parsys-utilities==3.4.3',
     'paste',
     'plaster-pastedeploy',
     'psycopg2-binary',
