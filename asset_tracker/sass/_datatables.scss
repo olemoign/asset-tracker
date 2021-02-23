@@ -33,6 +33,9 @@
 }
 
 table.dataTable td a {
+  // 16px = td vertical padding.
+  height: calc(100% + 16px);
+
   text-decoration: none;
   color: black;
 
@@ -44,6 +47,16 @@ table.dataTable td a {
   &:active, &:focus, &:hover {
     text-decoration: none;
   }
+}
+
+// Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
+.table-responsive {
+  overflow-x: auto;
+}
+
+td {
+  overflow: hidden;
+  word-break: break-all;
 }
 
 @media (max-width: $screen-xs-max) {

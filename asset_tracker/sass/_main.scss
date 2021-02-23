@@ -62,29 +62,30 @@ body, html {
   margin: 0;
 }
 
+// Bootstrap tries to fix date inputs in Safari but this doesn't apply anymore and breaks the inputs in Firefox.
+// So deactivate their fix.
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  &.form-control {
+    line-height: normal;
+  }
+
+  &.input-sm,
+  .input-group-sm & {
+    line-height: normal;
+  }
+
+  &.input-lg,
+  .input-group-lg & {
+    line-height: normal;
+  }
+}
+
 table.dataTable tr,
 table.dataTable td {
   height: 100%;
-}
-
-table.dataTable td a {
-  // Even if text doesn't cover the whole td, the whole space is clickable.
-  display: block;
-  // 16px = td vertical padding.
-  height: calc(100% + 16px);
-  margin: -8px;
-  padding: 8px;
-  color: black;
-}
-
-// Prevent showing horizontal scroll bar on xs screen even if table isn't big enough.
-.table-responsive {
-  overflow-x: auto;
-}
-
-td {
-  overflow: hidden;
-  word-break: break-all;
 }
 
 .consumable__label {
