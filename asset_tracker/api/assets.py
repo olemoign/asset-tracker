@@ -2,7 +2,6 @@ from datetime import datetime
 from json import JSONDecodeError
 
 from parsys_utilities.authorization import authenticate_rta
-from parsys_utilities.config import aslist
 from pyramid.httpexceptions import HTTPBadRequest, HTTPOk
 from pyramid.security import Allow, Everyone
 from pyramid.view import view_config
