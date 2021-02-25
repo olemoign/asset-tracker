@@ -35,8 +35,8 @@ class Assets:
             json (dict).
         """
         # Marlink has only one calibration frequency so they don't want to see the input.
-        specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
-        if 'marlink' in specific:
+        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
+        if config == 'marlink':
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']

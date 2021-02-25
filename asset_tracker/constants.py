@@ -5,7 +5,6 @@ import importlib_metadata
 from pyramid.i18n import TranslationString as _
 
 ASSET_TRACKER_VERSION = importlib_metadata.version(__package__)
-DEFAULT_BRANDING = 'parsys'
 
 STATIC_FILES_CACHE = 60 * 60
 USER_INACTIVITY_MAX = 60 * 60

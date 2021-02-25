@@ -47,7 +47,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         self.request = request
         self.asset = self.get_asset()
         # Manage Marlink specifics.
-        self.specific = aslist(self.request.registry.settings.get('asset_tracker.specific'))
+        self.config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         self.form = None
 
     def get_asset(self):
@@ -283,7 +283,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def validate_asset(self):
         """Validate asset data."""
         has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = 'marlink' in self.specific or self.form.get('calibration_frequency')
+        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
 
         # We don't need asset_id or tenant_id if asset is linked.
         is_linked = self.asset and self.asset.is_linked
@@ -396,7 +396,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.specific:
+        if self.config == 'marlink':
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
@@ -466,7 +466,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             }
 
         # Marlink has only one calibration frequency so they don't want to see the input.
-        if 'marlink' in self.specific:
+        if self.config == 'marlink':
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
         else:
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])

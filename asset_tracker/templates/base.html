@@ -8,7 +8,7 @@
         <meta name="description" content="Asset Manager">
         <meta name="viewport" content="width=device-width">
 
-        <link rel="icon" href="/static/images/{{ branding }}/favicon.ico">
+        <link rel="icon" href="/static/images/{{ config }}/favicon.ico">
 
         <link rel="stylesheet" href="https://cdn.datatables.net/v/bs/dt-1.10.22/r-2.2.6/datatables.min.css" integrity="sha256-6CxdRmy3jZiHudL0VOueV6UmomDQQ79Clf0AdKdfxIY=" crossorigin="anonymous">
 
@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous" />
 
-        <link rel="stylesheet" href="/static/styles/{{ branding }}.min.css">
+        <link rel="stylesheet" href="/static/styles/{{ config }}.min.css">
     </head>
 
     <body>
@@ -40,7 +40,7 @@
 
         {% block page %}{% endblock %}
 
-        {% set footer = 'branding/footer-{}.html'.format(branding) %}
+        {% set footer = 'branding/footer-{}.html'.format(config) %}
         {% include footer ignore missing %}
     </body>
 </html>
