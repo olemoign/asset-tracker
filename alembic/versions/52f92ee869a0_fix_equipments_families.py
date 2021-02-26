@@ -1,7 +1,7 @@
 """Fix equipments families
 
 Revision ID: 52f92ee869a0
-Revises: e8996138f616
+Revises: 083c623dbc61
 Create Date: 2021-02-26 18:23:11.762408
 
 """
@@ -11,10 +11,9 @@ import sqlalchemy as sa
 
 from asset_tracker import models
 
-
 # revision identifiers, used by Alembic.
 revision = '52f92ee869a0'
-down_revision = 'e8996138f616'
+down_revision = '083c623dbc61'
 branch_labels = None
 depends_on = None
 
