@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-26 20:13+0100\n"
+"POT-Creation-Date: 2021-02-26 20:33+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -71,23 +71,23 @@ msgstr "Mise en service"
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
-#: config.json:216
+#: config.json:220
 msgid "Adult ECG electrodes with tab (x100)"
 msgstr "Électrodes à languette ECG adulte (x100)"
 
-#: config.json:209
+#: config.json:213
 msgid "Adult ECG electrodes with tab (x500)"
 msgstr "Électrodes à languette ECG adulte (x500)"
 
-#: config.json:202
+#: config.json:206
 msgid "Adult ECG electrodes with tab (x5000)"
 msgstr "Électrodes à languette ECG adulte (x5000)"
 
-#: config.json:237
+#: config.json:241
 msgid "Adult PAD electrodes"
 msgstr "Électrodes PAD Adulte"
 
-#: config.json:288
+#: config.json:292
 msgid "Alcohol and drug test"
 msgstr "Test de dépistage de stupéfiants et d’alcool"
 
@@ -106,6 +106,10 @@ msgstr "ID"
 msgid "Assets"
 msgstr "Matériels"
 
+#: config.json:169
+msgid "Automatic wireless tensiometer - A&D UA-1200BLE"
+msgstr "Auto-tensiomètre sans fil - A&D UA-1200BLE"
+
 #: config.json:69
 msgid "Automatic wireless tensiometer - A&D UA-651BLE"
 msgstr "Auto-tensiomètre sans fil - A&D UA-651BLE"
@@ -122,7 +126,7 @@ msgstr "Sac à dos"
 msgid "Blood analyser - PTS Cardiochek"
 msgstr "Analyseur sanguin - PTS Cardiochek"
 
-#: config.json:178
+#: config.json:182
 msgid "Blood glucose test strips"
 msgstr "Bandes de test de glycémie"
 
@@ -143,7 +147,7 @@ msgstr "Annuler"
 msgid "Cart"
 msgstr "Chariot"
 
-#: config.json:244
+#: config.json:248
 msgid "Children PAD electrodes"
 msgstr "Électrodes PAD pédiatrique"
 
@@ -156,11 +160,11 @@ msgstr "Entreprise"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: config.json:417
+#: config.json:421
 msgid "Configuration update"
 msgstr "Mise à jour de configuration"
 
-#: config.json:363
+#: config.json:367
 msgid "Connected"
 msgstr "Connecté"
 
@@ -173,7 +177,7 @@ msgstr "Valise de consommables - Parsys"
 msgid "Contact"
 msgstr "Contact"
 
-#: config.json:186
+#: config.json:190
 msgid "Control solution for blood glucose meter"
 msgstr "Solution de contrôle pour lecteurs de glycémie"
 
@@ -212,21 +216,21 @@ msgstr "Date"
 msgid "Dear user"
 msgstr "Cher utilisateur"
 
-#: config.json:405
+#: config.json:409
 msgid "Decommissioned"
 msgstr "Hors service"
 
-#: config.json:258
+#: config.json:262
 msgid "Defibrillator battery"
 msgstr "Pile défibrillateur"
 
-#: config.json:251
+#: config.json:255
 msgid "Defibrillator lithium battery"
 msgstr "Pile lithium défibrillateur"
 
 #: templates/pages/assets-create_update.html:170
 msgid "Delivery"
-msgstr ""
+msgstr "Livraison"
 
 #: config.json:37
 msgid "Dermatoscope - Firefly DE300A"
@@ -294,41 +298,45 @@ msgstr "Accueil"
 msgid "Hospital"
 msgstr "Hôpital"
 
-#: config.json:393
+#: config.json:397
 msgid "In calibration"
 msgstr "En calibration"
 
-#: config.json:399
+#: config.json:403
 msgid "In repair"
 msgstr "En réparation"
 
-#: config.json:369
+#: config.json:373
 msgid "In service"
 msgstr "En service"
 
-#: config.json:333
+#: config.json:337
 msgid "In stock - Parsys"
 msgstr "En stock - Parsys"
 
-#: config.json:345
+#: config.json:349
 msgid "In stock - distributor"
 msgstr "En stock - distributeur"
 
-#: config.json:387
+#: config.json:391
 msgid "In transit to Parsys"
 msgstr "En transit vers Parsys"
 
-#: config.json:351
+#: config.json:355
 msgid "In transit to customer"
 msgstr "En transit vers le client"
 
-#: config.json:339
+#: config.json:343
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: config.json:375
+#: config.json:379
 msgid "Incident declared"
 msgstr "Incident déclaré"
+
+#: config.json:165
+msgid "Infrared wireless thermometer - Foracare IR20b"
+msgstr "Thermomètre infrarouge sans fil - Foracare IR20b"
 
 #: config.json:85
 msgid "Infrared wireless thermometer - Foracare IR21b"
@@ -346,43 +354,43 @@ msgstr "Caméra intra-buccale - Acteon SoproCare 950 + Dock M-USB2"
 msgid "Intraoral camera - Owandy OWandyCam"
 msgstr "Caméra intra-buccale - Owandy OWandyCam"
 
-#: config.json:272
+#: config.json:276
 msgid "Intraoral camera casing"
 msgstr "Protections pour caméra intra-buccale"
 
-#: views/assets.py:347
+#: views/assets.py:354
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:308
+#: views/assets.py:315
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:334
+#: views/assets.py:341
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:353
+#: views/assets.py:360
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:361
+#: views/assets.py:368
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:340
+#: views/assets.py:347
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:314
+#: views/assets.py:321
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:304 views/sites.py:117
+#: views/assets.py:311 views/sites.py:124
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
-#: config.json:171
+#: config.json:175
 msgid "Lancets (legacy)"
 msgstr "Lancettes (historique)"
 
@@ -402,7 +410,7 @@ msgstr "Adresse MAC (ethernet)"
 msgid "MAC address (wifi)"
 msgstr "Adresse MAC (wifi)"
 
-#: views/assets.py:289
+#: views/assets.py:296
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -411,19 +419,19 @@ msgid "Multiparametrical USB - Parsys Biosys"
 msgstr "Multiparamétrique USB - Parsys Biosys"
 
 #: config.json:137
-msgid "Multipurpose digital audiometer with headset"
-msgstr ""
+msgid "Multipurpose digital audiometer with headset - ECHODIA OTOwin + DD45 HI"
+msgstr "Audiomètre numérique polyvalent avec casque - ECHODIA OTOwin + DD45 HI"
 
 #: templates/pages/sites-create_update.html:40
 #: templates/pages/sites-list.html:26
 msgid "Name"
 msgstr "Nom"
 
-#: views/sites.py:126
+#: views/sites.py:133
 msgid "Name already exists."
 msgstr "Ce nom existe déjà."
 
-#: views/sites.py:121
+#: views/sites.py:128
 msgid "Name is required."
 msgstr "Le nom est requis."
 
@@ -469,7 +477,7 @@ msgstr "Notes"
 msgid "Nursing home"
 msgstr "EHPAD"
 
-#: config.json:357
+#: config.json:361
 msgid "On site"
 msgstr "Sur site"
 
@@ -507,7 +515,7 @@ msgstr ""
 msgid "Production"
 msgstr "Production"
 
-#: config.json:381
+#: config.json:385
 msgid "Replacement ordered"
 msgstr "Remplacement demandé"
 
@@ -519,7 +527,7 @@ msgstr ""
 "Caméra de rétine pour prématurés et bébés - Welch Allyn SPOT Vision "
 "Screener"
 
-#: config.json:194
+#: config.json:198
 msgid "Secure lancing devices"
 msgstr "Autopiqueurs sécurisés"
 
@@ -542,7 +550,7 @@ msgstr "Afficher les matériels hors service"
 msgid "Sincerely"
 msgstr "Cordialement"
 
-#: config.json:265
+#: config.json:269
 msgid "Single use ear specula"
 msgstr "Spéculums auriculaires à usage unique"
 
@@ -551,11 +559,11 @@ msgstr "Spéculums auriculaires à usage unique"
 msgid "Site"
 msgstr "Site"
 
-#: config.json:423
+#: config.json:427
 msgid "Site change"
 msgstr "Changement de site"
 
-#: views/sites.py:130
+#: views/sites.py:137
 msgid "Site type is required."
 msgstr "Le type du Site est requis."
 
@@ -564,7 +572,7 @@ msgstr "Le type du Site est requis."
 msgid "Sites"
 msgstr "Sites"
 
-#: config.json:411
+#: config.json:415
 msgid "Software update"
 msgstr "MAJ logicielle"
 
@@ -572,11 +580,11 @@ msgstr "MAJ logicielle"
 msgid "Softwares versions"
 msgstr "Versions logicielles"
 
-#: config.json:230
+#: config.json:234
 msgid "Spirometer disposable turbines"
 msgstr "Turbines jetables pour spiromètre"
 
-#: config.json:223
+#: config.json:227
 msgid "Spirometer nose clip"
 msgstr "Pince-nez pour spiromètre"
 
@@ -630,7 +638,7 @@ msgstr ""
 "Les consommables suivants (de l'asset %(asset_id)s et équipement "
 "%(equipment)s) expirent dans %(delay_days)s jours le %(expiration_date)s:"
 
-#: views/assets.py:299
+#: views/assets.py:306
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
@@ -643,23 +651,23 @@ msgstr "Pour accéder à l'asset, suivez "
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: config.json:309
+#: config.json:313
 msgid "Tropical disease test - Chikungunya"
 msgstr "Test de détection de maladies tropicales - Chikungunya"
 
-#: config.json:316
+#: config.json:320
 msgid "Tropical disease test - Dengue fever Ag+IgG-IgM"
 msgstr "Test de détection de maladies tropicales - Dengue Ag+IgG-IgM"
 
-#: config.json:323
+#: config.json:327
 msgid "Tropical disease test - Ebola"
 msgstr "Test de détection de maladies tropicales - Ebola"
 
-#: config.json:302
+#: config.json:306
 msgid "Tropical disease test - Malaria"
 msgstr "Test de détection de maladies tropicales - Malaria"
 
-#: config.json:295
+#: config.json:299
 msgid "Troponin blood test"
 msgstr "Test sanguin troponine"
 
@@ -701,7 +709,7 @@ msgstr "Echographe USB - Interson SiMPLI - GP-C01"
 msgid "Ultrasound - Interson abdominal 99-5929"
 msgstr "Ultrason - Interson abdominal 99-5929"
 
-#: config.json:281
+#: config.json:285
 msgid "Urine test 10 parameters"
 msgstr "Tests urinaires d’urologie 10 paramètres"
 
