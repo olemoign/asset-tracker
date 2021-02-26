@@ -1,20 +1,8 @@
 {
   "equipment_families": [
     {
-      "family_id": "AWmOOZin",
-      "model": "Biosys - Parsys"
-    },
-    {
-      "family_id": "psqeAtt1",
-      "model": "Telecardia - Parsys"
-    },
-    {
       "family_id": "sSSe3gPI",
       "model": "Stethoscope - RNK PCP-USB"
-    },
-    {
-      "family_id": "hC5QzQL1",
-      "model": "Thermometer - Foracare IR21"
     },
     {
       "family_id": "2YUEMLmH",
@@ -114,11 +102,7 @@
     },
     {
       "family_id": "aNJN1pqt",
-      "model": "Handheld camera kit SMARTSCROPE - Olphtamoscope - OPTOMED M5 + EY4"
-    },
-    {
-      "family_id": "iwAXkRld",
-      "model": "Handheld camera kit HORUS - 5 Mpx + General lens - MIIS DSC200P + DGC100"
+      "model": "Handheld camera kit SMARTSCROPE - Ophthalmoscope - OPTOMED M5 + EY4"
     },
     {
       "family_id": "PJpf8PGG",
