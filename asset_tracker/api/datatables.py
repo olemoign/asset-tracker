@@ -111,10 +111,8 @@ class Assets:
         # Format db return for dataTables.
         assets = []
         for asset in output['items']:
-            if asset.calibration_next:
-                calibration_next = format_date(asset.calibration_next, self.request.locale_name)
-            else:
-                calibration_next = None
+            calibration_next = format_date(asset.calibration_next, self.request.locale_name) \
+                if asset.calibration_next else None
 
             asset_output = {
                 'asset_id': asset.asset_id,
@@ -123,7 +121,8 @@ class Assets:
                 'id': asset.id,
                 'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
-                'status': self.request.localizer.translate(asset.status.label),
+                # TODO
+                'status': asset.status.label,
                 'tenant_key': tenant_keys[asset.tenant_id],
             }
 

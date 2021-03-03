@@ -96,6 +96,8 @@ class AssetsExtract:
         Returns:
             csv body (list): information on the assets.
         """
+        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
+
         assets = self.request.db_session.query(models.Asset) \
             .options(joinedload(models.Asset.site), joinedload(models.Asset.status)) \
             .filter(models.Asset.tenant_id.in_(tenants.keys())) \
@@ -112,7 +114,7 @@ class AssetsExtract:
                 asset.customer_id,
                 asset.current_location,
                 asset.calibration_frequency,
-                asset.status.label,
+                asset.status.label(config),
                 asset.notes,
                 asset.production,
                 asset.delivery,

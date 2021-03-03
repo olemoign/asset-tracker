@@ -20,20 +20,6 @@ DEFAULT_CONFIG = {
 logger = logging.getLogger('asset_tracker_actions')
 
 
-def get_status_label(request, status):
-    """Get an asset status label based on config.
-
-    Args:
-        request (pyramid.request.Request).
-        status (asset_tracker.models.EventStatus).
-
-    Returns:
-        str.
-    """
-    config = request.registry.settings.get('asset_tracker.config', 'parsys')
-    return status.label_marlink if config == 'marlink' and status.label_marlink else status.label
-
-
 def update_consumable_families(db_session, config):
     """Update consumable families in the db according to config.json.
 

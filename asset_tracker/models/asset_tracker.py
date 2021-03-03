@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
@@ -182,7 +182,11 @@ class Event(Model, CreationDateTimeMixin):
 
     @hybrid_property
     def extra_json(self):
-        """Return dictionary from extra."""
+        """Return dictionary from extra.
+
+        Returns:
+            dict.
+        """
         try:
             return loads(self.extra)
         except TypeError:
@@ -192,9 +196,22 @@ class Event(Model, CreationDateTimeMixin):
 class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
     position = Column(Integer, nullable=False, unique=True)
-    label = Column(String, nullable=False, unique=True)
-    label_marlink = Column(String, unique=True)
     status_type = Column(String, nullable=False)
+
+    _label = Column(String, nullable=False, unique=True)
+    _label_marlink = Column(String, unique=True)
+
+    @hybrid_method
+    def label(self, config):
+        """Get an asset status label based on config.
+
+        Args:
+            config (str).
+
+        Returns:
+            str.
+        """
+        return self._label_marlink if config == 'marlink' and self._label_marlink else self._label
 
 
 class Site(Model, CreationDateTimeMixin):
