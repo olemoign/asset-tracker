@@ -138,6 +138,7 @@ def update_statuses(db_session, config):
 
         db_status.position = int(config_status['position'])
         db_status.label = config_status['label']
+        db_status.label_marlink = config_status.get('label_marlink')
         db_status.status_type = config_status['status_type']
 
 

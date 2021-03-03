@@ -193,6 +193,7 @@ class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
     position = Column(Integer, nullable=False, unique=True)
     label = Column(String, nullable=False, unique=True)
+    label_marlink = Column(String, unique=True)
     status_type = Column(String, nullable=False)
 
 
