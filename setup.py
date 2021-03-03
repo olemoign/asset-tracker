@@ -21,7 +21,7 @@ requires = [
     'paste',
     'plaster-pastedeploy',
     'psycopg2-binary',
-    'pyramid',
+    'pyramid==1.10.8',
     'pyramid-assetviews',
     'pyramid-jinja2',
     'pyramid-session-redis',
