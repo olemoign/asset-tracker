@@ -34,7 +34,7 @@ def upgrade():
     session.commit()
 
     with op.batch_alter_table('site', schema=None) as batch_op:
-        batch_op.alter_column('site_id', nullable=False)
+        batch_op.alter_column('site_id', existing_type=sa.Unicode(), nullable=False)
     session.commit()
 
 
