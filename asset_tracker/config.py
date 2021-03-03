@@ -137,8 +137,8 @@ def update_statuses(db_session, config):
             logger.info(f'Adding status {config_status["label"]}.')
 
         db_status.position = int(config_status['position'])
-        db_status.label = config_status['label']
-        db_status.label_marlink = config_status.get('label_marlink')
+        db_status._label = config_status['label']
+        db_status._label_marlink = config_status.get('label_marlink')
         db_status.status_type = config_status['status_type']
 
 

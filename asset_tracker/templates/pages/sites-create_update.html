@@ -96,7 +96,7 @@
                             {% for asset in site.assets %}
                                 <p>
                                     <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
-                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label)) }}
+                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label(config))) }}
                                     </a>
                                 </p>
                             {% else %}

@@ -158,7 +158,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>{{ gettext('Status') }}</label>
-                                            <p>{{ gettext(asset.status.label) }}</p>
+                                            <p>{{ gettext(asset.status.label(config)) }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -218,7 +218,7 @@
                                                     {{ gettext(
                                                         '<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
                                                         creator=event.creator_alias,
-                                                        status=gettext(event.status.label),
+                                                        status=gettext(event.status.label(config)),
                                                         date=event.date|format_date(locale)
                                                     ) }}
                                                     <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
@@ -239,7 +239,7 @@
                                             <option></option>
                                         {% endif %}
                                         {% for status in statuses|sort(attribute='position') %}
-                                            <option value="{{ status.status_id }}">{{ gettext(status.label) }}</option>
+                                            <option value="{{ status.status_id }}">{{ gettext(status.label(config)) }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
