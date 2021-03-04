@@ -76,7 +76,7 @@
                             {% if request.user.is_admin or can_create or can_update %}
                                 <div class="btn-group pull-right margin-top-20">
                                     <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                                    <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
+                                    <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
                                 </div>
                             {% endif %}
                         </form>
@@ -96,7 +96,7 @@
                             {% for asset in site.assets %}
                                 <p>
                                     <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
-                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label)) }}
+                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label(config))) }}
                                     </a>
                                 </p>
                             {% else %}

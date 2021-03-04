@@ -4,26 +4,30 @@ from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
-    tenant_id = Column(String, nullable=False)
     asset_id = Column(String, nullable=False, unique=True)
-    asset_type = Column(String, nullable=False)
-    hardware_version = Column(String)
-    mac_wifi = Column(String)
-    mac_ethernet = Column(String)
-
+    tenant_id = Column(String, nullable=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
 
     @property
     def is_linked(self):
-        """Asset is_linked if it received user_id from RTA."""
+        """Asset is_linked if it received user_id from RTA.
+
+        Returns:
+            bool.
+        """
         return bool(self.user_id)
+
+    asset_type = Column(String, nullable=False)
+    hardware_version = Column(String)
+    mac_wifi = Column(String)
+    mac_ethernet = Column(String)
 
     customer_id = Column(String)
     customer_name = Column(String)
@@ -40,6 +44,9 @@ class Asset(Model, CreationDateTimeMixin):
         Args:
             order (str): asc/desc.
             filter_config (bool): should we get config updates?
+
+        Returns:
+            sqlalchemy.orm.query.Query.
         """
         if order == 'asc':
             history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
@@ -92,27 +99,47 @@ class Asset(Model, CreationDateTimeMixin):
 
     @property
     def activation(self):
-        """Get the date of the asset first activation."""
+        """Get the date of the asset first activation.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['activation']
 
     @property
     def calibration_last(self):
-        """Get the date of the asset last calibration."""
+        """Get the date of the asset last calibration.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['calibration_last']
 
     @property
     def delivery(self):
-        """Get the date of the asset first activation."""
+        """Get the date of the asset first activation.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['delivery']
 
     @property
     def production(self):
-        """Get the date of the asset production."""
+        """Get the date of the asset production.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['production']
 
     @property
     def warranty_end(self):
-        """Get the date of the end of the asset warranty."""
+        """Get the date of the end of the asset warranty.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['warranty_end']
 
 
@@ -139,6 +166,7 @@ consumable_families_equipment_families = Table(
 class ConsumableFamily(Model):
     family_id = Column(String, nullable=False, unique=True)
     model = Column(String, nullable=False, unique=True)
+
     equipment_families = relationship(
         'EquipmentFamily', secondary=consumable_families_equipment_families, backref='consumable_families'
     )
@@ -182,7 +210,11 @@ class Event(Model, CreationDateTimeMixin):
 
     @hybrid_property
     def extra_json(self):
-        """Return dictionary from extra."""
+        """Return dictionary from extra.
+
+        Returns:
+            dict.
+        """
         try:
             return loads(self.extra)
         except TypeError:
@@ -191,15 +223,29 @@ class Event(Model, CreationDateTimeMixin):
 
 class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
+
     position = Column(Integer, nullable=False, unique=True)
-    label = Column(String, nullable=False, unique=True)
     status_type = Column(String, nullable=False)
+    _label = Column(String, nullable=False, unique=True)
+    _label_marlink = Column(String, unique=True)
+
+    @hybrid_method
+    def label(self, config):
+        """Get an asset status label based on config.
+
+        Args:
+            config (str).
+
+        Returns:
+            str.
+        """
+        return self._label_marlink if config == 'marlink' and self._label_marlink else self._label
 
 
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
-
     tenant_id = Column(String, nullable=False)
+
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
 
