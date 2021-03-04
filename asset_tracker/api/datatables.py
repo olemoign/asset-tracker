@@ -8,6 +8,7 @@ from pyramid.security import Allow, Everyone
 from pyramid.settings import asbool
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
+from sqlalchemy import cast, Unicode as String
 
 from asset_tracker import models
 from asset_tracker.api.assets import Assets as AssetsAPI
@@ -68,6 +69,13 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
+        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
+        statuses_dict = [
+            {'id': status.id, 'label': self.request.localizer.translate(status.label(config))}
+            for status in self.request.db_session.query(models.EventStatus)
+        ]
+        # Simulate the assets statuses as a table with translated labels so that we can filter/sort on status.
+        statuses = table_from_dict('status', statuses_dict)
         # Simulate the user's tenants as a table so that we can filter/sort on tenant_key.
         tenants = table_from_dict('tenant', self.request.user.tenants)
 
@@ -78,15 +86,16 @@ class Assets:
             tenants.c.parsys_key,
         ]
 
+        # tables_from_dict makes all columns as strings.
         joined_tables = [
+            (statuses, statuses.c.id == cast(models.Asset.status_id, String)),
             (tenants, tenants.c.id == models.Asset.tenant_id),
-            models.EventStatus,
             models.Site,
         ]
 
         specific_attributes = {
             'site': models.Site.name,
-            'status': models.EventStatus.status_id,
+            'status': statuses.c.label,
             'tenant_key': tenants.c.parsys_key,
         }
 
@@ -106,7 +115,6 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
-        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
@@ -122,7 +130,7 @@ class Assets:
                 'id': asset.id,
                 'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
-                'status': asset.status.label(config),
+                'status': self.request.localizer.translate(asset.status.label(config)),
                 'tenant_key': tenant_keys[asset.tenant_id],
             }
 
