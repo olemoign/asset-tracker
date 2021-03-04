@@ -22,7 +22,11 @@ class Asset(Model, CreationDateTimeMixin):
 
     @property
     def is_linked(self):
-        """Asset is_linked if it received user_id from RTA."""
+        """Asset is_linked if it received user_id from RTA.
+
+        Returns:
+            bool.
+        """
         return bool(self.user_id)
 
     customer_id = Column(String)
@@ -40,6 +44,9 @@ class Asset(Model, CreationDateTimeMixin):
         Args:
             order (str): asc/desc.
             filter_config (bool): should we get config updates?
+
+        Returns:
+            sqlalchemy.orm.query.Query.
         """
         if order == 'asc':
             history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
@@ -92,27 +99,47 @@ class Asset(Model, CreationDateTimeMixin):
 
     @property
     def activation(self):
-        """Get the date of the asset first activation."""
+        """Get the date of the asset first activation.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['activation']
 
     @property
     def calibration_last(self):
-        """Get the date of the asset last calibration."""
+        """Get the date of the asset last calibration.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['calibration_last']
 
     @property
     def delivery(self):
-        """Get the date of the asset first activation."""
+        """Get the date of the asset first activation.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['delivery']
 
     @property
     def production(self):
-        """Get the date of the asset production."""
+        """Get the date of the asset production.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['production']
 
     @property
     def warranty_end(self):
-        """Get the date of the end of the asset warranty."""
+        """Get the date of the end of the asset warranty.
+
+        Returns:
+            datetime.datetime.
+        """
         return self.asset_dates['warranty_end']
 
 
