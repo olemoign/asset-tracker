@@ -76,7 +76,7 @@
                             {% if request.user.is_admin or can_create or can_update %}
                                 <div class="btn-group pull-right margin-top-20">
                                     <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                                    <button type="submit" class="btn btn-default">{{ gettext('Submit') }}</button>
+                                    <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
                                 </div>
                             {% endif %}
                         </form>

@@ -485,7 +485,14 @@ class Assets(metaclass=AuthenticatedEndpoint):
         self.asset.current_location = self.form.get('current_location')
         self.asset.notes = self.form.get('notes')
 
-        new_site_id = int(self.form['site_id']) if self.form.get('site_id') else None
+        event = self.form.get('event')
+        if event:
+            self.add_event()
+        # Automatically remove site if asset is marked as being sent back to Marlink / Parsys.
+        if event and event in ['transit_distributor_return', 'transit_parsys']:
+            new_site_id = None
+        else:
+            new_site_id = int(self.form['site_id']) if self.form.get('site_id') else None
         if new_site_id != self.asset.site_id:
             self.add_site_change_event(new_site_id)
         self.asset.site_id = new_site_id
@@ -496,9 +503,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
                     self.request.db_session.delete(consumable)
             self.request.db_session.delete(equipment)
         self.add_equipments()
-
-        if self.form.get('event'):
-            self.add_event()
 
         # Make sure an asset always has a status.
         if self.form.getall('event-removed'):

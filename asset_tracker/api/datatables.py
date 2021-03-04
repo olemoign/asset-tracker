@@ -106,6 +106,7 @@ class Assets:
             capture_exception(error)
             raise HTTPBadRequest()
 
+        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         tenant_keys = {tenant['id']: tenant['parsys_key'] for tenant in self.request.user.tenants}
 
         # Format db return for dataTables.
@@ -121,8 +122,7 @@ class Assets:
                 'id': asset.id,
                 'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
-                # TODO
-                'status': asset.status.label,
+                'status': asset.status.label(config),
                 'tenant_key': tenant_keys[asset.tenant_id],
             }
 
