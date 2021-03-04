@@ -1,4 +1,4 @@
-from parsys_utilities.authorization import rights_without_tenants
+from parsys_utilities.authorization import get_tenantless_principals
 from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
 from sentry_sdk import configure_scope
 
@@ -28,7 +28,7 @@ def add_global_variables(event):
     event['cloud_name'] = event['request'].registry.settings['asset_tracker.cloud_name']
     event['config'] = event['request'].registry.settings.get('asset_tracker.config', 'parsys')
 
-    event['principals_without_tenants'] = rights_without_tenants(event['request'].effective_principals)
+    event['tenantless_principals'] = get_tenantless_principals(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
 
 

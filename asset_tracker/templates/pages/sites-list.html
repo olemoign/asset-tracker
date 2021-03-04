@@ -12,7 +12,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel__title">{{ gettext('Sites') }}</h3>
-                    {% if request.user.is_admin or 'sites-create' in principals_without_tenants %}
+                    {% if request.user.is_admin or 'sites-create' in tenantless_principals %}
                         <a href="{{ 'sites-create'|route_path }}" type="button" class="btn btn-default flex-align-right">
                             {{ gettext('New') }}
                         </a>

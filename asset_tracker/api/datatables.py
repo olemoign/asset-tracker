@@ -1,6 +1,6 @@
 """Asset tracker datatables API."""
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
-from parsys_utilities.authorization import authenticate_rta, rights_without_tenants
+from parsys_utilities.authorization import authenticate_rta, get_tenantless_principals
 from parsys_utilities.dates import format_date
 from parsys_utilities.sql import sql_search
 from pyramid.httpexceptions import HTTPBadRequest
@@ -106,7 +106,7 @@ class Assets:
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
-            has_read_rights = 'assets-read' in rights_without_tenants(self.request.effective_principals)
+            has_read_rights = 'assets-read' in get_tenantless_principals(self.request.effective_principals)
             if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('assets-update', asset_id=asset.id)
                 asset_output['links'] = [{'rel': 'self', 'href': link}]
@@ -184,7 +184,7 @@ class Sites(DataTablesAPI):
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
-            has_read_rights = 'sites-read' in rights_without_tenants(self.request.effective_principals)
+            has_read_rights = 'sites-read' in get_tenantless_principals(self.request.effective_principals)
             if self.request.user.is_admin or has_read_rights:
                 link = self.request.route_path('sites-update', site_id=site.id)
                 site_output['links'] = [{'rel': 'self', 'href': link}]

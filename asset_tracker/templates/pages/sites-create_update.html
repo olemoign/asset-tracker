@@ -71,8 +71,8 @@
                                 {{ input(gettext('Email'), 'email') }}
                             </div>
 
-                            {% set can_create = not update and 'sites-create' in principals_without_tenants %}
-                            {% set can_update = update and 'sites-update' in principals_without_tenants %}
+                            {% set can_create = not update and 'sites-create' in tenantless_principals %}
+                            {% set can_update = update and 'sites-update' in tenantless_principals %}
                             {% if request.user.is_admin or can_create or can_update %}
                                 <div class="btn-group pull-right margin-top-20">
                                     <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
