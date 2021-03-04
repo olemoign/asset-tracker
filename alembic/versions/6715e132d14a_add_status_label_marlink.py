@@ -20,7 +20,7 @@ def upgrade():
     with op.batch_alter_table('event_status', schema=None) as batch_op:
         batch_op.alter_column('label', new_column_name='_label', existing_type=sa.Unicode(), nullable=False)
         batch_op.add_column(sa.Column('_label_marlink', sa.Unicode(), nullable=True))
-        batch_op.create_unique_constraint(batch_op.f('uq_event_status_label_marlink'), ['label_marlink'])
+        batch_op.create_unique_constraint(batch_op.f('uq_event_status_label_marlink'), ['_label_marlink'])
 
 
 def downgrade():

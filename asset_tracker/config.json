@@ -335,78 +335,91 @@
       "status_id": "stock_parsys",
       "position": "1",
       "label": "In stock - Parsys",
+      "label_marlink": "Parsys - In stock",
       "status_type": "event"
     },
     {
       "status_id": "transit_distributor",
       "position": "2",
       "label": "In transit to distributor",
+      "label_marlink": "Parsys - In transit to Marlink Logistics",
       "status_type": "event"
     },
     {
       "status_id": "stock_distributor",
       "position": "3",
       "label": "In stock - distributor",
+      "label_marlink": "Marlink Logistics - In stock",
       "status_type": "event"
     },
     {
       "status_id": "transit_customer",
       "position": "4",
       "label": "In transit to customer",
+      "label_marlink": "Marlink Logistics - In transit to customer",
       "status_type": "event"
     },
     {
       "status_id": "on_site",
       "position": "5",
       "label": "On site",
-      "status_type": "event"
-    },
-    {
-      "status_id": "connected",
-      "position": "6",
-      "label": "Connected",
+      "label_marlink": "CCTS - On site",
       "status_type": "event"
     },
     {
       "status_id": "service",
-      "position": "7",
+      "position": "6",
       "label": "In service",
+      "label_marlink": "CCTS - In service",
       "status_type": "event"
     },
     {
-      "status_id": "incident",
+      "status_id": "replacement_failure",
+      "position": "7",
+      "label": "Replacement ordered (Failure)",
+      "label_marlink": "CCTS - Replacement ordered (Failure)",
+      "status_type": "event"
+    },
+    {
+      "status_id": "replacement_calibration",
       "position": "8",
-      "label": "Incident declared",
+      "label": "Replacement ordered (Calibration)",
+      "label_marlink": "CCTS - Replacement ordered (Calibration)",
       "status_type": "event"
     },
     {
-      "status_id": "replacement",
+      "status_id": "transit_distributor_return",
       "position": "9",
-      "label": "Replacement ordered",
+      "label": "In transit to distributor (return)",
+      "label_marlink": "CCTS - In transit to Marlink Logistics",
       "status_type": "event"
     },
     {
       "status_id": "transit_parsys",
       "position": "10",
       "label": "In transit to Parsys",
+      "label_marlink": "Marlink Logistics - In transit to Parsys",
       "status_type": "event"
     },
     {
       "status_id": "calibration",
       "position": "11",
       "label": "In calibration",
+      "label_marlink": "Parsys - In calibration",
       "status_type": "event"
     },
     {
       "status_id": "repair",
       "position": "12",
       "label": "In repair",
+      "label_marlink": "Parsys - In repair",
       "status_type": "event"
     },
     {
       "status_id": "decommissioned",
       "position": "13",
       "label": "Decommissioned",
+      "label_marlink": "Parsys - Decommissioned",
       "status_type": "event"
     },
     {
