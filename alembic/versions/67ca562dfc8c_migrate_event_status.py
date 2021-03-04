@@ -24,10 +24,12 @@ def upgrade():
     session = sa.orm.session.Session(bind=connection)
 
     incident = session.query(models.EventStatus).filter_by(status_id='incident').first()
-    incident.status_id = 'replacement_failure'
+    if incident:
+        incident.status_id = 'replacement_failure'
 
     replacement = session.query(models.EventStatus).filter_by(status_id='replacement').first()
-    replacement.status_id = 'replacement_calibration'
+    if replacement:
+        replacement.status_id = 'replacement_calibration'
 
     session.commit()
 
