@@ -376,15 +376,15 @@
     {
       "status_id": "replacement_failure",
       "position": "7",
-      "label": "Replacement ordered (Failure)",
-      "label_marlink": "CCTS - Replacement ordered (Failure)",
+      "label": "Replacement ordered (failure)",
+      "label_marlink": "CCTS - Replacement ordered (failure)",
       "status_type": "event"
     },
     {
       "status_id": "replacement_calibration",
       "position": "8",
-      "label": "Replacement ordered (Calibration)",
-      "label_marlink": "CCTS - Replacement ordered (Calibration)",
+      "label": "Replacement ordered (calibration)",
+      "label_marlink": "CCTS - Replacement ordered (calibration)",
       "status_type": "event"
     },
     {

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-26 20:33+0100\n"
+"POT-Creation-Date: 2021-03-04 19:11+0100\n"
 "PO-Revision-Date: 2016-10-14 11:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -160,13 +160,9 @@ msgstr "Entreprise"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: config.json:421
+#: config.json:434
 msgid "Configuration update"
 msgstr "Mise à jour de configuration"
-
-#: config.json:367
-msgid "Connected"
-msgstr "Connecté"
 
 #: config.json:41
 msgid "Consumables case - Parsys"
@@ -216,7 +212,7 @@ msgstr "Date"
 msgid "Dear user"
 msgstr "Cher utilisateur"
 
-#: config.json:409
+#: config.json:421
 msgid "Decommissioned"
 msgstr "Hors service"
 
@@ -298,15 +294,15 @@ msgstr "Accueil"
 msgid "Hospital"
 msgstr "Hôpital"
 
-#: config.json:397
+#: config.json:407
 msgid "In calibration"
 msgstr "En calibration"
 
-#: config.json:403
+#: config.json:414
 msgid "In repair"
 msgstr "En réparation"
 
-#: config.json:373
+#: config.json:372
 msgid "In service"
 msgstr "En service"
 
@@ -314,25 +310,25 @@ msgstr "En service"
 msgid "In stock - Parsys"
 msgstr "En stock - Parsys"
 
-#: config.json:349
+#: config.json:351
 msgid "In stock - distributor"
 msgstr "En stock - distributeur"
 
-#: config.json:391
+#: config.json:400
 msgid "In transit to Parsys"
 msgstr "En transit vers Parsys"
 
-#: config.json:355
+#: config.json:358
 msgid "In transit to customer"
 msgstr "En transit vers le client"
 
-#: config.json:343
+#: config.json:344
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: config.json:379
-msgid "Incident declared"
-msgstr "Incident déclaré"
+#: config.json:393
+msgid "In transit to distributor (return)"
+msgstr "En transit vers le distributeur (retour)"
 
 #: config.json:165
 msgid "Infrared wireless thermometer - Foracare IR20b"
@@ -477,7 +473,7 @@ msgstr "Notes"
 msgid "Nursing home"
 msgstr "EHPAD"
 
-#: config.json:361
+#: config.json:365
 msgid "On site"
 msgstr "Sur site"
 
@@ -515,9 +511,13 @@ msgstr ""
 msgid "Production"
 msgstr "Production"
 
-#: config.json:385
-msgid "Replacement ordered"
-msgstr "Remplacement demandé"
+#: config.json:386
+msgid "Replacement ordered (calibration)"
+msgstr "Remplacement demandé (calibration)"
+
+#: config.json:379
+msgid "Replacement ordered (failure)"
+msgstr "Remplacement demandé (panne)"
 
 #: config.json:141
 msgid ""
@@ -559,7 +559,7 @@ msgstr "Spéculums auriculaires à usage unique"
 msgid "Site"
 msgstr "Site"
 
-#: config.json:427
+#: config.json:440
 msgid "Site change"
 msgstr "Changement de site"
 
@@ -572,7 +572,7 @@ msgstr "Le type du Site est requis."
 msgid "Sites"
 msgstr "Sites"
 
-#: config.json:415
+#: config.json:428
 msgid "Software update"
 msgstr "MAJ logicielle"
 

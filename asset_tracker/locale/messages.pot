@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-26 20:33+0100\n"
+"POT-Creation-Date: 2021-03-04 19:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,12 +159,8 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: config.json:421
+#: config.json:434
 msgid "Configuration update"
-msgstr ""
-
-#: config.json:367
-msgid "Connected"
 msgstr ""
 
 #: config.json:41
@@ -215,7 +211,7 @@ msgstr ""
 msgid "Dear user"
 msgstr ""
 
-#: config.json:409
+#: config.json:421
 msgid "Decommissioned"
 msgstr ""
 
@@ -297,15 +293,15 @@ msgstr ""
 msgid "Hospital"
 msgstr ""
 
-#: config.json:397
+#: config.json:407
 msgid "In calibration"
 msgstr ""
 
-#: config.json:403
+#: config.json:414
 msgid "In repair"
 msgstr ""
 
-#: config.json:373
+#: config.json:372
 msgid "In service"
 msgstr ""
 
@@ -313,24 +309,24 @@ msgstr ""
 msgid "In stock - Parsys"
 msgstr ""
 
-#: config.json:349
+#: config.json:351
 msgid "In stock - distributor"
 msgstr ""
 
-#: config.json:391
+#: config.json:400
 msgid "In transit to Parsys"
 msgstr ""
 
-#: config.json:355
+#: config.json:358
 msgid "In transit to customer"
 msgstr ""
 
-#: config.json:343
+#: config.json:344
 msgid "In transit to distributor"
 msgstr ""
 
-#: config.json:379
-msgid "Incident declared"
+#: config.json:393
+msgid "In transit to distributor (return)"
 msgstr ""
 
 #: config.json:165
@@ -476,7 +472,7 @@ msgstr ""
 msgid "Nursing home"
 msgstr ""
 
-#: config.json:361
+#: config.json:365
 msgid "On site"
 msgstr ""
 
@@ -512,8 +508,12 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: config.json:385
-msgid "Replacement ordered"
+#: config.json:386
+msgid "Replacement ordered (calibration)"
+msgstr ""
+
+#: config.json:379
+msgid "Replacement ordered (failure)"
 msgstr ""
 
 #: config.json:141
@@ -554,7 +554,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: config.json:427
+#: config.json:440
 msgid "Site change"
 msgstr ""
 
@@ -567,7 +567,7 @@ msgstr ""
 msgid "Sites"
 msgstr ""
 
-#: config.json:415
+#: config.json:428
 msgid "Software update"
 msgstr ""
 
