@@ -11,13 +11,8 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 
 class Asset(Model, CreationDateTimeMixin):
-    tenant_id = Column(String, nullable=False)
     asset_id = Column(String, nullable=False, unique=True)
-    asset_type = Column(String, nullable=False)
-    hardware_version = Column(String)
-    mac_wifi = Column(String)
-    mac_ethernet = Column(String)
-
+    tenant_id = Column(String, nullable=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
 
     @property
@@ -28,6 +23,11 @@ class Asset(Model, CreationDateTimeMixin):
             bool.
         """
         return bool(self.user_id)
+
+    asset_type = Column(String, nullable=False)
+    hardware_version = Column(String)
+    mac_wifi = Column(String)
+    mac_ethernet = Column(String)
 
     customer_id = Column(String)
     customer_name = Column(String)
@@ -166,6 +166,7 @@ consumable_families_equipment_families = Table(
 class ConsumableFamily(Model):
     family_id = Column(String, nullable=False, unique=True)
     model = Column(String, nullable=False, unique=True)
+
     equipment_families = relationship(
         'EquipmentFamily', secondary=consumable_families_equipment_families, backref='consumable_families'
     )
@@ -222,9 +223,9 @@ class Event(Model, CreationDateTimeMixin):
 
 class EventStatus(Model):
     status_id = Column(String, nullable=False, unique=True)
+
     position = Column(Integer, nullable=False, unique=True)
     status_type = Column(String, nullable=False)
-
     _label = Column(String, nullable=False, unique=True)
     _label_marlink = Column(String, unique=True)
 
@@ -243,8 +244,8 @@ class EventStatus(Model):
 
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
-
     tenant_id = Column(String, nullable=False)
+
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
 
