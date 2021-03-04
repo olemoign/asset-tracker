@@ -1,7 +1,7 @@
 """Add tenant_name
 
 Revision ID: e8996138f616
-Revises: 083c623dbc61
+Revises: 67ca562dfc8c
 Create Date: 2020-11-27 22:36:40.796306
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'e8996138f616'
-down_revision = '083c623dbc61'
+down_revision = '67ca562dfc8c'
 branch_labels = None
 depends_on = None
 
