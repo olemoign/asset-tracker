@@ -45,31 +45,6 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         return site
 
-    def get_base_form_data(self):
-        """Get base form input data: site types, ordered by translated label, and tenants."""
-        return {
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.get_create_read_tenants(),
-        }
-
-    def get_create_read_tenants(self):
-        """Get for which tenants the current user can create/read sites."""
-        # Admins have access to all tenants.
-        if self.request.user.is_admin:
-            return self.request.user.tenants
-
-        else:
-            user_rights = self.request.effective_principals
-            user_tenants = self.request.user.tenants
-            tenants_ids = {
-                tenant['id']
-                for tenant in user_tenants
-                if Right(name='sites-create', tenant=tenant['id']) in user_rights
-                or (self.site and self.site.tenant_id == tenant['id'])
-            }
-
-            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
-
     def get_past_assets(self):
         """Retrieve which assets were ever present on the site."""
         past_assets = []
@@ -111,7 +86,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
     def validate_form(self):
         """Validate form data."""
-        tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
+        tenants_ids = [tenant['id'] for tenant in self.request.user.tenants]
         tenant_id = self.form.get('tenant_id')
         if not tenant_id or tenant_id not in tenants_ids:
             raise FormException(_('Invalid tenant.'), log=True)
@@ -133,7 +108,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                  renderer='pages/sites-create_update.html')
     def create_get(self):
         """Get site create form."""
-        return self.get_base_form_data()
+        return {'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate)}
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
                  renderer='pages/sites-create_update.html')
@@ -147,7 +122,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
-                **self.get_base_form_data(),
+                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
             }
 
         self.site = models.Site(
@@ -171,7 +146,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
         return {
             'past_assets': self.get_past_assets(),
             'site': self.site,
-            **self.get_base_form_data(),
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
         }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
@@ -187,7 +162,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site': self.site,
-                **self.get_base_form_data(),
+                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.
