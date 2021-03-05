@@ -13,8 +13,10 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 class Asset(Model, CreationDateTimeMixin):
     asset_id = Column(String, nullable=False, unique=True)
     tenant_id = Column(String, nullable=False)
-    tenant_name = Column(String, nullable=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
+
+    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'))
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='assets', uselist=False)
 
     @property
     def is_linked(self):
@@ -246,7 +248,9 @@ class EventStatus(Model):
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
     tenant_id = Column(String, nullable=False)
-    tenant_name = Column(String, nullable=False)
+
+    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'))
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='sites', uselist=False)
 
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
@@ -254,3 +258,8 @@ class Site(Model, CreationDateTimeMixin):
     contact = Column(String)
     phone = Column(String)
     email = Column(String)
+
+
+class TenantInfo(Model):
+    tenant_id = Column(String, nullable=False)
+    name = Column(String, nullable=False)
