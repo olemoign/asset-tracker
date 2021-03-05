@@ -31,6 +31,9 @@ def add_global_variables(event):
     event['tenantless_principals'] = get_tenantless_principals(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
 
+    if event['request'].user:
+        event['tenants'] = event['request'].user.tenants
+
 
 class FormException(Exception):
     """Custom exception to handle form validation of Assets and Sites.

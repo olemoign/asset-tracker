@@ -2,7 +2,7 @@
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
 from parsys_utilities.authorization import authenticate_rta, get_tenantless_principals
 from parsys_utilities.dates import format_date
-from parsys_utilities.sql import sql_search
+from parsys_utilities.sql import sql_search, table_from_dict
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import Allow, Everyone
 from pyramid.settings import asbool
