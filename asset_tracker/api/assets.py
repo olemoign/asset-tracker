@@ -58,13 +58,18 @@ class Assets:
             self.update_asset(asset, json)
             return
 
+        tenant_info = self.request.db_session.query(models.TenantInfo).filter_by(tenant_id=json['tenantID']).first()
+        if not tenant_info:
+            tenant_info = models.TenantInfo(tenant_id=json['tenantID'])
+        tenant_info.name = json['tenantName']
+
         # New asset.
         asset = models.Asset(
             asset_type='station',
             asset_id=json['login'],
             user_id=json['userID'],
             tenant_id=json['tenantID'],
-            tenant_name=json['tenantName'],
+            tenant_info=tenant_info,
             calibration_frequency=calibration_frequency,
         )
         # Add event.
