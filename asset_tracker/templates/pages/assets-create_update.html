@@ -30,19 +30,17 @@
             <form role="form" action="{{ submit_url }}" method="post">
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#asset_panel">
-                        <h3 class="panel__title">
-                            {{ title }}
-                            {% if is_linked %}
-                                {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
-                                {% if request.user.rta_access %}
-                                    <a class="panel_link" href="{{ rta_link }}">
-                                {% endif %}
-                                        <span class="glyphicon glyphicon-link"></span>
-                                {% if request.user.rta_access %}
-                                    </a>
-                                {% endif %}
+                        <h3 class="panel__title">{{ title }}</h3>
+                        {% if is_linked %}
+                            {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
+                            {% if request.user.rta_access %}
+                                <a class="panel_link" href="{{ rta_link }}">
                             {% endif %}
-                        </h3>
+                                    <span class="glyphicon glyphicon-link"></span>
+                            {% if request.user.rta_access %}
+                                </a>
+                            {% endif %}
+                        {% endif %}
                     </div>
 
                     <div id="asset_panel" class="panel-collapse collapse in">
