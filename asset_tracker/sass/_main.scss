@@ -60,6 +60,10 @@ body, html {
 
 .panel__title {
   margin: 0;
+
+  .glyphicon {
+    line-height: 0.5;
+  }
 }
 
 // Bootstrap tries to fix date inputs in Safari but this doesn't apply anymore and breaks the inputs in Firefox.
@@ -212,8 +216,9 @@ table.dataTable td {
 
 .rta_link {
   padding-left: 10px;
-
-  &:hover {
-    color: lighten(black, 50%);
-  }
 }
+
+.panel_link:hover {
+  color: lighten(black, 50%);
+}
+

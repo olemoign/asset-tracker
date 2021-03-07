@@ -34,9 +34,13 @@
                             {{ title }}
                             {% if is_linked %}
                                 {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
-                                {% if request.user.rta_access %}<a class="rta_link" href="{{ rta_link }}">{% endif %}
-                                <span class="glyphicon glyphicon-link"></span>
-                                {% if request.user.rta_access %}</a>{% endif %}
+                                {% if request.user.rta_access %}
+                                    <a class="panel_link rta_link" href="{{ rta_link }}">
+                                {% endif %}
+                                        <span class="glyphicon glyphicon-link"></span>
+                                {% if request.user.rta_access %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </h3>
                     </div>
@@ -252,7 +256,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#equipments_panel">
                         <h3 class="panel__title">{{ gettext('Equipments') }}</h3>
-                        <button type="button" class="equipment__add btn btn-default">
+                        <button type="button" class="equipment__add btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </div>
