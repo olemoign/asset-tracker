@@ -214,11 +214,11 @@ table.dataTable td {
   }
 }
 
-.rta_link {
+.panel_link {
   padding-left: 10px;
-}
 
-.panel_link:hover {
-  color: lighten(black, 50%);
+  &:hover {
+    color: lighten(black, 50%);
+  }
 }
 

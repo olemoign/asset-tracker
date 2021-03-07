@@ -35,7 +35,7 @@
                             {% if is_linked %}
                                 {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
                                 {% if request.user.rta_access %}
-                                    <a class="panel_link rta_link" href="{{ rta_link }}">
+                                    <a class="panel_link" href="{{ rta_link }}">
                                 {% endif %}
                                         <span class="glyphicon glyphicon-link"></span>
                                 {% if request.user.rta_access %}
