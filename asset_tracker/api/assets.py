@@ -33,17 +33,16 @@ class Assets:
         Args:
             json (dict).
         """
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
-        if config == 'marlink':
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
-        else:
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
+        tenant_info = self.request.db_session.query(models.TenantInfo).filter_by(tenant_id=json['tenantID']).first()
+        if not tenant_info:
+            tenant_info = models.TenantInfo(tenant_id=json['tenantID'])
+            self.request.db_session.add(tenant_info)
+        tenant_info.name = json['tenantName']
 
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']).first()
         if asset:
-            self.update_asset(asset, json)
+            self.update_asset(asset, tenant_info, json)
             return
 
         # If the asset only exists in the Asset Tracker.
@@ -55,13 +54,15 @@ class Assets:
                 )
                 return
 
-            self.update_asset(asset, json)
+            self.update_asset(asset, tenant_info, json)
             return
 
-        tenant_info = self.request.db_session.query(models.TenantInfo).filter_by(tenant_id=json['tenantID']).first()
-        if not tenant_info:
-            tenant_info = models.TenantInfo(tenant_id=json['tenantID'])
-        tenant_info.name = json['tenantName']
+        # Marlink has only one calibration frequency so they don't want to see the input.
+        config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
+        if config == 'marlink':
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
+        else:
+            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
         # New asset.
         asset = models.Asset(
@@ -86,11 +87,12 @@ class Assets:
         # Update status and calibration.
         AssetView.update_status_and_calibration_next(asset)
 
-    def update_asset(self, asset, json):
+    def update_asset(self, asset, tenant_info, json):
         """Update asset.
 
         Args:
             asset (rta.models.Asset).
+            tenant_info (rta.models.TenantInfo).
             json (dict).
         """
         if asset.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
@@ -108,10 +110,10 @@ class Assets:
             # be valid anymore.
             asset.site_id = None
 
-        asset.user_id = json['userID']
         asset.asset_id = json['login']
         asset.tenant_id = json['tenantID']
-        asset.tenant_name = json['tenantName']
+        asset.user_id = json['userID']
+        asset.tenant_info = tenant_info
 
     def rta_link_post(self):
         """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code
