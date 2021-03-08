@@ -85,13 +85,12 @@ class AssetsExtract:
 
         return asset_columns + equipment_columns
 
-    def get_csv_rows(self, unique_software, max_equipments_per_asset, tenants):
+    def get_csv_rows(self, unique_software, max_equipments_per_asset):
         """Get the asset information for the csv file.
 
         Args:
             unique_software (set): names of the deployed software.
             max_equipments_per_asset (int): maximum number of equipment.
-            tenants (dict): authorized tenants to extract data.
 
         Returns:
             csv body (list): information on the assets.
@@ -99,8 +98,11 @@ class AssetsExtract:
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
 
         assets = self.request.db_session.query(models.Asset) \
-            .options(joinedload(models.Asset.site), joinedload(models.Asset.status)) \
-            .filter(models.Asset.tenant_id.in_(tenants.keys())) \
+            .options(
+                joinedload(models.Asset.tenant_info),
+                joinedload(models.Asset.site),
+                joinedload(models.Asset.status),
+            ) \
             .order_by(models.Asset.asset_id)
 
         rows = []
@@ -109,7 +111,7 @@ class AssetsExtract:
             row = [
                 asset.asset_id,
                 asset.asset_type,
-                tenants[asset.tenant_id],
+                asset.tenant_info.name,
                 asset.customer_name,
                 asset.customer_id,
                 asset.current_location,
@@ -190,19 +192,6 @@ class AssetsExtract:
 
         return rows
 
-    def get_extract_tenants(self):
-        """Get for which tenants the current user can extract assets information."""
-        # Admins have access to all tenants.
-        if self.request.user.is_admin:
-            return {tenant['id']: tenant['name'] for tenant in self.request.user.tenants}
-
-        else:
-            return {
-                tenant['id']: tenant['name']
-                for tenant in self.request.user.tenants
-                if Right(name='assets-extract', tenant=tenant['id']) in self.request.effective_principals
-            }
-
     @view_config(route_name='assets-extract', request_method='GET', permission='assets-extract', renderer='csv')
     def extract_get(self):
         """Download Asset data. Write Asset information in csv file.
@@ -210,14 +199,11 @@ class AssetsExtract:
         Returns:
             (dict): header (list) and rows (list) of csv file.
         """
-        # Authorized tenants.
-        tenants = self.get_extract_tenants()
-
         # Dynamic data - software.
         # Find unique software name.
         software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Event.asset).filter(models.Asset.tenant_id.in_(tenants.keys())) \
-            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.asset).join(models.Event.status) \
+            .filter(models.EventStatus.status_id == 'software_update')
 
         unique_software = {update.extra_json['software_name'] for update in software_updates}
 
@@ -235,7 +221,7 @@ class AssetsExtract:
 
         return {
             'header': self.get_csv_header(max_equipments),
-            'rows': self.get_csv_rows(unique_software, max_equipments, tenants),
+            'rows': self.get_csv_rows(unique_software, max_equipments),
         }
 
 
