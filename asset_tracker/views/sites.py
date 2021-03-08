@@ -101,7 +101,10 @@ class Sites(metaclass=AuthenticatedEndpoint):
                  renderer='pages/sites-create_update.html')
     def create_get(self):
         """Get site create form."""
-        return {'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate)}
+        return {
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+        }
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
                  renderer='pages/sites-create_update.html')
@@ -116,6 +119,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+                'tenants': self.request.db_session.query(models.TenantInfo).all(),
             }
 
         self.site = models.Site(
@@ -140,6 +144,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             'past_assets': self.get_past_assets(),
             'site': self.site,
             'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
         }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
@@ -156,6 +161,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site': self.site,
                 'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+                'tenants': self.request.db_session.query(models.TenantInfo).all(),
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.

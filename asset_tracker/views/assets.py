@@ -169,6 +169,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             'equipments_families': equipments_families,
             'sites': self.get_site_data(),
             'statuses': statuses,
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
         }
 
     def get_expiration_dates_by_equipment_family(self):

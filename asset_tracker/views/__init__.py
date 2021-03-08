@@ -32,9 +32,6 @@ def add_global_variables(event):
     event['tenantless_principals'] = get_tenantless_principals(event['request'].effective_principals)
     event['locale'] = event['request'].locale_name
 
-    if event['request'].user:
-        event['tenants'] = event['request'].user.tenants
-
 
 def read_form(form):
     return MultiDict([
