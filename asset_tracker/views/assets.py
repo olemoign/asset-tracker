@@ -43,7 +43,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def get_asset(self):
         """Get in db the asset being read/updated."""
         asset_id = self.request.matchdict.get('asset_id')
-        # In the list page, asset_id will be None and it's ok.
+        # In the user/home/list pages, asset_id will be None and it's ok.
         if not asset_id:
             return
 
@@ -480,6 +480,16 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """List assets. No work done here as dataTables will call the API to get the assets list."""
         return {}
 
+    @view_config(route_name='assets-user', request_method='GET', permission='assets-read')
+    def user_get(self):
+        """Route used to find the asset corresponding to a given user_id, coming from RTA."""
+        user_id = self.request.matchdict.get('user_id')
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
+        if asset:
+            return HTTPFound(location=self.request.route_path('assets-update', asset_id=asset.id))
+        else:
+            return HTTPFound(location=self.request.route_path('assets-list'))
+
     @view_config(route_name='home', request_method='GET', permission='assets-list')
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
@@ -510,4 +520,5 @@ def includeme(config):
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
     config.add_route(pattern=r'files/asset/{file_id}/', name='files-asset-config', factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
+    config.add_route(pattern=r'services/{user_id:\w{8}}/', name='assets-user', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)
