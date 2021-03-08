@@ -11,7 +11,7 @@ from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
-from asset_tracker.views import FormException
+from asset_tracker.views import FormException, read_form
 
 
 class Sites(metaclass=AuthenticatedEndpoint):
@@ -77,13 +77,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         return sorted(past_assets, key=itemgetter('start'))
 
-    def read_form(self):
-        """Format form content."""
-        self.form = {
-            key: (value.strip() if value.strip() != '' else None) for key, value in self.request.POST.mixed().items()
-        }
-
-    def validate_form(self):
+    def validate_site(self):
         """Validate form data."""
         tenants_ids = [tenant['id'] for tenant in self.request.user.tenants]
         tenant_id = self.form.get('tenant_id')
@@ -114,8 +108,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
     def create_post(self):
         """Post site create form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = read_form(self.request.POST)
+            self.validate_site()
         except FormException as error:
             if error.log:
                 capture_exception(error)
@@ -153,8 +147,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
     def update_post(self):
         """Post site update form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = read_form(self.request.POST)
+            self.validate_site()
         except FormException as error:
             if error.log:
                 capture_exception(error)

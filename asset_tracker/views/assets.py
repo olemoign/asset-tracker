@@ -15,11 +15,10 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
-from webob.multidict import MultiDict
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.views import FormException
+from asset_tracker.views import FormException, read_form
 
 
 class Assets(metaclass=AuthenticatedEndpoint):
@@ -351,11 +350,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def create_post(self):
         """Post asset create form."""
         try:
-            self.form = MultiDict([
-                (key, value)
-                for key, value in self.request.POST.mixed().items()
-                if value != ''
-            ])
+            self.form = read_form(self.request.POST)
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()
@@ -417,11 +412,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def update_post(self):
         """Post asset update form."""
         try:
-            self.form = MultiDict([
-                (key, value)
-                for key, value in self.request.POST.mixed().items()
-                if value != ''
-            ])
+            self.form = read_form(self.request.POST)
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()

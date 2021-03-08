@@ -1,6 +1,7 @@
 from parsys_utilities.authorization import get_tenantless_principals
 from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
 from sentry_sdk import configure_scope
+from webob.multidict import MultiDict
 
 from asset_tracker.constants import ASSET_TRACKER_VERSION
 
@@ -33,6 +34,14 @@ def add_global_variables(event):
 
     if event['request'].user:
         event['tenants'] = event['request'].user.tenants
+
+
+def read_form(form):
+    return MultiDict([
+        (key, value)
+        for key, value in form.mixed().items()
+        if value != ''
+    ])
 
 
 class FormException(Exception):
