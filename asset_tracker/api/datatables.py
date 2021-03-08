@@ -60,19 +60,21 @@ class Assets:
         full_text_search_attributes = [
             models.Asset.asset_id,
             models.Asset.current_location,
-            models.Asset.tenant_name,
             models.Site.name,
+            models.TenantInfo.name,
         ]
 
         # tables_from_dict makes all columns as strings.
         joined_tables = [
             (statuses, statuses.c.id == cast(models.Asset.status_id, String)),
-            models.Site,
+            models.Asset.site,
+            models.Asset.tenant_info,
         ]
 
         specific_attributes = {
             'site': models.Site.name,
             'status': statuses.c.label,
+            'tenant_name': models.TenantInfo.name,
         }
 
         try:
@@ -102,7 +104,7 @@ class Assets:
                 'is_active': asset.status.status_id != 'decommissioned',
                 'site': asset.site.name if asset.site else None,
                 'status': self.request.localizer.translate(asset.status.label(config)),
-                'tenant_name': asset.tenant_name,
+                'tenant_name': asset.tenant_info.name,
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -155,15 +157,26 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            models.Site.tenant_name,
+            models.TenantInfo.name,
         ]
+
+        # tables_from_dict makes all columns as strings.
+        joined_tables = [
+            models.Site.tenant_info,
+        ]
+
+        specific_attributes = {
+            'tenant_name': models.TenantInfo.name,
+        }
 
         try:
             # noinspection PyTypeChecker
             output = sql_search(
-                db_session=self.request.db_session,
-                searched_object=models.Site,
-                full_text_search_attributes=full_text_search_attributes,
+                self.request.db_session,
+                models.Site,
+                full_text_search_attributes,
+                joined_tables=joined_tables,
+                specific_attributes=specific_attributes,
                 search_parameters=search_parameters,
             )
 
@@ -180,7 +193,7 @@ class Sites(DataTablesAPI):
                 'name': site.name,
                 'phone': site.phone,
                 'site_type': self.request.localizer.translate(site.site_type) if site.site_type else None,
-                'tenant_name': site.tenant_name,
+                'tenant_name': site.tenant_info.name,
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.

@@ -1,7 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
 
-from parsys_utilities.authorization import Right
 from pyramid.security import Allow
 from pyramid.view import view_config
 from sqlalchemy import desc, func
