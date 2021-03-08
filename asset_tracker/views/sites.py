@@ -79,9 +79,9 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
     def validate_site(self):
         """Validate form data."""
-        tenants_ids = [tenant['id'] for tenant in self.request.user.tenants]
+        tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
         tenant_id = self.form.get('tenant_id')
-        if not tenant_id or tenant_id not in tenants_ids:
+        if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
             raise FormException(_('Invalid tenant.'), log=True)
 
         site_name = self.form.get('name')

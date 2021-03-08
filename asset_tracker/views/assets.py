@@ -217,12 +217,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """Get all sites. Sites will be filtered according to selected tenant in
         front/js.
         """
-        tenants_ids = {tenant['id'] for tenant in self.request.user.tenants}
-
-        sites = self.request.db_session.query(models.Site) \
-            .filter(models.Site.tenant_id.in_(tenants_ids)) \
-            .order_by(func.lower(models.Site.name))
-
+        sites = self.request.db_session.query(models.Site).order_by(func.lower(models.Site.name))
         return {site.site_id: site for site in sites}
 
     def remove_events(self):
@@ -277,9 +272,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
-            tenants_ids = [tenant['id'] for tenant in self.request.user.tenants]
+            tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
             tenant_id = self.form.get('tenant_id')
-            if not tenant_id or tenant_id not in tenants_ids:
+            if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
                 raise FormException(_('Invalid tenant.'))
 
         calibration_frequency = self.form.get('calibration_frequency')
