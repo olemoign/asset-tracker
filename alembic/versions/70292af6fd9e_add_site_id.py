@@ -9,14 +9,21 @@ Create Date: 2018-07-16 12:05:18.423951
 import sqlalchemy as sa
 from alembic import op
 from parsys_utilities.random import random_id
-
-from asset_tracker.models import Site
+from sqlalchemy.ext.declarative import declarative_base
 
 # revision identifiers, used by Alembic.
 revision = '70292af6fd9e'
 down_revision = '72daf9faa92b'
 branch_labels = None
 depends_on = None
+
+Model = declarative_base()
+
+
+class Site(Model):
+    __tablename__ = 'site'
+    id = sa.Column(sa.Integer, primary_key=True)
+    site_id = sa.Column(sa.String, nullable=False, unique=True)
 
 
 def upgrade():

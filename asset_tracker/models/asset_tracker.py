@@ -15,6 +15,9 @@ class Asset(Model, CreationDateTimeMixin):
     tenant_id = Column(String, nullable=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
 
+    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'), nullable=False)
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='assets', uselist=False)
+
     @property
     def is_linked(self):
         """Asset is_linked if it received user_id from RTA.
@@ -58,7 +61,7 @@ class Asset(Model, CreationDateTimeMixin):
 
         return history
 
-    status_id = Column(Integer, ForeignKey('event_status.id'))
+    status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
     calibration_frequency = Column(Integer)
@@ -246,9 +249,17 @@ class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
     tenant_id = Column(String, nullable=False)
 
+    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'), nullable=False)
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='sites', uselist=False)
+
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
 
     contact = Column(String)
     phone = Column(String)
     email = Column(String)
+
+
+class TenantInfo(Model):
+    tenant_id = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False)

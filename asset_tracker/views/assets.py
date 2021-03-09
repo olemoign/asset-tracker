@@ -7,7 +7,6 @@ from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
-from parsys_utilities.authorization import Right
 from parsys_utilities.views import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -16,31 +15,23 @@ from pyramid.view import view_config
 from sentry_sdk import capture_exception
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
-from webob.multidict import MultiDict
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.views import FormException
+from asset_tracker.views import FormException, read_form
 
 
 class Assets(metaclass=AuthenticatedEndpoint):
     """List, read and update assets."""
 
-    def __acl__(self):
-        acl = [
-            (Allow, None, 'assets-create', 'assets-create'),
-            (Allow, None, 'assets-extract', 'assets-extract'),
-            (Allow, None, 'assets-list', 'assets-list'),
-            (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
-        ]
-
-        if self.asset:
-            acl.extend([
-                (Allow, self.asset.tenant_id, 'assets-read', 'assets-read'),
-                (Allow, self.asset.tenant_id, 'assets-update', 'assets-update'),
-            ])
-
-        return acl
+    __acl__ = [
+        (Allow, None, 'assets-create', 'assets-create'),
+        (Allow, None, 'assets-extract', 'assets-extract'),
+        (Allow, None, 'assets-list', 'assets-list'),
+        (Allow, None, 'assets-read', 'assets-read'),
+        (Allow, None, 'assets-update', 'assets-update'),
+        (Allow, None, ADMIN_PRINCIPAL, ('assets-create', 'assets-read', 'assets-update', 'assets-list')),
+    ]
 
     def __init__(self, request):
         self.request = request
@@ -52,7 +43,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def get_asset(self):
         """Get in db the asset being read/updated."""
         asset_id = self.request.matchdict.get('asset_id')
-        # In the list page, asset_id will be None and it's ok.
+        # In the user/home/list pages, asset_id will be None and it's ok.
         if not asset_id:
             return
 
@@ -168,8 +159,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()
 
-        tenants = self.get_create_read_tenants()
-
         for asset_type in ASSET_TYPES:
             asset_type['label_translated'] = self.request.localizer.translate(asset_type['label'])
 
@@ -178,9 +167,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'consumables_families': consumables_families,
             'equipments_families': equipments_families,
-            'sites': self.get_site_data(tenants),
+            'sites': self.get_site_data(),
             'statuses': statuses,
-            'tenants': tenants,
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
         }
 
     def get_expiration_dates_by_equipment_family(self):
@@ -192,22 +181,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 expiration_dates[equipment.id][consumable.family.family_id] = consumable.expiration_date
 
         return expiration_dates
-
-    def get_create_read_tenants(self):
-        """Get for which tenants the current user can create/read assets."""
-        # Admins have access to all tenants.
-        if self.request.user.is_admin:
-            return self.request.user.tenants
-
-        else:
-            user_rights = self.request.effective_principals
-            user_tenants = self.request.user.tenants
-            return [
-                tenant
-                for tenant in user_tenants
-                if Right(name='assets-create', tenant=tenant['id']) in user_rights
-                or (self.asset and self.asset.tenant_id == tenant['id'])
-            ]
 
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
@@ -241,16 +214,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         return last_config.extra_json.get('config', None)
 
-    def get_site_data(self, tenants):
-        """Get all sites corresponding to current tenants. Sites will be filtered according to selected tenant in
+    def get_site_data(self):
+        """Get all sites. Sites will be filtered according to selected tenant in
         front/js.
         """
-        tenants_ids = {tenant['id'] for tenant in tenants}
-
-        sites = self.request.db_session.query(models.Site) \
-            .filter(models.Site.tenant_id.in_(tenants_ids)) \
-            .order_by(func.lower(models.Site.name))
-
+        sites = self.request.db_session.query(models.Site).order_by(func.lower(models.Site.name))
         return {site.site_id: site for site in sites}
 
     def remove_events(self):
@@ -305,9 +273,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
-            tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
+            tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
             tenant_id = self.form.get('tenant_id')
-            if not tenant_id or tenant_id not in tenants_ids:
+            if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
                 raise FormException(_('Invalid tenant.'))
 
         calibration_frequency = self.form.get('calibration_frequency')
@@ -378,11 +346,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def create_post(self):
         """Post asset create form."""
         try:
-            self.form = MultiDict([
-                (key, value)
-                for key, value in self.request.POST.mixed().items()
-                if value != ''
-            ])
+            self.form = read_form(self.request.POST)
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()
@@ -444,11 +408,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def update_post(self):
         """Post asset update form."""
         try:
-            self.form = MultiDict([
-                (key, value)
-                for key, value in self.request.POST.mixed().items()
-                if value != ''
-            ])
+            self.form = read_form(self.request.POST)
             self.validate_asset()
             self.validate_equipments()
             self.validate_events()
@@ -521,6 +481,16 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """List assets. No work done here as dataTables will call the API to get the assets list."""
         return {}
 
+    @view_config(route_name='assets-user', request_method='GET', permission='assets-read')
+    def user_get(self):
+        """Route used to find the asset corresponding to a given user_id, coming from RTA."""
+        user_id = self.request.matchdict.get('user_id')
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=user_id).first()
+        if asset:
+            return HTTPFound(location=self.request.route_path('assets-update', asset_id=asset.id))
+        else:
+            return HTTPFound(location=self.request.route_path('assets-list'))
+
     @view_config(route_name='home', request_method='GET', permission='assets-list')
     def home_get(self):
         return HTTPFound(location=self.request.route_path('assets-list'))
@@ -551,4 +521,5 @@ def includeme(config):
     config.add_route(pattern=r'assets/{asset_id:\d+}/', name='assets-update', factory=Assets)
     config.add_route(pattern=r'files/asset/{file_id}/', name='files-asset-config', factory=Assets)
     config.add_route(pattern='assets/', name='assets-list', factory=Assets)
+    config.add_route(pattern=r'services/{user_id:\w{8}}/', name='assets-user', factory=Assets)
     config.add_route(pattern='/', name='home', factory=Assets)

@@ -210,10 +210,12 @@ table.dataTable td {
   }
 }
 
-.rta_link {
+.panel_link {
+  font-size: 18px;
   padding-left: 10px;
 
   &:hover {
     color: lighten(black, 50%);
   }
 }
+

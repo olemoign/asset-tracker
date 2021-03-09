@@ -1,7 +1,6 @@
 """Site tracker views: sites lists and read/update."""
 from operator import itemgetter
 
-from parsys_utilities.authorization import Right
 from parsys_utilities.views import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -12,26 +11,19 @@ from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
 from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
-from asset_tracker.views import FormException
+from asset_tracker.views import FormException, read_form
 
 
 class Sites(metaclass=AuthenticatedEndpoint):
     """List, read and update sites."""
 
-    def __acl__(self):
-        acl = [
-            (Allow, None, 'sites-create', 'sites-create'),
-            (Allow, None, 'sites-list', 'sites-list'),
-            (Allow, None, ADMIN_PRINCIPAL, ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
-        ]
-
-        if self.site:
-            acl.extend([
-                (Allow, self.site.tenant_id, 'sites-read', 'sites-read'),
-                (Allow, self.site.tenant_id, 'sites-update', 'sites-update'),
-            ])
-
-        return acl
+    __acl__ = [
+        (Allow, None, 'sites-create', 'sites-create'),
+        (Allow, None, 'sites-list', 'sites-list'),
+        (Allow, None, 'sites-read', 'sites-read'),
+        (Allow, None, 'sites-update', 'sites-update'),
+        (Allow, None, ADMIN_PRINCIPAL, ('sites-create', 'sites-read', 'sites-update', 'sites-list')),
+    ]
 
     def __init__(self, request):
         self.request = request
@@ -51,31 +43,6 @@ class Sites(metaclass=AuthenticatedEndpoint):
             raise HTTPNotFound()
 
         return site
-
-    def get_base_form_data(self):
-        """Get base form input data: site types, ordered by translated label, and tenants."""
-        return {
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.get_create_read_tenants(),
-        }
-
-    def get_create_read_tenants(self):
-        """Get for which tenants the current user can create/read sites."""
-        # Admins have access to all tenants.
-        if self.request.user.is_admin:
-            return self.request.user.tenants
-
-        else:
-            user_rights = self.request.effective_principals
-            user_tenants = self.request.user.tenants
-            tenants_ids = {
-                tenant['id']
-                for tenant in user_tenants
-                if Right(name='sites-create', tenant=tenant['id']) in user_rights
-                or (self.site and self.site.tenant_id == tenant['id'])
-            }
-
-            return [tenant for tenant in user_tenants if tenant['id'] in tenants_ids]
 
     def get_past_assets(self):
         """Retrieve which assets were ever present on the site."""
@@ -110,17 +77,11 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         return sorted(past_assets, key=itemgetter('start'))
 
-    def read_form(self):
-        """Format form content."""
-        self.form = {
-            key: (value.strip() if value.strip() != '' else None) for key, value in self.request.POST.mixed().items()
-        }
-
-    def validate_form(self):
+    def validate_site(self):
         """Validate form data."""
-        tenants_ids = [tenant['id'] for tenant in self.get_create_read_tenants()]
+        tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
         tenant_id = self.form.get('tenant_id')
-        if not tenant_id or tenant_id not in tenants_ids:
+        if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
             raise FormException(_('Invalid tenant.'), log=True)
 
         site_name = self.form.get('name')
@@ -140,21 +101,25 @@ class Sites(metaclass=AuthenticatedEndpoint):
                  renderer='pages/sites-create_update.html')
     def create_get(self):
         """Get site create form."""
-        return self.get_base_form_data()
+        return {
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+        }
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
                  renderer='pages/sites-create_update.html')
     def create_post(self):
         """Post site create form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = read_form(self.request.POST)
+            self.validate_site()
         except FormException as error:
             if error.log:
                 capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
-                **self.get_base_form_data(),
+                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+                'tenants': self.request.db_session.query(models.TenantInfo).all(),
             }
 
         self.site = models.Site(
@@ -178,7 +143,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
         return {
             'past_assets': self.get_past_assets(),
             'site': self.site,
-            **self.get_base_form_data(),
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.request.db_session.query(models.TenantInfo).all(),
         }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
@@ -186,15 +152,16 @@ class Sites(metaclass=AuthenticatedEndpoint):
     def update_post(self):
         """Post site update form."""
         try:
-            self.read_form()
-            self.validate_form()
+            self.form = read_form(self.request.POST)
+            self.validate_site()
         except FormException as error:
             if error.log:
                 capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site': self.site,
-                **self.get_base_form_data(),
+                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+                'tenants': self.request.db_session.query(models.TenantInfo).all(),
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.

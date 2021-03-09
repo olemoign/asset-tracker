@@ -30,15 +30,17 @@
             <form role="form" action="{{ submit_url }}" method="post">
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#asset_panel">
-                        <h3 class="panel__title">
-                            {{ title }}
-                            {% if is_linked %}
-                                {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
-                                {% if request.user.rta_access %}<a class="rta_link" href="{{ rta_link }}">{% endif %}
-                                <span class="glyphicon glyphicon-link"></span>
-                                {% if request.user.rta_access %}</a>{% endif %}
+                        <h3 class="panel__title">{{ title }}</h3>
+                        {% if is_linked %}
+                            {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
+                            {% if request.user.rta_access %}
+                                <a class="panel_link" href="{{ rta_link }}">
                             {% endif %}
-                        </h3>
+                                    <span class="glyphicon glyphicon-link"></span>
+                            {% if request.user.rta_access %}
+                                </a>
+                            {% endif %}
+                        {% endif %}
                     </div>
 
                     <div id="asset_panel" class="panel-collapse collapse in">
@@ -133,8 +135,8 @@
                                 </textarea>
                             </div>
 
-                            {% set can_create = not update and 'assets-create' in principals_without_tenants %}
-                            {% set can_update = update and ('assets-update', asset.tenant_id) in principals %}
+                            {% set can_create = not update and 'assets-create' in tenantless_principals %}
+                            {% set can_update = update and 'assets-update' in tenantless_principals %}
                             {% if request.user.is_admin or can_create or can_update %}
                                 <div class="btn-group pull-right margin-top-20">
                                     <a href="{{ 'assets-list'|route_path }}"
@@ -252,7 +254,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#equipments_panel">
                         <h3 class="panel__title">{{ gettext('Equipments') }}</h3>
-                        <button type="button" class="equipment__add btn btn-default">
+                        <button type="button" class="equipment__add btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </div>

@@ -312,7 +312,7 @@ $(document).on('click', '.event__delete', function removeEvent() {
   $(this).parent().hide('fast');
 });
 
-$(document).on('click', '.rta_link', function followRTALink(event) {
+$(document).on('click', '.panel_link', function followRTALink(event) {
   /**
    * Follow RTA link, prevent being overriden by panel collapse.
    */

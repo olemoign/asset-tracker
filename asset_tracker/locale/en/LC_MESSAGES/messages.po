@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-04 19:11+0100\n"
+"POT-Creation-Date: 2021-03-09 00:41+0100\n"
 "PO-Revision-Date: 2016-10-14 11:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -42,32 +42,32 @@ msgstr ""
 msgid "18-lead ECG - Parsys Cardialys"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:203
-#: templates/pages/assets-create_update.html:210
+#: templates/pages/assets-create_update.html:205
+#: templates/pages/assets-create_update.html:212
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set site to"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:218
+#: templates/pages/assets-create_update.html:220
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:187
+#: templates/pages/assets-create_update.html:189
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:194
+#: templates/pages/assets-create_update.html:196
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:171
+#: templates/pages/assets-create_update.html:173
 msgid "Activation"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:236
+#: templates/pages/assets-create_update.html:238
 msgid "Add Event"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 msgid "An error occurred. Please retry later."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:48
+#: templates/pages/assets-create_update.html:50
 #: templates/pages/assets-list.html:35
 msgid "Asset ID"
 msgstr ""
@@ -123,7 +123,7 @@ msgid "Backpack"
 msgstr ""
 
 #: config.json:21
-msgid "Blood analyser - PTS Cardiochek"
+msgid "Blood analyser - PTS CardioChek"
 msgstr ""
 
 #: config.json:182
@@ -134,11 +134,11 @@ msgstr ""
 msgid "Blood tests - Nal Von Minden"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:114
+#: templates/pages/assets-create_update.html:116
 msgid "Calibration frequency"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:141
+#: templates/pages/assets-create_update.html:143
 #: templates/pages/sites-create_update.html:78
 msgid "Cancel"
 msgstr ""
@@ -155,8 +155,8 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:284
-#: templates/pages/assets-create_update.html:292
+#: templates/pages/assets-create_update.html:287
+#: templates/pages/assets-create_update.html:295
 msgid "Configuration"
 msgstr ""
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "Current"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:101
+#: templates/pages/assets-create_update.html:103
 msgid "Current location"
 msgstr ""
 
@@ -189,19 +189,19 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:77
+#: templates/pages/assets-create_update.html:79
 msgid "Customer ID (Subscription ID)"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:80
+#: templates/pages/assets-create_update.html:82
 msgid "Customer name"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:246
+#: templates/pages/assets-create_update.html:248
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:246
+#: templates/pages/assets-create_update.html:248
 msgid "Date"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Defibrillator lithium battery"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:170
+#: templates/pages/assets-create_update.html:172
 msgid "Delivery"
 msgstr ""
 
@@ -233,7 +233,7 @@ msgid "Dermatoscope - Firefly DE300A"
 msgstr ""
 
 #: config.json:129
-msgid "Dermatoscope lens - MIIS DOC100"
+msgid "Dermatoscope lens - Miis DOC100"
 msgstr ""
 
 #: templates/pages/sites-create_update.html:71
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:254
+#: templates/pages/assets-create_update.html:256
 msgid "Equipments"
 msgstr ""
 
@@ -249,12 +249,12 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: config.json:89
-msgid "External automatic defibrillator - Schiller FRED Easy Port"
-msgstr ""
-
 #: config.json:93
 msgid "External automatic defibrillator - Schiller FRED Easy Trainer"
+msgstr ""
+
+#: config.json:89
+msgid "External automatic defibrillator - Schiller FRED Easyport"
 msgstr ""
 
 #: templates/pages/assets-list.html:18
@@ -262,26 +262,26 @@ msgid "Extract"
 msgstr ""
 
 #: config.json:117
-msgid "General lens - MIIS DGC100"
+msgid "General lens - Miis DGC100"
 msgstr ""
 
 #: config.json:109
-msgid "Handheld camera - HORUS MIIS DSC100"
+msgid "Handheld camera - Miis Horus DSC100"
 msgstr ""
 
 #: config.json:113
-msgid "Handheld camera - HORUS MIIS DSC200P"
+msgid "Handheld camera - Miis Horus DSC200P"
 msgstr ""
 
 #: config.json:105
-msgid "Handheld camera kit / Ophthalmoscope - SMARTSCOPE OPTOMED M5 + EY4"
+msgid "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:74
+#: templates/pages/assets-create_update.html:76
 msgid "Hardware version"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:183
+#: templates/pages/assets-create_update.html:185
 #: templates/pages/sites-create_update.html:106
 msgid "History"
 msgstr ""
@@ -354,35 +354,35 @@ msgstr ""
 msgid "Intraoral camera casing"
 msgstr ""
 
-#: views/assets.py:354
+#: views/assets.py:322
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:315
+#: views/assets.py:283
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:341
+#: views/assets.py:309
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:360
+#: views/assets.py:328
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:368
+#: views/assets.py:336
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:347
+#: views/assets.py:315
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:321
+#: views/assets.py:289
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:311 views/sites.py:124
+#: views/assets.py:279 views/sites.py:85
 msgid "Invalid tenant."
 msgstr ""
 
@@ -390,7 +390,7 @@ msgstr ""
 msgid "Lancets (legacy)"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:174
+#: templates/pages/assets-create_update.html:176
 msgid "Last calibration"
 msgstr ""
 
@@ -398,15 +398,15 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:109
+#: templates/pages/assets-create_update.html:111
 msgid "MAC address (ethernet)"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:107
+#: templates/pages/assets-create_update.html:109
 msgid "MAC address (wifi)"
 msgstr ""
 
-#: views/assets.py:296
+#: views/assets.py:264
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -415,7 +415,7 @@ msgid "Multiparametrical USB - Parsys Biosys"
 msgstr ""
 
 #: config.json:137
-msgid "Multipurpose digital audiometer with headset - ECHODIA OTOwin + DD45 HI"
+msgid "Multipurpose digital audiometer with headset - Echodia Otowin + DD45 HI"
 msgstr ""
 
 #: templates/pages/sites-create_update.html:40
@@ -423,11 +423,11 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: views/sites.py:133
+#: views/sites.py:94
 msgid "Name already exists."
 msgstr ""
 
-#: views/sites.py:128
+#: views/sites.py:89
 msgid "Name is required."
 msgstr ""
 
@@ -443,7 +443,7 @@ msgstr ""
 msgid "New site"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:175
+#: templates/pages/assets-create_update.html:177
 #: templates/pages/assets-list.html:39
 msgid "Next calibration"
 msgstr ""
@@ -453,19 +453,19 @@ msgstr ""
 msgid "No asset registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:298
+#: templates/pages/assets-create_update.html:301
 msgid "No configuration registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:314
+#: templates/pages/assets-create_update.html:317
 msgid "No software registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:208
+#: templates/pages/assets-create_update.html:210
 msgid "None"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:130
+#: templates/pages/assets-create_update.html:132
 msgid "Notes"
 msgstr ""
 
@@ -478,7 +478,7 @@ msgid "On site"
 msgstr ""
 
 #: config.json:121
-msgid "Ophtalmoscope lens - MIIS EEC100"
+msgid "Ophtalmoscope lens - Miis EEC100"
 msgstr ""
 
 #: config.json:33
@@ -486,7 +486,7 @@ msgid "Otoscope - Firefly DE500A"
 msgstr ""
 
 #: config.json:125
-msgid "Otoscope lens - MIIS DOC100S"
+msgid "Otoscope lens - Miis DOC100S"
 msgstr ""
 
 #: templates/errors/404.html:4 templates/errors/404.html:12
@@ -505,7 +505,7 @@ msgid ""
 " the consumable expiration dates have passed."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:169
+#: templates/pages/assets-create_update.html:171
 msgid "Production"
 msgstr ""
 
@@ -550,7 +550,7 @@ msgstr ""
 msgid "Single use ear specula"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:97
+#: templates/pages/assets-create_update.html:99
 #: templates/pages/assets-list.html:38
 msgid "Site"
 msgstr ""
@@ -559,7 +559,7 @@ msgstr ""
 msgid "Site change"
 msgstr ""
 
-#: views/sites.py:137
+#: views/sites.py:98
 msgid "Site type is required."
 msgstr ""
 
@@ -572,7 +572,7 @@ msgstr ""
 msgid "Software update"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:309
+#: templates/pages/assets-create_update.html:312
 msgid "Softwares versions"
 msgstr ""
 
@@ -588,8 +588,8 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:151
-#: templates/pages/assets-create_update.html:160
+#: templates/pages/assets-create_update.html:153
+#: templates/pages/assets-create_update.html:162
 #: templates/pages/assets-list.html:40
 msgid "Status"
 msgstr ""
@@ -598,7 +598,7 @@ msgstr ""
 msgid "Stethoscope - RNK PCP-USB"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:142
+#: templates/pages/assets-create_update.html:144
 #: templates/pages/sites-create_update.html:79
 msgid "Submit"
 msgstr ""
@@ -611,7 +611,7 @@ msgstr ""
 msgid "Telecardia charging base - Parsys"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:50
+#: templates/pages/assets-create_update.html:52
 #: templates/pages/assets-list.html:36
 #: templates/pages/sites-create_update.html:43
 #: templates/pages/sites-list.html:28
@@ -632,7 +632,7 @@ msgid ""
 "%(equipment)s) expire in %(delay_days)s days on %(expiration_date)s:"
 msgstr ""
 
-#: views/assets.py:306
+#: views/assets.py:274
 msgid "This asset id already exists."
 msgstr ""
 
@@ -665,14 +665,14 @@ msgstr ""
 msgid "Troponin blood test"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:64
+#: templates/pages/assets-create_update.html:66
 #: templates/pages/sites-create_update.html:54
 #: templates/pages/sites-list.html:27
 msgid "Type"
 msgstr ""
 
 #: config.json:145
-msgid "USB digital laryngoscope - VIVID MEDICAL VT-A100"
+msgid "USB digital laryngoscope - Vivid Medical VT-A100"
 msgstr ""
 
 #: config.json:97
@@ -692,11 +692,11 @@ msgid "USB glucose meter - Beurer GL50"
 msgstr ""
 
 #: config.json:77
-msgid "USB oxymeter - NONIN 3231"
+msgid "USB oxymeter - Nonin 3231"
 msgstr ""
 
 #: config.json:133
-msgid "USB ultrasound scanner - Interson SiMPLI - GP-C01"
+msgid "USB ultrasound scanner - Interson SiMPLi - GP-C01"
 msgstr ""
 
 #: config.json:17
@@ -707,7 +707,7 @@ msgstr ""
 msgid "Urine test 10 parameters"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:176
+#: templates/pages/assets-create_update.html:178
 msgid "Warranty end"
 msgstr ""
 
@@ -720,7 +720,7 @@ msgid "Wireless glucose meter - Foracare DM30b"
 msgstr ""
 
 #: config.json:73
-msgid "Wireless oxymeter - NONIN 3230"
+msgid "Wireless oxymeter - Nonin 3230"
 msgstr ""
 
 #: templates/errors/403.html:12
@@ -736,7 +736,7 @@ msgstr ""
 msgid "this link"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:119
+#: templates/pages/assets-create_update.html:121
 msgid "years"
 msgstr ""
 

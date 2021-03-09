@@ -13,12 +13,12 @@
                 <div class="panel-heading clearfix">
                     <h3 class="panel__title">{{ gettext('Assets') }}</h3>
                     <div class="flex-align-right">
-                        {% if request.user.is_admin or 'assets-extract' in principals_without_tenants %}
+                        {% if request.user.is_admin or 'assets-extract' in tenantless_principals %}
                             <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default margin-right-10">
                                 {{ gettext('Extract') }}
                             </a>
                         {% endif %}
-                        {% if request.user.is_admin or 'assets-create' in principals_without_tenants %}
+                        {% if request.user.is_admin or 'assets-create' in tenantless_principals %}
                             <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default">
                                 {{ gettext('New') }}
                             </a>
@@ -33,7 +33,7 @@
                     <thead>
                         <tr>
                             <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>
-                            <th data-data="tenant_key" data-priority="2">{{ gettext('Tenant') }}</th>
+                            <th data-data="tenant_name" data-priority="2">{{ gettext('Tenant') }}</th>
                             <th data-data="customer_name">{{ gettext('Customer') }}</th>
                             <th data-data="site">{{ gettext('Site') }}</th>
                             <th data-data="calibration_next">{{ gettext('Next calibration') }}</th>
