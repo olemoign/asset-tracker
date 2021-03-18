@@ -32,7 +32,7 @@ celery = celery_app
 
 def main(global_config, **settings):
     """This function returns a Pyramid WSGI application."""
-    technical_logger = logging.getLogger('parsys_cloud_technical')
+    technical_logger = logging.getLogger('asset_tracker_technical')
 
     for app_config in MANDATORY_CONFIG:
         if not settings.get(app_config):
