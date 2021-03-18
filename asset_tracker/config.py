@@ -17,6 +17,15 @@ DEFAULT_CONFIG = {
     'asset_tracker.config': 'parsys',
 }
 
+MANDATORY_CONFIG = [
+    'asset_tracker.blobstore_path',
+    'asset_tracker.sessions_broker_url',
+    'sqlalchemy.url',
+    'rta.client_id',
+    'rta.secret',
+    'rta.server_url',
+]
+
 logger = logging.getLogger('asset_tracker_actions')
 
 

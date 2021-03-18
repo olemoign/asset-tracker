@@ -22,7 +22,8 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from asset_tracker.config import DEFAULT_CONFIG, update_configuration
+from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
+from asset_tracker.config import update_configuration
 from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, USER_INACTIVITY_MAX
 
 # Celery runs celery.app.
@@ -31,12 +32,11 @@ celery = celery_app
 
 def main(global_config, **settings):
     """This function returns a Pyramid WSGI application."""
-    assert settings.get('rta.server_url')
-    assert settings.get('rta.client_id')
-    assert settings.get('rta.secret')
-    assert settings.get('asset_tracker.blobstore_path')
-    assert settings.get('asset_tracker.sessions_broker_url')
-    assert settings.get('sqlalchemy.url')
+    technical_logger = logging.getLogger('parsys_cloud_technical')
+
+    for app_config in MANDATORY_CONFIG:
+        if not settings.get(app_config):
+            technical_logger.critical(f'***CRITICAL: Missing mandatory {app_config}.***')
 
     # During tests, the app is created BEFORE the db, so we can't do this.
     if not settings.get('asset_tracker.tests.disable_configuration', False):
@@ -135,7 +135,7 @@ def main(global_config, **settings):
     config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=STATIC_FILES_CACHE)
 
     # Log app version on startup.
-    logging.getLogger('asset_tracker_actions').info(f'Starting asset tracker version {ASSET_TRACKER_VERSION}.')
+    technical_logger.info(f'Starting asset tracker version {ASSET_TRACKER_VERSION}.')
 
     # In dev, log requests.
     log_requests = asbool(settings.get('asset_tracker.dev.log_requests', False))
