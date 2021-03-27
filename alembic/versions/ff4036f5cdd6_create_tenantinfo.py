@@ -79,7 +79,7 @@ def upgrade():
 
 def downgrade():
     with op.batch_alter_table('site', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), server_default=sa.text("Fix this"), nullable=False))
+        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), server_default=sa.text('Fix this'), nullable=False))
         batch_op.drop_constraint(batch_op.f('fk_site_tenant_info_id_tenant_info'), type_='foreignkey')
         batch_op.drop_column('tenant_info_id')
 
@@ -90,7 +90,7 @@ def downgrade():
         batch_op.create_unique_constraint('uq_event_status_label', ['_label'])
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), server_default=sa.text("Fix this"), nullable=False))
+        batch_op.add_column(sa.Column('tenant_name', sa.Unicode(), server_default=sa.text('Fix this'), nullable=False))
         batch_op.drop_constraint(batch_op.f('fk_asset_tenant_info_id_tenant_info'), type_='foreignkey')
         batch_op.drop_column('tenant_info_id')
         batch_op.alter_column('status_id', existing_type=sa.Integer(), nullable=True)
