@@ -9,6 +9,7 @@ with open(here / 'README.md') as f:
 with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
+parsys_utilities = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files/00e4d81744a0fb67ac8c1fec378c689e1dd710d627724152ec52fda60618f955/parsys_utilities-3.5.0-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic',
     'arrow',
@@ -17,7 +18,7 @@ requires = [
     'importlib_metadata',
     'importlib_resources',
     'jinja2',
-    'parsys-utilities==3.4.6',
+    f'parsys-utilities @ {parsys_utilities}',
     'paste',
     'plaster-pastedeploy',
     'psycopg2-binary',

@@ -5,12 +5,19 @@ stages:
   - release
   - deploy
 
+.authenticate_tracker: &authenticate_tracker
+  before_script:
+    - echo "machine tracker.parsys.com" > ~/.netrc
+    - echo "login gitlab-ci-token" >> ~/.netrc
+    - echo "password ${CI_JOB_TOKEN}" >> ~/.netrc
+
 variables:
   CONTAINER_TEST_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:$CI_BUILD_REF_NAME
   CONTAINER_RELEASE_IMAGE: tracker.parsys.com:1337/parsys/asset_tracker:latest
   PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
 
 flake8:
+  <<: *authenticate_tracker
   stage: test
   image: python:3.6
   tags:
@@ -27,6 +34,7 @@ flake8:
     - flake8 --exclude asset_tracker/tests/a_porter
 
 pytest:
+  <<: *authenticate_tracker
   stage: test
   image: python:3.6
   tags:
@@ -44,6 +52,7 @@ pytest:
     - py.test --cov=asset_tracker
 
 build:
+  <<: *authenticate_tracker
   stage: build
   image: python:3.6
   tags:
