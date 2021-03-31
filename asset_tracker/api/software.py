@@ -154,7 +154,7 @@ class Software:
         product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
 
         version = self.request.GET.get('version')
-        if version and version in product_versions.keys():
+        if version and version in product_versions:
             file = product_versions[version]
             download_url = self.request.route_url('api-software-download', product=self.product, file=file)
             return {'version': version, 'url': download_url}

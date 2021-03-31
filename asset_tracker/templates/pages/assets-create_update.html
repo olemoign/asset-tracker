@@ -208,7 +208,7 @@
                                                             creator=event.creator_alias
                                                         ) }}
                                                         <b>{{ gettext('None') }}</b>.
-                                                    {% elif site_id in sites.keys() %}
+                                                    {% elif site_id in sites %}
                                                         {{ gettext(
                                                             '<b>%(date)s</b> %(creator)s set site to',
                                                             date=event.date|format_date(locale),
