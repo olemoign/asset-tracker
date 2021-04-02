@@ -6,8 +6,8 @@ Create Date: 2021-02-26 18:23:11.762408
 
 """
 
-import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.orm import Session
 
 from asset_tracker import models
 
@@ -20,8 +20,7 @@ depends_on = None
 
 def upgrade():
     connection = op.get_bind()
-    # noinspection PyUnresolvedReferences
-    session = sa.orm.session.Session(bind=connection)
+    session = Session(bind=connection)
 
     good_family = session.query(models.EquipmentFamily).filter_by(family_id='c494zUZ0').first()
     biosys_list = session.query(models.Equipment).join(models.EquipmentFamily) \

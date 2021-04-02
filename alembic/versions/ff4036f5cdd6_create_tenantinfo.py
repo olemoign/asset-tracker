@@ -8,6 +8,7 @@ Create Date: 2021-03-05 22:34:00.377708
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.orm import Session
 
 from asset_tracker import models
 
@@ -20,8 +21,7 @@ depends_on = None
 
 def upgrade():
     connection = op.get_bind()
-    # noinspection PyUnresolvedReferences
-    session = sa.orm.session.Session(bind=connection)
+    session = Session(bind=connection)
 
     op.create_table(
         'tenant_info',
