@@ -6,8 +6,8 @@ Create Date: 2021-02-26 18:23:11.762408
 
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 from asset_tracker import models
 

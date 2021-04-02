@@ -9,7 +9,7 @@ Create Date: 2018-07-16 12:05:18.423951
 import sqlalchemy as sa
 from alembic import op
 from parsys_utilities.random import random_id
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 # revision identifiers, used by Alembic.
 revision = '70292af6fd9e'
