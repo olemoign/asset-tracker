@@ -9,6 +9,7 @@ with open(here / 'README.md') as f:
 with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
+parsys_utilities = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files/2e08e7516601d6ae6971b608ec8a746880a4bbdf56fee46583d6c9d3d05c691c/parsys_utilities-3.5.1-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic',
     'arrow',
@@ -17,7 +18,7 @@ requires = [
     'importlib_metadata',
     'importlib_resources',
     'jinja2',
-    'parsys-utilities==3.4.6',
+    f'parsys-utilities @ {parsys_utilities}',
     'paste',
     'plaster-pastedeploy',
     'psycopg2-binary',
@@ -65,7 +66,7 @@ setup(
         'Framework :: Pyramid',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         'License :: Other/Proprietary License',
     ],
     author='Parsys',
@@ -74,7 +75,7 @@ setup(
     keywords='web pyramid pylons',
     packages=find_packages(exclude=['asset_tracker.tests']),
     include_package_data=True,
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=requires,
     tests_require=optional['tests'],
     extras_require=optional,

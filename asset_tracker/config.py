@@ -47,8 +47,7 @@ def update_consumable_families(db_session, config):
             consumable = db_session.query(Consumable).filter_by(family=db_family).first()
             if consumable:
                 logger.info(
-                    f'Consumable family {db_family.model} was removed from the config but can\'t be removed from the'
-                    f' db.'
+                    f"Consumable family {db_family.model} was removed from the config but can't be removed from the db."
                 )
             else:
                 db_session.delete(db_family)
@@ -90,7 +89,7 @@ def update_equipment_families(db_session, config):
             equipment = db_session.query(Equipment).filter_by(family=db_family).first()
             if equipment:
                 logger.info(
-                    f'Equipment family {db_family.model} was removed from the config but can\'t be removed from the db.'
+                    f"Equipment family {db_family.model} was removed from the config but can't be removed from the db."
                 )
             else:
                 db_session.delete(db_family)
@@ -131,7 +130,7 @@ def update_statuses(db_session, config):
         if not config_status:
             event = db_session.query(Asset).filter_by(status=db_status).first()
             if event:
-                logger.info(f'Status {db_status.label} was removed from the config but can\'t be removed from the db.')
+                logger.info(f"Status {db_status.label} was removed from the config but can't be removed from the db.")
             else:
                 db_session.delete(db_status)
                 logger.info(f'Deleting status {db_status.label}.')
