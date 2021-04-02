@@ -1,7 +1,6 @@
 """Asset Tracker software management."""
 import json
 import re
-from collections import OrderedDict
 from datetime import date, datetime
 from pathlib import Path
 
@@ -151,7 +150,7 @@ class Software:
 
         # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
-        product_versions = OrderedDict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
+        product_versions = dict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
 
         version = self.request.GET.get('version')
         if version and version in product_versions:
