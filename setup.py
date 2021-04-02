@@ -15,8 +15,6 @@ requires = [
     'arrow',
     'celery[redis]',
     'filedepot',
-    'importlib_metadata',
-    'importlib_resources',
     'jinja2',
     f'parsys-utilities @ {parsys_utilities}',
     'paste',

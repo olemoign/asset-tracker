@@ -6,7 +6,7 @@ the content of config.json.
 import json
 import logging
 
-import importlib_resources
+import importlib.resources
 import transaction
 
 from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus, \
@@ -159,7 +159,7 @@ def update_configuration(settings):
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
-        config_path = importlib_resources.files(__package__).joinpath('config.json')
+        config_path = importlib.resources.files(__package__).joinpath('config.json')
         with open(config_path) as config_file:
             config = json.load(config_file)
 
