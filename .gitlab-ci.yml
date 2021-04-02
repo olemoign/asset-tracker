@@ -19,7 +19,7 @@ variables:
 flake8:
   <<: *authenticate_tracker
   stage: test
-  image: python:3.6
+  image: python:3.8
   tags:
     - docker
 
@@ -36,7 +36,7 @@ flake8:
 pytest:
   <<: *authenticate_tracker
   stage: test
-  image: python:3.6
+  image: python:3.8
   tags:
     - docker
 
@@ -54,7 +54,7 @@ pytest:
 build:
   <<: *authenticate_tracker
   stage: build
-  image: python:3.6
+  image: python:3.8
   tags:
     - docker
 
