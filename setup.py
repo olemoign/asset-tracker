@@ -9,7 +9,7 @@ with open(here / 'README.md') as f:
 with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
-parsys_utilities = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files/2e08e7516601d6ae6971b608ec8a746880a4bbdf56fee46583d6c9d3d05c691c/parsys_utilities-3.5.1-py3-none-any.whl'  # noqa: E501
+parsys_utilities = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files/ea8255c0f40c5ebe73d8298d1b4446330b0be483ce0e434aaf45cdf892d4ff62/parsys_utilities-3.6.0-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic',
     'arrow',
