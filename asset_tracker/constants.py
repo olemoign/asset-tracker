@@ -1,6 +1,6 @@
+import importlib.metadata
 from pathlib import Path
 
-import importlib.metadata
 from pyramid.i18n import TranslationString as _
 
 ASSET_TRACKER_VERSION = importlib.metadata.version(__package__)
