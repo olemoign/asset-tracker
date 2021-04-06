@@ -3,7 +3,7 @@
 These functions are run during each function startup to make sure families and statuses in the db are up to date with
 the content of config.json.
 """
-import importlib.resources
+import importlib_resources
 import json
 import logging
 
@@ -159,7 +159,7 @@ def update_configuration(settings):
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
-        config_path = importlib.resources.files(__package__).joinpath('config.json')
+        config_path = importlib_resources.files(__package__).joinpath('config.json')
         with open(config_path) as config_file:
             config = json.load(config_file)
 
