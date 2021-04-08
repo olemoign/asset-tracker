@@ -3,7 +3,7 @@ from json import loads
 from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
-from sqlalchemy import Boolean, Date, DateTime, Column, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
+from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import backref, relationship
 

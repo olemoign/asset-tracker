@@ -6,8 +6,8 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from depot.manager import DepotManager
-from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale, \
-    OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale
 from parsys_utilities import celery_app
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
