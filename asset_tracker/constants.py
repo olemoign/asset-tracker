@@ -24,6 +24,7 @@ WARRANTY_DURATION_YEARS = 2
 ASSET_TYPES = [
     {'name': 'backpack', 'label': _('Backpack')},
     {'name': 'cart', 'label': _('Cart')},
+    {'name': 'consumables_case', 'label': _('Consumables case')},
     {'name': 'station', 'label': _('Station')},
     {'name': 'telecardia', 'label': _('Telecardia')},
 ]
