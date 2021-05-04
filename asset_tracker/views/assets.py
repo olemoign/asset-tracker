@@ -169,7 +169,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             'equipments_families': equipments_families,
             'sites': self.get_site_data(),
             'statuses': statuses,
-            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+            'tenants': self.request.db_session.query(models.Tenant).all(),
         }
 
     def get_expiration_dates_by_equipment_family(self):
@@ -275,7 +275,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
-            tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
+            tenants_ids = self.request.db_session.query(models.Tenant.tenant_id)
             tenant_id = self.form.get('tenant_id')
             if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
                 raise FormException(_('Invalid tenant.'))
@@ -366,8 +366,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
 
-        tenant_info = self.request.db_session.query(models.TenantInfo) \
-            .filter_by(tenant_id=self.form['tenant_id']).first()
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],
@@ -380,8 +378,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             mac_wifi=self.form.get('mac_wifi'),
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
-            tenant_id=self.form['tenant_id'],
-            tenant_info=tenant_info,
+            tenant=self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one(),
         )
         self.request.db_session.add(self.asset)
 
@@ -438,10 +435,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
         # No manual update if asset is linked with RTA.
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
-            self.asset.tenant_id = self.form['tenant_id']
-            tenant_info = self.request.db_session.query(models.TenantInfo) \
-                .filter_by(tenant_id=self.form['tenant_id']).first()
-            self.asset.tenant_info = tenant_info
+            tenant = self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one()
+            self.asset.tenant = tenant
 
         self.asset.asset_type = self.form['asset_type']
         self.asset.hardware_version = self.form.get('hardware_version')
