@@ -102,7 +102,7 @@ class Assets:
                 'calibration_next': format_date(c_next, self.request.locale_name) if c_next else None,
                 'customer_name': asset.customer_name,
                 'id': asset.id,
-                'is_active': asset.status.status_id != 'decommissioned',
+                'is_active': not asset.is_decommissioned,
                 'site': asset.site.name if asset.site else None,
                 'status': self.request.localizer.translate(asset.status.label(config)),
                 'tenant_name': asset.tenant_info.name,

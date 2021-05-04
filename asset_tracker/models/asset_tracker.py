@@ -64,6 +64,15 @@ class Asset(Model, CreationDateTimeMixin):
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
+    @property
+    def is_decommissioned(self):
+        """Asset is decommissioned.
+
+        Returns:
+            bool.
+        """
+        return self.status.status_id == 'decommissioned'
+
     calibration_frequency = Column(Integer)
     calibration_next = Column(Date)
 
@@ -78,7 +87,7 @@ class Asset(Model, CreationDateTimeMixin):
         delivery = asset_query.filter(EventStatus.status_id == 'on_site').first()
         self._asset_dates['delivery'] = delivery.date if delivery else None
         self._asset_dates['warranty_end'] = delivery.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
-            if delivery else None
+            if not self.is_decommissioned and delivery else None
 
         activation = asset_query.filter(EventStatus.status_id == 'service').first()
         self._asset_dates['activation'] = activation.date if activation else None
