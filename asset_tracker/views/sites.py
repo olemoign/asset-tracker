@@ -36,10 +36,10 @@ class Sites(metaclass=AuthenticatedEndpoint):
         if not site_id:
             return None  # In the list page, site_id will be None and it's ok.
 
-        site = self.request.db_session.query(models.Site) \
+        site = self.request.db_session.query(models.Site).filter_by(id=site_id) \
             .join(models.Asset.tenant) \
             .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
-            .get(site_id)
+            .first()
         if not site:
             raise HTTPNotFound()
 
