@@ -133,8 +133,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
         )
 
         if new_site_id:
-            new_site = self.request.db_session.query(models.Site).get(new_site_id)
-            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
+            new_site = self.request.db_session.query(models.Site) \
+                .filter_by(id=new_site_id) \
+                .join(models.Site.tenant) \
+                .one()
+            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant.tenant_id})
 
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -219,7 +222,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """Get all sites. Sites will be filtered according to selected tenant in
         front/js.
         """
-        sites = self.request.db_session.query(models.Site).order_by(func.lower(models.Site.name))
+        sites = self.request.db_session.query(models.Site) \
+            .join(models.Site.tenant) \
+            .order_by(func.lower(models.Site.name))
         return {site.site_id: site for site in sites}
 
     def remove_events(self):
@@ -286,8 +291,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
             raise FormException(_('Invalid calibration frequency.'))
 
         if self.form.get('site_id'):
-            model_site = self.request.db_session.query(models.Site) \
-                .filter_by(id=self.form['site_id'], tenant_id=tenant_id).first()
+            model_site = self.request.db_session.query(models.Site).join(models.Site.tenant) \
+                .filter(
+                    models.Site.id == self.form['site_id'],
+                    models.Tenant.tenant_id == tenant_id,
+               ).first()
             if not model_site:
                 raise FormException(_('Invalid site.'))
 

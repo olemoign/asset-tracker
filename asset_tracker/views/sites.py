@@ -166,7 +166,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.
-        if self.site.tenant_id != self.form['tenant_id']:
+        if self.site.tenant.tenant_id != self.form['tenant_id']:
             self.site.assets = []
 
         # Required.
