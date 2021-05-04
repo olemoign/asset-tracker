@@ -40,13 +40,15 @@ class Assets:
         tenant.name = json['tenantName']
 
         # If the asset exists in both the Asset Tracker and RTA.
-        asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']) \
+            .join(models.Asset.tenant).first()
         if asset:
             self.update_asset(asset, tenant, json)
             return
 
         # If the asset only exists in the Asset Tracker.
-        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=json['login']).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=json['login']) \
+            .join(models.Asset.tenant).first()
         if asset:
             if asset.user_id:
                 capture_message(
@@ -94,7 +96,7 @@ class Assets:
             tenant (rta.models.Tenant).
             json (dict).
         """
-        if asset.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
+        if asset.tenant.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
             event = models.Event(
                 date=datetime.utcnow().date(),
                 creator_id=json['creatorID'],
@@ -110,9 +112,8 @@ class Assets:
             asset.site_id = None
 
         asset.asset_id = json['login']
-        asset.tenant_id = json['tenantID']
+        asset.tenant = tenant
         asset.user_id = json['userID']
-        asset.tenant_info = tenant_info
 
     def rta_link_post(self):
         """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code

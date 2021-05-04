@@ -10,6 +10,58 @@ from asset_tracker.constants import TEMPLATES_PATH, TRANSLATIONS_PATH
 logger = logging.getLogger('asset_tracker_technical')
 
 
+def consumables_expiration(tenant_config, equipment, expiration_date, delay_days):
+    """Notify users with notifications-consumables right that the consumables of an equipment are expiring.
+
+    Args:
+        tenant_config (parsys_utilities.config.TenantConfigurator).
+        equipment (asset_tracker.models.Equipment)).
+        expiration_date (date): consumable expiration date (YYYY-MM-DD).
+        delay_days (int): number of days before expiration.
+    """
+    app_name = tenant_config.settings['app:main']['asset_tracker.cloud_name']
+    subject = _('${app_name} - Equipment consumables expiration reminder', mapping={'app_name': app_name})
+    text = 'emails/consumables_expiration.txt'
+    html = 'emails/consumables_expiration.html'
+
+    expired_consumables = []
+    for consumable in equipment.consumables:
+        if consumable.expiration_date.strftime('%Y-%m-%d') == expiration_date:
+            expired_consumables.append(consumable.family.model)
+
+    server_url = tenant_config.settings['app:main']['asset_tracker.server_url']
+    template_data = {
+        'app_name': app_name,
+        'asset_id': equipment.asset.asset_id,
+        'asset_url': urljoin(server_url, f'/assets/{equipment.asset.id}/'),
+        'delay_days': delay_days,
+        'equipment': equipment.family.model,
+        'expired_consumables': expired_consumables,
+        'expiration_date': expiration_date,
+    }
+
+    # Template generation
+    emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
+    messages = {'email': emails}
+
+    # Asynchronous POST
+    disable_notifications = asbool(
+        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
+    )
+    if disable_notifications:
+        logger.debug('Notifications are disabled.')
+    else:
+        json = {
+            'level': 'info',
+            'message': messages,
+            'rights': ['notifications-consumables'],
+            'tenant': equipment.asset.tenant.tenant_id,
+        }
+        notify_offline(tenant_config, json)
+
+    logger.info(['notify consumables expiration', equipment.id])
+
+
 def next_calibration(tenant_config, tenant_id, assets, calibration_date):
     """Notify an asset owner that the asset needs to be calibrated.
 
@@ -49,55 +101,3 @@ def next_calibration(tenant_config, tenant_id, assets, calibration_date):
         notify_offline(tenant_config, json)
 
     logger.info(['notify calibration date', [asset.id for asset in assets]])
-
-
-def consumables_expiration(tenant_config, equipment, expiration_date, delay_days):
-    """Notify users with notifications-consumables right that the consumables of an equipment are expiring.
-
-    Args:
-        tenant_config (parsys_utilities.config.TenantConfigurator).
-        equipment (asset_tracker.models.Equipment)).
-        expiration_date (str): consumable expiration date (YYYY-MM-DD).
-        delay_days (int): number of days before expiration.
-    """
-    app_name = tenant_config.settings['app:main']['asset_tracker.cloud_name']
-    subject = _('${app_name} - Equipment consumables expiration reminder', mapping={'app_name': app_name})
-    text = 'emails/consumables_expiration.txt'
-    html = 'emails/consumables_expiration.html'
-
-    expired_consumables = []
-    for consumable in equipment.consumables:
-        if consumable.expiration_date.strftime('%Y-%m-%d') == expiration_date:
-            expired_consumables.append(consumable.family.model)
-
-    server_url = tenant_config.settings['app:main']['asset_tracker.server_url']
-    template_data = {
-        'app_name': app_name,
-        'asset_id': equipment.asset.asset_id,
-        'asset_url': urljoin(server_url, f'/assets/{equipment.asset.id}/'),
-        'delay_days': delay_days,
-        'equipment': equipment.family.model,
-        'expired_consumables': expired_consumables,
-        'expiration_date': expiration_date,
-    }
-
-    # Template generation
-    emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
-    messages = {'email': emails}
-
-    # Asynchronous POST
-    disable_notifications = asbool(
-        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
-    )
-    if disable_notifications:
-        logger.debug('Notifications are disabled.')
-    else:
-        json = {
-            'level': 'info',
-            'message': messages,
-            'rights': ['notifications-consumables'],
-            'tenant': equipment.asset.tenant_id,
-        }
-        notify_offline(tenant_config, json)
-
-    logger.info(['notify consumables expiration', equipment.id])

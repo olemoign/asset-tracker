@@ -38,7 +38,7 @@ def notify_expiring_consumables(db_session, delay_days):
         .join(models.Equipment.consumables) \
         .filter(models.Consumable.expiration_date == expiration_date) \
         .options(
-            joinedload(models.Equipment.asset),
+            joinedload(models.Equipment.asset).joinedload(models.Asset.tenant),
             joinedload(models.Equipment.family),
             joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
         ) \
@@ -104,14 +104,15 @@ def next_calibration(months=3):
         # Assets that need calibration.
         assets = db_session.query(models.Asset) \
             .filter(models.Asset.calibration_next == calibration_date) \
-            .order_by(models.Asset.tenant_id) \
+            .join(models.Asset.tenant) \
+            .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
             .all()
 
         if not assets:
             return
 
-        # Assets must be sorted by tenant_id.
-        groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant_id)
+        # Group assets by tenant.
+        groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
         for tenant_id, assets in groupby_tenant:
             notifications_assets.next_calibration(app.conf.tenant_config, tenant_id, assets, calibration_date)
