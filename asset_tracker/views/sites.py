@@ -122,6 +122,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 'tenants': self.request.db_session.query(models.TenantInfo).all(),
             }
 
+        tenant_info = self.request.db_session.query(models.TenantInfo) \
+            .filter_by(tenant_id=self.form['tenant_id']).first()
         self.site = models.Site(
             contact=self.form.get('contact'),
             email=self.form.get('email'),
@@ -129,6 +131,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             phone=self.form.get('phone'),
             site_type=self.form['site_type'],
             tenant_id=self.form['tenant_id'],
+            tenant_info=tenant_info,
         )
 
         self.request.db_session.add(self.site)
@@ -170,6 +173,10 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         # Required.
         self.site.tenant_id = self.form['tenant_id']
+        tenant_info = self.request.db_session.query(models.TenantInfo) \
+            .filter_by(tenant_id=self.form['tenant_id']).first()
+        self.site.tenant_info = tenant_info
+
         self.site.name = self.form['name']
         self.site.site_type = self.form['site_type']
 

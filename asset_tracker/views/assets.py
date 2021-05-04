@@ -364,6 +364,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
 
+        tenant_info = self.request.db_session.query(models.TenantInfo) \
+            .filter_by(tenant_id=self.form['tenant_id']).first()
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],
@@ -377,6 +379,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
             tenant_id=self.form['tenant_id'],
+            tenant_info=tenant_info,
         )
         self.request.db_session.add(self.asset)
 
@@ -434,6 +437,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
             self.asset.tenant_id = self.form['tenant_id']
+            tenant_info = self.request.db_session.query(models.TenantInfo) \
+                .filter_by(tenant_id=self.form['tenant_id']).first()
+            self.asset.tenant_info = tenant_info
 
         self.asset.asset_type = self.form['asset_type']
         self.asset.hardware_version = self.form.get('hardware_version')
