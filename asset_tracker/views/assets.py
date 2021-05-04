@@ -48,9 +48,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
             return
 
         asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
+            .join(models.Asset.tenant) \
             .options(
                 joinedload(models.Asset.equipments).joinedload(models.Equipment.family)
-                    .joinedload(models.EquipmentFamily.consumable_families)
+                    .joinedload(models.EquipmentFamily.consumable_families)  # noqa: E131
             ).first()
         if not asset:
             raise HTTPNotFound()
@@ -267,7 +268,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         # Don't check asset_id and tenant_id if asset is linked.
         if self.asset and self.asset.is_linked:
-            tenant_id = self.asset.tenant_id
+            tenant_id = self.asset.tenant.tenant_id
         else:
             asset_id = self.form.get('asset_id')
             changed_id = not self.asset or self.asset.asset_id != asset_id
