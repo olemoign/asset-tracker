@@ -26,14 +26,14 @@ class Sites:
         """
         site_id = self.request.matchdict.get('site_id')
 
-        site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).first()
+        site = self.request.db_session.query(models.Site).filter_by(site_id=site_id).join(models.Site.tenant).first()
         if not site:
             capture_message('Missing site.')
             return {}
 
         # By not putting this in the __acl__, we make sure that the user doesn't get a 403 if he doesn't have the
         # necessary rights.
-        if Right(name='api-sites-read', tenant=site.tenant_id) not in self.request.effective_principals:
+        if Right(name='api-sites-read', tenant=site.tenant.tenant_id) not in self.request.effective_principals:
             capture_message('Forbidden site request.')
             return {}
 

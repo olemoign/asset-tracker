@@ -47,7 +47,6 @@ rta.secret = assets_secretassets_secret123456
 [alembic]
 # Path to migration scripts.
 script_location = /srv/alembic
-sqlalchemy.url = postgresql://postgres:postgres@postgres/postgres
 
 [celery]
 broker_url = redis://redis

@@ -48,9 +48,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
             return
 
         asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
+            .join(models.Asset.tenant) \
             .options(
                 joinedload(models.Asset.equipments).joinedload(models.Equipment.family)
-                    .joinedload(models.EquipmentFamily.consumable_families)
+                    .joinedload(models.EquipmentFamily.consumable_families)  # noqa: E131
             ).first()
         if not asset:
             raise HTTPNotFound()
@@ -132,8 +133,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
         )
 
         if new_site_id:
-            new_site = self.request.db_session.query(models.Site).get(new_site_id)
-            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant_id})
+            new_site = self.request.db_session.query(models.Site) \
+                .filter_by(id=new_site_id) \
+                .join(models.Site.tenant) \
+                .one()
+            event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant.tenant_id})
 
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -169,7 +173,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             'equipments_families': equipments_families,
             'sites': self.get_site_data(),
             'statuses': statuses,
-            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+            'tenants': self.request.db_session.query(models.Tenant).all(),
         }
 
     def get_expiration_dates_by_equipment_family(self):
@@ -218,7 +222,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """Get all sites. Sites will be filtered according to selected tenant in
         front/js.
         """
-        sites = self.request.db_session.query(models.Site).order_by(func.lower(models.Site.name))
+        sites = self.request.db_session.query(models.Site) \
+            .join(models.Site.tenant) \
+            .order_by(func.lower(models.Site.name))
         return {site.site_id: site for site in sites}
 
     def remove_events(self):
@@ -267,7 +273,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         # Don't check asset_id and tenant_id if asset is linked.
         if self.asset and self.asset.is_linked:
-            tenant_id = self.asset.tenant_id
+            tenant_id = self.asset.tenant.tenant_id
         else:
             asset_id = self.form.get('asset_id')
             changed_id = not self.asset or self.asset.asset_id != asset_id
@@ -275,7 +281,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if changed_id and existing_asset:
                 raise FormException(_('This asset id already exists.'))
 
-            tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
+            tenants_ids = self.request.db_session.query(models.Tenant.tenant_id)
             tenant_id = self.form.get('tenant_id')
             if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
                 raise FormException(_('Invalid tenant.'))
@@ -285,8 +291,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
             raise FormException(_('Invalid calibration frequency.'))
 
         if self.form.get('site_id'):
-            model_site = self.request.db_session.query(models.Site) \
-                .filter_by(id=self.form['site_id'], tenant_id=tenant_id).first()
+            model_site = self.request.db_session.query(models.Site).join(models.Site.tenant) \
+                .filter(
+                    models.Site.id == self.form['site_id'],
+                    models.Tenant.tenant_id == tenant_id,
+               ).first()
             if not model_site:
                 raise FormException(_('Invalid site.'))
 
@@ -366,8 +375,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
         else:
             calibration_frequency = int(self.form['calibration_frequency'])
 
-        tenant_info = self.request.db_session.query(models.TenantInfo) \
-            .filter_by(tenant_id=self.form['tenant_id']).first()
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],
@@ -380,8 +387,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             mac_wifi=self.form.get('mac_wifi'),
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
-            tenant_id=self.form['tenant_id'],
-            tenant_info=tenant_info,
+            tenant=self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one(),
         )
         self.request.db_session.add(self.asset)
 
@@ -438,10 +444,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
         # No manual update if asset is linked with RTA.
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
-            self.asset.tenant_id = self.form['tenant_id']
-            tenant_info = self.request.db_session.query(models.TenantInfo) \
-                .filter_by(tenant_id=self.form['tenant_id']).first()
-            self.asset.tenant_info = tenant_info
+            tenant = self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one()
+            self.asset.tenant = tenant
 
         self.asset.asset_type = self.form['asset_type']
         self.asset.hardware_version = self.form.get('hardware_version')

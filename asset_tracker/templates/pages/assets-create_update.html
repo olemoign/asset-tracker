@@ -55,7 +55,7 @@
                                             <option></option>
                                         {% endif %}
                                         {% for tenant in tenants|sort(attribute='name') %}
-                                            <option value="{{ tenant.tenant_id }}"{% if update and asset.tenant_id == tenant.tenant_id %} selected{% endif %}>
+                                            <option value="{{ tenant.tenant_id }}"{% if update and asset.tenant.tenant_id == tenant.tenant_id %} selected{% endif %}>
                                                 {{- tenant.name -}}
                                             </option>
                                         {% endfor %}
@@ -84,11 +84,11 @@
                                 {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
                                     'hidden' so we build the full reference here and copy the adapted list in site__options. #}
                                 <div class="hidden">
-                                    <!--suppress HtmlFormInputWithoutLabel -->
+                                    <!--suppress HtmlFormInputWithoutLabel-->
                                     <select class="form-control" id="site__reference">
                                         <option></option>
                                         {% for site_id, site in sites.items() %}
-                                            <option value="{{ site.id }}" data-tenant_id="{{ site.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
+                                            <option value="{{ site.id }}" data-tenant_id="{{ site.tenant.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
                                                 {{- site.name -}}
                                             </option>
                                         {% endfor %}
@@ -266,7 +266,7 @@
                                 {{ equipment_box() }}
                                  <div id="equipments_consumables__reference" class="form-group hidden">
                                     <label></label>
-                                    <!--suppress HtmlFormInputWithoutLabel -->
+                                    <!--suppress HtmlFormInputWithoutLabel-->
                                      <input type="date" class="form-control">
                                  </div>
 

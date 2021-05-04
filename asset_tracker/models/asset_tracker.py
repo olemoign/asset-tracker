@@ -12,11 +12,9 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
 class Asset(Model, CreationDateTimeMixin):
     asset_id = Column(String, nullable=False, unique=True)
-    tenant_id = Column(String, nullable=False)
+    tenant_id = Column(Integer, ForeignKey('tenant.id'), nullable=False)
+    tenant = relationship('Tenant', foreign_keys=tenant_id, backref='assets', uselist=False)
     user_id = Column(String)  # Received from RTA during station creation/update.
-
-    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'), nullable=False)
-    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='assets', uselist=False)
 
     @property
     def is_linked(self):
@@ -256,10 +254,8 @@ class EventStatus(Model):
 
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
-    tenant_id = Column(String, nullable=False)
-
-    tenant_info_id = Column(Integer, ForeignKey('tenant_info.id'), nullable=False)
-    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='sites', uselist=False)
+    tenant_id = Column(Integer, ForeignKey('tenant.id'), nullable=False)
+    tenant = relationship('Tenant', foreign_keys=tenant_id, backref='sites', uselist=False)
 
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
@@ -269,6 +265,6 @@ class Site(Model, CreationDateTimeMixin):
     email = Column(String)
 
 
-class TenantInfo(Model):
+class Tenant(Model):
     tenant_id = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)

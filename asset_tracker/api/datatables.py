@@ -62,20 +62,20 @@ class Assets:
             models.Asset.asset_id,
             models.Asset.current_location,
             models.Site.name,
-            models.TenantInfo.name,
+            models.Tenant.name,
         ]
 
         # tables_from_dict makes all columns as strings.
         joined_tables = [
             (statuses, statuses.c.id == cast(models.Asset.status_id, String)),
             models.Asset.site,
-            models.Asset.tenant_info,
+            models.Asset.tenant,
         ]
 
         specific_attributes = {
             'site': models.Site.name,
             'status': statuses.c.label,
-            'tenant_name': models.TenantInfo.name,
+            'tenant_name': models.Tenant.name,
         }
 
         try:
@@ -105,7 +105,7 @@ class Assets:
                 'is_active': not asset.is_decommissioned,
                 'site': asset.site.name if asset.site else None,
                 'status': self.request.localizer.translate(asset.status.label(config)),
-                'tenant_name': asset.tenant_info.name,
+                'tenant_name': asset.tenant.name,
             }
 
             # Append link to output if the user is an admin or has the right to read the asset info.
@@ -158,16 +158,15 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            models.TenantInfo.name,
+            models.Tenant.name,
         ]
 
-        # tables_from_dict makes all columns as strings.
         joined_tables = [
-            models.Site.tenant_info,
+            models.Site.tenant,
         ]
 
         specific_attributes = {
-            'tenant_name': models.TenantInfo.name,
+            'tenant_name': models.Tenant.name,
         }
 
         try:
@@ -194,7 +193,7 @@ class Sites(DataTablesAPI):
                 'name': site.name,
                 'phone': site.phone,
                 'site_type': self.request.localizer.translate(site.site_type) if site.site_type else None,
-                'tenant_name': site.tenant_info.name,
+                'tenant_name': site.tenant.name,
             }
 
             # Append link to output if the user is an admin or has the right to read the site info.
