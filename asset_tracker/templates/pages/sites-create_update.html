@@ -43,7 +43,7 @@
                                     <label for="tenant_id">{{ gettext('Tenant') }} *</label>
                                     <select class="form-control" id="tenant_id" name="tenant_id">
                                         {% for tenant in tenants|sort(attribute='name') %}
-                                            <option value="{{ tenant.id }}"{% if update and site.tenant_id == tenant.id %} selected{% endif %}>
+                                            <option value="{{ tenant.tenant_id }}"{% if update and site.tenant_id == tenant.tenant_id %} selected{% endif %}>
                                                 {{- tenant.name -}}
                                             </option>
                                         {% endfor %}
