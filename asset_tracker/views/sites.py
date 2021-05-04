@@ -37,6 +37,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             return None  # In the list page, site_id will be None and it's ok.
 
         site = self.request.db_session.query(models.Site) \
+            .join(models.Asset.tenant) \
             .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
             .get(site_id)
         if not site:
@@ -79,7 +80,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
     def validate_site(self):
         """Validate form data."""
-        tenants_ids = self.request.db_session.query(models.TenantInfo.tenant_id)
+        tenants_ids = self.request.db_session.query(models.Tenant.tenant_id)
         tenant_id = self.form.get('tenant_id')
         if not tenant_id or tenant_id not in [tenant_id[0] for tenant_id in tenants_ids]:
             raise FormException(_('Invalid tenant.'), log=True)
@@ -103,7 +104,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
         """Get site create form."""
         return {
             'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+            'tenants': self.request.db_session.query(models.Tenant).all(),
         }
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
@@ -119,19 +120,16 @@ class Sites(metaclass=AuthenticatedEndpoint):
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-                'tenants': self.request.db_session.query(models.TenantInfo).all(),
+                'tenants': self.request.db_session.query(models.Tenant).all(),
             }
 
-        tenant_info = self.request.db_session.query(models.TenantInfo) \
-            .filter_by(tenant_id=self.form['tenant_id']).first()
         self.site = models.Site(
             contact=self.form.get('contact'),
             email=self.form.get('email'),
             name=self.form['name'],
             phone=self.form.get('phone'),
             site_type=self.form['site_type'],
-            tenant_id=self.form['tenant_id'],
-            tenant_info=tenant_info,
+            tenant=self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one(),
         )
 
         self.request.db_session.add(self.site)
@@ -147,7 +145,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             'past_assets': self.get_past_assets(),
             'site': self.site,
             'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.request.db_session.query(models.TenantInfo).all(),
+            'tenants': self.request.db_session.query(models.Tenant).all(),
         }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
@@ -164,7 +162,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 'messages': [{'type': 'danger', 'text': str(error)}],
                 'site': self.site,
                 'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-                'tenants': self.request.db_session.query(models.TenantInfo).all(),
+                'tenants': self.request.db_session.query(models.Tenant).all(),
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.
@@ -172,11 +170,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
             self.site.assets = []
 
         # Required.
-        self.site.tenant_id = self.form['tenant_id']
-        tenant_info = self.request.db_session.query(models.TenantInfo) \
-            .filter_by(tenant_id=self.form['tenant_id']).first()
-        self.site.tenant_info = tenant_info
-
+        tenant = self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one()
+        self.site.tenant = tenant
         self.site.name = self.form['name']
         self.site.site_type = self.form['site_type']
 
