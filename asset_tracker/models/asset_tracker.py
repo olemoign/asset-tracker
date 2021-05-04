@@ -64,7 +64,13 @@ class Asset(Model, CreationDateTimeMixin):
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
 
+    @property
     def is_decommissioned(self):
+        """Asset is decommissioned.
+
+        Returns:
+            bool.
+        """
         return self.status.status_id == 'decommissioned'
 
     calibration_frequency = Column(Integer)

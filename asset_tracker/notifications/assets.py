@@ -17,7 +17,7 @@ def next_calibration(tenant_config, tenant_id, assets, calibration_date):
         tenant_config (parsys_utilities.config.TenantConfigurator).
         tenant_id (str).
         assets (list[asset_tracker.models.Asset]).
-        calibration_date (str): precise calibration date (YYYY-MM-DD).
+        calibration_date (date): precise calibration date (YYYY-MM-DD).
     """
     app_name = tenant_config.settings['app:main']['asset_tracker.cloud_name']
     subject = _('${app_name} - Device calibration reminder', mapping={'app_name': app_name})

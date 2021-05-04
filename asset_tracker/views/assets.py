@@ -244,7 +244,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
         asset.status = asset.history('desc', filter_config=True).first().status
 
         calibration_last = asset.calibration_last
-        if calibration_last:
+        if asset.is_decommissioned:
+            asset.calibration_next = None
+        elif calibration_last:
             asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
 
     def validate_asset(self):
