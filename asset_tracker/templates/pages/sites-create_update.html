@@ -44,7 +44,7 @@
                                     <select class="form-control" id="tenant_id" name="tenant_id">
                                         {% for tenant in tenants|sort(attribute='name') %}
                                             <option value="{{ tenant.id }}"{% if update and site.tenant_id == tenant.id %} selected{% endif %}>
-                                                {{- tenant.parsys_key -}}
+                                                {{- tenant.name -}}
                                             </option>
                                         {% endfor %}
                                     </select>
