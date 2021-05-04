@@ -33,16 +33,16 @@ class Assets:
         Args:
             json (dict).
         """
-        tenant_info = self.request.db_session.query(models.TenantInfo).filter_by(tenant_id=json['tenantID']).first()
-        if not tenant_info:
-            tenant_info = models.TenantInfo(tenant_id=json['tenantID'])
-            self.request.db_session.add(tenant_info)
-        tenant_info.name = json['tenantName']
+        tenant = self.request.db_session.query(models.Tenant).filter_by(tenant_id=json['tenantID']).first()
+        if not tenant:
+            tenant = models.Tenant(tenant_id=json['tenantID'])
+            self.request.db_session.add(tenant)
+        tenant.name = json['tenantName']
 
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']).first()
         if asset:
-            self.update_asset(asset, tenant_info, json)
+            self.update_asset(asset, tenant, json)
             return
 
         # If the asset only exists in the Asset Tracker.
@@ -54,7 +54,7 @@ class Assets:
                 )
                 return
 
-            self.update_asset(asset, tenant_info, json)
+            self.update_asset(asset, tenant, json)
             return
 
         # Marlink has only one calibration frequency so they don't want to see the input.
@@ -68,10 +68,9 @@ class Assets:
         asset = models.Asset(
             asset_type='station',
             asset_id=json['login'],
-            user_id=json['userID'],
-            tenant_id=json['tenantID'],
-            tenant_info=tenant_info,
             calibration_frequency=calibration_frequency,
+            tenant=tenant,
+            user_id=json['userID'],
         )
         # Add event.
         event = models.Event(
@@ -87,12 +86,12 @@ class Assets:
         # Update status and calibration.
         AssetView.update_status_and_calibration_next(asset)
 
-    def update_asset(self, asset, tenant_info, json):
+    def update_asset(self, asset, tenant, json):
         """Update asset.
 
         Args:
             asset (rta.models.Asset).
-            tenant_info (rta.models.TenantInfo).
+            tenant (rta.models.Tenant).
             json (dict).
         """
         if asset.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':

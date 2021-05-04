@@ -62,7 +62,7 @@ class Assets:
             models.Asset.asset_id,
             models.Asset.current_location,
             models.Site.name,
-            models.TenantInfo.name,
+            models.Tenant.name,
         ]
 
         # tables_from_dict makes all columns as strings.
@@ -75,7 +75,7 @@ class Assets:
         specific_attributes = {
             'site': models.Site.name,
             'status': statuses.c.label,
-            'tenant_name': models.TenantInfo.name,
+            'tenant_name': models.Tenant.name,
         }
 
         try:
@@ -158,7 +158,7 @@ class Sites(DataTablesAPI):
             models.Site.name,
             models.Site.phone,
             models.Site.site_type,
-            models.TenantInfo.name,
+            models.Tenant.name,
         ]
 
         # tables_from_dict makes all columns as strings.
@@ -167,7 +167,7 @@ class Sites(DataTablesAPI):
         ]
 
         specific_attributes = {
-            'tenant_name': models.TenantInfo.name,
+            'tenant_name': models.Tenant.name,
         }
 
         try:
