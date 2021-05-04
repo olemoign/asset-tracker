@@ -1,3 +1,13 @@
+3.1.0
+---
+- Manage test tenants to not lose sites.
+- Status + labels update.
+- Asset RTA link.
+- New equipments.
+- Detenant app, allowing for multiple RTA.
+- New asset type: consumables case.
+- Improve decommissioned assets management.
+  
 2.8
 ---
 - Excel extract.

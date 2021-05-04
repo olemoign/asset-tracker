@@ -3,10 +3,10 @@
 These functions are run during each function startup to make sure families and statuses in the db are up to date with
 the content of config.json.
 """
-import importlib_resources
 import json
 import logging
 
+import importlib_resources
 import transaction
 
 from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus
