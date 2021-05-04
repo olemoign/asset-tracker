@@ -112,7 +112,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Get the date of the asset first activation.
 
         Returns:
-            datetime.datetime.
+            datetime.date.
         """
         return self.asset_dates['activation']
 
@@ -121,7 +121,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Get the date of the asset last calibration.
 
         Returns:
-            datetime.datetime.
+            datetime.date.
         """
         return self.asset_dates['calibration_last']
 
@@ -130,7 +130,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Get the date of the asset first activation.
 
         Returns:
-            datetime.datetime.
+            datetime.date.
         """
         return self.asset_dates['delivery']
 
@@ -139,7 +139,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Get the date of the asset production.
 
         Returns:
-            datetime.datetime.
+            datetime.date.
         """
         return self.asset_dates['production']
 
@@ -148,7 +148,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Get the date of the end of the asset warranty.
 
         Returns:
-            datetime.datetime.
+            datetime.date.
         """
         return self.asset_dates['warranty_end']
 
