@@ -8,15 +8,38 @@ Create Date: 2021-03-05 22:34:00.377708
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.orm import Session
-
-from asset_tracker import models
+from sqlalchemy.orm import declarative_base, relationship, Session
 
 # revision identifiers, used by Alembic.
 revision = 'ff4036f5cdd6'
 down_revision = 'e8996138f616'
 branch_labels = None
 depends_on = None
+
+Model = declarative_base()
+
+
+class Asset(Model):
+    __tablename__ = 'asset'
+    id = sa.Column(sa.Integer, primary_key=True)
+    tenant_id = sa.Column(sa.String, nullable=False)
+    tenant_info_id = sa.Column(sa.Integer, sa.ForeignKey('tenant_info.id'), nullable=False)
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='assets', uselist=False)
+
+
+class Site(Model):
+    __tablename__ = 'site'
+    id = sa.Column(sa.Integer, primary_key=True)
+    tenant_id = sa.Column(sa.String, nullable=False)
+    tenant_info_id = sa.Column(sa.Integer, sa.ForeignKey('tenant_info.id'), nullable=False)
+    tenant_info = relationship('TenantInfo', foreign_keys=tenant_info_id, backref='sites', uselist=False)
+
+
+class TenantInfo(Model):
+    __tablename__ = 'tenant_info'
+    id = sa.Column(sa.Integer, primary_key=True)
+    tenant_id = sa.Column(sa.String, nullable=False, unique=True)
+    name = sa.Column(sa.String, nullable=False)
 
 
 def upgrade():
@@ -51,19 +74,19 @@ def upgrade():
 
     tenants_infos = {}
 
-    asset_tenants = [result[0] for result in session.query(models.Asset.tenant_id).group_by(models.Asset.tenant_id)]
-    site_tenants = [result[0] for result in session.query(models.Site.tenant_id).group_by(models.Site.tenant_id)]
+    asset_tenants = [result[0] for result in session.query(Asset.tenant_id).group_by(Asset.tenant_id)]
+    site_tenants = [result[0] for result in session.query(Site.tenant_id).group_by(Site.tenant_id)]
     tenants_ids = set(asset_tenants + site_tenants)
 
     for tenant_id in tenants_ids:
-        tenant_info = models.TenantInfo(tenant_id=tenant_id, name='Awaiting RTA update')
+        tenant_info = TenantInfo(tenant_id=tenant_id, name='Awaiting RTA update')
         session.add(tenant_info)
         tenants_infos[tenant_id] = tenant_info
 
-    for asset in session.query(models.Asset):
+    for asset in session.query(Asset):
         asset.tenant_info = tenants_infos[asset.tenant_id]
 
-    for site in session.query(models.Site):
+    for site in session.query(Site):
         site.tenant_info = tenants_infos[site.tenant_id]
 
     session.commit()
