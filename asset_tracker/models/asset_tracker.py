@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
@@ -45,6 +46,7 @@ class Asset(Model, CreationDateTimeMixin):
             asset_tracker.models.Event.
         """
         self._history.append(event)
+        self.status = self.history('desc', filter_config=True).first().status
 
     def history(self, order, filter_config=False):
         """Filter removed events from history.
@@ -56,10 +58,8 @@ class Asset(Model, CreationDateTimeMixin):
         Returns:
             sqlalchemy.orm.query.Query.
         """
-        if order == 'asc':
-            events = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
-        else:
-            events = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+        order_func = asc if order == 'asc' else desc
+        events = self._history.filter_by(removed=False).order_by(order_func(Event.date), order_func(Event.created_at))
 
         if filter_config:
             events = events.join(Event.status).filter(EventStatus.status_type != 'config')
