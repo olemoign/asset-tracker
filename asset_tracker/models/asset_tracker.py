@@ -77,20 +77,20 @@ class Asset(Model, CreationDateTimeMixin):
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
-        asset_query = self.history('asc').join(Event.status)
+        asset_history = self.history('asc').join(Event.status)
 
-        production = asset_query.filter(EventStatus.status_id == 'stock_parsys').first()
+        production = asset_history.filter(EventStatus.status_id == 'stock_parsys').first()
         self._asset_dates['production'] = production.date if production else None
 
-        delivery = asset_query.filter(EventStatus.status_id == 'on_site').first()
+        delivery = asset_history.filter(EventStatus.status_id == 'on_site').first()
         self._asset_dates['delivery'] = delivery.date if delivery else None
         self._asset_dates['warranty_end'] = delivery.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
             if not self.is_decommissioned and delivery else None
 
-        activation = asset_query.filter(EventStatus.status_id == 'service').first()
+        activation = asset_history.filter(EventStatus.status_id == 'service').first()
         self._asset_dates['activation'] = activation.date if activation else None
 
-        calibration_last = asset_query.filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         for status in ['calibration_last', 'production', 'delivery', 'activation']:

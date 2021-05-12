@@ -86,7 +86,7 @@ class Assets:
         self.request.db_session.add_all([asset, event])
 
         # Update status and calibration.
-        AssetView.update_status_and_calibration_next(asset)
+        AssetView.update_calibration_next(asset)
 
     def update_asset(self, asset, tenant, json):
         """Update asset.

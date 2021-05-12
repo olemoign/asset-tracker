@@ -1,10 +1,10 @@
 import argparse
 
-from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
 from asset_tracker import models
+from asset_tracker.views.assets import Assets as AssetView
 
 
 def main():
@@ -45,12 +45,8 @@ def main():
                 asset._history.append(in_stock_event)
                 db_session.add(in_stock_event)
 
-            # Update status.
-            asset.status = asset.history('desc').first().status
-
             # Update calibration_next.
-            if asset.calibration_last:
-                asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
+            AssetView.update_calibration_next(asset)
 
             print()
 

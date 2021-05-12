@@ -239,15 +239,12 @@ class Assets(metaclass=AuthenticatedEndpoint):
             event.remover_alias = self.request.user.alias
 
     @staticmethod
-    def update_status_and_calibration_next(asset):
-        """Update asset status and next calibration date according to functional rules."""
-        asset.status = asset.history('desc', filter_config=True).first().status
-
-        calibration_last = asset.calibration_last
+    def update_calibration_next(asset):
+        """Update next calibration date according to functional rules."""
         if asset.is_decommissioned:
             asset.calibration_next = None
-        elif calibration_last:
-            asset.calibration_next = calibration_last + relativedelta(years=asset.calibration_frequency)
+        elif asset.calibration_last:
+            asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
 
     def validate_asset(self):
         """Validate asset data."""
@@ -392,7 +389,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         if self.form.get('site_id'):
             self.add_site_change_event(self.form['site_id'])
 
-        self.update_status_and_calibration_next(self.asset)
+        self.update_calibration_next(self.asset)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
@@ -477,7 +474,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if nb_active_event > nb_removed_event:
                 self.remove_events()
 
-        self.update_status_and_calibration_next(self.asset)
+        self.update_calibration_next(self.asset)
 
         return HTTPFound(location=self.request.route_path('assets-list'))
 
