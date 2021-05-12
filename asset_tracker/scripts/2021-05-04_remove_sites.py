@@ -37,9 +37,9 @@ def main():
                 continue
 
             event = models.Event(
-                date=datetime.strptime(site_exit, '%d/%m/%Y').date(),
                 creator_id='MFjUDRnl',
                 creator_alias='Olivier Le Moign',
+                date=datetime.strptime(site_exit, '%d/%m/%Y').date(),
                 status=site_change,
             )
             asset.add_event(event)

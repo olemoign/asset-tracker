@@ -195,11 +195,11 @@ class Software:
         if not last_event or (last_config and last_config != config):
             file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
             new_event = models.Event(
-                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='config_update').one(),
-                date=date.today(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
+                date=date.today(),
                 extra=json.dumps({'config': file_id}),
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='config_update').one(),
             )
             asset.add_event(new_event)
             self.request.db_session.add(new_event)
@@ -219,11 +219,11 @@ class Software:
 
         if not last_event or last_event.extra_json['software_version'] != software_version:
             new_event = models.Event(
-                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='software_update').one(),
-                date=datetime.utcnow().date(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
+                date=datetime.utcnow().date(),
                 extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='software_update').one(),
             )
             asset.add_event(new_event)
             self.request.db_session.add(new_event)

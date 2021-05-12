@@ -34,9 +34,9 @@ def main():
             if in_service_event is first_event:
                 print(f'Adding "in stock" event for asset {asset.id}.')
                 in_stock_event = models.Event(
-                    date=in_service_event.date,
                     creator_id='59EcBjjl',
                     creator_alias='TISON Sylvain',
+                    date=in_service_event.date,
                     status=in_stock_status,
                 )
                 asset.add_event(in_stock_event)

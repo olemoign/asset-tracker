@@ -97,9 +97,9 @@ class Assets:
         """
         if asset.tenant.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
             event = models.Event(
-                date=datetime.utcnow().date(),
                 creator_id=json['creatorID'],
                 creator_alias=json['creatorAlias'],
+                date=datetime.utcnow().date(),
                 status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
             )
             asset.add_event(event)

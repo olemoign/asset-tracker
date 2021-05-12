@@ -337,7 +337,7 @@
     {
       "status_id": "stock_parsys",
       "position": "1",
-      "label": "In stock - Parsys",
+      "label": "In stock Parsys",
       "label_marlink": "Parsys - In stock",
       "status_type": "event"
     },
@@ -351,7 +351,7 @@
     {
       "status_id": "stock_distributor",
       "position": "3",
-      "label": "In stock - distributor",
+      "label": "In stock distributor",
       "label_marlink": "Marlink Logistics - In stock",
       "status_type": "event"
     },

@@ -89,8 +89,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 expiration_date = self.form.get(f'{group}#{consumable_family.family_id}-expiration_date')
                 if expiration_date:
                     consumable = models.Consumable(
-                        family=consumable_family,
                         expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
+                        family=consumable_family,
                     )
                     equipment.consumables.append(consumable)
                     self.request.db_session.add(consumable)
@@ -105,9 +105,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
         else:
             event_date = datetime.utcnow().date()
         event = models.Event(
-            date=event_date,
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
+            date=event_date,
             status=self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).one(),
         )
         self.asset.add_event(event)
@@ -120,9 +120,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
             new_site_id (int).
         """
         event = models.Event(
-            date=datetime.utcnow().date(),
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
+            date=datetime.utcnow().date(),
             status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
         )
 
