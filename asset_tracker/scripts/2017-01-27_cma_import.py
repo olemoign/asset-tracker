@@ -65,10 +65,8 @@ def main():
                 creator_alias=args.creator_alias,
                 status=activation_status,
             )
-            # noinspection PyProtectedMember
-            kit._history.append(calibration)
-            # noinspection PyProtectedMember
-            kit._history.append(activation)
+            kit.add_event(calibration)
+            kit.add_event(activation)
 
             kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['marlink'])
 

@@ -26,12 +26,10 @@ def main():
             asset.calibration_frequency = 3
 
             # Add 'in stock' as first event.
-            # noinspection PyProtectedMember
-            first_event = asset._history.order_by(models.Event.date).first()
-            # noinspection PyProtectedMember
-            in_service_event = asset._history.join(models.Event.status) \
-                .filter(models.EventStatus.status_id == 'service') \
-                .order_by(models.Event.date).first()
+            first_event = asset.history('asc').first()
+            in_service_event = asset.history('asc') \
+                .join(models.Event.status) \
+                .filter(models.EventStatus.status_id == 'service').first()
 
             if in_service_event is first_event:
                 print(f'Adding "in stock" event for asset {asset.id}.')
@@ -41,8 +39,7 @@ def main():
                     creator_alias='TISON Sylvain',
                     status=in_stock_status,
                 )
-                # noinspection PyProtectedMember
-                asset._history.append(in_stock_event)
+                asset.add_event(in_stock_event)
                 db_session.add(in_stock_event)
 
             # Update calibration_next.

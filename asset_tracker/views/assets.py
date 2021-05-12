@@ -110,8 +110,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             creator_alias=self.request.user.alias,
             status=self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).one(),
         )
-        # noinspection PyProtectedMember
-        self.asset._history.append(event)
+        self.asset.add_event(event)
         self.request.db_session.add(event)
 
     def add_site_change_event(self, new_site_id):
@@ -134,8 +133,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 .one()
             event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant.tenant_id})
 
-        # noinspection PyProtectedMember
-        self.asset._history.append(event)
+        self.asset.add_event(event)
         self.request.db_session.add(event)
 
     def get_base_form_data(self):
