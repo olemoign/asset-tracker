@@ -42,7 +42,6 @@ def update_consumable_families(db_session, config):
     # Remove existing family if it was removed from the config and no consumable is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
-
         if not config_family:
             consumable = db_session.query(Consumable).filter_by(family=db_family).first()
             if consumable:
@@ -56,7 +55,6 @@ def update_consumable_families(db_session, config):
     # Create new families and update names.
     for config_family in config_families:
         db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
-
         if not db_family:
             db_family = ConsumableFamily(family_id=config_family['family_id'])
             db_session.add(db_family)
@@ -84,7 +82,6 @@ def update_equipment_families(db_session, config):
     # Remove existing family if it was removed from the config and no equipment is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
-
         if not config_family:
             equipment = db_session.query(Equipment).filter_by(family=db_family).first()
             if equipment:
@@ -98,7 +95,6 @@ def update_equipment_families(db_session, config):
     # Create new families and update names.
     for config_family in config_families:
         db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
-
         if not db_family:
             db_family = EquipmentFamily(family_id=config_family['family_id'])
             db_session.add(db_family)
@@ -126,7 +122,6 @@ def update_statuses(db_session, config):
     # Remove existing status if it was removed from the config and no asset ever had this status.
     for db_status in db_statuses:
         config_status = next((x for x in config_statuses if x['status_id'] == db_status.status_id), None)
-
         if not config_status:
             event = db_session.query(Asset).filter_by(status=db_status).first()
             if event:
@@ -138,7 +133,6 @@ def update_statuses(db_session, config):
     # Create new status and update names.
     for config_status in config_statuses:
         db_status = next((x for x in db_statuses if x.status_id == config_status['status_id']), None)
-
         if not db_status:
             db_status = EventStatus(status_id=config_status['status_id'])
             db_session.add(db_status)

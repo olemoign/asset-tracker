@@ -28,8 +28,8 @@ def main():
         family_base = db_session.query(EquipmentFamily).filter_by(family_id='j7tJ1y4A').first()
         family_telecardia = db_session.query(EquipmentFamily).filter_by(family_id='psqeAtt1').first()
 
-        calibration_status = db_session.query(EventStatus).filter_by(status_id='calibration').first()
-        activation_status = db_session.query(EventStatus).filter_by(status_id='service').first()
+        calibration_status = db_session.query(EventStatus).filter_by(status_id='calibration').one()
+        activation_status = db_session.query(EventStatus).filter_by(status_id='service').one()
 
         for row_number, row in enumerate(csv_reader):
             vessel, kit_id, base_id, telecardia_id, calibration_date = row

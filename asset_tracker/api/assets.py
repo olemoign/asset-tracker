@@ -76,7 +76,7 @@ class Assets:
         )
         # Add event.
         event = models.Event(
-            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first(),
+            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one(),
             date=datetime.utcnow().date(),
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
@@ -101,7 +101,7 @@ class Assets:
                 date=datetime.utcnow().date(),
                 creator_id=json['creatorID'],
                 creator_alias=json['creatorAlias'],
-                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first(),
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
             )
             # noinspection PyProtectedMember
             asset._history.append(event)

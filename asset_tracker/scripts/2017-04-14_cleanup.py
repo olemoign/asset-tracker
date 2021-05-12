@@ -17,7 +17,7 @@ def main():
     with bootstrap(args.config_uri, options=parse_vars(extras)) as env, env['request'].tm:
         db_session = env['request'].db_session
 
-        in_stock_status = db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').first()
+        in_stock_status = db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
 
         assets = db_session.query(models.Asset)
         for asset in assets:
@@ -30,7 +30,8 @@ def main():
             first_event = asset._history.order_by(models.Event.date).first()
             # noinspection PyProtectedMember
             in_service_event = asset._history.join(models.Event.status) \
-                .filter(models.EventStatus.status_id == 'service').order_by(models.Event.date).first()
+                .filter(models.EventStatus.status_id == 'service') \
+                .order_by(models.Event.date).first()
 
             if in_service_event is first_event:
                 print(f'Adding "in stock" event for asset {asset.id}.')

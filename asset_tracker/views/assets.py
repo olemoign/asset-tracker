@@ -104,14 +104,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
             event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
             event_date = datetime.utcnow().date()
-
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
-
         event = models.Event(
             date=event_date,
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
-            status=status,
+            status=self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).one(),
         )
         # noinspection PyProtectedMember
         self.asset._history.append(event)
@@ -123,13 +120,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
         Args:
             new_site_id (int).
         """
-        status = self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').first()
-
         event = models.Event(
             date=datetime.utcnow().date(),
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
-            status_id=status.id,
+            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
         )
 
         if new_site_id:
@@ -212,7 +207,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """Get last version of configuration updates."""
         last_config = self.asset.history('desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'config_update').first()
-
         if last_config is None:
             return
 
@@ -328,7 +322,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def validate_events(self):
         """Validate events data."""
         if self.form.get('event'):
-            status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).first()
+            status = self.request.db_session.query(models.EventStatus).filter_by(status_id=self.form['event']).one()
             if not status:
                 raise FormException(_('Invalid asset status.'))
 

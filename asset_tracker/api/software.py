@@ -180,14 +180,11 @@ class Software:
             config (dict):
             asset (asset_tracker.models.Asset).
         """
-        config_status = self.request.db_session.query(models.EventStatus).filter_by(status_id='config_update').first()
-
         depot = DepotManager.get()
         last_config = None
 
         last_event = asset.history(order='desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'config_update').first()
-
         if last_event:
             try:
                 config_file = depot.get(last_event.extra_json['config'])
@@ -197,15 +194,13 @@ class Software:
 
         if not last_event or (last_config and last_config != config):
             file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
-
             new_event = models.Event(
-                status=config_status,
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='config_update').one(),
                 date=date.today(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
                 extra=json.dumps({'config': file_id}),
             )
-
             # noinspection PyProtectedMember
             asset._history.append(new_event)
             self.request.db_session.add(new_event)
@@ -224,17 +219,13 @@ class Software:
         last_event = next(last_event_generator, None)
 
         if not last_event or last_event.extra_json['software_version'] != software_version:
-            software_status = self.request.db_session.query(models.EventStatus) \
-                .filter_by(status_id='software_update').first()
-
             new_event = models.Event(
-                status=software_status,
+                status=self.request.db_session.query(models.EventStatus).filter_by(status_id='software_update').one(),
                 date=datetime.utcnow().date(),
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
                 extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
             )
-
             # noinspection PyProtectedMember
             asset._history.append(new_event)
             self.request.db_session.add(new_event)

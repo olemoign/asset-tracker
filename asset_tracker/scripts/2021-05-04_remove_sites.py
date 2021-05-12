@@ -40,7 +40,7 @@ def main():
                 date=datetime.strptime(site_exit, '%d/%m/%Y').date(),
                 creator_id='MFjUDRnl',
                 creator_alias='Olivier Le Moign',
-                status_id=site_change.id,
+                status=site_change,
             )
             # noinspection PyProtectedMember
             asset._history.append(event)
