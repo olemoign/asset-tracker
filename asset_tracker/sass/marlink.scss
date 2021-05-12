@@ -34,8 +34,6 @@ html {
 
 body {
   font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
-  font-size: 16px;
-  line-height: 1.4;
   background-color: $marlink-dark-grey;
 }
 
@@ -246,18 +244,6 @@ table.dataTable thead .sorting_desc:after,
 table.dataTable thead .sorting_asc:after {
   color: $marlink-orange;
   opacity: 0.6;
-}
-
-/****************/
-/****** EHR *****/
-/****************/
-
-#patient-action > footer > div {
-  font-size: 10px;
-
-  @media (max-width: $screen-xl-min) {
-    font-size: 7.5px;
-  }
 }
 
 /****************/
