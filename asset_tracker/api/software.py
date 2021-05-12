@@ -201,8 +201,7 @@ class Software:
                 creator_alias=self.request.user.alias,
                 extra=json.dumps({'config': file_id}),
             )
-            # noinspection PyProtectedMember
-            asset._history.append(new_event)
+            asset.add_event(new_event)
             self.request.db_session.add(new_event)
 
     def create_version_update_event(self, software_version, asset):
@@ -226,8 +225,7 @@ class Software:
                 creator_alias=self.request.user.alias,
                 extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
             )
-            # noinspection PyProtectedMember
-            asset._history.append(new_event)
+            asset.add_event(new_event)
             self.request.db_session.add(new_event)
 
     @view_config(route_name='api-software-update', request_method='POST', permission='api-software-update',

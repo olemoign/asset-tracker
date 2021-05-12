@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from parsys_utilities.model import CreationDateTimeMixin, Model
 from parsys_utilities.random import random_id
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
@@ -39,6 +39,15 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Column(String)
     notes = Column(String)
 
+    def add_event(self, event):
+        """Add event to asset history.
+
+        Args:
+            asset_tracker.models.Event.
+        """
+        self._history.append(event)
+        self.status = self.history('desc', filter_config=True).first().status
+
     def history(self, order, filter_config=False):
         """Filter removed events from history.
 
@@ -49,15 +58,13 @@ class Asset(Model, CreationDateTimeMixin):
         Returns:
             sqlalchemy.orm.query.Query.
         """
-        if order == 'asc':
-            history = self._history.filter_by(removed=False).order_by(Event.date, Event.created_at)
-        else:
-            history = self._history.filter_by(removed=False).order_by(Event.date.desc(), Event.created_at.desc())
+        order_func = asc if order == 'asc' else desc
+        events = self._history.filter_by(removed=False).order_by(order_func(Event.date), order_func(Event.created_at))
 
         if filter_config:
-            history = history.join(Event.status).filter(EventStatus.status_type != 'config')
+            events = events.join(Event.status).filter(EventStatus.status_type != 'config')
 
-        return history
+        return events
 
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
@@ -77,20 +84,20 @@ class Asset(Model, CreationDateTimeMixin):
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
-        asset_query = self.history('asc').join(Event.status)
+        asset_history = self.history('asc').join(Event.status)
 
-        production = asset_query.filter(EventStatus.status_id == 'stock_parsys').first()
+        production = asset_history.filter(EventStatus.status_id == 'stock_parsys').first()
         self._asset_dates['production'] = production.date if production else None
 
-        delivery = asset_query.filter(EventStatus.status_id == 'on_site').first()
+        delivery = asset_history.filter(EventStatus.status_id == 'on_site').first()
         self._asset_dates['delivery'] = delivery.date if delivery else None
         self._asset_dates['warranty_end'] = delivery.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
             if not self.is_decommissioned and delivery else None
 
-        activation = asset_query.filter(EventStatus.status_id == 'service').first()
+        activation = asset_history.filter(EventStatus.status_id == 'service').first()
         self._asset_dates['activation'] = activation.date if activation else None
 
-        calibration_last = asset_query.filter(EventStatus.status_id == 'calibration').first()
+        calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
             self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         for status in ['calibration_last', 'production', 'delivery', 'activation']:
@@ -218,7 +225,7 @@ class Event(Model, CreationDateTimeMixin):
 
     extra = Column(String)
 
-    @hybrid_property
+    @property
     def extra_json(self):
         """Return dictionary from extra.
 
@@ -239,7 +246,6 @@ class EventStatus(Model):
     _label = Column(String, nullable=False, unique=True)
     _label_marlink = Column(String, unique=True)
 
-    @hybrid_method
     def label(self, config):
         """Get an asset status label based on config.
 

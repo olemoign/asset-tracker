@@ -81,12 +81,11 @@ class Assets:
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
         )
-        # noinspection PyProtectedMember
-        asset._history.append(event)
+        asset.add_event(event)
         self.request.db_session.add_all([asset, event])
 
         # Update status and calibration.
-        AssetView.update_status_and_calibration_next(asset)
+        AssetView.update_calibration_next(asset)
 
     def update_asset(self, asset, tenant, json):
         """Update asset.
@@ -103,8 +102,7 @@ class Assets:
                 creator_alias=json['creatorAlias'],
                 status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
             )
-            # noinspection PyProtectedMember
-            asset._history.append(event)
+            asset.add_event(event)
             self.request.db_session.add(event)
 
             # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot

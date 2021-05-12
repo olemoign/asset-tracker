@@ -42,8 +42,7 @@ def main():
                 creator_alias='Olivier Le Moign',
                 status=site_change,
             )
-            # noinspection PyProtectedMember
-            asset._history.append(event)
+            asset.add_event(event)
             db_session.add(event)
 
             asset.site_id = None
