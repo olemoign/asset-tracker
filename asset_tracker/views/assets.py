@@ -376,6 +376,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             mac_wifi=self.form.get('mac_wifi'),
             notes=self.form.get('notes'),
             site_id=self.form.get('site_id'),
+            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one(),
             tenant=self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one(),
         )
         self.request.db_session.add(self.asset)

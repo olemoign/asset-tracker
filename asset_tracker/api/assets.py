@@ -67,19 +67,21 @@ class Assets:
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['default']
 
         # New asset.
+        stock_parsys = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
         asset = models.Asset(
             asset_type='station',
             asset_id=json['login'],
             calibration_frequency=calibration_frequency,
+            status=stock_parsys,
             tenant=tenant,
             user_id=json['userID'],
         )
         # Add event.
         event = models.Event(
-            status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one(),
-            date=datetime.utcnow().date(),
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
+            date=datetime.utcnow().date(),
+            status=stock_parsys,
         )
         asset.add_event(event)
         self.request.db_session.add_all([asset, event])
