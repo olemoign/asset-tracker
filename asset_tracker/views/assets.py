@@ -331,7 +331,13 @@ class Assets(metaclass=AuthenticatedEndpoint):
             if not event_id:
                 continue
 
-            event = self.asset.history('asc', filter_config=True).filter(models.Event.event_id == event_id).first()
+            event = self.request.db_session.query(models.Event) \
+                .join(models.Event.status) \
+                .filter(
+                    models.Event.asset == self.asset,
+                    models.EventStatus.status_type != 'config',
+                    models.Event.event_id == event_id,
+                ).one()
             if not event:
                 raise FormException(_('Invalid event.'))
 
