@@ -52,7 +52,11 @@ class Assets:
 
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         statuses_dict = [
-            {'id': status.id, 'label': self.request.localizer.translate(status.label(config))}
+            {
+                'id': status.id,
+                'label': self.request.localizer.translate(status.label(config)),
+                'status_id': status.status_id,
+            }
             for status in self.request.db_session.query(models.EventStatus)
         ]
         # Simulate the assets statuses as a table with translated labels so that we can filter/sort on status.
@@ -74,7 +78,8 @@ class Assets:
 
         specific_attributes = {
             'site': models.Site.name,
-            'status': statuses.c.label,
+            'status': statuses.c.status_id,
+            'status_label': statuses.c.label,
             'tenant_name': models.Tenant.name,
         }
 
@@ -104,7 +109,8 @@ class Assets:
                 'id': asset.id,
                 'is_active': not asset.is_decommissioned,
                 'site': asset.site.name if asset.site else None,
-                'status': self.request.localizer.translate(asset.status.label(config)),
+                'status': asset.status.status_id,
+                'status_label': self.request.localizer.translate(asset.status.label(config)),
                 'tenant_name': asset.tenant.name,
             }
 
