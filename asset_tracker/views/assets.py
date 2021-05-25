@@ -81,6 +81,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 .options(joinedload(models.EquipmentFamily.consumable_families)).first()
 
             equipment = models.Equipment(
+                asset=self.asset,
                 family=equipment_family,
                 serial_number=self.form.get(f'{group}#equipment-serial_number'),
             )
@@ -89,13 +90,12 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 expiration_date = self.form.get(f'{group}#{consumable_family.family_id}-expiration_date')
                 if expiration_date:
                     consumable = models.Consumable(
+                        equipment=equipment,
                         expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
                         family=consumable_family,
                     )
-                    equipment.consumables.append(consumable)
                     self.request.db_session.add(consumable)
 
-            self.asset.equipments.append(equipment)
             self.request.db_session.add(equipment)
 
     def add_event(self):
