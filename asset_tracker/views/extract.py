@@ -40,7 +40,8 @@ class AssetsExtract:
         asset_columns = [
             'asset_id',
             'asset_type',
-            'tenant_key',
+            'tenant_id',
+            'tenant_name',
             'customer_name',
             'customer_id',
             'current_location',
@@ -98,7 +99,7 @@ class AssetsExtract:
 
         assets = self.request.db_session.query(models.Asset) \
             .options(
-                joinedload(models.Asset.tenant_info),
+                joinedload(models.Asset.tenant),
                 joinedload(models.Asset.site),
                 joinedload(models.Asset.status),
             ) \
@@ -110,7 +111,8 @@ class AssetsExtract:
             row = [
                 asset.asset_id,
                 asset.asset_type,
-                asset.tenant_info.name,
+                asset.tenant.tenant_id,
+                asset.tenant.name,
                 asset.customer_name,
                 asset.customer_id,
                 asset.current_location,
@@ -181,10 +183,10 @@ class AssetsExtract:
                 ]
 
             empty_equipment_count = max_equipments_per_asset - len(equipments)
-            for i in range(empty_equipment_count):
+            for _ in range(empty_equipment_count):
                 # Fill with None values to maintain column alignment.
                 row += [None, None]
-                for j in range(MAX_CONSUMABLES):
+                for _ in range(MAX_CONSUMABLES):
                     row += [None, None]
 
             rows.append(row)
