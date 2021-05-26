@@ -251,7 +251,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
+                <div class="panel panel-default{% if not asset or not asset.equipments %} no-equipment{% endif %}">
                     <div class="panel-heading" data-toggle="collapse" href="#equipments_panel">
                         <h3 class="panel__title">{{ gettext('Equipments') }}</h3>
                         <button type="button" class="equipment__add btn btn-default btn-sm">
