@@ -89,13 +89,13 @@ class Asset(Model, CreationDateTimeMixin):
         production = asset_history.filter(EventStatus.status_id == 'stock_parsys').first()
         self._asset_dates['production'] = production.date if production else None
 
-        delivery = asset_history.filter(EventStatus.status_id == 'on_site').first()
+        delivery = asset_history.filter(EventStatus.status_id == 'transit_customer').first()
         self._asset_dates['delivery'] = delivery.date if delivery else None
-        self._asset_dates['warranty_end'] = delivery.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
-            if not self.is_decommissioned and delivery else None
 
         activation = asset_history.filter(EventStatus.status_id == 'service').first()
         self._asset_dates['activation'] = activation.date if activation else None
+        self._asset_dates['warranty_end'] = activation.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
+            if not self.is_decommissioned and delivery else None
 
         calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
         if production and calibration_last:
