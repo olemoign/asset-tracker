@@ -11,14 +11,6 @@ from sqlalchemy.orm import joinedload
 from asset_tracker import models
 from asset_tracker.notifications import assets as notifications_assets
 
-MANDATORY_CONFIG = {
-    'asset_tracker.cloud_name',
-    'asset_tracker.server_url',
-    'rta.client_id',
-    'rta.secret',
-    'rta.server_url',
-}
-
 logger = get_task_logger(__name__)
 
 
@@ -53,14 +45,6 @@ def notify_expiring_consumables(db_session, delay_days):
 @app.task()
 def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
-    try:
-        # Validate all mandatory config is present.
-        [app.conf.tenant_config.settings['app:main'][config] for config in MANDATORY_CONFIG]
-    except AttributeError as error:
-        capture_exception(error)
-        logger.error(error)
-        return -1
-
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
     expiration_delays = (0, 30, 180)
 
@@ -84,14 +68,6 @@ def next_calibration(months=3):
     Args:
         months (int): a reminder is sent x months before a calibration is needed.
     """
-    try:
-        # Validate all mandatory config is present.
-        [app.conf.tenant_config.settings['app:main'][config] for config in MANDATORY_CONFIG]
-    except AttributeError as error:
-        capture_exception(error)
-        logger.error(error)
-        return -1
-
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
     calibration_date = arrow.utcnow().shift(days=months * 30).naive
 

@@ -20,6 +20,7 @@ DEFAULT_CONFIG = {
 MANDATORY_CONFIG = [
     'asset_tracker.blobstore_path',
     'asset_tracker.sessions_broker_url',
+    'asset_tracker.server_url',
     'sqlalchemy.url',
     'rta.client_id',
     'rta.secret',
