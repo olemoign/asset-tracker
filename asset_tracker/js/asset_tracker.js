@@ -60,6 +60,9 @@ $(document).on('click', '.equipment__add', function addEquipment(event) {
    * Add a new equipment when the user clicks the '+' sign.
    */
   event.stopPropagation();
+  const panel = $(this).closest('.panel.panel-default');
+  panel.removeClass('no-equipment');
+  panel.find('.collapse').collapse('show');
 
   const equipmentBlock = $('#equipments__reference').clone();
 
@@ -84,7 +87,8 @@ $(document).on('click', '.equipment__add', function addEquipment(event) {
   $(`label[for="${modelSerialNumberId}"]`).attr('for', newSerialNumberId);
   serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
 
-  equipmentBlock.data('equipmentsCounter', equipmentsCounter).removeAttr('id').removeClass('hidden')
+  equipmentBlock.data('equipmentsCounter', equipmentsCounter)
+    .removeAttr('id').removeClass('hidden')
     .appendTo('#equipments__list');
   equipmentBlock.find('select').select2({
     theme: 'bootstrap',
@@ -96,6 +100,14 @@ $(document).on('click', '.equipment__remove', function removeEquipment() {
   /**
    * Remove an equipment when the user clicks the 'x' sign.
    */
+  // No equipment, only reference remains.
+  // We need to do this check before removing, otherwise the $(this) node doesn't exist anymore and $(this).closest()
+  // returns empty.
+  if ($('.equipment__block').length === 2) {
+    console.log($(this).closest('.panel.panel-default'));
+    $(this).closest('.panel.panel-default').addClass('no-equipment');
+  }
+
   $(this).closest('.equipment__block').remove();
 });
 

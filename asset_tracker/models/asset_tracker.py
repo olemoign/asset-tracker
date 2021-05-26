@@ -95,11 +95,9 @@ class Asset(Model, CreationDateTimeMixin):
         activation = asset_history.filter(EventStatus.status_id == 'service').first()
         self._asset_dates['activation'] = activation.date if activation else None
         self._asset_dates['warranty_end'] = activation.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
-            if not self.is_decommissioned and delivery else None
+            if not self.is_decommissioned and activation else None
 
         calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
-        if production and calibration_last:
-            self._asset_dates['calibration_last'] = max(production.date, calibration_last.date)
         for status in ['calibration_last', 'production', 'delivery', 'activation']:
             if locals().get(status):
                 self._asset_dates['calibration_last'] = locals()[status].date
@@ -111,7 +109,6 @@ class Asset(Model, CreationDateTimeMixin):
     def asset_dates(self):
         if not hasattr(self, '_asset_dates'):
             self._get_asset_dates()
-
         return self._asset_dates
 
     @property
