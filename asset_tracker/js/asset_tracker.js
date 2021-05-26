@@ -60,7 +60,9 @@ $(document).on('click', '.equipment__add', function addEquipment(event) {
    * Add a new equipment when the user clicks the '+' sign.
    */
   event.stopPropagation();
-  $(this).closest('.panel.panel-default').removeClass('no-equipment');
+  const panel = $(this).closest('.panel.panel-default');
+  panel.removeClass('no-equipment');
+  panel.find('.collapse').collapse('show');
 
   const equipmentBlock = $('#equipments__reference').clone();
 
