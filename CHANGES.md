@@ -1,6 +1,13 @@
+3.1.2
+---
+- fix: decommissioned assets filter
+- fix: extract
+- feat: update dates calculation
+- feat: empty equipments panel
+
 3.1.1
 ---
-- fix: autoflush bug.
+- fix: autoflush bug
 
 3.1.0
 ---
