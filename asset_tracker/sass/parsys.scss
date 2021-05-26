@@ -18,11 +18,13 @@ $navbar-default-toggle-border-color: $parsys-green;
 $btn-primary-color: black;
 $link-color: black;
 
+@use "sass:math";
+
 @import 'main';
 
 .main-logo {
   background-image: url('/static/images/parsys/logo.png');
-  padding-top: percentage(168px / 611px);
+  padding-top: percentage(math.div(168px, 611px));
   margin: 50px auto;
 }
 
