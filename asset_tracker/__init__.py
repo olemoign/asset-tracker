@@ -108,7 +108,6 @@ def main(global_config, **settings):
         sentry_sdk.init(
             dsn=dsn,
             integrations=[CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()],
-            environment=settings.get('asset_tracker.server_url') or DEFAULT_CONFIG['asset_tracker.server_url'],
             server_name=settings.get('asset_tracker.server_url') or DEFAULT_CONFIG['asset_tracker.server_url'],
             attach_stacktrace=True,
             send_default_pii=True,
