@@ -34,11 +34,7 @@ def add_global_variables(event):
 
 
 def read_form(form):
-    return MultiDict([
-        (key, value)
-        for key, value in form.mixed().items()
-        if value != ''
-    ])
+    return MultiDict([(key, value) for key, value in form.items() if value != ''])
 
 
 class FormException(Exception):
