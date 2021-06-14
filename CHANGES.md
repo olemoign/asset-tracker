@@ -1,3 +1,7 @@
+3.1.3
+---
+- fix: multiple events delete
+
 3.1.2
 ---
 - fix: decommissioned assets filter

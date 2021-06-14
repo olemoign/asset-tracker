@@ -10,7 +10,7 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_3_6_4 = f'{tracker}/ecdd9c07067c32e22d2d1da6b22029322be8b65d07db59c7bdf8960a3f507cba/parsys_utilities-3.6.4-py3-none-any.whl'  # noqa: E501
+parsys_utilities_3_6_5 = f'{tracker}/c0662cc5bca203ec64cffeeaaeec44d34903e4452c0b83040ff6e4e3af360969/parsys_utilities-3.6.5-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.6.5',
     'arrow==1.1.0',
@@ -18,7 +18,7 @@ requires = [
     'filedepot==0.8.0',
     'importlib-resources==5.1.4',
     'jinja2==3.0.1',
-    f'parsys-utilities @ {parsys_utilities_3_6_4}',
+    f'parsys-utilities @ {parsys_utilities_3_6_5}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2-binary==2.8.6',
@@ -30,7 +30,7 @@ requires = [
     'python-dateutil==2.8.1',
     'sentry-sdk==1.1.0',
     'setuptools==57.0.0',
-    'sqlalchemy==1.4.17',
+    'sqlalchemy==1.4.18',
     'transaction==3.0.1',
     'waitress==2.0.0',
     'webob==1.8.7',
@@ -48,7 +48,7 @@ optional = {
     ],
     'tests': [
         'pytest==6.2.4',
-        'pytest-cov==2.12.0',
+        'pytest-cov==2.12.1',
         'webtest==2.0.35',
     ],
 }
