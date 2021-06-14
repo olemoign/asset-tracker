@@ -5,8 +5,8 @@ the content of config.json.
 """
 import json
 import logging
+from pathlib import Path
 
-import importlib_resources
 import transaction
 
 from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus
@@ -17,7 +17,6 @@ DEFAULT_CONFIG = {
     'asset_tracker.config': 'parsys',
     'asset_tracker.server_url': 'https://at.cloud.parsys.com',
 }
-
 MANDATORY_CONFIG = [
     'asset_tracker.blobstore_path',
     'asset_tracker.sessions_broker_url',
@@ -26,6 +25,7 @@ MANDATORY_CONFIG = [
     'rta.secret',
     'rta.server_url',
 ]
+PATH = Path(__file__).resolve().parent
 
 logger = logging.getLogger('asset_tracker_actions')
 
@@ -154,8 +154,7 @@ def update_configuration(settings):
         db_session = get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
-        config_path = importlib_resources.files(__package__).joinpath('config.json')
-        with open(config_path) as config_file:
+        with open(PATH / 'config.json') as config_file:
             config = json.load(config_file)
 
         update_equipment_families(db_session, config)
