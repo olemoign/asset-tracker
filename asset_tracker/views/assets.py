@@ -391,7 +391,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         self.add_event()
 
-        if self.form.get('site_id'):
+        transit_statuses = ['transit_distributor_return', 'transit_parsys']
+        if self.form.get('site_id') and self.asset.status.status_id not in transit_statuses:
             self.add_site_change_event(self.form['site_id'])
 
         self.update_calibration_next(self.asset)
