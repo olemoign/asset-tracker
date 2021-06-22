@@ -50,6 +50,7 @@ class AssetsExtract:
             'notes',
 
             'production_date',
+            'delivery_date',
             'activation_date',
             'last_calibration_date',
             'next_calibration_date',
