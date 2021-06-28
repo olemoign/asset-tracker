@@ -182,7 +182,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def get_latest_softwares_version(self):
         """Get last version of every softwares."""
         if not self.asset.id:
-            return None
+            return
 
         software_updates = self.asset.history('desc') \
             .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')

@@ -34,7 +34,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
         """Get in db the site being read/updated."""
         site_id = self.request.matchdict.get('site_id')
         if not site_id:
-            return None  # In the list page, site_id will be None and it's ok.
+            return  # In the list page, site_id will be None and it's ok.
 
         site = self.request.db_session.query(models.Site).filter_by(id=site_id) \
             .join(models.Asset.tenant) \

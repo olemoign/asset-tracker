@@ -7,38 +7,9 @@ from parsys_utilities.celery_app import app
 from parsys_utilities.celery_tasks import get_session_factory
 from sqlalchemy.orm import joinedload
 
-from asset_tracker import models
-from asset_tracker.notifications import assets as notifications_assets
+from asset_tracker import models, notifications
 
 logger = get_task_logger(__name__)
-
-
-def notify_expiring_consumables(db_session, delay_days):
-    """Get equipments with consumables that will expire and send a notification to involved users.
-
-    Args:
-        db_session (sqlalchemy.orm.session.Session): sqlalchemy db session.
-        delay_days (int): days before expiration.
-
-    Returns:
-        int: number of equipments with expiring consumables.
-    """
-    expiration_date = arrow.utcnow().shift(days=delay_days).naive
-
-    equipments = db_session.query(models.Equipment) \
-        .join(models.Equipment.consumables) \
-        .filter(models.Consumable.expiration_date == expiration_date) \
-        .options(
-            joinedload(models.Equipment.asset).joinedload(models.Asset.tenant),
-            joinedload(models.Equipment.family),
-            joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
-        ) \
-        .all()
-
-    for equipment in equipments:
-        notifications_assets.consumables_expiration(app.conf.tenant_config, equipment, expiration_date, delay_days)
-
-    return len(equipments)
 
 
 @app.task()
@@ -55,7 +26,24 @@ def consumables_expiration():
 
         total_assets = 0
         for delay_days in expiration_delays:
-            total_assets += notify_expiring_consumables(db_session, delay_days)
+            expiration_date = arrow.utcnow().shift(days=delay_days).naive
+
+            equipments = db_session.query(models.Equipment) \
+                .join(models.Equipment.consumables) \
+                .filter(models.Consumable.expiration_date == expiration_date) \
+                .options(
+                    joinedload(models.Equipment.asset).joinedload(models.Asset.tenant),
+                    joinedload(models.Equipment.family),
+                    joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
+                ) \
+                .all()
+
+            for equipment in equipments:
+                notifications.assets.consumables_expiration(
+                    app.conf.tenant_config, equipment, expiration_date, delay_days
+                )
+
+            total_assets += len(equipments)
 
         return total_assets
 
@@ -90,6 +78,6 @@ def next_calibration(months=3):
         groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
         for tenant_id, assets in groupby_tenant:
-            notifications_assets.next_calibration(app.conf.tenant_config, tenant_id, assets, calibration_date)
+            notifications.assets.next_calibration(app.conf.tenant_config, tenant_id, assets, calibration_date)
 
         return len(assets)

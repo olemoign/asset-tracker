@@ -45,19 +45,13 @@ def consumables_expiration(tenant_config, equipment, expiration_date, delay_days
     messages = {'email': emails}
 
     # Asynchronous POST
-    disable_notifications = asbool(
-        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
-    )
-    if disable_notifications:
-        logger.debug('Notifications are disabled.')
-    else:
-        json = {
-            'level': 'info',
-            'message': messages,
-            'rights': ['notifications-consumables'],
-            'tenant': equipment.asset.tenant.tenant_id,
-        }
-        notify_offline(tenant_config, json)
+    json = {
+        'level': 'info',
+        'message': messages,
+        'rights': ['notifications-consumables'],
+        'tenant': equipment.asset.tenant.tenant_id,
+    }
+    notify_offline(tenant_config, json)
 
     logger.info(['notify consumables expiration', equipment.id])
 
@@ -90,14 +84,7 @@ def next_calibration(tenant_config, tenant_id, assets, calibration_date):
     emails = emails_renderer_offline(TEMPLATES_PATH, TRANSLATIONS_PATH, subject, text, html, template_data)
     messages = {'email': emails}
 
-    # Asynchronous POST
-    disable_notifications = asbool(
-        tenant_config.settings['app:main'].get('asset_tracker.dev.disable_notifications', False)
-    )
-    if disable_notifications:
-        logger.debug('Notifications are disabled.')
-    else:
-        json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
-        notify_offline(tenant_config, json)
+    json = {'level': 'info', 'message': messages, 'rights': ['notifications-calibration'], 'tenant': tenant_id}
+    notify_offline(tenant_config, json)
 
     logger.info(['notify calibration date', [asset.id for asset in assets]])
