@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_3_6_6 = f'{tracker}/77994237fc3d95375d443ad16fd106b7b770488e9356f8ca53f553eefcb35708/parsys_utilities-3.6.6-py3-none-any.whl'  # noqa: E501
+parsys_utilities_3_6_10 = f'{tracker}/069d2b96ce5f2fa1011e7e276fe713e9914bce72864ec7c55db856e8095249cb/parsys_utilities-3.6.10-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.6.5',
-    'arrow==1.1.0',
-    'celery[redis]==5.1.1',
+    'arrow==1.1.1',
+    'celery[redis]==5.1.2',
     'filedepot==0.8.0',
     'jinja2==3.0.1',
-    f'parsys-utilities @ {parsys_utilities_3_6_6}',
+    f'parsys-utilities==3.6.10',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2-binary==2.9.1',
@@ -26,14 +26,14 @@ requires = [
     'pyramid-jinja2==2.8',
     'pyramid-session-redis==1.6.1',
     'pyramid-tm==2.4',
-    'python-dateutil==2.8.1',
-    'sentry-sdk==1.1.0',
-    'setuptools==57.0.0',
-    'sqlalchemy==1.4.18',
+    'python-dateutil==2.8.2',
+    'sentry-sdk==1.3.0',
+    'setuptools==57.4.0',
+    'sqlalchemy==1.4.22',
     'transaction==3.0.1',
     'waitress==2.0.0',
     'webob==1.8.7',
-    'zope.sqlalchemy==1.4',
+    'zope.sqlalchemy==1.5',
 ]
 
 optional = {
