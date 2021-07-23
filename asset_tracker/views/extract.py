@@ -1,6 +1,7 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
 
+from parsys_utilities.sql import windowed_query
 from pyramid.security import Allow
 from pyramid.view import view_config
 from sqlalchemy import desc, func
@@ -107,7 +108,7 @@ class AssetsExtract:
             .order_by(models.Asset.asset_id)
 
         rows = []
-        for asset in assets:
+        for asset in windowed_query(assets, models.Asset.asset_id, 100):
             # Asset information.
             row = [
                 asset.asset_id,

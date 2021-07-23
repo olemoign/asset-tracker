@@ -20,8 +20,7 @@ class CSVRenderer:
                 response.content_type = 'text/csv'
 
         fout = StringIO()
-        writer = csv.writer(fout, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
+        writer = csv.writer(fout)
         writer.writerow(value.get('header', []))
         writer.writerows(value.get('rows', []))
 
