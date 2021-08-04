@@ -27,7 +27,6 @@
     "jquery": true
   },
   "globals": {
-    "Modernizr": true,
     "userLocale": true
   }
 }

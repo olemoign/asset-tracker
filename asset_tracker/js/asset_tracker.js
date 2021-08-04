@@ -332,64 +332,6 @@ $(document).on('click', '.panel_link', function followRTALink(event) {
   window.location = $(this).prop('href');
 });
 
-$(document).on('submit', 'form', function validateDates(event) {
-  /**
-   * Validate dates on form submit.
-   */
-  $(this).find('input[type="date"]').each(function validateDate() {
-    // Date is null.
-    if (!this.value) {
-      this.setCustomValidity('');
-      return;
-    }
-
-    // Date is in the format DD/MM/YYYY, transform it in the ISO format YYYY-MM-DD.
-    const humanPattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    if (humanPattern.test(this.value)) {
-      this.value = this.value.replace(humanPattern, '$3-$2-$1');
-      this.setCustomValidity('');
-      return;
-    }
-
-    // Date is in the expected format YYYY-MM-DD.
-    const isoPattern = /^\d{4}-\d{2}-\d{2}$/;
-    if (isoPattern.test(this.value)) {
-      this.setCustomValidity('');
-      return;
-    }
-
-    // Date format hasn't been recognized, show error to the user and stop submit.
-    this.setCustomValidity('Invalid date.');
-  });
-
-  if (!this.reportValidity()) {
-    event.preventDefault();
-  }
-});
-
-$(document).on('input', 'input[type="date"]', function resetCustomValidity() {
-  // Reset customValidity on input change, otherwise Safari will not fire form submit.
-  this.setCustomValidity('');
-});
-
-function restoreDates() {
-  // Update date format if browser doesn't manage date input types.
-  if (!Modernizr.inputtypes.date) {
-    $('input[type="date"]').each(function standardizeDates() {
-      // If date is null.
-      if (!this.value) {
-        return;
-      }
-
-      // If date is in the format YYYY-MM-DD, transform it in the format DD/MM/YYYY.
-      const isStandardDate = this.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (isStandardDate) {
-        this.value = `${isStandardDate[3]}/${isStandardDate[2]}/${isStandardDate[1]}`;
-      }
-    });
-  }
-}
-
 $(function preparePageReady() {
   setActiveMenu($('#menu-main li, #menu-settings li'));
 
@@ -400,8 +342,6 @@ $(function preparePageReady() {
   firstInput.trigger('focus');
   // Move cursor to the end of the input.
   firstInput.val(firstInput.val());
-
-  restoreDates();
 
   // Show sites corresponding to the selected tenant when page is ready.
   manageSites();
