@@ -24,12 +24,12 @@ requires = [
     'pyramid==1.10.8',
     'pyramid-assetviews==1.0a3',
     'pyramid-jinja2==2.8',
-    'pyramid-session-redis==1.6.1',
+    'pyramid-session-redis==1.6.2',
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
     'sentry-sdk==1.3.1',
     'setuptools==57.4.0',
-    'sqlalchemy==1.4.22',
+    'sqlalchemy==1.4.23',
     'transaction==3.0.1',
     'waitress==2.0.0',
     'webob==1.8.7',
@@ -48,7 +48,7 @@ optional = {
     'tests': [
         'pytest==6.2.4',
         'pytest-cov==2.12.1',
-        'webtest==2.0.35',
+        'webtest==3.0.0',
     ],
 }
 

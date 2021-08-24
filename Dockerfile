@@ -1,4 +1,4 @@
-FROM parsys/python
+FROM tracker.parsys.com:1337/parsys/docker-files:python
 
 # This fix an annoying bug between python3 and ubuntu.
 ENV LANG C.UTF-8
