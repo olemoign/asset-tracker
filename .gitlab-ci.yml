@@ -8,9 +8,9 @@ stages:
 # This authentication method is used within containers (flake8, tests, build, etc.) as we can't use docker login.
 .authenticate_tracker: &authenticate_tracker
   before_script:
-    - echo "machine ${CI_REGISTRY}" > ~/.netrc
+    - echo "machine $CI_REGISTRY" > ~/.netrc
     - echo "login gitlab-ci-token" >> ~/.netrc
-    - echo "password ${CI_JOB_TOKEN}" >> ~/.netrc
+    - echo "password $CI_JOB_TOKEN" >> ~/.netrc
 
 variables:
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
@@ -23,10 +23,9 @@ flake8:
   image: python:3.8
   tags:
     - docker
-    - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
 
@@ -41,10 +40,9 @@ pytest:
   image: python:3.8
   tags:
     - docker
-    - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
@@ -60,10 +58,9 @@ build:
   image: python:3.8
   tags:
     - docker
-    - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
@@ -80,12 +77,12 @@ build:
       - dist/
 
 docker-image:
-  <<: *authenticate_tracker
   stage: dist
   tags:
     - shell
 
   script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $CONTAINER_TEST_IMAGE .
 
 release-image:
