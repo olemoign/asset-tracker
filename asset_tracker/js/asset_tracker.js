@@ -10,6 +10,7 @@ function manageSites() {
     .prop('id', 'site_id').prop('name', 'site_id')
     .appendTo('#site__options');
 
+  // noinspection JSCheckFunctionSignatures
   const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
   // Filter Sites - remove irrelevant options.
@@ -31,6 +32,7 @@ $(document).on('change', '#tenant_id', function manageSiteSelect() {
   manageSites();
 
   // Reselect div as it was removed/recreated.
+  // noinspection JSJQueryEfficiency
   siteSelect = $('#site_id');
   // Unselect the current value if we changed tenants.
   siteSelect.val('');
@@ -144,7 +146,7 @@ $(document).on('change', '.equipment__family', function addConsumableExpirationD
   }
 });
 
-// Datatables.
+/** * DATATABLES ** */
 const DATATABLES_TRANSLATIONS = {
   fr: {
     sProcessing: 'Traitement en cours...',
@@ -162,6 +164,7 @@ const DATATABLES_TRANSLATIONS = {
       sPrevious: 'Pr&eacute;c&eacute;dent',
       sNext: 'Suivant',
       sLast: 'Dernier',
+      sSeparator: 'sur',
     },
     oAria: {
       sSortAscending: ': activer pour trier la colonne par ordre croissant',
@@ -170,16 +173,17 @@ const DATATABLES_TRANSLATIONS = {
   },
 };
 
-function addHref(row, data) {
+
+function addHrefToDataTablesRows(row, data) {
   /**
    * Add on each row the link sent from the WebServices.
    */
   if (data.links) {
-    const objectLink = $.grep(data.links, function getLink(n) {
+    const objectLink = jQuery.grep(data.links, function getLink(n) {
       return n.rel === 'self';
     });
-    const rowTd = $(row).find('td');
 
+    const rowTd = $(row).find('td');
     rowTd.each(function fillCell() {
       // If cell is empty, add a space character so that the cell will be clickable.
       if (!$(this).html()) {
@@ -190,29 +194,8 @@ function addHref(row, data) {
   }
 }
 
-function styleInactiveObjects(row, data) {
-  const hasActiveProperty = Object.prototype.hasOwnProperty.call(data, 'is_active');
-  if (hasActiveProperty && !data.is_active) {
-    $(row).addClass('warning');
-  }
-}
-
-function assetTrackerCallback(row, data) {
-  addHref(row, data);
-  styleInactiveObjects(row, data);
-}
-
-function createDataTables() {
-  /**
-   * Create the dataTable.
-   */
-  const table = $('table.dataTables');
-  if (!table) {
-    return;
-  }
-
+function manageColumnsRender(table) {
   const columns = [];
-  const customFilter = table.data('custom-filter');
 
   // Loop through all the columns, to be able to hook the 'data-render' parameters to existing functions.
   table.find('th').each(function setRenderFunctions() {
@@ -224,6 +207,31 @@ function createDataTables() {
     }
     columns.push(col);
   });
+
+  return columns;
+}
+
+function styleInactiveObjects(row, data) {
+  const hasActiveProperty = Object.prototype.hasOwnProperty.call(data, 'is_active');
+  // noinspection JSUnresolvedVariable
+  if (hasActiveProperty && !data.is_active) {
+    $(row).addClass('warning');
+  }
+}
+
+function assetTrackerCallback(row, data) {
+  addHrefToDataTablesRows(row, data);
+  styleInactiveObjects(row, data);
+}
+
+$(function createDatatables() {
+  /**
+   * Create the dataTable.
+   */
+  const table = $('table.dataTables');
+  if (!table) {
+    return;
+  }
 
   const dataTableParameters = {
     serverSide: true,
@@ -239,7 +247,7 @@ function createDataTables() {
     },
     // Show 'processing' message.
     processing: true,
-    columns: columns,
+    columns: manageColumnsRender(table),
     rowCallback: assetTrackerCallback,
   };
 
@@ -247,23 +255,27 @@ function createDataTables() {
     dataTableParameters.language = DATATABLES_TRANSLATIONS[window.userLocale];
   }
 
+  const customFilter = table.data('custom-filter');
   // If there is a custom filter, change the organization of the special divs around the dataTable (page size to
   // the bottom).
   if (customFilter) {
     dataTableParameters.dom = '<"row"<"col-sm-6"<"custom_filter checkbox">><"col-sm-6"f>>' +
-      '<"row"<"col-sm-12"tr>>' +
-      '<"row"<"col-sm-5"i><"col-sm-7"p>>';
+                              '<"row"<"col-sm-12"tr>>' +
+                              '<"row"<"col-sm-5"i><"col-sm-7"p>>';
   }
 
   const initialisedDataTable = table.DataTable(dataTableParameters);
 
   // Manage the custom filter.
   if (customFilter) {
+    // noinspection JSCheckFunctionSignatures
     const tableContainer = $(initialisedDataTable.table().container());
+    // noinspection JSCheckFunctionSignatures
+    tableContainer.find('.dataTables_info').css('padding-bottom', '10px');
 
     // Save the custom filter state with the other dataTables parameters.
     initialisedDataTable.on('stateSaveParams.dt', function saveCustomFilter(event, settings, data) {
-      // eslint-disable-next-line no-param-reassign
+      // noinspection JSCheckFunctionSignatures
       data.customFilter = !tableContainer.find('.custom_filter__input').is(':checked');
     });
 
@@ -272,12 +284,15 @@ function createDataTables() {
     const tableState = initialisedDataTable.state.loaded();
 
     // If table didn't yet store state in local storage, input is checked, otherwise, use local storage.
+    // noinspection JSUnresolvedVariable
     const inputIsChecked = !tableState || !tableState.customFilter ? ' checked' : '';
     const filterHTML = `<label><input class="custom_filter__input" type="checkbox"${inputIsChecked}> ${filterLabel}</label>`;
-    tableContainer.find('.custom_filter').html(filterHTML);
+      // noinspection JSCheckFunctionSignatures
+    tableContainer.find('.custom_filter').html(filterHTML).css('padding', '10px 0 0 10px');
     initialisedDataTable.state.save();
 
     // Force a draw of the table when the filter state changes.
+      // noinspection JSCheckFunctionSignatures
     tableContainer.find('.custom_filter__input').on('change', initialisedDataTable.draw);
   }
 
@@ -285,13 +300,12 @@ function createDataTables() {
   // saved after reception of the reponse, the state changes can be lost.
   // To prevent this, save the state before making the ajax request.
   table.on('preXhr.dt', initialisedDataTable.state.save);
-}
+});
 
 $(document).on('preInit.dt', function initCustomFilter(event, settings) {
   /**
    * Before dataTable initialization, manage when to send the 'hide' query string for the custon filter.
    */
-  /* eslint-disable no-param-reassign */
   const api = new $.fn.dataTable.Api(settings);
   const state = api.state.loaded();
 
@@ -302,10 +316,13 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
   if (customFilter) {
     settings.ajax.data = function setDatatablesFilter(data) {
       // This is the HTML node wrapping around the table with the special search, filter, etc.
+      // noinspection JSCheckFunctionSignatures
       const dataTableContainer = $(table.DataTable().table().container());
+      // noinspection JSCheckFunctionSignatures
       const customFilterInput = dataTableContainer.find('.custom_filter__input');
 
       // 1: the filter checkbox is visible.
+      // noinspection JSUnresolvedVariable
       if ((customFilterInput.length && !customFilterInput.is(':checked')) ||
         // 2: the table isn't visible yet but a filter value is present in the local storage.
         (!customFilterInput.length && state && state.customFilter)) {
@@ -334,8 +351,6 @@ $(document).on('click', '.panel_link', function followRTALink(event) {
 
 $(function preparePageReady() {
   setActiveMenu($('#menu-main li, #menu-settings li'));
-
-  createDataTables();
 
   // Auto focus first input in page.
   const firstInput = $('input[type=text]').first();

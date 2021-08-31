@@ -58,7 +58,6 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         # For each asset, check if there is a site change AFTER arrival on the site. This could happen multiple times.
         for asset in assets_ever_on_site:
-            # noinspection PyProtectedMember
             site_changes = self.request.db_session.query(models.Event) \
                 .filter(models.Event.asset == asset) \
                 .join(models.Event.status).filter(models.EventStatus.status_id == 'site_change').all()
@@ -123,6 +122,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 'tenants': self.request.db_session.query(models.Tenant).all(),
             }
 
+        # noinspection PyArgumentList
         self.site = models.Site(
             contact=self.form.get('contact'),
             email=self.form.get('email'),

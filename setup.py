@@ -12,7 +12,7 @@ with open(here / 'CHANGES.md') as f:
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
 parsys_utilities_3_6_12 = f'{tracker}/7facb7073bb92bd1f1e78c71ab4fee6fd0cbd20e4488f014ed083f37e1200a64/parsys_utilities-3.6.12-py3-none-any.whl'  # noqa: E501
 requires = [
-    'alembic==1.6.5',
+    'alembic==1.7.1',
     'arrow==1.1.1',
     'celery[redis]==5.1.2',
     'filedepot==0.8.0',
@@ -39,6 +39,7 @@ requires = [
 optional = {
     'dev': [
         'babel==2.9.1',
+        'docker-compose==1.29.2',
         'pybabel-json-md==0.1.0',
         'pyramid-debugtoolbar==4.9',
     ],
@@ -46,7 +47,7 @@ optional = {
         'flake8==3.9.2',
     ],
     'tests': [
-        'pytest==6.2.4',
+        'pytest==6.2.5',
         'pytest-cov==2.12.1',
         'webtest==3.0.0',
     ],
@@ -78,7 +79,6 @@ setup(
     include_package_data=True,
     python_requires='>=3.8',
     install_requires=requires,
-    tests_require=optional['tests'],
     extras_require=optional,
     entry_points={
         'paste.app_factory': [

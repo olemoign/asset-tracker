@@ -84,7 +84,6 @@ class Assets:
         }
 
         try:
-            # noinspection PyTypeChecker
             output = sql_search(
                 self.request.db_session,
                 models.Asset,
@@ -176,7 +175,6 @@ class Sites(DataTablesAPI):
         }
 
         try:
-            # noinspection PyTypeChecker
             output = sql_search(
                 self.request.db_session,
                 models.Site,

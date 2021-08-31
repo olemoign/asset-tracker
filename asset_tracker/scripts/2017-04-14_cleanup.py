@@ -33,6 +33,7 @@ def main():
 
             if in_service_event is first_event:
                 print(f'Adding "in stock" event for asset {asset.id}.')
+                # noinspection PyArgumentList
                 in_stock_event = models.Event(
                     creator_id='59EcBjjl',
                     creator_alias='TISON Sylvain',

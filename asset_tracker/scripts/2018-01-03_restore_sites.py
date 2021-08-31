@@ -32,6 +32,7 @@ def main():
                 site = db_session.query(Site).filter_by(name=site_name).first()
 
                 if not site:
+                    # noinspection PyArgumentList
                     site = Site(tenant_id=asset.tenant_id, name=site_name)
 
                     if site_name.startswith('CMA CGM') or site_name.startswith('APL'):

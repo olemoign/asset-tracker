@@ -14,7 +14,7 @@ services:
     environment:
       - OAUTHLIB_INSECURE_TRANSPORT=True
     ports:
-      - 6545:80
+      - "6545:80"
 
   celery:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop

@@ -148,8 +148,8 @@ class Software:
         if not product_versions:
             return {'updateAvailable': False} if current else {}
 
-        # noinspection PyTypeChecker
         # Sort dictionary by version (which are the keys of the dict).
+        # noinspection PyTypeChecker
         product_versions = dict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
 
         version = self.request.GET.get('version')
@@ -194,6 +194,7 @@ class Software:
 
         if not last_event or (last_config and last_config != config):
             file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
+            # noinspection PyArgumentList
             new_event = models.Event(
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
@@ -218,6 +219,7 @@ class Software:
         last_event = next(last_event_generator, None)
 
         if not last_event or last_event.extra_json['software_version'] != software_version:
+            # noinspection PyArgumentList
             new_event = models.Event(
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,

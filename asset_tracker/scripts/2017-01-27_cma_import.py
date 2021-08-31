@@ -39,6 +39,7 @@ def main():
                 sys.exit()
 
             print(f'Added asset for vessel {vessel}')
+            # noinspection PyArgumentList
             kit = Asset(
                 asset_id=kit_id,
                 tenant_id=args.tenant_id,
@@ -53,12 +54,14 @@ def main():
             kit.equipments.append(telecardia)
 
             calibration_date = datetime.strptime(calibration_date, '%d/%m/%y')
+            # noinspection PyArgumentList
             calibration = Event(
                 date=calibration_date,
                 creator_id=args.creator_id,
                 creator_alias=args.creator_alias,
                 status=calibration_status,
             )
+            # noinspection PyArgumentList
             activation = Event(
                 date=calibration_date + timedelta(hours=1),
                 creator_id=args.creator_id,
