@@ -1,4 +1,4 @@
-$icon-font-path: "/static/fonts/";
+$icon-font-path: '/static/fonts/';
 
 $black: #000;
 
@@ -30,15 +30,6 @@ body, html {
   height: 100%;
 }
 
-.img-background-fixed {
-  height: 100%;
-  width: 100%;
-  background-repeat: no-repeat;
-  position: fixed;
-  top: 50px;
-  z-index: -1;
-}
-
 .root-container {
   width: 100%;
 }
@@ -64,10 +55,10 @@ body, html {
 
 // Bootstrap tries to fix date inputs in Safari but this doesn't apply anymore and breaks the inputs in Firefox.
 // So deactivate their fix.
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"],
-input[type="month"] {
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'],
+input[type='month'] {
   &.form-control {
     line-height: normal;
   }
@@ -192,7 +183,7 @@ table.dataTable td {
 /************* Panels *************/
 /**********************************/
 
-.panel:not(.no-equipment) .panel-heading[data-toggle="collapse"] {
+.panel:not(.no-equipment) .panel-heading[data-toggle='collapse'] {
   // Show that the full panel header is clickable to open/hide the accordion.
   cursor: pointer;
 
