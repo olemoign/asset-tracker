@@ -28,12 +28,12 @@ requires = [
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
     'sentry-sdk==1.3.1',
-    'setuptools==57.4.0',
+    'setuptools==58.0.0',
     'sqlalchemy==1.4.23',
     'transaction==3.0.1',
     'waitress==2.0.0',
     'webob==1.8.7',
-    'zope.sqlalchemy==1.5',
+    'zope.sqlalchemy==1.6',
 ]
 
 optional = {
