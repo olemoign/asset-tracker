@@ -1,3 +1,8 @@
+3.1.4
+---
+- feat: add data in export
+- fix: multiple domains
+
 3.1.3
 ---
 - fix: multiple events delete
