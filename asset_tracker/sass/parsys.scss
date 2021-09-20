@@ -24,7 +24,7 @@ $link-color: black;
 
 .main-logo {
   background-image: url('/static/images/parsys/logo.png');
-  padding-top: percentage(math.div(168px, 611px));
+  padding-top: math.percentage(math.div(168px, 611px));
   margin: 50px auto;
 }
 
