@@ -30,6 +30,13 @@ body, html {
   height: 100%;
 }
 
+.img-background-fixed {
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: fixed;
+  z-index: -1;
+}
+
 .root-container {
   width: 100%;
 }

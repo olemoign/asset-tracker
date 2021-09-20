@@ -12,7 +12,7 @@ with open(here / 'CHANGES.md') as f:
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
 parsys_utilities_3_6_13 = f'{tracker}/fb32497e3f360686c1b5e8fd4f4a4c50aca4ab24c0ec02c78e6b47ec9956d329/parsys_utilities-3.6.13-py3-none-any.whl'  # noqa: E501
 requires = [
-    'alembic==1.7.1',
+    'alembic==1.7.3',
     'arrow==1.1.1',
     'celery[redis]==5.1.2',
     'filedepot==0.8.0',

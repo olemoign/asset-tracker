@@ -1,4 +1,0 @@
-2.7.0
----
-
--  Sites => add 'api-sites-read' to users' rights + modify "add_header X-Frame-Options ALLOW FROM cloud" in nginx conf.

@@ -23,6 +23,7 @@ flake8:
   image: python:3.8
   tags:
     - docker
+    - asset_tracker
 
   cache:
     key: ${CI_PROJECT_ID}
@@ -40,6 +41,7 @@ pytest:
   image: python:3.8
   tags:
     - docker
+    - asset_tracker
 
   cache:
     key: ${CI_PROJECT_ID}
@@ -58,6 +60,7 @@ build:
   image: python:3.8
   tags:
     - docker
+    - asset_tracker
 
   cache:
     key: ${CI_PROJECT_ID}
