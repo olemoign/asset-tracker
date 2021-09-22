@@ -181,8 +181,9 @@ table.dataTable td {
 /**********************************/
 
 #user_settings-iframe {
+  display: block;
   border: 0;
-  height: calc(100% - 65px);
+  height: calc(100% - 60px);
   width: 100%;
 }
 

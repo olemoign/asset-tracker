@@ -31,10 +31,6 @@ $footer-height-sm: 249px;
 
 @import 'main';
 
-html {
-  height: 100%;
-}
-
 body {
   font-family: Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
   background-color: $marlink-dark-grey;
@@ -64,8 +60,12 @@ body {
 
 .root-container {
   background: white;
-  height: calc(100% - #{$navbar-height} - 1px - #{$footer-height});
+  height: calc(100% - #{$navbar-height} - 3px - #{$footer-height});
   padding-top: 7px;
+}
+
+#user_settings-iframe {
+  height: calc(100% - #{$navbar-height} - 3px - #{$footer-height});
 }
 
 /****************/
@@ -190,7 +190,7 @@ footer {
   }
 
   .root-container {
-    height: calc(100% - #{$navbar-height} - 1px - #{$footer-height-sm});
+    height: calc(100% - #{$navbar-height} - 3px - #{$footer-height-sm});
   }
 
   .login-container {
