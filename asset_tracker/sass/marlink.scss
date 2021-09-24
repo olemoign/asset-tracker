@@ -15,8 +15,10 @@ $panel-primary-heading-bg: $marlink-dark-grey;
 
 // Navbar styling
 $navbar-height: 60px;
+$navbar-margin-bottom: 0;
 
 $navbar-default-bg: white;
+$navbar-default-border: $marlink-light-grey;
 $navbar-default-link-color: black;
 $navbar-default-link-hover-color: $marlink-middle-grey;
 $navbar-default-link-active-color: black;
@@ -233,11 +235,6 @@ footer {
 
 .menu-name {
   display: none;
-}
-
-.navbar {
-  border-bottom: 1px solid $marlink-light-grey !important;
-  margin-bottom: 0 !important;
 }
 
 .navbar-default .navbar-nav > .active > a {
