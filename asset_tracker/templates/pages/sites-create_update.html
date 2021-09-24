@@ -17,107 +17,105 @@
 {% block page %}
     {% include 'menu.html' %}
 
-    <div class="root-container">
-        <div class="container">
-            {% for message in messages %}
-                <div class="alert alert-ehr alert-{{ message.type }} alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
-                    {{ gettext(message.text) }}
-                </div>
-            {% endfor %}
+    <div class="root-container container">
+        {% for message in messages %}
+            <div class="alert alert-ehr alert-{{ message.type }} alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                {{ gettext(message.text) }}
+            </div>
+        {% endfor %}
 
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" href="#site_panel">
+                <h3 class="panel__title">{{ title }}</h3>
+            </div>
+
+            <div id="site_panel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <form role="form" action="{{ submit_url }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+
+                        <div class="row">
+                            {{ input(gettext('Name'), 'name', required=True) }}
+
+                            <div class="col-sm-6 form-group">
+                                <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                                <select class="form-control" id="tenant_id" name="tenant_id">
+                                    {% for tenant in tenants|sort(attribute='name') %}
+                                        <option value="{{ tenant.tenant_id }}"{% if update and site.tenant.tenant_id == tenant.tenant_id %} selected{% endif %}>
+                                            {{- tenant.name -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6 form-group">
+                                <label for="site_type">{{ gettext('Type') }} *</label>
+                                <select class="form-control" id="site_type" name="site_type" required>
+                                    {% if not update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for site_type in site_types %}
+                                        <option value={{ site_type }}{% if update and site.site_type == site_type %} selected{% endif %}>
+                                            {{- gettext(site_type) -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {{ input(gettext('Contact'), 'contact') }}
+                            {{ input(gettext('Phone'), 'phone') }}
+                            {{ input(gettext('Email'), 'email') }}
+                        </div>
+
+                        {% set can_create = not update and 'sites-create' in tenantless_principals %}
+                        {% set can_update = update and 'sites-update' in tenantless_principals %}
+                        {% if request.user.is_admin or can_create or can_update %}
+                            <div class="btn-group pull-right margin-top-20">
+                                <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
+                                <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if update %}
             <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" href="#site_panel">
-                    <h3 class="panel__title">{{ title }}</h3>
+                <div class="panel-heading" data-toggle="collapse" href="#assets_panel">
+                    <h3 class="panel__title">{{ gettext('Assets') }}</h3>
                 </div>
 
-                <div id="site_panel" class="panel-collapse collapse in">
+                <div id="assets_panel" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        <form role="form" action="{{ submit_url }}" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+                        <h4>{{ gettext('Current') }}</h4>
+                        {% for asset in site.assets %}
+                            <p>
+                                <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
+                                    {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label(config))) }}
+                                </a>
+                            </p>
+                        {% else %}
+                            {{ gettext('No asset registered.') }}
+                        {% endfor %}
 
-                            <div class="row">
-                                {{ input(gettext('Name'), 'name', required=True) }}
-
-                                <div class="col-sm-6 form-group">
-                                    <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                                    <select class="form-control" id="tenant_id" name="tenant_id">
-                                        {% for tenant in tenants|sort(attribute='name') %}
-                                            <option value="{{ tenant.tenant_id }}"{% if update and site.tenant.tenant_id == tenant.tenant_id %} selected{% endif %}>
-                                                {{- tenant.name -}}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6 form-group">
-                                    <label for="site_type">{{ gettext('Type') }} *</label>
-                                    <select class="form-control" id="site_type" name="site_type" required>
-                                        {% if not update %}
-                                            <option></option>
-                                        {% endif %}
-                                        {% for site_type in site_types %}
-                                            <option value={{ site_type }}{% if update and site.site_type == site_type %} selected{% endif %}>
-                                                {{- gettext(site_type) -}}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                {{ input(gettext('Contact'), 'contact') }}
-                                {{ input(gettext('Phone'), 'phone') }}
-                                {{ input(gettext('Email'), 'email') }}
-                            </div>
-
-                            {% set can_create = not update and 'sites-create' in tenantless_principals %}
-                            {% set can_update = update and 'sites-update' in tenantless_principals %}
-                            {% if request.user.is_admin or can_create or can_update %}
-                                <div class="btn-group pull-right margin-top-20">
-                                    <a href="{{ 'sites-list'|route_path }}" class="btn btn-default">{{ gettext('Cancel') }}</a>
-                                    <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
-                                </div>
-                            {% endif %}
-                        </form>
+                        <h4>{{ gettext('History') }}</h4>
+                        {% for asset in past_assets %}
+                            <p>
+                                {{ '{} / {}:'.format(asset['start']|format_date(locale), asset['end']|format_date(locale)) }}
+                                <a href="{{ 'assets-update'|route_path(asset_id=asset['id']) }}">
+                                    {{ '{} ({})'.format(asset['asset_id'], gettext(asset['asset_type']|capitalize)) }}
+                                </a>
+                            </p>
+                        {% else %}
+                            {{ gettext('No asset registered.') }}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-
-            {% if update %}
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" href="#assets_panel">
-                        <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-                    </div>
-
-                    <div id="assets_panel" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            <h4>{{ gettext('Current') }}</h4>
-                            {% for asset in site.assets %}
-                                <p>
-                                    <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
-                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label(config))) }}
-                                    </a>
-                                </p>
-                            {% else %}
-                                {{ gettext('No asset registered.') }}
-                            {% endfor %}
-
-                            <h4>{{ gettext('History') }}</h4>
-                            {% for asset in past_assets %}
-                                <p>
-                                    {{ '{} / {}:'.format(asset['start']|format_date(locale), asset['end']|format_date(locale)) }}
-                                    <a href="{{ 'assets-update'|route_path(asset_id=asset['id']) }}">
-                                        {{ '{} ({})'.format(asset['asset_id'], gettext(asset['asset_type']|capitalize)) }}
-                                    </a>
-                                </p>
-                            {% else %}
-                                {{ gettext('No asset registered.') }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

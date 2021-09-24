@@ -7,32 +7,30 @@
 {% block page %}
     {% include 'menu.html' %}
 
-    <div class="root-container">
-        <div class="container-fluid">
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <h3 class="panel__title">{{ gettext('Sites') }}</h3>
-                    {% if request.user.is_admin or 'sites-create' in tenantless_principals %}
-                        <a href="{{ 'sites-create'|route_path }}" type="button" class="btn btn-default flex-align-right">
-                            {{ gettext('New') }}
-                        </a>
-                    {% endif %}
-                </div>
-
-                <table id="sites-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
-                       data-ajax-url="{{ 'api-sites'|route_path(_query={'datatables': 'true'}) }}">
-                    <thead>
-                        <tr>
-                            <th data-data="name">{{ gettext('Name') }}</th>
-                            <th data-data="site_type">{{ gettext('Type') }}</th>
-                            <th data-data="tenant_name">{{ gettext('Tenant') }}</th>
-                            <th data-data="contact">{{ gettext('Contact') }}</th>
-                            <th data-data="phone">{{ gettext('Phone') }}</th>
-                            <th data-data="email">{{ gettext('Email') }}</th>
-                        </tr>
-                    </thead>
-                </table>
+    <div class="root-container container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h3 class="panel__title">{{ gettext('Sites') }}</h3>
+                {% if request.user.is_admin or 'sites-create' in tenantless_principals %}
+                    <a href="{{ 'sites-create'|route_path }}" type="button" class="btn btn-default flex-align-right">
+                        {{ gettext('New') }}
+                    </a>
+                {% endif %}
             </div>
+
+            <table id="sites-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
+                   data-ajax-url="{{ 'api-sites'|route_path(_query={'datatables': 'true'}) }}">
+                <thead>
+                    <tr>
+                        <th data-data="name">{{ gettext('Name') }}</th>
+                        <th data-data="site_type">{{ gettext('Type') }}</th>
+                        <th data-data="tenant_name">{{ gettext('Tenant') }}</th>
+                        <th data-data="contact">{{ gettext('Contact') }}</th>
+                        <th data-data="phone">{{ gettext('Phone') }}</th>
+                        <th data-data="email">{{ gettext('Email') }}</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 {% endblock %}

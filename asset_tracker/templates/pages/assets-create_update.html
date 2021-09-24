@@ -18,312 +18,310 @@
 {% block page %}
     {% include 'menu.html' %}
 
-    <div class="root-container">
-        <div class="container">
-            {% for message in messages %}
-                <div class="alert alert-ehr alert-{{ message.type }} alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
-                    {{ gettext(message.text) }}
-                </div>
-            {% endfor %}
+    <div class="root-container container">
+        {% for message in messages %}
+            <div class="alert alert-ehr alert-{{ message.type }} alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                {{ gettext(message.text) }}
+            </div>
+        {% endfor %}
 
-            <form role="form" action="{{ submit_url }}" method="post">
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" href="#asset_panel">
-                        <h3 class="panel__title">{{ title }}</h3>
-                        {% if is_linked %}
-                            {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
-                            {% if request.user.rta_access %}
-                                <a class="panel_link" href="{{ rta_link }}">
+        <form role="form" action="{{ submit_url }}" method="post">
+            <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse" href="#asset_panel">
+                    <h3 class="panel__title">{{ title }}</h3>
+                    {% if is_linked %}
+                        {% set rta_link = 'rta'|route_url(path='admin/services/{}/'.format(asset.user_id)) %}
+                        {% if request.user.rta_access %}
+                            <a class="panel_link" href="{{ rta_link }}">
+                        {% endif %}
+                                <span class="glyphicon glyphicon-link"></span>
+                        {% if request.user.rta_access %}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div id="asset_panel" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+                        <div class="row">
+                            {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
+                            <div class="col-sm-6 form-group">
+                                <label for="tenant_id">{{ gettext('Tenant') }} *</label>
+                                <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
+                                    {% if not update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for tenant in tenants|sort(attribute='name') %}
+                                        <option value="{{ tenant.tenant_id }}"{% if update and asset.tenant.tenant_id == tenant.tenant_id %} selected{% endif %}>
+                                            {{- tenant.name -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6 form-group">
+                                <label for="asset_type">{{ gettext('Type') }} *</label>
+                                <select class="form-control" id="asset_type" name="asset_type">
+                                    {% for asset_type in asset_types|sort(attribute='label_translated') %}
+                                        <option value="{{ asset_type['name'] }}"{% if update and asset.asset_type == asset_type['name'] %} selected{% endif %}>
+                                            {{- asset_type['label_translated'] -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            {{ input(gettext('Hardware version'), 'hardware_version') }}
+
+                            {% if config == 'marlink' %}
+                                {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
                             {% endif %}
-                                    <span class="glyphicon glyphicon-link"></span>
-                            {% if request.user.rta_access %}
-                                </a>
+
+                            {{ input(gettext('Customer name'), 'customer_name') }}
+
+                            {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
+                                'hidden' so we build the full reference here and copy the adapted list in site__options. #}
+                            <div class="hidden">
+                                <!--suppress HtmlFormInputWithoutLabel-->
+                                <select class="form-control" id="site__reference">
+                                    <option></option>
+                                    {% for site_id, site in sites.items() %}
+                                        <option value="{{ site.id }}" data-tenant_id="{{ site.tenant.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
+                                            {{- site.name -}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div id="site__options" class="col-sm-6 form-group">
+                                <label for="site_id">{{ gettext('Site') }}</label>
+                                {# site__reference will be cloned here. #}
+                            </div>
+
+                            {{ input(gettext('Current location'), 'current_location') }}
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            {{ input(gettext('MAC address (wifi)'), 'mac_wifi') }}
+
+                            {{ input(gettext('MAC address (ethernet)'), 'mac_ethernet') }}
+
+                            {% if config != 'marlink' %}
+                                <div class="col-sm-6 form-group">
+                                    <label for="calibration_frequency">
+                                        {{ gettext('Calibration frequency') }}{% if not update %} *{% endif %}
+                                    </label>
+                                    <select class="form-control" id="calibration_frequency" name="calibration_frequency">
+                                        {% for frequency in calibration_frequencies.values() %}
+                                            <option value="{{ frequency }}"{% if update and asset.calibration_frequency == frequency %} selected{% endif %}>
+                                                {{- '{} {}'.format(frequency, gettext('years')) -}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <div class="col-sm-12 form-group">
+                            <label for="notes">{{ gettext('Notes') }}</label>
+                            <textarea class="form-control" rows="3" id="notes" name="notes">
+                                {%- if update and asset.notes -%}{{ asset.notes }}{%- endif -%}
+                            </textarea>
+                        </div>
+
+                        {% set can_create = not update and 'assets-create' in tenantless_principals %}
+                        {% set can_update = update and 'assets-update' in tenantless_principals %}
+                        {% if request.user.is_admin or can_create or can_update %}
+                            <div class="btn-group pull-right margin-top-20">
+                                <a href="{{ 'assets-list'|route_path }}"
+                                   class="btn btn-default">{{ gettext('Cancel') }}</a>
+                                <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
+                            </div>
                         {% endif %}
                     </div>
+                </div>
+            </div>
 
-                    <div id="asset_panel" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
-                            <div class="row">
-                                {{ input(gettext('Asset ID'), 'asset_id', required=True, readonly=is_linked) }}
-                                <div class="col-sm-6 form-group">
-                                    <label for="tenant_id">{{ gettext('Tenant') }} *</label>
-                                    <select class="form-control" id="tenant_id" name="tenant_id" required{% if is_linked %} disabled{% endif %}>
-                                        {% if not update %}
-                                            <option></option>
-                                        {% endif %}
-                                        {% for tenant in tenants|sort(attribute='name') %}
-                                            <option value="{{ tenant.tenant_id }}"{% if update and asset.tenant.tenant_id == tenant.tenant_id %} selected{% endif %}>
-                                                {{- tenant.name -}}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6 form-group">
-                                    <label for="asset_type">{{ gettext('Type') }} *</label>
-                                    <select class="form-control" id="asset_type" name="asset_type">
-                                        {% for asset_type in asset_types|sort(attribute='label_translated') %}
-                                            <option value="{{ asset_type['name'] }}"{% if update and asset.asset_type == asset_type['name'] %} selected{% endif %}>
-                                                {{- asset_type['label_translated'] -}}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                {{ input(gettext('Hardware version'), 'hardware_version') }}
-
-                                {% if config == 'marlink' %}
-                                    {{ input(gettext('Customer ID (Subscription ID)'), 'customer_id') }}
-                                {% endif %}
-
-                                {{ input(gettext('Customer name'), 'customer_name') }}
-
-                                {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
-                                    'hidden' so we build the full reference here and copy the adapted list in site__options. #}
-                                <div class="hidden">
-                                    <!--suppress HtmlFormInputWithoutLabel-->
-                                    <select class="form-control" id="site__reference">
-                                        <option></option>
-                                        {% for site_id, site in sites.items() %}
-                                            <option value="{{ site.id }}" data-tenant_id="{{ site.tenant.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
-                                                {{- site.name -}}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div id="site__options" class="col-sm-6 form-group">
-                                    <label for="site_id">{{ gettext('Site') }}</label>
-                                    {# site__reference will be cloned here. #}
-                                </div>
-
-                                {{ input(gettext('Current location'), 'current_location') }}
-                            </div>
-
-                            <hr>
-
-                            <div class="row">
-                                {{ input(gettext('MAC address (wifi)'), 'mac_wifi') }}
-
-                                {{ input(gettext('MAC address (ethernet)'), 'mac_ethernet') }}
-
-                                {% if config != 'marlink' %}
-                                    <div class="col-sm-6 form-group">
-                                        <label for="calibration_frequency">
-                                            {{ gettext('Calibration frequency') }}{% if not update %} *{% endif %}
-                                        </label>
-                                        <select class="form-control" id="calibration_frequency" name="calibration_frequency">
-                                            {% for frequency in calibration_frequencies.values() %}
-                                                <option value="{{ frequency }}"{% if update and asset.calibration_frequency == frequency %} selected{% endif %}>
-                                                    {{- '{} {}'.format(frequency, gettext('years')) -}}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <hr>
-
-                            <div class="col-sm-12 form-group">
-                                <label for="notes">{{ gettext('Notes') }}</label>
-                                <textarea class="form-control" rows="3" id="notes" name="notes">
-                                    {%- if update and asset.notes -%}{{ asset.notes }}{%- endif -%}
-                                </textarea>
-                            </div>
-
-                            {% set can_create = not update and 'assets-create' in tenantless_principals %}
-                            {% set can_update = update and 'assets-update' in tenantless_principals %}
-                            {% if request.user.is_admin or can_create or can_update %}
-                                <div class="btn-group pull-right margin-top-20">
-                                    <a href="{{ 'assets-list'|route_path }}"
-                                       class="btn btn-default">{{ gettext('Cancel') }}</a>
-                                    <button type="submit" class="btn btn-primary">{{ gettext('Submit') }}</button>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse" href="#status_panel">
+                    <h3 class="panel__title">{{ gettext('Status') }}</h3>
                 </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" href="#status_panel">
-                        <h3 class="panel__title">{{ gettext('Status') }}</h3>
-                    </div>
-
-                    <div id="status_panel" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            {% if update %}
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ gettext('Status') }}</label>
-                                            <p>{{ gettext(asset.status.label(config)) }}</p>
-                                        </div>
+                <div id="status_panel" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        {% if update %}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{ gettext('Status') }}</label>
+                                        <p>{{ gettext(asset.status.label(config)) }}</p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <hr>
+                            <hr>
 
-                                <div class="row">
-                                    {{ date(gettext('Production'), 'production') }}
-                                    {{ date(gettext('Delivery'), 'delivery') }}
-                                    {{ date(gettext('Activation'), 'activation') }}
-                                </div>
-                                <div class="row">
-                                    {{ date(gettext('Last calibration'), 'calibration_last') }}
-                                    {{ date(gettext('Next calibration'), 'calibration_next') }}
-                                    {{ date(gettext('Warranty end'), 'warranty_end') }}
-                                </div>
+                            <div class="row">
+                                {{ date(gettext('Production'), 'production') }}
+                                {{ date(gettext('Delivery'), 'delivery') }}
+                                {{ date(gettext('Activation'), 'activation') }}
+                            </div>
+                            <div class="row">
+                                {{ date(gettext('Last calibration'), 'calibration_last') }}
+                                {{ date(gettext('Next calibration'), 'calibration_next') }}
+                                {{ date(gettext('Warranty end'), 'warranty_end') }}
+                            </div>
 
-                                <hr>
+                            <hr>
 
-                                <div class="row">
-                                    <div class="col-sm-12 form-group">
-                                        <label for="notes">{{ gettext('History') }}</label>
-                                        {% for event in asset.history('asc') %}
-                                            <p class="history_event">
-                                                {% if event.status.status_id == 'software_update' %}
+                            <div class="row">
+                                <div class="col-sm-12 form-group">
+                                    <label for="notes">{{ gettext('History') }}</label>
+                                    {% for event in asset.history('asc') %}
+                                        <p class="history_event">
+                                            {% if event.status.status_id == 'software_update' %}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> %(software)s updated to version %(version)s.',
+                                                    software=event.extra_json.get('software_name')|capitalize,
+                                                    version=event.extra_json.get('software_version'),
+                                                    date=event.date|format_date(locale)
+                                                ) }}
+                                            {% elif event.status.status_id == 'config_update' %}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> Configuration updated.', date=event.date|format_date(locale)
+                                                ) }}
+                                                <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
+                                                    <span class="glyphicon glyphicon-file"></span>
+                                                </a>
+                                            {% elif event.status.status_id == 'site_change' %}
+                                                {% set site_id = event.extra_json.get('site_id') %}
+                                                {% if site_id == None %}
                                                     {{ gettext(
-                                                        '<b>%(date)s</b> %(software)s updated to version %(version)s.',
-                                                        software=event.extra_json.get('software_name')|capitalize,
-                                                        version=event.extra_json.get('software_version'),
-                                                        date=event.date|format_date(locale)
+                                                        '<b>%(date)s</b> %(creator)s set site to',
+                                                        date=event.date|format_date(locale),
+                                                        creator=event.creator_alias
                                                     ) }}
-                                                {% elif event.status.status_id == 'config_update' %}
+                                                    <b>{{ gettext('None') }}</b>.
+                                                {% elif site_id in sites %}
                                                     {{ gettext(
-                                                        '<b>%(date)s</b> Configuration updated.', date=event.date|format_date(locale)
+                                                        '<b>%(date)s</b> %(creator)s set site to',
+                                                        date=event.date|format_date(locale),
+                                                        creator=event.creator_alias
                                                     ) }}
-                                                    <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
-                                                        <span class="glyphicon glyphicon-file"></span>
-                                                    </a>
-                                                {% elif event.status.status_id == 'site_change' %}
-                                                    {% set site_id = event.extra_json.get('site_id') %}
-                                                    {% if site_id == None %}
-                                                        {{ gettext(
-                                                            '<b>%(date)s</b> %(creator)s set site to',
-                                                            date=event.date|format_date(locale),
-                                                            creator=event.creator_alias
-                                                        ) }}
-                                                        <b>{{ gettext('None') }}</b>.
-                                                    {% elif site_id in sites %}
-                                                        {{ gettext(
-                                                            '<b>%(date)s</b> %(creator)s set site to',
-                                                            date=event.date|format_date(locale),
-                                                            creator=event.creator_alias
-                                                        ) }}
-                                                        <b><a href="{{ 'sites-update'|route_path(site_id=sites[site_id].id) }}">{{ sites[site_id].name }}</a></b>.
-                                                    {% endif %}
-                                                {% else %}
-                                                    {{ gettext(
-                                                        '<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
-                                                        creator=event.creator_alias,
-                                                        status=gettext(event.status.label(config)),
-                                                        date=event.date|format_date(locale)
-                                                    ) }}
-                                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                                    <b><a href="{{ 'sites-update'|route_path(site_id=sites[site_id].id) }}">{{ sites[site_id].name }}</a></b>.
                                                 {% endif %}
-                                            </p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-
-                                <hr>
-                            {% endif %}
-
-                            <div class="row">
-                                <div class="col-sm-6 form-group">
-                                    <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
-                                    <select class="form-control" id="event" name="event">
-                                        {% if update %}
-                                            <option></option>
-                                        {% endif %}
-                                        {% for status in statuses|sort(attribute='position') %}
-                                            <option value="{{ status.status_id }}">{{ gettext(status.label(config)) }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {{ input(gettext('Date'), 'event_date', 'date', placeholder=gettext('DD/MM/YYYY')) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default{% if not asset or not asset.equipments %} no-equipment{% endif %}">
-                    <div class="panel-heading" data-toggle="collapse" href="#equipments_panel">
-                        <h3 class="panel__title">{{ gettext('Equipments') }}</h3>
-                        <button type="button" class="equipment__add btn btn-default btn-sm">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </button>
-                    </div>
-
-                    <div id="equipments_panel" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            <div class="row" id="equipments__container" data-consumables-families='{{ consumables_families|tojson }}'>
-                                {# Equipment and consumables references. #}
-                                {{ equipment_box() }}
-                                 <div id="equipments_consumables__reference" class="form-group hidden">
-                                    <label></label>
-                                    <!--suppress HtmlFormInputWithoutLabel-->
-                                     <input type="date" class="form-control">
-                                 </div>
-
-                                <div id="equipments__list" class="auto-clear">
-                                    {% for equipment in (asset or {}).equipments %}
-                                        {{ equipment_box(equipment, index=loop.index) }}
+                                            {% else %}
+                                                {{ gettext(
+                                                    '<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>.',
+                                                    creator=event.creator_alias,
+                                                    status=gettext(event.status.label(config)),
+                                                    date=event.date|format_date(locale)
+                                                ) }}
+                                                <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                            {% endif %}
+                                        </p>
                                     {% endfor %}
                                 </div>
                             </div>
+
+                            <hr>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label for="event">{{ gettext('Add Event') }}{% if not update %} *{% endif %}</label>
+                                <select class="form-control" id="event" name="event">
+                                    {% if update %}
+                                        <option></option>
+                                    {% endif %}
+                                    {% for status in statuses|sort(attribute='position') %}
+                                        <option value="{{ status.status_id }}">{{ gettext(status.label(config)) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {{ input(gettext('Date'), 'event_date', 'date', placeholder=gettext('DD/MM/YYYY')) }}
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {% if update %}
-                    <div class="panel panel-default">
-                        <div class="panel-heading" data-toggle="collapse" href="#configuration_panel">
-                            <h3 class="panel__title">{{ gettext('Configuration') }}</h3>
+            <div class="panel panel-default{% if not asset or not asset.equipments %} no-equipment{% endif %}">
+                <div class="panel-heading" data-toggle="collapse" href="#equipments_panel">
+                    <h3 class="panel__title">{{ gettext('Equipments') }}</h3>
+                    <button type="button" class="equipment__add btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+
+                <div id="equipments_panel" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row" id="equipments__container" data-consumables-families='{{ consumables_families|tojson }}'>
+                            {# Equipment and consumables references. #}
+                            {{ equipment_box() }}
+                             <div id="equipments_consumables__reference" class="form-group hidden">
+                                <label></label>
+                                <!--suppress HtmlFormInputWithoutLabel-->
+                                 <input type="date" class="form-control">
+                             </div>
+
+                            <div id="equipments__list" class="auto-clear">
+                                {% for equipment in (asset or {}).equipments %}
+                                    {{ equipment_box(equipment, index=loop.index) }}
+                                {% endfor %}
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div id="configuration_panel" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="last_configuration">{{ gettext('Configuration') }}</label>
-                                            {% if last_config %}
-                                                <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}">
-                                                    <span class="glyphicon glyphicon-file"></span>
-                                                </a>
-                                            {% else %}
-                                                <p>{{ gettext('No configuration registered.') }}</p>
-                                            {% endif %}
-                                        </div>
+            {% if update %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" href="#configuration_panel">
+                        <h3 class="panel__title">{{ gettext('Configuration') }}</h3>
+                    </div>
+
+                    <div id="configuration_panel" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="last_configuration">{{ gettext('Configuration') }}</label>
+                                        {% if last_config %}
+                                            <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}">
+                                                <span class="glyphicon glyphicon-file"></span>
+                                            </a>
+                                        {% else %}
+                                            <p>{{ gettext('No configuration registered.') }}</p>
+                                        {% endif %}
                                     </div>
                                 </div>
+                            </div>
 
-                                <hr>
+                            <hr>
 
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ gettext('Softwares versions') }}</label>
-                                            <p>
-                                                {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
-                                                    {{ software|capitalize }}: {{ version }}{% if not loop.last %}<br/>{% endif %}
-                                                {% else %}
-                                                    {{ gettext('No software registered.') }}
-                                                {% endfor %}
-                                            </p>
-                                        </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{ gettext('Softwares versions') }}</label>
+                                        <p>
+                                            {% for software, version in asset_softwares|dictsort %} {# sorted by key #}
+                                                {{ software|capitalize }}: {{ version }}{% if not loop.last %}<br/>{% endif %}
+                                            {% else %}
+                                                {{ gettext('No software registered.') }}
+                                            {% endfor %}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                {% endif %}
-            </form>
-        </div>
+                </div>
+            {% endif %}
+        </form>
     </div>
 {% endblock %}
