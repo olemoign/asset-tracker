@@ -1,29 +1,17 @@
-$icon-font-path: '/static/fonts/';
-
-$black: #000;
-
-$link-color: $black;
-
 // Remove all radius.
 $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
-[class^='select2'] {
-  border-radius: 0 !important;
-}
-
-// minimum height for select2 options = 20px (line-height) + 12px (padding)
-ul.select2-results__options > li {
-  min-height: 32px;
-}
-
 $grid-float-breakpoint: 1100px;
-$screen-xl-min: 1500px;
-
-$navbar-margin-bottom: 9px;
+$icon-font-path: '/static/fonts/';
+$link-color: black;
 
 @import 'bootstrap';
 @import 'datatables';
+
+/**********************************/
+/************** Main **************/
+/**********************************/
 
 body, html {
   width: 100%;
@@ -37,10 +25,6 @@ body, html {
   z-index: -1;
 }
 
-.root-container {
-  width: 100%;
-}
-
 // Login page.
 .login-container.login-container {
   max-width: 500px;
@@ -52,12 +36,8 @@ body, html {
   background-repeat: no-repeat;
 }
 
-.panel-heading {
-  display: flex;
-}
-
-.panel__title {
-  margin: 0;
+.root-container {
+  width: 100%;
 }
 
 // Bootstrap tries to fix date inputs in Safari but this doesn't apply anymore and breaks the inputs in Firefox.
@@ -86,6 +66,10 @@ table.dataTable td {
   height: 100%;
 }
 
+/**********************************/
+/********** Various pages *********/
+/**********************************/
+
 .consumable__label {
   font-size: 14px;
   font-weight: 400;
@@ -111,7 +95,7 @@ table.dataTable td {
   }
 }
 
-// to avoid equipment block "overlap" when they have a different height
+// To avoid equipment blocks from overlapping when they have different heights.
 @media (min-width: $screen-md-min) {
   .auto-clear .col-md-4:nth-child(3n+1) {
     clear: left;
@@ -124,7 +108,7 @@ table.dataTable td {
   }
 }
 
-// Typically an arrow instead of not-allowed cursor
+// Typically an arrow instead of not-allowed cursor.
 .form-control[disabled] {
   cursor: default;
 }
@@ -141,9 +125,9 @@ table.dataTable td {
   margin-left: auto;
 }
 
-/**********************/
-/** Site information **/
-/**********************/
+/**********************************/
+/******** Site information ********/
+/**********************************/
 
 .site-info-body {
   background-color: #ffffff;
@@ -191,6 +175,14 @@ table.dataTable td {
 /************* Panels *************/
 /**********************************/
 
+.panel-heading {
+  display: flex;
+}
+
+.panel__title {
+  margin: 0;
+}
+
 .panel:not(.no-equipment) .panel-heading[data-toggle='collapse'] {
   // Show that the full panel header is clickable to open/hide the accordion.
   cursor: pointer;
@@ -220,5 +212,18 @@ table.dataTable td {
   &:hover {
     color: lighten(black, 50%);
   }
+}
+
+/**********************************/
+/************ Select2 *************/
+/**********************************/
+
+[class^='select2'] {
+  border-radius: 0 !important;
+}
+
+// Minimum height for select2 options = 20px (line-height) + 12px (padding).
+ul.select2-results__options > li {
+  min-height: 32px;
 }
 
