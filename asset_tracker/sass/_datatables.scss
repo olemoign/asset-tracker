@@ -32,6 +32,11 @@
   }
 }
 
+table.dataTable tr,
+table.dataTable td {
+  height: 100%;
+}
+
 table.dataTable td a {
   // 16px = td vertical padding.
   height: calc(100% + 16px);
@@ -44,7 +49,9 @@ table.dataTable td a {
   margin: -8px;
   padding: 8px;
 
-  &:active, &:focus, &:hover {
+  &:active,
+  &:focus,
+  &:hover {
     text-decoration: none;
   }
 }
@@ -71,7 +78,8 @@ td {
 }
 
 // Remove the margin top added by bootstrap to checkboxes below sm.
-.custom_filter, .custom_filter .checkbox {
+.custom_filter,
+.custom_filter .checkbox {
   margin-top: 0;
 }
 

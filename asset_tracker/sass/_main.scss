@@ -13,7 +13,8 @@ $link-color: black;
 /************** Main **************/
 /**********************************/
 
-body, html {
+body,
+html {
   width: 100%;
   height: 100%;
 }
@@ -59,11 +60,6 @@ input[type='month'] {
   .input-group-lg & {
     line-height: normal;
   }
-}
-
-table.dataTable tr,
-table.dataTable td {
-  height: 100%;
 }
 
 /**********************************/
