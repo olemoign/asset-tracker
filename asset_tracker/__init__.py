@@ -67,8 +67,8 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('asset_tracker:locale')
 
-    # Add custom csv renderer
-    config.add_renderer('csv', 'asset_tracker.renderers.CSVRenderer')
+    # Add CSV renderer.
+    config.add_renderer('csv', 'parsys_utilities.csv.CSVRenderer')
 
     # Authentication/Authorization policies.
     authentication_policy = OpenIDConnectAuthenticationPolicy(

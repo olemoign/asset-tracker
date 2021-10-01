@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_3_6_15 = f'{tracker}/2344c912cb990def854566c0cc0985a8331563428d62d7f380c1fc4e301420a9/parsys_utilities-3.6.15-py3-none-any.whl'  # noqa: E501
+parsys_utilities_3_7_0 = f'{tracker}/6128102e8b55f9572c481047acfc42b9540fd5dd98522390dde715a1a3f21b6b/parsys_utilities-3.7.0-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.7.3',
     'arrow==1.1.1',
     'celery[redis]==5.1.2',
     'filedepot==0.8.0',
     'jinja2==3.0.1',
-    f'parsys-utilities @ {parsys_utilities_3_6_15}',
+    f'parsys-utilities @ {parsys_utilities_3_7_0}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2-binary==2.9.1',
@@ -27,7 +27,7 @@ requires = [
     'pyramid-session-redis==1.6.2',
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
-    'sentry-sdk==1.4.1',
+    'sentry-sdk==1.4.3',
     'setuptools==58.1.0',
     'sqlalchemy==1.4.25',
     'transaction==3.0.1',
@@ -39,7 +39,6 @@ requires = [
 optional = {
     'dev': [
         'babel==2.9.1',
-        'docker-compose==1.29.2',
         'pybabel-json-md==0.1.0',
         'pyramid-debugtoolbar==4.9',
     ],
