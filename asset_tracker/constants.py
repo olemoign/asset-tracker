@@ -21,13 +21,13 @@ SITE_TYPES = [
 ]
 WARRANTY_DURATION_YEARS = 2
 
-ASSET_TYPES = [
-    {'name': 'backpack', 'label': _('Backpack')},
-    {'name': 'cart', 'label': _('Cart')},
-    {'name': 'consumables_case', 'label': _('Consumables case')},
-    {'name': 'station', 'label': _('Station')},
-    {'name': 'telecardia', 'label': _('Telecardia')},
-]
+ASSET_TYPES = {
+    'backpack': _('Backpack'),
+    'cart': _('Cart'),
+    'consumables_case': _('Consumables case'),
+    'station': _('Station'),
+    'telecardia': _('Telecardia'),
+}
 
 PATH = Path(__file__).resolve().parent
 TEMPLATES_PATH = PATH / 'templates'

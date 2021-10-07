@@ -158,11 +158,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
         statuses = self.request.db_session.query(models.EventStatus) \
             .filter(models.EventStatus.status_type != 'config').all()
 
-        for asset_type in ASSET_TYPES:
-            asset_type['label_translated'] = self.request.localizer.translate(asset_type['label'])
-
         return {
-            'asset_types': ASSET_TYPES,
+            'asset_types': dict(sorted(ASSET_TYPES.items(), key=lambda t: self.request.localizer.translate(t[1]))),
             'calibration_frequencies': CALIBRATION_FREQUENCIES_YEARS,
             'consumables_families': consumables_families,
             'equipments_families': equipments_families,
