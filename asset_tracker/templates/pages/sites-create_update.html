@@ -96,7 +96,7 @@
                             {% for asset in site.assets %}
                                 <p>
                                     <a href="{{ 'assets-update'|route_path(asset_id=asset.id) }}">
-                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset.asset_type|capitalize), gettext(asset.status.label(config))) }}
+                                        {{ '{} ({} / {})'.format(asset.asset_id, gettext(asset_types[asset.asset_type]), gettext(asset.status.label(config))) }}
                                     </a>
                                 </p>
                             {% else %}
@@ -108,7 +108,7 @@
                                 <p>
                                     {{ '{} / {}:'.format(asset['start']|format_date(locale), asset['end']|format_date(locale)) }}
                                     <a href="{{ 'assets-update'|route_path(asset_id=asset['id']) }}">
-                                        {{ '{} ({})'.format(asset['asset_id'], gettext(asset['asset_type']|capitalize)) }}
+                                        {{ '{} ({})'.format(asset['asset_id'], gettext(asset_types[asset['asset_type']])) }}
                                     </a>
                                 </p>
                             {% else %}

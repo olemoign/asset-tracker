@@ -10,7 +10,7 @@ from sentry_sdk import capture_exception
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, SITE_TYPES
+from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, SITE_TYPES
 from asset_tracker.views import FormException, read_form
 
 
@@ -77,6 +77,14 @@ class Sites(metaclass=AuthenticatedEndpoint):
 
         return sorted(past_assets, key=itemgetter('start'))
 
+    def get_base_form_data(self):
+        """Get base form input data (asset types, site types, tenants)."""
+        return {
+            'asset_types': ASSET_TYPES,
+            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
+            'tenants': self.request.db_session.query(models.Tenant).all(),
+        }
+
     def validate_site(self):
         """Validate form data."""
         tenants_ids = self.request.db_session.query(models.Tenant.tenant_id)
@@ -101,10 +109,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                  renderer='pages/sites-create_update.html')
     def create_get(self):
         """Get site create form."""
-        return {
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.request.db_session.query(models.Tenant).all(),
-        }
+        return self.get_base_form_data()
 
     @view_config(route_name='sites-create', request_method='POST', permission='sites-create',
                  renderer='pages/sites-create_update.html')
@@ -118,8 +123,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
-                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-                'tenants': self.request.db_session.query(models.Tenant).all(),
+                **self.get_base_form_data(),
             }
 
         # noinspection PyArgumentList
@@ -144,8 +148,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
         return {
             'past_assets': self.get_past_assets(),
             'site': self.site,
-            'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-            'tenants': self.request.db_session.query(models.Tenant).all(),
+            **self.get_base_form_data(),
         }
 
     @view_config(route_name='sites-update', request_method='POST', permission='sites-update',
@@ -160,9 +163,9 @@ class Sites(metaclass=AuthenticatedEndpoint):
                 capture_exception(error)
             return {
                 'messages': [{'type': 'danger', 'text': str(error)}],
+                'past_assets': self.get_past_assets(),
                 'site': self.site,
-                'site_types': sorted(SITE_TYPES, key=self.request.localizer.translate),
-                'tenants': self.request.db_session.query(models.Tenant).all(),
+                **self.get_base_form_data(),
             }
 
         # If the site changed tenant, remove it from assets with the old tenant.

@@ -4,7 +4,7 @@
 {% set update = asset and asset.id %}
 {% if update %}
     {% set is_linked = asset.is_linked %}
-    {% set title = '{} {}'.format(gettext(asset.asset_type|capitalize), asset.asset_id) %}
+    {% set title = '{} {}'.format(gettext(asset_types[asset.asset_type]), asset.asset_id) %}
     {% set submit_url = 'assets-update'|route_path(asset_id=asset.id) %}
 {% else %}
     {% set title = gettext('New asset') %}
