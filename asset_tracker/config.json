@@ -1,104 +1,60 @@
 {
   "equipment_families": [
     {
-      "family_id": "sSSe3gPI",
-      "model": "Stethoscope - RNK PCP-USB"
-    },
-    {
-      "family_id": "2YUEMLmH",
-      "model": "USB glucose meter - Beurer GL50"
-    },
-    {
-      "family_id": "R7osm3Qa",
-      "model": "18-lead ECG - Parsys Cardialys"
-    },
-    {
-      "family_id": "v7haPFiq",
-      "model": "Ultrasound - Interson abdominal 99-5929"
-    },
-    {
-      "family_id": "T5hImspB",
-      "model": "Blood analyser - PTS CardioChek"
-    },
-    {
-      "family_id": "j7tJ1y4A",
-      "model": "Telecardia charging base - Parsys"
-    },
-    {
-      "family_id": "utFdsO8S",
-      "model": "USB digital spirometer - Minispir Light"
-    },
-    {
-      "family_id": "VhCLz9FY",
-      "model": "Otoscope - Firefly DE500A"
-    },
-    {
-      "family_id": "OHItgG5I",
-      "model": "Dermatoscope - Firefly DE300A"
+      "family_id": "kR059vud",
+      "model": "12-lead USB ECG - Schiller MS-12 USB"
     },
     {
       "family_id": "CJR99XSW",
       "model": "12-lead wireless ECG - Parsys Telecardia"
     },
     {
-      "family_id": "kR059vud",
-      "model": "12-lead USB ECG - Schiller MS-12 USB"
-    },
-    {
       "family_id": "56T5Xr2A",
       "model": "12-lead wireless ECG - Welch Allyn RSCRIBE WAM ECG"
     },
     {
-      "family_id": "c494zUZ0",
-      "model": "Multiparametrical USB - Parsys Biosys"
+      "family_id": "R7osm3Qa",
+      "model": "18-lead ECG - Parsys Cardialys"
     },
     {
-      "family_id": "w5wDrPyZ",
-      "model": "Wireless glucose meter - Foracare DM30b"
-    },
-    {
-      "family_id": "E7SQL7Mr",
-      "model": "Automatic wireless tensiometer - Foracare P80"
+      "family_id": "XPSmzHc3",
+      "model": "Automatic wireless tensiometer - A&D UA-1200BLE"
     },
     {
       "family_id": "8rpM8kOh",
       "model": "Automatic wireless tensiometer - A&D UA-651BLE"
     },
     {
-      "family_id": "upWHHgVe",
-      "model": "Wireless oxymeter - Nonin 3230"
+      "family_id": "E7SQL7Mr",
+      "model": "Automatic wireless tensiometer - Foracare P80"
     },
     {
-      "family_id": "cAxWbCCz",
-      "model": "USB oxymeter - Nonin 3231"
+      "family_id": "T5hImspB",
+      "model": "Blood analyser - PTS CardioChek"
     },
     {
-      "family_id": "mX4l9sEQ",
-      "model": "Wireless bathroom scale - A&D UC-355PBT-Ci"
+      "family_id": "YpHdh0bj",
+      "model": "Blood tests - Nal Von Minden"
     },
     {
-      "family_id": "jbVmQunF",
-      "model": "Infrared wireless thermometer - Foracare IR21b"
+      "family_id": "OHItgG5I",
+      "model": "Dermatoscope - Firefly DE300A"
     },
     {
-      "family_id": "VEgX5jR5",
-      "model": "External automatic defibrillator - Schiller FRED Easyport"
+      "family_id": "CrV9efKR",
+      "model": "Dermatoscope lens - Miis DOC100"
     },
     {
       "family_id": "sxujnZOH",
       "model": "External automatic defibrillator - Schiller FRED Easy Trainer"
     },
     {
-      "family_id": "43fODYd7",
-      "model": "USB digital polarizing dermatoscope - Firefly DE300"
+      "family_id": "VEgX5jR5",
+      "model": "External automatic defibrillator - Schiller FRED Easyport"
     },
     {
-      "family_id": "TyWY8xNh",
-      "model": "USB digital polarizing otoscope - Firefly DE500"
-    },
-    {
-      "family_id": "aNJN1pqt",
-      "model": "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
+      "family_id": "8i8qFB6V",
+      "model": "General lens - Miis DGC100"
     },
     {
       "family_id": "PJpf8PGG",
@@ -109,97 +65,110 @@
       "model": "Handheld camera - Miis Horus DSC200P"
     },
     {
-      "family_id": "8i8qFB6V",
-      "model": "General lens - Miis DGC100"
-    },
-    {
-      "family_id": "NwdtzWAs",
-      "model": "Ophtalmoscope lens - Miis EEC100"
-    },
-    {
-      "family_id": "laqMhCEb",
-      "model": "Otoscope lens - Miis DOC100S"
-    },
-    {
-      "family_id": "CrV9efKR",
-      "model": "Dermatoscope lens - Miis DOC100"
-    },
-    {
-      "family_id": "7fxeOc1I",
-      "model": "USB ultrasound scanner - Interson SiMPLi - GP-C01"
-    },
-    {
-      "family_id": "RI2xdHgC",
-      "model": "Multipurpose digital audiometer with headset - Echodia Otowin + DD45 HI"
-    },
-    {
-      "family_id": "ezUWLlqU",
-      "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
-    },
-    {
-      "family_id": "Qmculje9",
-      "model": "USB digital laryngoscope - Vivid Medical VT-A100"
-    },
-    {
-      "family_id": "Oqldhs5Z",
-      "model": "Intraoral camera - Acteon SoproCare 950 + Dock M-USB2"
-    },
-    {
-      "family_id": "q6UessZu",
-      "model": "Intraoral camera - Acteon SoproCare 717 + Dock M-USB2"
-    },
-    {
-      "family_id": "Riof1XI5",
-      "model": "Intraoral camera - Owandy OWandyCam"
-    },
-    {
-      "family_id": "YpHdh0bj",
-      "model": "Blood tests - Nal Von Minden"
+      "family_id": "aNJN1pqt",
+      "model": "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
     },
     {
       "family_id": "nRyEnID3",
       "model": "Infrared wireless thermometer - Foracare IR20b"
     },
     {
-      "family_id": "XPSmzHc3",
-      "model": "Automatic wireless tensiometer - A&D UA-1200BLE"
+      "family_id": "jbVmQunF",
+      "model": "Infrared wireless thermometer - Foracare IR21b"
+    },
+    {
+      "family_id": "q6UessZu",
+      "model": "Intraoral camera - Acteon SoproCare 717 + Dock M-USB2"
+    },
+    {
+      "family_id": "Oqldhs5Z",
+      "model": "Intraoral camera - Acteon SoproCare 950 + Dock M-USB2"
+    },
+    {
+      "family_id": "Riof1XI5",
+      "model": "Intraoral camera - Owandy OWandyCam"
+    },
+    {
+      "family_id": "c494zUZ0",
+      "model": "Multiparametrical USB - Parsys Biosys"
+    },
+    {
+      "family_id": "RI2xdHgC",
+      "model": "Multipurpose digital audiometer with headset - Echodia Otowin + DD45 HI"
+    },
+    {
+      "family_id": "NwdtzWAs",
+      "model": "Ophtalmoscope lens - Miis EEC100"
+    },
+    {
+      "family_id": "VhCLz9FY",
+      "model": "Otoscope - Firefly DE500A"
+    },
+    {
+      "family_id": "laqMhCEb",
+      "model": "Otoscope lens - Miis DOC100S"
+    },
+    {
+      "family_id": "ezUWLlqU",
+      "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
+    },
+    {
+      "family_id": "sSSe3gPI",
+      "model": "Stethoscope - RNK PCP-USB"
+    },
+    {
+      "family_id": "j7tJ1y4A",
+      "model": "Telecardia charging base - Parsys"
+    },
+    {
+      "family_id": "Qmculje9",
+      "model": "USB digital laryngoscope - Vivid Medical VT-A100"
+    },
+    {
+      "family_id": "43fODYd7",
+      "model": "USB digital polarizing dermatoscope - Firefly DE300"
+    },
+    {
+      "family_id": "TyWY8xNh",
+      "model": "USB digital polarizing otoscope - Firefly DE500"
+    },
+    {
+      "family_id": "utFdsO8S",
+      "model": "USB digital spirometer - Minispir Light"
+    },
+    {
+      "family_id": "2YUEMLmH",
+      "model": "USB glucose meter - Beurer GL50"
+    },
+    {
+      "family_id": "cAxWbCCz",
+      "model": "USB oxymeter - Nonin 3231"
+    },
+    {
+      "family_id": "7fxeOc1I",
+      "model": "USB ultrasound scanner - Interson SiMPLi - GP-C01"
+    },
+    {
+      "family_id": "v7haPFiq",
+      "model": "Ultrasound - Interson abdominal 99-5929"
+    },
+    {
+      "family_id": "mX4l9sEQ",
+      "model": "Wireless bathroom scale - A&D UC-355PBT-Ci"
+    },
+    {
+      "family_id": "w5wDrPyZ",
+      "model": "Wireless glucose meter - Foracare DM30b"
+    },
+    {
+      "family_id": "upWHHgVe",
+      "model": "Wireless oxymeter - Nonin 3230"
     }
   ],
   "consumable_families": [
     {
-      "family_id": "GZQ2bAmW",
-      "model": "Lancets (legacy)",
-      "equipment_family_ids": [
-        "2YUEMLmH"
-      ]
-    },
-    {
-      "family_id": "9oL6q5O5",
-      "model": "Blood glucose test strips",
-      "equipment_family_ids": [
-        "2YUEMLmH",
-        "w5wDrPyZ"
-      ]
-    },
-    {
-      "family_id": "SHkfxK4Y",
-      "model": "Control solution for blood glucose meter",
-      "equipment_family_ids": [
-        "2YUEMLmH",
-        "w5wDrPyZ"
-      ]
-    },
-    {
-      "family_id": "8bw8z3pb",
-      "model": "Secure lancing devices",
-      "equipment_family_ids": [
-        "2YUEMLmH",
-        "w5wDrPyZ"
-      ]
-    },
-    {
-      "family_id": "1oIvGBMK",
-      "model": "Adult ECG electrodes with tab (x5000)",
+      "family_id": "tArmQCE7",
+      "model": "Adult ECG electrodes with tab (x100)",
       "equipment_family_ids": [
         "56T5Xr2A"
       ]
@@ -212,24 +181,10 @@
       ]
     },
     {
-      "family_id": "tArmQCE7",
-      "model": "Adult ECG electrodes with tab (x100)",
+      "family_id": "1oIvGBMK",
+      "model": "Adult ECG electrodes with tab (x5000)",
       "equipment_family_ids": [
         "56T5Xr2A"
-      ]
-    },
-    {
-      "family_id": "lWETgAY6",
-      "model": "Spirometer nose clip",
-      "equipment_family_ids": [
-        "utFdsO8S"
-      ]
-    },
-    {
-      "family_id": "y7QIajC0",
-      "model": "Spirometer disposable turbines",
-      "equipment_family_ids": [
-        "utFdsO8S"
       ]
     },
     {
@@ -240,6 +195,21 @@
       ]
     },
     {
+      "family_id": "K2rCGteW",
+      "model": "Alcohol and drug test",
+      "equipment_family_ids": [
+        "YpHdh0bj"
+      ]
+    },
+    {
+      "family_id": "9oL6q5O5",
+      "model": "Blood glucose test strips",
+      "equipment_family_ids": [
+        "2YUEMLmH",
+        "w5wDrPyZ"
+      ]
+    },
+    {
       "family_id": "mulRy3lG",
       "model": "Children PAD electrodes",
       "equipment_family_ids": [
@@ -247,10 +217,11 @@
       ]
     },
     {
-      "family_id": "UKKFTDOB",
-      "model": "Defibrillator lithium battery",
+      "family_id": "SHkfxK4Y",
+      "model": "Control solution for blood glucose meter",
       "equipment_family_ids": [
-        "VEgX5jR5"
+        "2YUEMLmH",
+        "w5wDrPyZ"
       ]
     },
     {
@@ -261,10 +232,10 @@
       ]
     },
     {
-      "family_id": "1o1MSesM",
-      "model": "Single use ear specula",
+      "family_id": "UKKFTDOB",
+      "model": "Defibrillator lithium battery",
       "equipment_family_ids": [
-        "TyWY8xNh"
+        "VEgX5jR5"
       ]
     },
     {
@@ -277,31 +248,46 @@
       ]
     },
     {
-      "family_id": "ZHkCozV6",
-      "model": "Urine test 10 parameters",
+      "family_id": "GZQ2bAmW",
+      "model": "Lancets (legacy)",
       "equipment_family_ids": [
-        "YpHdh0bj"
+        "2YUEMLmH"
       ]
     },
     {
-      "family_id": "K2rCGteW",
-      "model": "Alcohol and drug test",
+      "family_id": "8bw8z3pb",
+      "model": "Secure lancing devices",
       "equipment_family_ids": [
-        "YpHdh0bj"
+        "2YUEMLmH",
+        "w5wDrPyZ"
       ]
     },
     {
-      "family_id": "FsJqvibI",
-      "model": "Troponin blood test",
+      "family_id": "1o1MSesM",
+      "model": "Single use ear specula",
       "equipment_family_ids": [
-        "YpHdh0bj"
+        "TyWY8xNh"
       ]
     },
     {
-      "family_id": "Nh7AGGHh",
-      "model": "Tropical disease test - Malaria",
+      "family_id": "y7QIajC0",
+      "model": "Spirometer disposable turbines",
       "equipment_family_ids": [
-        "YpHdh0bj"
+        "utFdsO8S"
+      ]
+    },
+    {
+      "family_id": "lWETgAY6",
+      "model": "Spirometer nose clip",
+      "equipment_family_ids": [
+        "utFdsO8S"
+      ]
+    },
+    {
+      "family_id": "xRITEFZ7",
+      "model": "Thermometer protection tip - Foracare IR20b",
+      "equipment_family_ids": [
+        "nRyEnID3"
       ]
     },
     {
@@ -326,10 +312,24 @@
       ]
     },
     {
-      "family_id": "xRITEFZ7",
-      "model": "Thermometer protection tip - Foracare IR20b",
+      "family_id": "Nh7AGGHh",
+      "model": "Tropical disease test - Malaria",
       "equipment_family_ids": [
-        "nRyEnID3"
+        "YpHdh0bj"
+      ]
+    },
+    {
+      "family_id": "FsJqvibI",
+      "model": "Troponin blood test",
+      "equipment_family_ids": [
+        "YpHdh0bj"
+      ]
+    },
+    {
+      "family_id": "ZHkCozV6",
+      "model": "Urine test 10 parameters",
+      "equipment_family_ids": [
+        "YpHdh0bj"
       ]
     }
   ],
