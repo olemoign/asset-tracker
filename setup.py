@@ -43,7 +43,7 @@ optional = {
         'pyramid-debugtoolbar==4.9',
     ],
     'qa': [
-        'flake8==4.0.0',
+        'flake8==4.0.1',
     ],
     'tests': [
         'pytest==6.2.5',

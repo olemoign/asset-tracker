@@ -33,8 +33,16 @@
       "model": "Blood analyser - PTS CardioChek"
     },
     {
+      "family_id": "lRJ5ikog",
+      "model": "Blood glucose test strips"
+    },
+    {
       "family_id": "YpHdh0bj",
       "model": "Blood tests - Nal Von Minden"
+    },
+    {
+      "family_id": "HbfOOQbt",
+      "model": "Control solution for blood glucose meter"
     },
     {
       "family_id": "CrV9efKR",
@@ -85,6 +93,10 @@
       "model": "Intraoral camera - Owandy OWandyCam"
     },
     {
+      "family_id": "Uhn7PFBh",
+      "model": "Lancets (legacy)"
+    },
+    {
       "family_id": "c494zUZ0",
       "model": "Multiparametrical USB - Parsys Biosys"
     },
@@ -103,6 +115,10 @@
     {
       "family_id": "ezUWLlqU",
       "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
+    },
+    {
+      "family_id": "cPoNB0Zh",
+      "model": "Secure lancing devices"
     },
     {
       "family_id": "sSSe3gPI",
@@ -177,6 +193,7 @@
       "model": "Blood glucose test strips",
       "equipment_family_ids": [
         "2YUEMLmH",
+        "lRJ5ikog",
         "w5wDrPyZ"
       ]
     },
@@ -192,6 +209,7 @@
       "model": "Control solution for blood glucose meter",
       "equipment_family_ids": [
         "2YUEMLmH",
+        "HbfOOQbt",
         "w5wDrPyZ"
       ]
     },
@@ -215,7 +233,8 @@
       "family_id": "GZQ2bAmW",
       "model": "Lancets (legacy)",
       "equipment_family_ids": [
-        "2YUEMLmH"
+        "2YUEMLmH",
+        "Uhn7PFBh"
       ]
     },
     {
@@ -223,6 +242,7 @@
       "model": "Secure lancing devices",
       "equipment_family_ids": [
         "2YUEMLmH",
+        "cPoNB0Zh",
         "w5wDrPyZ"
       ]
     },
