@@ -2,31 +2,35 @@
   "equipment_families": [
     {
       "family_id": "kR059vud",
-      "model": "12-lead USB ECG - Schiller MS-12 USB"
+      "model": "12-lead ECG USB - Schiller MS-12 USB"
     },
     {
       "family_id": "CJR99XSW",
-      "model": "12-lead wireless ECG - Parsys Telecardia"
+      "model": "12-lead ECG wireless- Parsys Telecardia"
     },
     {
       "family_id": "56T5Xr2A",
-      "model": "12-lead wireless ECG - Welch Allyn RSCRIBE WAM ECG"
+      "model": "12-lead ECG wireless- Welch Allyn/Mortara RSCRIBE 7 WAM ECG"
     },
     {
       "family_id": "R7osm3Qa",
-      "model": "18-lead ECG - Parsys Cardialys"
+      "model": "18-lead ECG wireless - Parsys Cardialys"
     },
     {
       "family_id": "XPSmzHc3",
-      "model": "Automatic wireless tensiometer - A&D UA-1200BLE"
+      "model": "Automatic tensiometer wireless - A&D UA-1200BLE"
     },
     {
       "family_id": "8rpM8kOh",
-      "model": "Automatic wireless tensiometer - A&D UA-651BLE"
+      "model": "Automatic tensiometer wireless - A&D UA-651BLE"
     },
     {
       "family_id": "E7SQL7Mr",
-      "model": "Automatic wireless tensiometer - Foracare P80"
+      "model": "Automatic tensiometer wireless - Foracare P80"
+    },
+    {
+      "family_id": "mX4l9sEQ",
+      "model": "Bathroom scale wireless - A&D UC-355PBT-Ci"
     },
     {
       "family_id": "T5hImspB",
@@ -45,20 +49,28 @@
       "model": "Control solution for blood glucose meter"
     },
     {
+      "family_id": "sxujnZOH",
+      "model": "Defibrillator external automatic - Schiller FRED Easy Trainer"
+    },
+    {
+      "family_id": "VEgX5jR5",
+      "model": "Defibrillator external automatic - Schiller FRED Easyport"
+    },
+    {
       "family_id": "CrV9efKR",
       "model": "Dermatoscope lens - Miis DOC100"
     },
     {
-      "family_id": "sxujnZOH",
-      "model": "External automatic defibrillator - Schiller FRED Easy Trainer"
-    },
-    {
-      "family_id": "VEgX5jR5",
-      "model": "External automatic defibrillator - Schiller FRED Easyport"
-    },
-    {
       "family_id": "8i8qFB6V",
       "model": "General lens - Miis DGC100"
+    },
+    {
+      "family_id": "2YUEMLmH",
+      "model": "Glucose meter USB - Beurer GL50"
+    },
+    {
+      "family_id": "w5wDrPyZ",
+      "model": "Glucose meter wireless - Foracare DM30b"
     },
     {
       "family_id": "PJpf8PGG",
@@ -74,11 +86,11 @@
     },
     {
       "family_id": "nRyEnID3",
-      "model": "Infrared wireless thermometer - Foracare IR20b"
+      "model": "Infrared thermometer wireless - Foracare IR20b"
     },
     {
       "family_id": "jbVmQunF",
-      "model": "Infrared wireless thermometer - Foracare IR21b"
+      "model": "Infrared thermometer wireless - Foracare IR21b"
     },
     {
       "family_id": "q6UessZu",
@@ -97,6 +109,10 @@
       "model": "Lancets (legacy)"
     },
     {
+      "family_id": "Qmculje9",
+      "model": "Laryngoscope digital USB - Vivid Medical VT-A100"
+    },
+    {
       "family_id": "c494zUZ0",
       "model": "Multiparametrical USB - Parsys Biosys"
     },
@@ -113,12 +129,32 @@
       "model": "Otoscope lens - Miis DOC100S"
     },
     {
+      "family_id": "cAxWbCCz",
+      "model": "Oxymeter USB - Nonin 3231"
+    },
+    {
+      "family_id": "upWHHgVe",
+      "model": "Oxymeter wireless - Nonin 3230"
+    },
+    {
+      "family_id": "43fODYd7",
+      "model": "Polarizing dermatoscope digital USB - Firefly DE300"
+    },
+    {
+      "family_id": "TyWY8xNh",
+      "model": "Polarizing otoscope digital USB - Firefly DE500"
+    },
+    {
       "family_id": "ezUWLlqU",
       "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
     },
     {
       "family_id": "cPoNB0Zh",
       "model": "Secure lancing devices"
+    },
+    {
+      "family_id": "utFdsO8S",
+      "model": "Spirometer digital USB - Minispir Light"
     },
     {
       "family_id": "sSSe3gPI",
@@ -129,48 +165,12 @@
       "model": "Telecardia charging base - Parsys"
     },
     {
-      "family_id": "Qmculje9",
-      "model": "USB digital laryngoscope - Vivid Medical VT-A100"
-    },
-    {
-      "family_id": "43fODYd7",
-      "model": "USB digital polarizing dermatoscope - Firefly DE300"
-    },
-    {
-      "family_id": "TyWY8xNh",
-      "model": "USB digital polarizing otoscope - Firefly DE500"
-    },
-    {
-      "family_id": "utFdsO8S",
-      "model": "USB digital spirometer - Minispir Light"
-    },
-    {
-      "family_id": "2YUEMLmH",
-      "model": "USB glucose meter - Beurer GL50"
-    },
-    {
-      "family_id": "cAxWbCCz",
-      "model": "USB oxymeter - Nonin 3231"
-    },
-    {
       "family_id": "7fxeOc1I",
-      "model": "USB ultrasound scanner - Interson SiMPLi - GP-C01"
+      "model": "Ultrasound probe USB - Interson SiMPLi - GP-C01"
     },
     {
       "family_id": "v7haPFiq",
-      "model": "Ultrasound - Interson abdominal 99-5929"
-    },
-    {
-      "family_id": "mX4l9sEQ",
-      "model": "Wireless bathroom scale - A&D UC-355PBT-Ci"
-    },
-    {
-      "family_id": "w5wDrPyZ",
-      "model": "Wireless glucose meter - Foracare DM30b"
-    },
-    {
-      "family_id": "upWHHgVe",
-      "model": "Wireless oxymeter - Nonin 3230"
+      "model": "Ultrasound probe USB - Interson abdominal 99-5929"
     }
   ],
   "consumable_families": [
