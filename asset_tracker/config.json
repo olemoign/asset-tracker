@@ -38,7 +38,7 @@
     },
     {
       "family_id": "lRJ5ikog",
-      "model": "Blood glucose test strips"
+      "model": "Blood glucose test strips - Beurer"
     },
     {
       "family_id": "YpHdh0bj",
@@ -46,7 +46,7 @@
     },
     {
       "family_id": "HbfOOQbt",
-      "model": "Control solution for blood glucose meter"
+      "model": "Control solution for blood glucose meter - Beurer"
     },
     {
       "family_id": "sxujnZOH",
@@ -103,6 +103,10 @@
     {
       "family_id": "Riof1XI5",
       "model": "Intraoral camera - Owandy OWandyCam"
+    },
+    {
+      "family_id": "2lv5nKoR",
+      "model": "Intraoral camera - Owandy OWandyCam HD"
     },
     {
       "family_id": "Uhn7PFBh",
@@ -175,13 +179,6 @@
   ],
   "consumable_families": [
     {
-      "family_id": "ozOhfp0H",
-      "model": "Adult PAD electrodes",
-      "equipment_family_ids": [
-        "VEgX5jR5"
-      ]
-    },
-    {
       "family_id": "K2rCGteW",
       "model": "Alcohol and drug test",
       "equipment_family_ids": [
@@ -190,27 +187,46 @@
     },
     {
       "family_id": "9oL6q5O5",
-      "model": "Blood glucose test strips",
+      "model": "Blood glucose test strips - Beurer",
       "equipment_family_ids": [
         "2YUEMLmH",
-        "lRJ5ikog",
+        "lRJ5ikog"
+      ]
+    },
+    {
+      "family_id": "wKBBoxzE",
+      "model": "Blood glucose test strips - Foracare",
+      "equipment_family_ids": [
         "w5wDrPyZ"
       ]
     },
     {
-      "family_id": "mulRy3lG",
-      "model": "Children PAD electrodes",
+      "family_id": "SHkfxK4Y",
+      "model": "Control solution for blood glucose meter - Beurer",
+      "equipment_family_ids": [
+        "2YUEMLmH",
+        "HbfOOQbt"
+      ]
+    },
+    {
+      "family_id": "T5r1i6KQ",
+      "model": "Control solution for blood glucose meter - Foracare",
+      "equipment_family_ids": [
+        "w5wDrPyZ"
+      ]
+    },
+    {
+      "family_id": "ozOhfp0H",
+      "model": "Defibrillator electrodes adult",
       "equipment_family_ids": [
         "VEgX5jR5"
       ]
     },
     {
-      "family_id": "SHkfxK4Y",
-      "model": "Control solution for blood glucose meter",
+      "family_id": "mulRy3lG",
+      "model": "Defibrillator electrodes child",
       "equipment_family_ids": [
-        "2YUEMLmH",
-        "HbfOOQbt",
-        "w5wDrPyZ"
+        "VEgX5jR5"
       ]
     },
     {
@@ -221,12 +237,33 @@
       ]
     },
     {
+      "family_id": "xRITEFZ7",
+      "model": "Ear protective caps single use",
+      "equipment_family_ids": [
+        "nRyEnID3"
+      ]
+    },
+    {
+      "family_id": "1o1MSesM",
+      "model": "Ear speculums single use",
+      "equipment_family_ids": [
+        "TyWY8xNh"
+      ]
+    },
+    {
       "family_id": "XKDj2BOi",
-      "model": "Intraoral camera casing",
+      "model": "Intraoral camera casing - Owandy",
+      "equipment_family_ids": [
+        "2lv5nKoR",
+        "Riof1XI5"
+      ]
+    },
+    {
+      "family_id": "qWd9Mo2D",
+      "model": "Intraoral camera casing - Soprocare",
       "equipment_family_ids": [
         "Oqldhs5Z",
-        "q6UessZu",
-        "Riof1XI5"
+        "q6UessZu"
       ]
     },
     {
@@ -247,13 +284,6 @@
       ]
     },
     {
-      "family_id": "1o1MSesM",
-      "model": "Single use ear specula",
-      "equipment_family_ids": [
-        "TyWY8xNh"
-      ]
-    },
-    {
       "family_id": "y7QIajC0",
       "model": "Spirometer disposable turbines",
       "equipment_family_ids": [
@@ -265,13 +295,6 @@
       "model": "Spirometer nose clip",
       "equipment_family_ids": [
         "utFdsO8S"
-      ]
-    },
-    {
-      "family_id": "xRITEFZ7",
-      "model": "Thermometer protection tip - Foracare IR20b",
-      "equipment_family_ids": [
-        "nRyEnID3"
       ]
     },
     {

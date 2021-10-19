@@ -12,7 +12,7 @@ def main():
         config['consumable_families'] = sorted(config['consumable_families'], key=itemgetter('model'))
 
     with open(PATH / 'config.json', 'w') as config_file:
-        json.dump(config, config_file)
+        json.dump(config, config_file, indent=2)
 
 
 if __name__ == '__main__':
