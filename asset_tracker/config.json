@@ -18,19 +18,27 @@
     },
     {
       "family_id": "XPSmzHc3",
-      "model": "Automatic tensiometer wireless - A&D UA-1200BLE"
+      "model": "Automatic tensiometer armband wireless - A&D UA-1200BLE"
+    },
+    {
+      "family_id": "E7SQL7Mr",
+      "model": "Automatic tensiometer armband wireless - Foracare P80"
     },
     {
       "family_id": "8rpM8kOh",
       "model": "Automatic tensiometer wireless - A&D UA-651BLE"
     },
     {
-      "family_id": "E7SQL7Mr",
-      "model": "Automatic tensiometer wireless - Foracare P80"
+      "family_id": "6fwOArLx",
+      "model": "Automatic tensiometer wireless - Beurer BM 85"
     },
     {
       "family_id": "mX4l9sEQ",
       "model": "Bathroom scale wireless - A&D UC-355PBT-Ci"
+    },
+    {
+      "family_id": "",
+      "model": "Biomicroscopic lens - Miis DEA200P"
     },
     {
       "family_id": "T5hImspB",
@@ -58,7 +66,27 @@
     },
     {
       "family_id": "CrV9efKR",
-      "model": "Dermatoscope lens - Miis DOC100"
+      "model": "Dermatoscope lens - Miis DDC100"
+    },
+    {
+      "family_id": "GQNgsd8F",
+      "model": "Dermatoscope lens wide-angle - Miis DDC200"
+    },
+    {
+      "family_id": "43fODYd7",
+      "model": "Dermatoscope polarizing digital USB - Firefly DE300"
+    },
+    {
+      "family_id": "MOj5JSd5",
+      "model": "Dermatoscope tablet/smartphone - Dermlite DL1"
+    },
+    {
+      "family_id": "3n5q5snQ",
+      "model": "Dermatoscope tablet/smartphone light - Dermlite DL1 BASIC"
+    },
+    {
+      "family_id": "AtthzUOj",
+      "model": "Dermatoscope with large lens 300mm table/smartphone - Dermlite DL4"
     },
     {
       "family_id": "8i8qFB6V",
@@ -74,23 +102,19 @@
     },
     {
       "family_id": "PJpf8PGG",
-      "model": "Handheld camera - Miis Horus DSC100"
+      "model": "Handheld camera 2Mpx - Miis Horus DSC100"
     },
     {
       "family_id": "eLYiLU5p",
-      "model": "Handheld camera - Miis Horus DSC200P"
+      "model": "Handheld camera 5Mpx - Miis Horus DSC300P"
     },
     {
       "family_id": "aNJN1pqt",
       "model": "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
     },
     {
-      "family_id": "nRyEnID3",
-      "model": "Infrared thermometer wireless - Foracare IR20b"
-    },
-    {
-      "family_id": "jbVmQunF",
-      "model": "Infrared thermometer wireless - Foracare IR21b"
+      "family_id": "h2suuhCI",
+      "model": "Holter ECG USB - Edan SE-2003"
     },
     {
       "family_id": "q6UessZu",
@@ -125,28 +149,40 @@
       "model": "Multipurpose digital audiometer with headset - Echodia Otowin + DD45 HI"
     },
     {
+      "family_id": "ujje8J6P",
+      "model": "Ocular surface lens - Miis DEA100"
+    },
+    {
       "family_id": "NwdtzWAs",
-      "model": "Ophtalmoscope lens - Miis EEC100"
+      "model": "Ophtalmoscope lens 25° - Miis EEC100"
+    },
+    {
+      "family_id": "aGDVgg6Z",
+      "model": "Ophtalmoscope lens 40° - Miis DEC100"
     },
     {
       "family_id": "laqMhCEb",
-      "model": "Otoscope lens - Miis DOC100S"
+      "model": "Otoscope lens 2Mpx - Miis DOC100S"
+    },
+    {
+      "family_id": "2fzcPalG",
+      "model": "Otoscope lens 5Mpx - Miis DOC300S"
+    },
+    {
+      "family_id": "TyWY8xNh",
+      "model": "Otoscope polarizing digital USB - Firefly DE500"
     },
     {
       "family_id": "cAxWbCCz",
       "model": "Oxymeter USB - Nonin 3231"
     },
     {
+      "family_id": "OmqwhfPb",
+      "model": "Oxymeter unconnected - Nonin 9590"
+    },
+    {
       "family_id": "upWHHgVe",
       "model": "Oxymeter wireless - Nonin 3230"
-    },
-    {
-      "family_id": "43fODYd7",
-      "model": "Polarizing dermatoscope digital USB - Firefly DE300"
-    },
-    {
-      "family_id": "TyWY8xNh",
-      "model": "Polarizing otoscope digital USB - Firefly DE500"
     },
     {
       "family_id": "ezUWLlqU",
@@ -167,6 +203,18 @@
     {
       "family_id": "j7tJ1y4A",
       "model": "Telecardia charging base - Parsys"
+    },
+    {
+      "family_id": "nRyEnID3",
+      "model": "Thermometer ear wireless - Foracare IR20b"
+    },
+    {
+      "family_id": "RdB99hYF",
+      "model": "Thermometer forehead wireless - Foracare IR42"
+    },
+    {
+      "family_id": "jbVmQunF",
+      "model": "Thermometer infrared wireless - Foracare IR21b"
     },
     {
       "family_id": "7fxeOc1I",
