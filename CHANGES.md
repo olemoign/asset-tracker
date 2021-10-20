@@ -1,3 +1,8 @@
+3.1.5
+---
+- feat(assets): update families
+- fix(translations): asset type
+
 3.1.4
 ---
 - feat: add data in export
