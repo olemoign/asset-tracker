@@ -6,7 +6,6 @@ from pyramid.i18n import TranslationString as _
 ASSET_TRACKER_VERSION = importlib.metadata.version(__package__)
 
 STATIC_FILES_CACHE = 60 * 60
-USER_INACTIVITY_MAX = 60 * 60
 
 ADMIN_PRINCIPAL = 'g:admin'
 CALIBRATION_FREQUENCIES_YEARS = {

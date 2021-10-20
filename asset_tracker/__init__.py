@@ -6,9 +6,10 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from depot.manager import DepotManager
+from parsys_utilities import USER_SESSION_DURATION
+from parsys_utilities import celery_app
 from parsys_utilities.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
 from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale
-from parsys_utilities import celery_app
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
@@ -24,7 +25,7 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
 from asset_tracker.config import update_configuration
-from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE, USER_INACTIVITY_MAX
+from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE
 
 # Celery runs celery.app.
 celery = celery_app
@@ -82,7 +83,7 @@ def main(global_config, **settings):
     cookie_secure = not asbool(settings.get('asset_tracker.dev.disable_secure_cookies', False))
     session_factory = RedisSessionFactory(
         settings['asset_tracker.cookie_signature'],
-        timeout=USER_INACTIVITY_MAX,
+        timeout=USER_SESSION_DURATION,
         cookie_name='asset_tracker_session',
         cookie_secure=cookie_secure,
         cookie_samesite='None' if cookie_secure else None,
