@@ -1,22 +1,6 @@
 {
   "equipment_families": [
     {
-      "family_id": "kR059vud",
-      "model": "12-lead ECG USB - Schiller MS-12 USB"
-    },
-    {
-      "family_id": "CJR99XSW",
-      "model": "12-lead ECG wireless- Parsys Telecardia"
-    },
-    {
-      "family_id": "56T5Xr2A",
-      "model": "12-lead ECG wireless- Welch Allyn/Mortara RSCRIBE 7 WAM ECG"
-    },
-    {
-      "family_id": "R7osm3Qa",
-      "model": "18-lead ECG wireless - Parsys Cardialys"
-    },
-    {
       "family_id": "XPSmzHc3",
       "model": "Automatic tensiometer armband wireless - A&D UA-1200BLE"
     },
@@ -37,7 +21,7 @@
       "model": "Bathroom scale wireless - A&D UC-355PBT-Ci"
     },
     {
-      "family_id": "",
+      "family_id": "8FuWuao1",
       "model": "Biomicroscopic lens - Miis DEA200P"
     },
     {
@@ -51,6 +35,38 @@
     {
       "family_id": "YpHdh0bj",
       "model": "Blood tests - Nal Von Minden"
+    },
+    {
+      "family_id": "i90vR1VW",
+      "model": "Camera general diagnostic USB - Firefly DE605"
+    },
+    {
+      "family_id": "aNJN1pqt",
+      "model": "Camera handheld / Ophthalmoscope kit - Optomed Smartscope M5 + EY4"
+    },
+    {
+      "family_id": "PJpf8PGG",
+      "model": "Camera handheld 2Mpx - Miis Horus DSC100"
+    },
+    {
+      "family_id": "eLYiLU5p",
+      "model": "Camera handheld 5Mpx - Miis Horus DSC300P"
+    },
+    {
+      "family_id": "q6UessZu",
+      "model": "Camera intraoral - Acteon SoproCare 717 + Dock M-USB2"
+    },
+    {
+      "family_id": "Oqldhs5Z",
+      "model": "Camera intraoral - Acteon SoproCare 950 + Dock M-USB2"
+    },
+    {
+      "family_id": "Riof1XI5",
+      "model": "Camera intraoral - Owandy OWandyCam"
+    },
+    {
+      "family_id": "2lv5nKoR",
+      "model": "Camera intraoral - Owandy OWandyCam HD"
     },
     {
       "family_id": "HbfOOQbt",
@@ -89,6 +105,26 @@
       "model": "Dermatoscope with large lens 300mm table/smartphone - Dermlite DL4"
     },
     {
+      "family_id": "kR059vud",
+      "model": "ECG 12-lead USB - Schiller MS-12 USB"
+    },
+    {
+      "family_id": "CJR99XSW",
+      "model": "ECG 12-lead wireless- Parsys Telecardia"
+    },
+    {
+      "family_id": "56T5Xr2A",
+      "model": "ECG 12-lead wireless- Welch Allyn/Mortara RSCRIBE 7 WAM ECG"
+    },
+    {
+      "family_id": "R7osm3Qa",
+      "model": "ECG 18-lead wireless - Parsys Cardialys"
+    },
+    {
+      "family_id": "h2suuhCI",
+      "model": "ECG Holter USB - Edan SE-2003"
+    },
+    {
       "family_id": "8i8qFB6V",
       "model": "General lens - Miis DGC100"
     },
@@ -99,38 +135,6 @@
     {
       "family_id": "w5wDrPyZ",
       "model": "Glucose meter wireless - Foracare DM30b"
-    },
-    {
-      "family_id": "PJpf8PGG",
-      "model": "Handheld camera 2Mpx - Miis Horus DSC100"
-    },
-    {
-      "family_id": "eLYiLU5p",
-      "model": "Handheld camera 5Mpx - Miis Horus DSC300P"
-    },
-    {
-      "family_id": "aNJN1pqt",
-      "model": "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
-    },
-    {
-      "family_id": "h2suuhCI",
-      "model": "Holter ECG USB - Edan SE-2003"
-    },
-    {
-      "family_id": "q6UessZu",
-      "model": "Intraoral camera - Acteon SoproCare 717 + Dock M-USB2"
-    },
-    {
-      "family_id": "Oqldhs5Z",
-      "model": "Intraoral camera - Acteon SoproCare 950 + Dock M-USB2"
-    },
-    {
-      "family_id": "Riof1XI5",
-      "model": "Intraoral camera - Owandy OWandyCam"
-    },
-    {
-      "family_id": "2lv5nKoR",
-      "model": "Intraoral camera - Owandy OWandyCam HD"
     },
     {
       "family_id": "Uhn7PFBh",
@@ -185,8 +189,12 @@
       "model": "Oxymeter wireless - Nonin 3230"
     },
     {
+      "family_id": "yTmor5iw",
+      "model": "Refractometer mobile - Welch Allyn SPOT Vision Screener"
+    },
+    {
       "family_id": "ezUWLlqU",
-      "model": "Retina camera for babies and premature babies - Welch Allyn SPOT Vision Screener"
+      "model": "Retina camera babies/premature babies - Welch Allyn RETeval-DR"
     },
     {
       "family_id": "cPoNB0Zh",
@@ -194,15 +202,15 @@
     },
     {
       "family_id": "utFdsO8S",
-      "model": "Spirometer digital USB - Minispir Light"
+      "model": "Spirometer digital USB - MIR Minispir Light"
     },
     {
       "family_id": "sSSe3gPI",
-      "model": "Stethoscope - RNK PCP-USB"
+      "model": "Stethoscope USB - Riester PCP-USB"
     },
     {
       "family_id": "j7tJ1y4A",
-      "model": "Telecardia charging base - Parsys"
+      "model": "Telecardia charging base - Parsys Base TC"
     },
     {
       "family_id": "nRyEnID3",
@@ -217,12 +225,28 @@
       "model": "Thermometer infrared wireless - Foracare IR21b"
     },
     {
+      "family_id": "fF2laM22",
+      "model": "Ultrasound probe cardio phased array - Sonoscanner PR54"
+    },
+    {
+      "family_id": "nd3H0TCI",
+      "model": "Ultrasound probe convex HD - Sonoscanner PR50"
+    },
+    {
+      "family_id": "dEoxP1DC",
+      "model": "Ultrasound probe linear full HD 50 - Sonoscanner PR52"
+    },
+    {
       "family_id": "7fxeOc1I",
-      "model": "Ultrasound probe USB - Interson SiMPLi - GP-C01"
+      "model": "Ultrasound scanner USB - Interson SiMPLi - GP-C01"
     },
     {
       "family_id": "v7haPFiq",
-      "model": "Ultrasound probe USB - Interson abdominal 99-5929"
+      "model": "Ultrasound scanner USB - Interson abdominal 99-5929"
+    },
+    {
+      "family_id": "2DqntS45",
+      "model": "Ultrasound scanner ultra-portable 7\" - Sonoscanner Ulite EXP"
     }
   ],
   "consumable_families": [
@@ -267,6 +291,7 @@
       "family_id": "ozOhfp0H",
       "model": "Defibrillator electrodes adult",
       "equipment_family_ids": [
+        "sxujnZOH",
         "VEgX5jR5"
       ]
     },
@@ -274,6 +299,7 @@
       "family_id": "mulRy3lG",
       "model": "Defibrillator electrodes child",
       "equipment_family_ids": [
+        "sxujnZOH",
         "VEgX5jR5"
       ]
     },
@@ -282,6 +308,37 @@
       "model": "Defibrillator lithium battery",
       "equipment_family_ids": [
         "VEgX5jR5"
+      ]
+    },
+    {
+      "family_id": "47yeRWcU",
+      "model": "ECG electrode clip adult/child",
+      "equipment_family_ids": [
+        "h2suuhCI",
+        "R7osm3Qa"
+      ]
+    },
+    {
+      "family_id": "n8OEzJjb",
+      "model": "ECG electrode trigger guard adult",
+      "equipment_family_ids": [
+        "kR059vud",
+        "R7osm3Qa"
+      ]
+    },
+    {
+      "family_id": "Yq2BEPZX",
+      "model": "ECG electrodes tab adult (x1000) - Schiller",
+      "equipment_family_ids": [
+        "kR059vud"
+      ]
+    },
+    {
+      "family_id": "ZTNprn6V",
+      "model": "ECG electrodes tab adult/child (x1000) - 3M",
+      "equipment_family_ids": [
+        "56T5Xr2A",
+        "kR059vud"
       ]
     },
     {
