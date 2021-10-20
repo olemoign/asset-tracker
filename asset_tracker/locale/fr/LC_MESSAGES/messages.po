@@ -6,29 +6,13 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: notifications/assets.py:23
+#: notifications/assets.py:68
 msgid "${app_name} - Device calibration reminder"
 msgstr "${app_name} - Rappel d'étalonnage du matériel"
 
-#: notifications/assets.py:64
+#: notifications/assets.py:22
 msgid "${app_name} - Equipment consumables expiration reminder"
 msgstr "${app_name} - Rappel date de péremption du matériel consommable"
-
-#: config.json:45
-msgid "12-lead USB ECG - Schiller MS-12 USB"
-msgstr "ECG 12 dérivations USB - Schiller MS-12 USB"
-
-#: config.json:41
-msgid "12-lead wireless ECG - Parsys Telecardia"
-msgstr "ECG 12 dérivations sans fil - Parsys Télécardia"
-
-#: config.json:49
-msgid "12-lead wireless ECG - Welch Allyn RSCRIBE WAM ECG"
-msgstr "ECG 12 dérivations sans fil - Welch Allyn RSCRIBE WAM ECG"
-
-#: config.json:13
-msgid "18-lead ECG - Parsys Cardialys"
-msgstr "ECG 18 dérivations - Parsys"
 
 #: templates/pages/assets-create_update.html:205
 #: templates/pages/assets-create_update.html:212
@@ -59,27 +43,11 @@ msgstr "Mise en service"
 msgid "Add Event"
 msgstr "Ajouter Événement"
 
-#: config.json:216
-msgid "Adult ECG electrodes with tab (x100)"
-msgstr "Électrodes à languette ECG adulte (x100)"
-
-#: config.json:209
-msgid "Adult ECG electrodes with tab (x500)"
-msgstr "Électrodes à languette ECG adulte (x500)"
-
-#: config.json:202
-msgid "Adult ECG electrodes with tab (x5000)"
-msgstr "Électrodes à languette ECG adulte (x5000)"
-
-#: config.json:237
-msgid "Adult PAD electrodes"
-msgstr "Électrodes PAD Adulte"
-
-#: config.json:288
+#: config.json:255
 msgid "Alcohol and drug test"
 msgstr "Test de dépistage de stupéfiants et d’alcool"
 
-#: templates/errors/500.html:12
+#: templates/errors/500.html:15
 msgid "An error occurred. Please retry later."
 msgstr "Une erreur est survenue. Veuillez réessayer dans quelques instants."
 
@@ -94,31 +62,47 @@ msgstr "ID"
 msgid "Assets"
 msgstr "Matériels"
 
-#: config.json:165
-msgid "Automatic wireless tensiometer - A&D UA-1200BLE"
-msgstr "Auto-tensiomètre sans fil - A&D UA-1200BLE"
+#: config.json:5
+msgid "Automatic tensiometer armband wireless - A&D UA-1200BLE"
+msgstr "Auto-tensiomètre brassard sans fil - A&D UA-1200BLE"
 
-#: config.json:65
-msgid "Automatic wireless tensiometer - A&D UA-651BLE"
+#: config.json:9
+msgid "Automatic tensiometer armband wireless - Foracare P80"
+msgstr "Auto-tensiomètre brassard sans fil - Foracare P80"
+
+#: config.json:13
+msgid "Automatic tensiometer wireless - A&D UA-651BLE"
 msgstr "Auto-tensiomètre sans fil - A&D UA-651BLE"
 
-#: config.json:61
-msgid "Automatic wireless tensiometer - Foracare P80"
-msgstr "Auto-tensiomètre sans fil - Foracare P80"
+#: config.json:17
+msgid "Automatic tensiometer wireless - Beurer BM 85"
+msgstr "Auto-tensiomètre sans fil - Beurer BM 85"
 
-#: constants.py:25
+#: constants.py:24
 msgid "Backpack"
 msgstr "Sac à dos"
 
 #: config.json:21
+msgid "Bathroom scale wireless - A&D UC-355PBT-Ci"
+msgstr "Pèse-personne sans fil - A&D UC-355PBT-Ci"
+
+#: config.json:25
+msgid "Biomicroscopic lens - Miis DEA200P"
+msgstr "Objectif biomicroscopique - Miis DEA200P"
+
+#: config.json:29
 msgid "Blood analyser - PTS CardioChek"
 msgstr "Analyseur sanguin - PTS CardioChek"
 
-#: config.json:178
-msgid "Blood glucose test strips"
-msgstr "Bandes de test de glycémie"
+#: config.json:33 config.json:262
+msgid "Blood glucose test strips - Beurer"
+msgstr "Bandes de test de glycémie - Beurer"
 
-#: config.json:157
+#: config.json:270
+msgid "Blood glucose test strips - Foracare"
+msgstr "Bandes de test de glycémie - Foracare"
+
+#: config.json:37
 msgid "Blood tests - Nal Von Minden"
 msgstr "Tests sanguins - Nal Von Minden"
 
@@ -126,20 +110,48 @@ msgstr "Tests sanguins - Nal Von Minden"
 msgid "Calibration frequency"
 msgstr "Fréquence de calibration"
 
+#: config.json:41
+msgid "Camera general diagnostic USB - Firefly DE605"
+msgstr "Caméra de diagnostic général USB - Firefly DE605"
+
+#: config.json:45
+msgid "Camera handheld / Ophthalmoscope kit - Optomed Smartscope M5 + EY4"
+msgstr "Kit caméra à main / Ophtalmoscope - Optomed Smartscope M5 + EY4"
+
+#: config.json:49
+msgid "Camera handheld 2Mpx - Miis Horus DSC100"
+msgstr "Caméra à main 2Mpx - Miis Horus DSC100"
+
+#: config.json:53
+msgid "Camera handheld 5Mpx - Miis Horus DSC300P"
+msgstr "Caméra à main 5Mpx - Miis Horus DSC300P"
+
+#: config.json:57
+msgid "Camera intraoral - Acteon SoproCare 717 + Dock M-USB2"
+msgstr "Caméra intra-buccale - Acteon SoproCare 717 + Dock M-USB2"
+
+#: config.json:61
+msgid "Camera intraoral - Acteon SoproCare 950 + Dock M-USB2"
+msgstr "Caméra intra-buccale - Acteon SoproCare 950 + Dock M-USB2"
+
+#: config.json:65
+msgid "Camera intraoral - Owandy OWandyCam"
+msgstr "Caméra intra-buccale - Owandy OWandyCam"
+
+#: config.json:69
+msgid "Camera intraoral - Owandy OWandyCam HD"
+msgstr "Caméra intra-buccale - Owandy OWandyCam"
+
 #: templates/pages/assets-create_update.html:143
 #: templates/pages/sites-create_update.html:78
 msgid "Cancel"
 msgstr "Annuler"
 
-#: constants.py:26
+#: constants.py:25
 msgid "Cart"
 msgstr "Chariot"
 
-#: config.json:244
-msgid "Children PAD electrodes"
-msgstr "Électrodes PAD pédiatrique"
-
-#: constants.py:17
+#: constants.py:16
 msgid "Company"
 msgstr "Entreprise"
 
@@ -148,11 +160,11 @@ msgstr "Entreprise"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: config.json:437
+#: config.json:535
 msgid "Configuration update"
 msgstr "Mise à jour de configuration"
 
-#: constants.py:27
+#: constants.py:26
 msgid "Consumables case"
 msgstr "Valise consommables"
 
@@ -161,9 +173,13 @@ msgstr "Valise consommables"
 msgid "Contact"
 msgstr "Contact"
 
-#: config.json:186
-msgid "Control solution for blood glucose meter"
-msgstr "Solution de contrôle pour lecteurs de glycémie"
+#: config.json:73 config.json:277
+msgid "Control solution for blood glucose meter - Beurer"
+msgstr "Solution de contrôle pour lecteurs de glycémie - Beurer"
+
+#: config.json:285
+msgid "Control solution for blood glucose meter - Foracare"
+msgstr "Solution de contrôle pour lecteurs de glycémie - Foracare"
 
 #: templates/pages/sites-create_update.html:95
 msgid "Current"
@@ -200,15 +216,27 @@ msgstr "Date"
 msgid "Dear user"
 msgstr "Cher utilisateur"
 
-#: config.json:424
+#: config.json:522
 msgid "Decommissioned"
 msgstr "Hors service"
 
-#: config.json:258
-msgid "Defibrillator battery"
-msgstr "Pile défibrillateur"
+#: config.json:292
+msgid "Defibrillator electrodes adult"
+msgstr "Électrodes défibrillateur adulte"
 
-#: config.json:251
+#: config.json:300
+msgid "Defibrillator electrodes child"
+msgstr "Électrodes défibrillateur enfant"
+
+#: config.json:77
+msgid "Defibrillator external automatic - Schiller FRED Easy Trainer"
+msgstr "Défibrillateur automatique externe - Schiller FRED Easy Trainer"
+
+#: config.json:81
+msgid "Defibrillator external automatic - Schiller FRED Easyport"
+msgstr "Défibrillateur automatique externe - Schiller FRED Easyport"
+
+#: config.json:308
 msgid "Defibrillator lithium battery"
 msgstr "Pile lithium défibrillateur"
 
@@ -216,13 +244,73 @@ msgstr "Pile lithium défibrillateur"
 msgid "Delivery"
 msgstr "Livraison"
 
-#: config.json:37
-msgid "Dermatoscope - Firefly DE300A"
-msgstr "Dermatoscope - Firefly DE300A"
+#: config.json:85
+msgid "Dermatoscope lens - Miis DDC100"
+msgstr "Objectif dermatoscope - Miis DOC100"
+
+#: config.json:89
+msgid "Dermatoscope lens wide-angle - Miis DDC200"
+msgstr "Objectif dermatoscope grand angle - Miis DDC200"
+
+#: config.json:93
+msgid "Dermatoscope polarizing digital USB - Firefly DE300"
+msgstr "Dermatoscope polarisant numérique USB - Firefly DE300"
+
+#: config.json:97
+msgid "Dermatoscope tablet/smartphone - Dermlite DL1"
+msgstr "Dermatoscope pour tablette/smartphone - Dermlite DL1"
+
+#: config.json:101
+msgid "Dermatoscope tablet/smartphone light - Dermlite DL1 BASIC"
+msgstr "Dermatoscope light pour tablette/smartphone - Dermlite DL1 BASIC"
+
+#: config.json:105
+msgid "Dermatoscope with large lens 300mm table/smartphone - Dermlite DL4"
+msgstr "Dermatoscope avec lentille large 300 mm pour tablette/smartphone - Dermlite DL4"
+
+#: config.json:109
+msgid "ECG 12-lead USB - Schiller MS-12 USB"
+msgstr "ECG 12 dérivations USB - Schiller MS-12 USB"
+
+#: config.json:113
+msgid "ECG 12-lead wireless- Parsys Telecardia"
+msgstr "ECG 12 dérivations sans fil - Parsys Télécardia"
+
+#: config.json:117
+msgid "ECG 12-lead wireless- Welch Allyn/Mortara RSCRIBE 7 WAM ECG"
+msgstr "ECG 12 dérivations sans fil - Welch Allyn/Mortara RSCRIBE 7 WAM ECG"
+
+#: config.json:121
+msgid "ECG 18-lead wireless - Parsys Cardialys"
+msgstr "ECG 18 dérivations sans fil - Parsys"
 
 #: config.json:125
-msgid "Dermatoscope lens - Miis DOC100"
-msgstr "Objectif dermatoscope - Miis DOC100"
+msgid "ECG Holter USB - Edan SE-2003"
+msgstr "ECG Holter USB - Edan SE-2003"
+
+#: config.json:315
+msgid "ECG electrode clip adult/child"
+msgstr "Électrode ECG à clip adulte/enfant"
+
+#: config.json:323
+msgid "ECG electrode trigger guard adult"
+msgstr "Électrode ECG à pontet adulte"
+
+#: config.json:331
+msgid "ECG electrodes tab adult (x1000) - Schiller"
+msgstr "Électrodes ECG à languette adulte (x1000) - Schiller"
+
+#: config.json:338
+msgid "ECG electrodes tab adult/child (x1000) - 3M"
+msgstr "Électrodes ECG à languette adulte/enfant (x1000) - 3M"
+
+#: config.json:346
+msgid "Ear protective caps single use"
+msgstr "Capuchons auriculaires à usage unique"
+
+#: config.json:353
+msgid "Ear speculums single use"
+msgstr "Spéculums auriculaires à usage unique"
 
 #: templates/pages/sites-create_update.html:71
 #: templates/pages/sites-list.html:31
@@ -237,33 +325,21 @@ msgstr "Équipements"
 msgid "Error"
 msgstr "Erreur"
 
-#: config.json:89
-msgid "External automatic defibrillator - Schiller FRED Easy Trainer"
-msgstr "Défibrillateur automatique externe - Schiller FRED Easy Trainer"
-
-#: config.json:85
-msgid "External automatic defibrillator - Schiller FRED Easyport"
-msgstr "Défibrillateur automatique externe - Schiller FRED Easyport"
-
 #: templates/pages/assets-list.html:18
 msgid "Extract"
 msgstr "Extraire"
 
-#: config.json:113
+#: config.json:129
 msgid "General lens - Miis DGC100"
 msgstr "Objectif général - Miis DGC100"
 
-#: config.json:105
-msgid "Handheld camera - Miis Horus DSC100"
-msgstr "Caméra à main - Miis Horus DSC100"
+#: config.json:133
+msgid "Glucose meter USB - Beurer GL50"
+msgstr "Glucomètre USB - Beurer GL50"
 
-#: config.json:109
-msgid "Handheld camera - Miis Horus DSC200P"
-msgstr "Caméra à main - Miis Horus DSC200P"
-
-#: config.json:101
-msgid "Handheld camera kit / Ophthalmoscope - Optomed Smartscope M5 + EY4"
-msgstr "Kit caméra à main / Ophtalmoscope - Optomed Smartscope M5 + EY4"
+#: config.json:137
+msgid "Glucose meter wireless - Foracare DM30b"
+msgstr "Glucomètre sans fil - Foracare DM30b"
 
 #: templates/pages/assets-create_update.html:76
 msgid "Hardware version"
@@ -274,115 +350,103 @@ msgstr "Version du matériel"
 msgid "History"
 msgstr "Historique"
 
-#: templates/errors/500.html:13
+#: templates/errors/500.html:16
 msgid "Home"
 msgstr "Accueil"
 
-#: constants.py:18
+#: constants.py:17
 msgid "Hospital"
 msgstr "Hôpital"
 
-#: config.json:410
+#: config.json:508
 msgid "In calibration"
 msgstr "En calibration"
 
-#: config.json:417
+#: config.json:515
 msgid "In repair"
 msgstr "En réparation"
 
-#: config.json:375
+#: config.json:473
 msgid "In service"
 msgstr "En service"
 
-#: config.json:340
-msgid "In stock - Parsys"
-msgstr "En stock - Parsys"
+#: config.json:438
+msgid "In stock Parsys"
+msgstr "En stock Parsys"
 
-#: config.json:354
-msgid "In stock - distributor"
-msgstr "En stock - distributeur"
+#: config.json:452
+msgid "In stock distributor"
+msgstr "En stock distributeur"
 
-#: config.json:403
+#: config.json:501
 msgid "In transit to Parsys"
 msgstr "En transit vers Parsys"
 
-#: config.json:361
+#: config.json:459
 msgid "In transit to customer"
 msgstr "En transit vers le client"
 
-#: config.json:347
+#: config.json:445
 msgid "In transit to distributor"
 msgstr "En transit vers le distributeur"
 
-#: config.json:396
+#: config.json:494
 msgid "In transit to distributor (return)"
 msgstr "En transit vers le distributeur (retour)"
 
-#: config.json:161
-msgid "Infrared wireless thermometer - Foracare IR20b"
-msgstr "Thermomètre infrarouge sans fil - Foracare IR20b"
+#: config.json:360
+msgid "Intraoral camera casing - Owandy"
+msgstr "Protections pour caméra intra-buccale - Owandy"
 
-#: config.json:81
-msgid "Infrared wireless thermometer - Foracare IR21b"
-msgstr "Thermomètre infrarouge sans fil - Foracare IR21b"
+#: config.json:368
+msgid "Intraoral camera casing - Soprocare"
+msgstr "Protections pour caméra intra-buccale - Soprocare"
 
-#: config.json:149
-msgid "Intraoral camera - Acteon SoproCare 717 + Dock M-USB2"
-msgstr "Caméra intra-buccale - Acteon SoproCare 717 + Dock M-USB2"
-
-#: config.json:145
-msgid "Intraoral camera - Acteon SoproCare 950 + Dock M-USB2"
-msgstr "Caméra intra-buccale - Acteon SoproCare 950 + Dock M-USB2"
-
-#: config.json:153
-msgid "Intraoral camera - Owandy OWandyCam"
-msgstr "Caméra intra-buccale - Owandy OWandyCam"
-
-#: config.json:272
-msgid "Intraoral camera casing"
-msgstr "Protections pour caméra intra-buccale"
-
-#: views/assets.py:322
+#: views/assets.py:321
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:283
+#: views/assets.py:279
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:309
+#: views/assets.py:308
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:328
+#: views/assets.py:327
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:336
+#: views/assets.py:341
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:315
+#: views/assets.py:314
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:289
+#: views/assets.py:288
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:279 views/sites.py:85
+#: views/assets.py:275 views/sites.py:93
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
-#: config.json:171
+#: config.json:141 config.json:376
 msgid "Lancets (legacy)"
 msgstr "Lancettes (historique)"
+
+#: config.json:145
+msgid "Laryngoscope digital USB - Vivid Medical VT-A100"
+msgstr "Laryngoscope numérique USB - Vivid Medical VT-A100"
 
 #: templates/pages/assets-create_update.html:176
 msgid "Last calibration"
 msgstr "Dernière calibration"
 
-#: templates/errors/403.html:14 templates/menu.html:29
+#: templates/errors/403.html:17 templates/menu.html:29
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -394,15 +458,15 @@ msgstr "Adresse MAC (ethernet)"
 msgid "MAC address (wifi)"
 msgstr "Adresse MAC (wifi)"
 
-#: views/assets.py:264
+#: views/assets.py:260
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
-#: config.json:53
+#: config.json:149
 msgid "Multiparametrical USB - Parsys Biosys"
 msgstr "Multiparamétrique USB - Parsys Biosys"
 
-#: config.json:133
+#: config.json:153
 msgid "Multipurpose digital audiometer with headset - Echodia Otowin + DD45 HI"
 msgstr "Audiomètre numérique polyvalent avec casque - Echodia Otowin + DD45 HI"
 
@@ -411,11 +475,11 @@ msgstr "Audiomètre numérique polyvalent avec casque - Echodia Otowin + DD45 HI
 msgid "Name"
 msgstr "Nom"
 
-#: views/sites.py:94
+#: views/sites.py:102
 msgid "Name already exists."
 msgstr "Ce nom existe déjà."
 
-#: views/sites.py:89
+#: views/sites.py:97
 msgid "Name is required."
 msgstr "Le nom est requis."
 
@@ -457,27 +521,51 @@ msgstr "Aucun"
 msgid "Notes"
 msgstr "Notes"
 
-#: constants.py:19
+#: constants.py:18
 msgid "Nursing home"
 msgstr "EHPAD"
 
-#: config.json:368
+#: config.json:157
+msgid "Ocular surface lens - Miis DEA100"
+msgstr "Objectif surface oculaire - Miis DEA100"
+
+#: config.json:466
 msgid "On site"
 msgstr "Sur site"
 
-#: config.json:117
-msgid "Ophtalmoscope lens - Miis EEC100"
-msgstr "Objectif ophtalmoscope - Miis EEC100"
+#: config.json:161
+msgid "Ophtalmoscope lens 25° - Miis EEC100"
+msgstr "Objectif ophtalmoscope 25° - Miis EEC100"
 
-#: config.json:33
-msgid "Otoscope - Firefly DE500A"
-msgstr "Otoscope - Firefly DE500A"
+#: config.json:165
+msgid "Ophtalmoscope lens 40° - Miis DEC100"
+msgstr "Objectif ophthalmoscope 40° - Miis DEC100"
 
-#: config.json:121
-msgid "Otoscope lens - Miis DOC100S"
-msgstr "Objectif otoscope - Miis DOC100S"
+#: config.json:169
+msgid "Otoscope lens 2Mpx - Miis DOC100S"
+msgstr "Objectif otoscope 2Mpx - Miis DOC100S"
 
-#: templates/errors/404.html:4 templates/errors/404.html:12
+#: config.json:173
+msgid "Otoscope lens 5Mpx - Miis DOC300S"
+msgstr "Objectif otoscope 5Mpx - Miis DOC300S"
+
+#: config.json:177
+msgid "Otoscope polarizing digital USB - Firefly DE500"
+msgstr "Otoscope polarisant numérique USB - Firefly DE500"
+
+#: config.json:181
+msgid "Oxymeter USB - Nonin 3231"
+msgstr "Oxymètre USB - Nonin 3231"
+
+#: config.json:185
+msgid "Oxymeter unconnected - Nonin 9590"
+msgstr "Oxymètre non connecté - Nonin 9590"
+
+#: config.json:189
+msgid "Oxymeter wireless - Nonin 3230"
+msgstr "Oxymètre sans fil - Nonin 3230"
+
+#: templates/errors/404.html:4 templates/errors/404.html:15
 msgid "Page not found"
 msgstr "Page non trouvée"
 
@@ -499,23 +587,23 @@ msgstr ""
 msgid "Production"
 msgstr "Production"
 
-#: config.json:389
+#: config.json:193
+msgid "Refractometer mobile - Welch Allyn SPOT Vision Screener"
+msgstr "Réfractomètre mobile - Welch Allyn SPOT Vision Screener"
+
+#: config.json:487
 msgid "Replacement ordered (calibration)"
 msgstr "Remplacement demandé (calibration)"
 
-#: config.json:382
+#: config.json:480
 msgid "Replacement ordered (failure)"
 msgstr "Remplacement demandé (panne)"
 
-#: config.json:137
-msgid ""
-"Retina camera for babies and premature babies - Welch Allyn SPOT Vision "
-"Screener"
-msgstr ""
-"Caméra de rétine pour prématurés et bébés - Welch Allyn SPOT Vision "
-"Screener"
+#: config.json:197
+msgid "Retina camera babies/premature babies - Welch Allyn RETeval-DR"
+msgstr "Caméra de rétine bébés/prématurés - Welch Allyn RETeval-DR"
 
-#: config.json:194
+#: config.json:201 config.json:384
 msgid "Secure lancing devices"
 msgstr "Autopiqueurs sécurisés"
 
@@ -523,7 +611,7 @@ msgstr "Autopiqueurs sécurisés"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: constants.py:20
+#: constants.py:19
 msgid "Ship"
 msgstr "Bateau"
 
@@ -538,20 +626,16 @@ msgstr "Afficher les matériels hors service"
 msgid "Sincerely"
 msgstr "Cordialement"
 
-#: config.json:265
-msgid "Single use ear specula"
-msgstr "Spéculums auriculaires à usage unique"
-
 #: templates/pages/assets-create_update.html:99
 #: templates/pages/assets-list.html:38
 msgid "Site"
 msgstr "Site"
 
-#: config.json:443
+#: config.json:541
 msgid "Site change"
 msgstr "Changement de site"
 
-#: views/sites.py:98
+#: views/sites.py:106
 msgid "Site type is required."
 msgstr "Le type du Site est requis."
 
@@ -560,7 +644,7 @@ msgstr "Le type du Site est requis."
 msgid "Sites"
 msgstr "Sites"
 
-#: config.json:431
+#: config.json:529
 msgid "Software update"
 msgstr "MAJ logicielle"
 
@@ -568,15 +652,19 @@ msgstr "MAJ logicielle"
 msgid "Softwares versions"
 msgstr "Versions logicielles"
 
-#: config.json:230
+#: config.json:205
+msgid "Spirometer digital USB - MIR Minispir Light"
+msgstr "Spiromètre numérique USB - MIR Minispir Light"
+
+#: config.json:393
 msgid "Spirometer disposable turbines"
 msgstr "Turbines jetables pour spiromètre"
 
-#: config.json:223
+#: config.json:400
 msgid "Spirometer nose clip"
 msgstr "Pince-nez pour spiromètre"
 
-#: constants.py:28
+#: constants.py:27
 msgid "Station"
 msgstr "Station"
 
@@ -586,22 +674,22 @@ msgstr "Station"
 msgid "Status"
 msgstr "Statut"
 
-#: config.json:5
-msgid "Stethoscope - RNK PCP-USB"
-msgstr "Stéthoscope - RNK PCP-USB"
+#: config.json:209
+msgid "Stethoscope USB - Riester PCP-USB"
+msgstr "Stéthoscope USB - Riester PCP-USB"
 
 #: templates/pages/assets-create_update.html:144
 #: templates/pages/sites-create_update.html:79
 msgid "Submit"
 msgstr "Valider"
 
-#: constants.py:29
+#: constants.py:28
 msgid "Telecardia"
 msgstr "Télécardia"
 
-#: config.json:25
-msgid "Telecardia charging base - Parsys"
-msgstr "Base de chargement Télécardia - Parsys"
+#: config.json:213
+msgid "Telecardia charging base - Parsys Base TC"
+msgstr "Base de chargement Télécardia - Parsys Base TC"
 
 #: templates/pages/assets-create_update.html:52
 #: templates/pages/assets-list.html:36
@@ -626,11 +714,19 @@ msgstr ""
 "Les consommables suivants (de l'asset %(asset_id)s et équipement "
 "%(equipment)s) expirent dans %(delay_days)s jours le %(expiration_date)s:"
 
-#: config.json:330
-msgid "Thermometer protection tip - Foracare IR20b"
-msgstr "Étui de protection pour thermomètre - Foracare IR20b"
+#: config.json:217
+msgid "Thermometer ear wireless - Foracare IR20b"
+msgstr "Thermomètre auriculaire sans fil - Foracare IR20b"
 
-#: views/assets.py:274
+#: config.json:221
+msgid "Thermometer forehead wireless - Foracare IR42"
+msgstr "Thermomètre frontal sans fil - Foracare IR42"
+
+#: config.json:225
+msgid "Thermometer infrared wireless - Foracare IR21b"
+msgstr "Thermomètre infrarouge sans fil - Foracare IR21b"
+
+#: views/assets.py:270
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
 
@@ -643,23 +739,15 @@ msgstr "Pour accéder à l'asset, suivez "
 msgid "Toggle navigation"
 msgstr "Barre de navigation"
 
-#: config.json:309
-msgid "Tropical disease test - Chikungunya"
-msgstr "Test de détection de maladies tropicales - Chikungunya"
-
-#: config.json:316
+#: config.json:407
 msgid "Tropical disease test - Dengue fever Ag+IgG-IgM"
 msgstr "Test de détection de maladies tropicales - Dengue Ag+IgG-IgM"
 
-#: config.json:323
-msgid "Tropical disease test - Ebola"
-msgstr "Test de détection de maladies tropicales - Ebola"
-
-#: config.json:302
+#: config.json:414
 msgid "Tropical disease test - Malaria"
 msgstr "Test de détection de maladies tropicales - Malaria"
 
-#: config.json:295
+#: config.json:421
 msgid "Troponin blood test"
 msgstr "Test sanguin troponine"
 
@@ -669,39 +757,31 @@ msgstr "Test sanguin troponine"
 msgid "Type"
 msgstr "Type"
 
-#: config.json:141
-msgid "USB digital laryngoscope - Vivid Medical VT-A100"
-msgstr "Laryngoscope numérique USB - Vivid Medical VT-A100"
+#: config.json:229
+msgid "Ultrasound probe cardio phased array - Sonoscanner PR54"
+msgstr "Sonde échographique cardio phased array - Sonoscanner PR54"
 
-#: config.json:93
-msgid "USB digital polarizing dermatoscope - Firefly DE300"
-msgstr "Dermatoscope polarisant numérique USB - Firefly DE300"
+#: config.json:233
+msgid "Ultrasound probe convex HD - Sonoscanner PR50"
+msgstr "Sonde échographique convexe HD - Sonoscanner PR50"
 
-#: config.json:97
-msgid "USB digital polarizing otoscope - Firefly DE500"
-msgstr "Otoscope polarisant numérique USB - Firefly DE500"
+#: config.json:237
+msgid "Ultrasound probe linear full HD 50 - Sonoscanner PR52"
+msgstr "Sonde échographique linéaire full HD 50 - Sonoscanner PR52"
 
-#: config.json:29
-msgid "USB digital spirometer - Minispir Light"
-msgstr "Spiromètre numérique USB - Minispir Light"
+#: config.json:241
+msgid "Ultrasound scanner USB - Interson SiMPLi - GP-C01"
+msgstr "Échographe USB - Interson SiMPLi - GP-C01"
 
-#: config.json:9
-msgid "USB glucose meter - Beurer GL50"
-msgstr "Glucomètre USB - Beurer GL50"
+#: config.json:245
+msgid "Ultrasound scanner USB - Interson abdominal 99-5929"
+msgstr "Échographe USB - Interson abdominal 99-5929"
 
-#: config.json:73
-msgid "USB oxymeter - Nonin 3231"
-msgstr "Oxymètre USB - Nonin 3231"
+#: config.json:249
+msgid "Ultrasound scanner ultra-portable 7\" - Sonoscanner Ulite EXP"
+msgstr "Échographe ultra portable 7\" - Sonoscanner Ulite EXP"
 
-#: config.json:129
-msgid "USB ultrasound scanner - Interson SiMPLi - GP-C01"
-msgstr "Echographe USB - Interson SiMPLi - GP-C01"
-
-#: config.json:17
-msgid "Ultrasound - Interson abdominal 99-5929"
-msgstr "Ultrason - Interson abdominal 99-5929"
-
-#: config.json:281
+#: config.json:428
 msgid "Urine test 10 parameters"
 msgstr "Tests urinaires d’urologie 10 paramètres"
 
@@ -709,23 +789,11 @@ msgstr "Tests urinaires d’urologie 10 paramètres"
 msgid "Warranty end"
 msgstr "Fin de garantie"
 
-#: config.json:77
-msgid "Wireless bathroom scale - A&D UC-355PBT-Ci"
-msgstr "Pèse-personne sans fil - A&D UC-355PBT-Ci"
-
-#: config.json:57
-msgid "Wireless glucose meter - Foracare DM30b"
-msgstr "Glucomètre sans fil - Foracare DM30b"
-
-#: config.json:69
-msgid "Wireless oxymeter - Nonin 3230"
-msgstr "Oxymètre sans fil - Nonin 3230"
-
-#: templates/errors/403.html:12
+#: templates/errors/403.html:15
 msgid "is not authorized to access this page."
 msgstr "n'est pas autorisé(e) à accéder à cette page."
 
-#: templates/errors/403.html:14
+#: templates/errors/403.html:17
 msgid "or go to"
 msgstr "ou accéder à"
 
@@ -737,4 +805,3 @@ msgstr "ce lien"
 #: templates/pages/assets-create_update.html:121
 msgid "years"
 msgstr "ans"
-
