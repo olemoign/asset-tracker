@@ -1,4 +1,4 @@
-from parsys_utilities.authorization import Right
+from parsys_utilities.security import Right
 from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 from sentry_sdk import capture_message

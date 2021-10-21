@@ -1,8 +1,8 @@
 from json import loads
 
 from dateutil.relativedelta import relativedelta
-from parsys_utilities.model import CreationDateTimeMixin, Model
-from parsys_utilities.random import random_id
+from parsys_utilities import random_id
+from parsys_utilities.sql.model import CreationDateTimeMixin, Model
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import backref, relationship

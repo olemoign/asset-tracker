@@ -1,7 +1,8 @@
 import logging
 from urllib.parse import urljoin
 
-from parsys_utilities.notifications import emails_renderer_offline, notify_offline
+from parsys_utilities.notifications import notify_offline
+from parsys_utilities.notifications.email import emails_renderer_offline
 from pyramid.i18n import TranslationString as _
 
 from asset_tracker.constants import TEMPLATES_PATH, TRANSLATIONS_PATH

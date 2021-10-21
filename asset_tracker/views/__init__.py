@@ -1,4 +1,4 @@
-from parsys_utilities.authorization import get_tenantless_principals
+from parsys_utilities.security.authorization import get_tenantless_principals
 from pyramid.events import BeforeRender, NewRequest, NewResponse, subscriber
 from sentry_sdk import configure_scope
 from webob.multidict import MultiDict

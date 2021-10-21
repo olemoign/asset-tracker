@@ -8,7 +8,7 @@ Create Date: 2018-07-16 12:05:18.423951
 
 import sqlalchemy as sa
 from alembic import op
-from parsys_utilities.random import random_id
+from parsys_utilities import random_id
 from sqlalchemy.orm import declarative_base, Session
 
 # revision identifiers, used by Alembic.

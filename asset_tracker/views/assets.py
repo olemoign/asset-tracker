@@ -7,7 +7,7 @@ from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
-from parsys_utilities.views import AuthenticatedEndpoint
+from parsys_utilities.security import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow

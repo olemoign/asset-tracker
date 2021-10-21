@@ -7,12 +7,12 @@ from urllib.parse import urljoin
 import sentry_sdk
 from depot.manager import DepotManager
 from parsys_utilities import USER_SESSION_DURATION
-from parsys_utilities import celery_app
-from parsys_utilities.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
-from parsys_utilities.authorization import get_user, get_effective_principals, get_user_locale
+from parsys_utilities import celery
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
+from parsys_utilities.security.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
+from parsys_utilities.security.authorization import get_user, get_effective_principals, get_user_locale
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
@@ -26,9 +26,6 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
 from asset_tracker.config import update_configuration
 from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE
-
-# Celery runs celery.app.
-celery = celery_app
 
 
 def main(global_config, **settings):
@@ -119,7 +116,7 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     # Configure Celery.
-    celery_app.configure_celery_app(config_file)
+    celery.configure_celery_app(config_file)
 
     # Add app routes.
     config.include('asset_tracker.models')

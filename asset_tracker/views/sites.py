@@ -1,7 +1,7 @@
 """Site tracker views: sites lists and read/update."""
 from operator import itemgetter
 
-from parsys_utilities.views import AuthenticatedEndpoint
+from parsys_utilities.security import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
