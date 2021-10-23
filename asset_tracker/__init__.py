@@ -124,8 +124,8 @@ def main(global_config, **settings):
     config.include('asset_tracker.views')
     config.scan(ignore='asset_tracker.tests')
 
-    config.include('parsys_utilities.openid_client')
-    config.scan('parsys_utilities.openid_client')
+    config.include('parsys_utilities.security.openid_client')
+    config.scan('parsys_utilities.security.openid_client')
     config.include('parsys_utilities.status')
     config.scan('parsys_utilities.status')
 

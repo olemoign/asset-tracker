@@ -28,7 +28,7 @@ requires = [
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
     'sentry-sdk==1.4.3',
-    'setuptools==58.2.0',
+    'setuptools==58.3.0',
     'sqlalchemy==1.4.26',
     'transaction==3.0.1',
     'waitress==2.0.0',
