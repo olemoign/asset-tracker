@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 import sentry_sdk
 from depot.manager import DepotManager
 from parsys_utilities import USER_SESSION_DURATION
-from parsys_utilities import celery
+from parsys_utilities import celery as celery_utils
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
@@ -116,7 +116,7 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     # Configure Celery.
-    celery.configure_celery_app(config_file)
+    celery_utils.configure_celery_app(config_file)
 
     # Add app routes.
     config.include('asset_tracker.models')
