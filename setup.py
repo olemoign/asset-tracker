@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_4_0_2 = f'{tracker}/7cdd88b326cd28a344d3a86727383db4fe61bce186d5be3eb6230d1b592c17cf/parsys_utilities-4.0.2-py3-none-any.whl'  # noqa: E501
+parsys_utilities_4_0_3 = f'{tracker}/0ef92df2078312eaf714f3b83e3f293b42f8d65fb2372a922e53340a4613d0e7/parsys_utilities-4.0.3-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.7.4',
     'arrow==1.2.1',
-    'celery[redis]==5.1.2',
+    'celery[redis]==5.2.0',
     'filedepot==0.8.0',
-    'jinja2==3.0.2',
-    f'parsys-utilities @ {parsys_utilities_4_0_2}',
+    'jinja2==3.0.3',
+    f'parsys-utilities @ {parsys_utilities_4_0_3}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2-binary==2.9.1',
@@ -28,7 +28,7 @@ requires = [
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
     'sentry-sdk==1.4.3',
-    'setuptools==58.3.0',
+    'setuptools==58.5.3',
     'sqlalchemy==1.4.26',
     'transaction==3.0.1',
     'waitress==2.0.0',
@@ -67,6 +67,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Framework :: Pyramid',
         'License :: Other/Proprietary License',
     ],
