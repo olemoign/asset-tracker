@@ -10,26 +10,26 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_4_0_3 = f'{tracker}/0ef92df2078312eaf714f3b83e3f293b42f8d65fb2372a922e53340a4613d0e7/parsys_utilities-4.0.3-py3-none-any.whl'  # noqa: E501
+parsys_utilities_4_0_4 = f'{tracker}/96b61dfaf78aa1bb7eb1a0033e86d7a2a6e939b2be6a51ddee45fd041e9abbd4/parsys_utilities-4.0.4-py3-none-any.whl'  # noqa: E501
 requires = [
-    'alembic==1.7.4',
+    'alembic==1.7.5',
     'arrow==1.2.1',
-    'celery[redis]==5.2.0',
+    'celery[redis]==5.2.1',
     'filedepot==0.8.0',
     'jinja2==3.0.3',
-    f'parsys-utilities @ {parsys_utilities_4_0_3}',
+    f'parsys-utilities @ {parsys_utilities_4_0_4}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
-    'psycopg2-binary==2.9.1',
+    'psycopg2-binary==2.9.2',
     'pyramid==1.10.8',
     'pyramid-assetviews==1.0a3',
     'pyramid-jinja2==2.8',
-    'pyramid-session-redis==1.6.2',
+    'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.4',
     'python-dateutil==2.8.2',
-    'sentry-sdk==1.4.3',
-    'setuptools==58.5.3',
-    'sqlalchemy==1.4.26',
+    'sentry-sdk==1.5.0',
+    'setuptools==59.2.0',
+    'sqlalchemy==1.4.27',
     'transaction==3.0.1',
     'waitress==2.0.0',
     'webob==1.8.7',
