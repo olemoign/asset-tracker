@@ -62,6 +62,7 @@ def main(global_config, **settings):
     }
     config.add_settings(jinja2_settings)
     config.add_jinja2_renderer('.html')
+    config.add_jinja2_renderer('.txt')
 
     config.add_translation_dirs('asset_tracker:locale')
 
@@ -93,8 +94,12 @@ def main(global_config, **settings):
     config.add_request_method(get_user, 'user', reify=True)
 
     # Add notifier.
-    send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
-    config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
+    notifier = partial(
+        Notifier,
+        translation_directories=LOCALES_PATH,
+        send_notifications=not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
+    )
+    config.add_request_method(notifier, 'notifier', reify=True)
 
     # Add loggers.
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
@@ -116,7 +121,7 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     # Configure Celery.
-    celery_utils.configure_celery_app(config_file)
+    celery_utils.configure_celery_producer(config_file)
 
     # Add app routes.
     config.include('asset_tracker.models')
