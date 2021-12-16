@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from depot.manager import DepotManager
-from parsys_utilities import USER_SESSION_DURATION
+from parsys_utilities import STATIC_FILES_CACHE, USER_SESSION_DURATION
 from parsys_utilities import celery as celery_utils
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
@@ -25,7 +25,7 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
 from asset_tracker.config import update_configuration
-from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE
+from asset_tracker.constants import ASSET_TRACKER_VERSION, LOCALES_PATH
 
 
 def main(global_config, **settings):

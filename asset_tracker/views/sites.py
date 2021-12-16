@@ -1,6 +1,7 @@
 """Site tracker views: sites lists and read/update."""
 from operator import itemgetter
 
+from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.security import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -10,7 +11,7 @@ from sentry_sdk import capture_exception
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, SITE_TYPES
+from asset_tracker.constants import ASSET_TYPES, SITE_TYPES
 from asset_tracker.views import FormException, read_form
 
 

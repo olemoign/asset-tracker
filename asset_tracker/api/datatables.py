@@ -1,4 +1,5 @@
 """Asset tracker datatables API."""
+from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
 from parsys_utilities.dates import format_date
 from parsys_utilities.security.authorization import authenticate_rta, get_tenantless_principals
@@ -13,7 +14,6 @@ from sqlalchemy import cast
 
 from asset_tracker import models
 from asset_tracker.api.assets import Assets as AssetsAPI
-from asset_tracker.constants import ADMIN_PRINCIPAL
 
 
 class Assets:

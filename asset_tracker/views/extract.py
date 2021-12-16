@@ -1,6 +1,7 @@
 """Asset tracker views: assets lists and read/update."""
 from datetime import datetime
 
+from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.sql import windowed_query
 from pyramid.security import Allow
 from pyramid.view import view_config
@@ -8,7 +9,6 @@ from sqlalchemy import desc, func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL
 
 MAX_CONSUMABLES = 7
 MAX_SOFTWARES = 2
