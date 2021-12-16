@@ -1,83 +1,70 @@
 import itertools
 
 import arrow
-import transaction
-from celery.utils.log import get_task_logger
 from parsys_utilities.celery import app
-from parsys_utilities.celery.tasks import get_session_factory
+from pyramid.threadlocal import get_current_request
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models, notifications
-
-logger = get_task_logger(__name__)
 
 
 @app.task()
 def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
+    request = get_current_request()
+
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
     expiration_delays = (0, 30, 180)
 
-    # Set up db connection.
-    session_factory = get_session_factory()
+    total_assets = 0
+    for delay_days in expiration_delays:
+        expiration_date = arrow.utcnow().shift(days=delay_days).naive
 
-    with transaction.manager:
-        db_session = models.get_tm_session(session_factory, transaction.manager)
+        equipments = request.db_session.query(models.Equipment) \
+            .join(models.Equipment.consumables) \
+            .filter(models.Consumable.expiration_date == expiration_date) \
+            .options(
+                joinedload(models.Equipment.asset).joinedload(models.Asset.tenant),
+                joinedload(models.Equipment.family),
+                joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
+            ) \
+            .all()
 
-        total_assets = 0
-        for delay_days in expiration_delays:
-            expiration_date = arrow.utcnow().shift(days=delay_days).naive
+        for equipment in equipments:
+            tenant_id = equipment.asset.tenant_id
+            notifications.assets.consumables_expiration(request, tenant_id, equipment, expiration_date, delay_days)
 
-            equipments = db_session.query(models.Equipment) \
-                .join(models.Equipment.consumables) \
-                .filter(models.Consumable.expiration_date == expiration_date) \
-                .options(
-                    joinedload(models.Equipment.asset).joinedload(models.Asset.tenant),
-                    joinedload(models.Equipment.family),
-                    joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
-                ) \
-                .all()
+        total_assets += len(equipments)
 
-            for equipment in equipments:
-                notifications.assets.consumables_expiration(
-                    app.conf.tenant_config, equipment, expiration_date, delay_days
-                )
-
-            total_assets += len(equipments)
-
-        return total_assets
+    return total_assets
 
 
 @app.task()
 def next_calibration(months=3):
-    """Remind the assets owner about planned calibration.
+    """Remind the assets' owner about planned calibration.
 
     Args:
         months (int): a reminder is sent x months before a calibration is needed.
     """
+    request = get_current_request()
+
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
     calibration_date = arrow.utcnow().shift(days=months * 30).naive
 
-    # Set up db connection.
-    session_factory = get_session_factory()
+    # Assets that need calibration.
+    assets = request.db_session.query(models.Asset) \
+        .join(models.Asset.tenant) \
+        .filter(models.Asset.calibration_next == calibration_date) \
+        .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
+        .all()
 
-    with transaction.manager:
-        db_session = models.get_tm_session(session_factory, transaction.manager)
+    if not assets:
+        return
 
-        # Assets that need calibration.
-        assets = db_session.query(models.Asset) \
-            .filter(models.Asset.calibration_next == calibration_date) \
-            .join(models.Asset.tenant) \
-            .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
-            .all()
+    # Group assets by tenant.
+    groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
-        if not assets:
-            return
+    for tenant_id, assets in groupby_tenant:
+        notifications.assets.next_calibration(request, tenant_id, assets, calibration_date)
 
-        # Group assets by tenant.
-        groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
-
-        for tenant_id, assets in groupby_tenant:
-            notifications.assets.next_calibration(app.conf.tenant_config, tenant_id, assets, calibration_date)
-
-        return len(assets)
+    return len(assets)
