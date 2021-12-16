@@ -121,7 +121,8 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     # Configure Celery.
-    celery_utils.configure_celery_producer(config_file)
+    broker_url = config.registry.tenant_config.settings['celery']['broker_url']
+    celery_utils.configure_celery_producer(broker_url)
 
     # Add app routes.
     config.include('asset_tracker.models')

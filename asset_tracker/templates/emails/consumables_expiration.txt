@@ -1,15 +1,14 @@
 {{ gettext('Dear user') }},
 
-{{ gettext('The following consumables (from asset %(asset_id)s and equipment %(equipment)s) expire in %(delay_days)s days on %(expiration_date)s:',
-                asset_id=asset_id, equipment=gettext(equipment), delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
+{{ gettext('The following consumables expire in %(delay_days)s days on %(expiration_date)s:', delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 
 {% for consumable in expired_consumables %}
-- {{ gettext(consumable) }}
+    * {{ gettext(consumable) }}
 {% endfor %}
 
 {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the consumable expiration dates have passed.') }}
 
-{{ gettext('To view the asset, follow ') }} {{ gettext('this link') }}: <a href="{{ asset_url }}">.
+{{ gettext('To view the asset, follow') }} {{ gettext('this link') }} : {{ 'assets-update'|route_url(asset_id=asset.asset_id) }}.
 
 {{ gettext('Sincerely') }},
-{{ gettext(app_name) }}
+{{ gettext(cloud_name) }}
