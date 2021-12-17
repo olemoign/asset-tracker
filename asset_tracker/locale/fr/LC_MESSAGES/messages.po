@@ -6,14 +6,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: notifications/assets.py:68
-msgid "${app_name} - Device calibration reminder"
-msgstr "${app_name} - Rappel d'étalonnage du matériel"
-
-#: notifications/assets.py:22
-msgid "${app_name} - Equipment consumables expiration reminder"
-msgstr "${app_name} - Rappel date de péremption du matériel consommable"
-
 #: templates/pages/assets-create_update.html:205
 #: templates/pages/assets-create_update.html:212
 #, python-format
@@ -78,7 +70,7 @@ msgstr "Auto-tensiomètre sans fil - A&D UA-651BLE"
 msgid "Automatic tensiometer wireless - Beurer BM 85"
 msgstr "Auto-tensiomètre sans fil - Beurer BM 85"
 
-#: constants.py:24
+#: constants.py:12
 msgid "Backpack"
 msgstr "Sac à dos"
 
@@ -147,11 +139,11 @@ msgstr "Caméra intra-buccale - Owandy OWandyCam"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: constants.py:25
+#: constants.py:13
 msgid "Cart"
 msgstr "Chariot"
 
-#: constants.py:16
+#: constants.py:23
 msgid "Company"
 msgstr "Entreprise"
 
@@ -164,9 +156,13 @@ msgstr "Configuration"
 msgid "Configuration update"
 msgstr "Mise à jour de configuration"
 
-#: constants.py:26
+#: constants.py:14
 msgid "Consumables case"
 msgstr "Valise consommables"
+
+#: notifications/assets.py:54
+msgid "Consumables expiration reminder"
+msgstr "Rappel de péremption des consommables"
 
 #: templates/pages/sites-create_update.html:69
 #: templates/pages/sites-list.html:29
@@ -209,8 +205,8 @@ msgstr "JJ/MM/AAAA"
 msgid "Date"
 msgstr "Date"
 
-#: templates/emails/calibration_reminder.html:2
-#: templates/emails/calibration_reminder.txt:1
+#: templates/emails/assets_calibration.html:2
+#: templates/emails/assets_calibration.txt:1
 #: templates/emails/consumables_expiration.html:2
 #: templates/emails/consumables_expiration.txt:1
 msgid "Dear user"
@@ -266,7 +262,13 @@ msgstr "Dermatoscope light pour tablette/smartphone - Dermlite DL1 BASIC"
 
 #: config.json:105
 msgid "Dermatoscope with large lens 300mm table/smartphone - Dermlite DL4"
-msgstr "Dermatoscope avec lentille large 300 mm pour tablette/smartphone - Dermlite DL4"
+msgstr ""
+"Dermatoscope avec lentille large 300 mm pour tablette/smartphone - "
+"Dermlite DL4"
+
+#: notifications/assets.py:21
+msgid "Device calibration reminder"
+msgstr "Rappel d'étalonnage du matériel"
 
 #: config.json:109
 msgid "ECG 12-lead USB - Schiller MS-12 USB"
@@ -354,7 +356,7 @@ msgstr "Historique"
 msgid "Home"
 msgstr "Accueil"
 
-#: constants.py:17
+#: constants.py:24
 msgid "Hospital"
 msgstr "Hôpital"
 
@@ -402,35 +404,35 @@ msgstr "Protections pour caméra intra-buccale - Owandy"
 msgid "Intraoral camera casing - Soprocare"
 msgstr "Protections pour caméra intra-buccale - Soprocare"
 
-#: views/assets.py:321
+#: views/assets.py:322
 msgid "Invalid asset status."
 msgstr "Statut invalide."
 
-#: views/assets.py:279
+#: views/assets.py:280
 msgid "Invalid calibration frequency."
 msgstr "Fréquence de calibration invalide."
 
-#: views/assets.py:308
+#: views/assets.py:309
 msgid "Invalid equipment family."
 msgstr "Équipement invalide."
 
-#: views/assets.py:327
+#: views/assets.py:328
 msgid "Invalid event date."
 msgstr "Date d'événement invalide."
 
-#: views/assets.py:341
+#: views/assets.py:342
 msgid "Invalid event."
 msgstr "Cet événement n'existe pas."
 
-#: views/assets.py:314
+#: views/assets.py:315
 msgid "Invalid expiration date."
 msgstr "Date d'expiration invalide."
 
-#: views/assets.py:288
+#: views/assets.py:289
 msgid "Invalid site."
 msgstr "Site invalide."
 
-#: views/assets.py:275 views/sites.py:93
+#: views/assets.py:276 views/sites.py:94
 msgid "Invalid tenant."
 msgstr "Tenant invalide."
 
@@ -458,7 +460,7 @@ msgstr "Adresse MAC (ethernet)"
 msgid "MAC address (wifi)"
 msgstr "Adresse MAC (wifi)"
 
-#: views/assets.py:260
+#: views/assets.py:261
 msgid "Missing mandatory data."
 msgstr "Donnée obligatoire manquante."
 
@@ -475,11 +477,11 @@ msgstr "Audiomètre numérique polyvalent avec casque - Echodia Otowin + DD45 HI
 msgid "Name"
 msgstr "Nom"
 
-#: views/sites.py:102
+#: views/sites.py:103
 msgid "Name already exists."
 msgstr "Ce nom existe déjà."
 
-#: views/sites.py:97
+#: views/sites.py:98
 msgid "Name is required."
 msgstr "Le nom est requis."
 
@@ -521,7 +523,7 @@ msgstr "Aucun"
 msgid "Notes"
 msgstr "Notes"
 
-#: constants.py:18
+#: constants.py:25
 msgid "Nursing home"
 msgstr "EHPAD"
 
@@ -574,7 +576,7 @@ msgstr "Page non trouvée"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: templates/emails/consumables_expiration.html:16
+#: templates/emails/consumables_expiration.html:19
 #: templates/emails/consumables_expiration.txt:10
 msgid ""
 "Please know that there is no guarantee that diagnoses will be reliable if"
@@ -611,7 +613,7 @@ msgstr "Autopiqueurs sécurisés"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: constants.py:19
+#: constants.py:26
 msgid "Ship"
 msgstr "Bateau"
 
@@ -619,10 +621,10 @@ msgstr "Bateau"
 msgid "Show decommissioned assets"
 msgstr "Afficher les matériels hors service"
 
-#: templates/emails/calibration_reminder.html:17
-#: templates/emails/calibration_reminder.txt:10
-#: templates/emails/consumables_expiration.html:21
-#: templates/emails/consumables_expiration.txt:14
+#: templates/emails/assets_calibration.html:16
+#: templates/emails/assets_calibration.txt:9
+#: templates/emails/consumables_expiration.html:23
+#: templates/emails/consumables_expiration.txt:12
 msgid "Sincerely"
 msgstr "Cordialement"
 
@@ -635,7 +637,7 @@ msgstr "Site"
 msgid "Site change"
 msgstr "Changement de site"
 
-#: views/sites.py:106
+#: views/sites.py:107
 msgid "Site type is required."
 msgstr "Le type du Site est requis."
 
@@ -664,7 +666,7 @@ msgstr "Turbines jetables pour spiromètre"
 msgid "Spirometer nose clip"
 msgstr "Pince-nez pour spiromètre"
 
-#: constants.py:27
+#: constants.py:15
 msgid "Station"
 msgstr "Station"
 
@@ -683,7 +685,7 @@ msgstr "Stéthoscope USB - Riester PCP-USB"
 msgid "Submit"
 msgstr "Valider"
 
-#: constants.py:28
+#: constants.py:16
 msgid "Telecardia"
 msgstr "Télécardia"
 
@@ -698,8 +700,8 @@ msgstr "Base de chargement Télécardia - Parsys Base TC"
 msgid "Tenant"
 msgstr "Tenant"
 
-#: templates/emails/calibration_reminder.html:6
-#: templates/emails/calibration_reminder.txt:3
+#: templates/emails/assets_calibration.html:6
+#: templates/emails/assets_calibration.txt:3
 #, python-format
 msgid "The following assets must be calibrated before %(calibration_date)s"
 msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)s"
@@ -708,11 +710,11 @@ msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)
 #: templates/emails/consumables_expiration.txt:3
 #, python-format
 msgid ""
-"The following consumables (from asset %(asset_id)s and equipment "
-"%(equipment)s) expire in %(delay_days)s days on %(expiration_date)s:"
+"The following assets use consumables expiring in %(delay_days)s days on "
+"%(expiration_date)s:"
 msgstr ""
-"Les consommables suivants (de l'asset %(asset_id)s et équipement "
-"%(equipment)s) expirent dans %(delay_days)s jours le %(expiration_date)s:"
+"Les assets suivants utilisent des consommables expirant dans "
+"%(delay_days)s jours le %(expiration_date)s:"
 
 #: config.json:217
 msgid "Thermometer ear wireless - Foracare IR20b"
@@ -726,14 +728,9 @@ msgstr "Thermomètre frontal sans fil - Foracare IR42"
 msgid "Thermometer infrared wireless - Foracare IR21b"
 msgstr "Thermomètre infrarouge sans fil - Foracare IR21b"
 
-#: views/assets.py:270
+#: views/assets.py:271
 msgid "This asset id already exists."
 msgstr "Cet ID existe déjà."
-
-#: templates/emails/consumables_expiration.html:18
-#: templates/emails/consumables_expiration.txt:12
-msgid "To view the asset, follow "
-msgstr "Pour accéder à l'asset, suivez "
 
 #: templates/menu.html:5
 msgid "Toggle navigation"
@@ -796,11 +793,6 @@ msgstr "n'est pas autorisé(e) à accéder à cette page."
 #: templates/errors/403.html:17
 msgid "or go to"
 msgstr "ou accéder à"
-
-#: templates/emails/consumables_expiration.html:18
-#: templates/emails/consumables_expiration.txt:12
-msgid "this link"
-msgstr "ce lien"
 
 #: templates/pages/assets-create_update.html:121
 msgid "years"

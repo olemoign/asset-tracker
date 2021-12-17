@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from depot.manager import DepotManager
-from parsys_utilities import USER_SESSION_DURATION
+from parsys_utilities import STATIC_FILES_CACHE, USER_SESSION_DURATION
 from parsys_utilities import celery as celery_utils
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
@@ -25,7 +25,7 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
 from asset_tracker.config import update_configuration
-from asset_tracker.constants import ASSET_TRACKER_VERSION, STATIC_FILES_CACHE
+from asset_tracker.constants import ASSET_TRACKER_VERSION, LOCALES_PATH
 
 
 def main(global_config, **settings):
@@ -62,11 +62,12 @@ def main(global_config, **settings):
     }
     config.add_settings(jinja2_settings)
     config.add_jinja2_renderer('.html')
+    config.add_jinja2_renderer('.txt')
 
     config.add_translation_dirs('asset_tracker:locale')
 
     # Add CSV renderer.
-    config.add_renderer('csv', 'parsys_utilities.csv.CSVRenderer')
+    config.add_renderer('csv', 'parsys_utilities.renderers.CSVRenderer')
 
     # Authentication/Authorization policies.
     authentication_policy = OpenIDConnectAuthenticationPolicy(
@@ -93,8 +94,12 @@ def main(global_config, **settings):
     config.add_request_method(get_user, 'user', reify=True)
 
     # Add notifier.
-    send_notifications = not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
-    config.add_request_method(partial(Notifier, send_notifications=send_notifications), 'notifier', reify=True)
+    notifier = partial(
+        Notifier,
+        translation_directories=LOCALES_PATH,
+        send_notifications=not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
+    )
+    config.add_request_method(notifier, 'notifier', reify=True)
 
     # Add loggers.
     config.add_request_method(partial(logger, name='asset_tracker_actions'), 'logger_actions', reify=True)
@@ -116,7 +121,8 @@ def main(global_config, **settings):
         DepotManager.configure('default', {'depot.storage_path': settings.get('asset_tracker.blobstore_path')})
 
     # Configure Celery.
-    celery_utils.configure_celery_app(config_file)
+    broker_url = config.registry.tenant_config.settings['celery']['broker_url']
+    celery_utils.configure_celery_producer(broker_url)
 
     # Add app routes.
     config.include('asset_tracker.models')

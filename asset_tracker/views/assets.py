@@ -7,6 +7,7 @@ from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
+from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.security import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -17,7 +18,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.constants import ADMIN_PRINCIPAL, ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
+from asset_tracker.constants import ASSET_TYPES, CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views import FormException, read_form
 
 
