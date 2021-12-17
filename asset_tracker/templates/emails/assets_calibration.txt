@@ -3,7 +3,7 @@
 {{ gettext('The following assets must be calibrated before %(calibration_date)s', calibration_date=calibration_date|format_date(locale, 'long')) }}:
 
 {% for asset in assets %}
-    * {{ asset.asset_id }} : {{ 'assets-update'|route_url(asset_id=asset.asset_id) }}
+    * {{ asset.asset_id }} : {{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}
 {% endfor %}
 
 {{ gettext('Sincerely') }},
