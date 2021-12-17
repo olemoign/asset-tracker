@@ -3,18 +3,21 @@
 </p>
 
 <p>
-    {{ gettext('The following consumables expire in %(delay_days)s days on %(expiration_date)s:', delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
+    {{ gettext('The following assets use consumables expiring in %(delay_days)s days on %(expiration_date)s:', delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 </p>
 
 <ul>
-    {% for consumable in expired_consumables %}
-        <li>{{ gettext(consumable) }}</li>
+    {% for asset in assets %}
+        <li>
+            <a href="{{ 'assets-update'|route_url(asset_id=asset['asset'].asset_id) }}">{{ asset['asset'].asset_id }}</a>
+            ( {% for consumable in asset['consumables'] %}{{ gettext(consumable.family.model) }}{% if not loop.last %}, {% endif %}{% endfor %} )
+        </li>
     {% endfor %}
 </ul>
 
-<p> {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the consumable expiration dates have passed.') }}</p>
-
-<p> {{ gettext('To view the asset, follow') }} <a href="{{ 'assets-update'|route_url(asset_id=asset.asset_id) }}">{{ gettext('this link') }}</a>.</p>
+<p>
+    {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the consumable expiration dates have passed.') }}
+</p>
 
 <p>
     {{ gettext('Sincerely') }},<br>
