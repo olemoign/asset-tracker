@@ -9,6 +9,37 @@ from asset_tracker import models, notifications
 
 
 @app.task()
+def assets_calibration(months=3):
+    """Remind the assets' owner about planned calibration.
+
+    Args:
+        months (int): a reminder is sent x months before a calibration is needed.
+    """
+    request = get_current_request()
+
+    # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
+    calibration_date = arrow.utcnow().shift(days=months * 30).naive
+
+    # Assets that need calibration.
+    assets = request.db_session.query(models.Asset) \
+        .join(models.Asset.tenant) \
+        .filter(models.Asset.calibration_next == calibration_date) \
+        .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
+        .all()
+
+    if not assets:
+        return
+
+    # Group assets by tenant.
+    groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
+
+    for tenant_id, assets in groupby_tenant:
+        notifications.assets.assets_calibration(request, tenant_id, assets, calibration_date)
+
+    return len(assets)
+
+
+@app.task()
 def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
     request = get_current_request()
@@ -37,34 +68,3 @@ def consumables_expiration():
         total_assets += len(equipments)
 
     return total_assets
-
-
-@app.task()
-def next_calibration(months=3):
-    """Remind the assets' owner about planned calibration.
-
-    Args:
-        months (int): a reminder is sent x months before a calibration is needed.
-    """
-    request = get_current_request()
-
-    # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    calibration_date = arrow.utcnow().shift(days=months * 30).naive
-
-    # Assets that need calibration.
-    assets = request.db_session.query(models.Asset) \
-        .join(models.Asset.tenant) \
-        .filter(models.Asset.calibration_next == calibration_date) \
-        .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
-        .all()
-
-    if not assets:
-        return
-
-    # Group assets by tenant.
-    groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
-
-    for tenant_id, assets in groupby_tenant:
-        notifications.assets.next_calibration(request, tenant_id, assets, calibration_date)
-
-    return len(assets)
