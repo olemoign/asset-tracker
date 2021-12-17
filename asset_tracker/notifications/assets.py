@@ -11,7 +11,7 @@ def assets_calibration(request, tenant_id, assets, calibration_date):
         calibration_date (date): precise calibration date (YYYY-MM-DD).
     """
     template_data = {
-        'app_url': request.registry.tenant_config.get_for_tenant('asset_tracker.server_url'),
+        'app_url': request.registry.tenant_config.get_for_tenant('asset_tracker.server_url', tenant_id),
         'assets': assets,
         'calibration_date': calibration_date,
         'cloud_name': request.registry.settings['asset_tracker.cloud_name'],
@@ -44,7 +44,7 @@ def consumables_expiration(request, tenant_id, assets, expiration_date, delay_da
         delay_days (int): number of days before expiration.
     """
     template_data = {
-        'app_url': request.registry.tenant_config.get_for_tenant('asset_tracker.server_url'),
+        'app_url': request.registry.tenant_config.get_for_tenant('asset_tracker.server_url', tenant_id),
         'assets': assets,
         'cloud_name': request.registry.settings['asset_tracker.cloud_name'],
         'delay_days': delay_days,
