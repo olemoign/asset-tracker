@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_4_1_0 = f'{tracker}/ac5cb16acd17ecb4a2da1bdd02715d5b2bfe28e345838f704466894c3a54a8f8/parsys_utilities-4.1.0-py3-none-any.whl'  # noqa: E501
+parsys_utilities_4_1_1 = f'{tracker}/9ddee425eb29d8d8c37eea4205ab2524fcb656445bcb55bcf3fd39d923d2c2fc/parsys_utilities-4.1.1-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.7.5',
     'arrow==1.2.1',
     'celery[redis]==5.2.1',
     'filedepot==0.8.0',
     'jinja2==3.0.3',
-    f'parsys-utilities @ {parsys_utilities_4_1_0}',
+    f'parsys-utilities @ {parsys_utilities_4_1_1}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2-binary==2.9.2',
