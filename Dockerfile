@@ -6,7 +6,7 @@ ENV LANG C.UTF-8
 COPY dist/ /opt
 
 # Install app.
-RUN pip3 install -q --no-cache-dir --ignore-installed --use-deprecated=legacy-resolver /opt/*
+RUN pip3 install -q --no-cache-dir --use-deprecated=legacy-resolver /opt/*
 RUN rm /opt/*
 
 # Copy config files.
