@@ -43,9 +43,6 @@ class TenantInfo(Model):
 
 
 def upgrade():
-    connection = op.get_bind()
-    session = Session(bind=connection)
-
     op.create_table(
         'tenant_info',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -70,26 +67,28 @@ def upgrade():
         )
         batch_op.drop_column('tenant_name')
 
-    session.commit()
+    connection = op.get_bind()
+    db_session = Session(bind=connection)
+    db_session.commit()
 
     tenants_infos = {}
 
-    asset_tenants = [result[0] for result in session.query(Asset.tenant_id).group_by(Asset.tenant_id)]
-    site_tenants = [result[0] for result in session.query(Site.tenant_id).group_by(Site.tenant_id)]
+    asset_tenants = [result[0] for result in db_session.query(Asset.tenant_id).group_by(Asset.tenant_id)]
+    site_tenants = [result[0] for result in db_session.query(Site.tenant_id).group_by(Site.tenant_id)]
     tenants_ids = set(asset_tenants + site_tenants)
 
     for tenant_id in tenants_ids:
         tenant_info = TenantInfo(tenant_id=tenant_id, name='Awaiting RTA update')
-        session.add(tenant_info)
+        db_session.add(tenant_info)
         tenants_infos[tenant_id] = tenant_info
 
-    for asset in session.query(Asset):
+    for asset in db_session.query(Asset):
         asset.tenant_info = tenants_infos[asset.tenant_id]
 
-    for site in session.query(Site):
+    for site in db_session.query(Site):
         site.tenant_info = tenants_infos[site.tenant_id]
 
-    session.commit()
+    db_session.commit()
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
         batch_op.alter_column('tenant_info_id', existing_type=sa.Integer(), nullable=False)
@@ -97,7 +96,7 @@ def upgrade():
     with op.batch_alter_table('site', schema=None) as batch_op:
         batch_op.alter_column('tenant_info_id', existing_type=sa.Integer(), nullable=False)
 
-    session.commit()
+    db_session.commit()
 
 
 def downgrade():

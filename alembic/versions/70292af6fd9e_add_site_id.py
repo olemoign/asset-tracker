@@ -28,20 +28,23 @@ class Site(Model):
 
 def upgrade():
     connection = op.get_bind()
-    session = Session(bind=connection)
+    db_session = Session(bind=connection)
 
     with op.batch_alter_table('site', schema=None) as batch_op:
         batch_op.add_column(sa.Column('site_id', sa.Unicode()))
         batch_op.create_unique_constraint(batch_op.f('uq_site_site_id'), ['site_id'])
-    session.commit()
 
-    for site in session.query(Site).all():
+    db_session.commit()
+
+    for site in db_session.query(Site).all():
         site.site_id = random_id()
-    session.commit()
+
+    db_session.commit()
 
     with op.batch_alter_table('site', schema=None) as batch_op:
         batch_op.alter_column('site_id', existing_type=sa.Unicode(), nullable=False)
-    session.commit()
+
+    db_session.commit()
 
 
 def downgrade():

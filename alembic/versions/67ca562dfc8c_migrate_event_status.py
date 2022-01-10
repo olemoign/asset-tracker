@@ -20,29 +20,29 @@ depends_on = None
 
 def upgrade():
     connection = op.get_bind()
-    session = Session(bind=connection)
+    db_session = Session(bind=connection)
 
-    incident = session.query(models.EventStatus).filter_by(status_id='incident').first()
+    incident = db_session.query(models.EventStatus).filter_by(status_id='incident').first()
     if incident:
         incident.status_id = 'replacement_failure'
 
-    replacement = session.query(models.EventStatus).filter_by(status_id='replacement').first()
+    replacement = db_session.query(models.EventStatus).filter_by(status_id='replacement').first()
     if replacement:
         replacement.status_id = 'replacement_calibration'
 
-    session.commit()
+    db_session.commit()
 
 
 def downgrade():
     connection = op.get_bind()
-    session = Session(bind=connection)
+    db_session = Session(bind=connection)
 
-    incident = session.query(models.EventStatus).filter_by(status_id='replacement_failure').first()
+    incident = db_session.query(models.EventStatus).filter_by(status_id='replacement_failure').first()
     if incident:
         incident.status_id = 'incident'
 
-    replacement = session.query(models.EventStatus).filter_by(status_id='replacement_calibration').first()
+    replacement = db_session.query(models.EventStatus).filter_by(status_id='replacement_calibration').first()
     if replacement:
         replacement.status_id = 'replacement'
 
-    session.commit()
+    db_session.commit()

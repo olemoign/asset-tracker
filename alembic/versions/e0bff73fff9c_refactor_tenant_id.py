@@ -40,7 +40,7 @@ def upgrade():
 
 def downgrade():
     connection = op.get_bind()
-    session = Session(bind=connection)
+    db_session = Session(bind=connection)
 
     op.rename_table('tenant', 'tenant_info')
 
@@ -52,15 +52,15 @@ def downgrade():
         batch_op.alter_column('tenant_id', new_column_name='tenant_info_id')
         batch_op.add_column(sa.Column('tenant_id', sa.Unicode(), nullable=True))
 
-    session.commit()
+    db_session.commit()
 
-    for asset in session.query(models.Asset).join(models.Asset.tenant_info):
+    for asset in db_session.query(models.Asset).join(models.Asset.tenant_info):
         asset.tenant_id = asset.tenant_info.tenant_id
 
-    for site in session.query(models.Site).join(models.Site.tenant_info):
+    for site in db_session.query(models.Site).join(models.Site.tenant_info):
         site.tenant_id = site.tenant_info.tenant_id
 
-    session.commit()
+    db_session.commit()
 
     with op.batch_alter_table('asset', schema=None) as batch_op:
         batch_op.alter_column('tenant_id', existing_type=sa.Unicode(), nullable=False)
@@ -68,7 +68,7 @@ def downgrade():
     with op.batch_alter_table('site', schema=None) as batch_op:
         batch_op.alter_column('tenant_id', existing_type=sa.Unicode(), nullable=False)
 
-    session.commit()
+    db_session.commit()
 
     if op.get_bind().engine.name == 'sqlite':
         return
