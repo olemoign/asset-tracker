@@ -42,11 +42,11 @@ def get_tm_session(session_factory, transaction_manager):
           engine = get_engine(settings)
           session_factory = get_session_factory(engine)
           with transaction.manager:
-              dbsession = get_tm_session(session_factory, transaction.manager)
+              db_session = get_tm_session(session_factory, transaction.manager)
     """
-    dbsession = session_factory()
-    zope.sqlalchemy.register(dbsession, transaction_manager=transaction_manager)
-    return dbsession
+    db_session = session_factory()
+    zope.sqlalchemy.register(db_session, transaction_manager=transaction_manager)
+    return db_session
 
 
 def includeme(config):
@@ -60,7 +60,7 @@ def includeme(config):
     session_factory = get_session_factory(get_engine(settings))
     config.registry['db_session_factory'] = session_factory
 
-    # make request.dbsession available for use in Pyramid
+    # make request.db_session available for use in Pyramid
     config.add_request_method(
         # r.tm is the transaction manager used by pyramid_tm
         lambda r: get_tm_session(session_factory, r.tm),
