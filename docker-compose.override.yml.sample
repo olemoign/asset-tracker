@@ -13,6 +13,7 @@ services:
       start_period: 30s
     environment:
       - OAUTHLIB_INSECURE_TRANSPORT=True
+      - PYTHONUNBUFFERED=True
     ports:
       - "6545:80"
 
@@ -26,6 +27,8 @@ services:
     healthcheck:
       test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/config/development.ini"]
       start_period: 30s
+    environment:
+      - PYTHONUNBUFFERED=True
 
   celery_beat:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
@@ -37,6 +40,8 @@ services:
     healthcheck:
       test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/config/development.ini"]
       start_period: 30s
+    environment:
+      - PYTHONUNBUFFERED=True
 
   postgres:
     volumes:
