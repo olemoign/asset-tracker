@@ -1,3 +1,7 @@
+3.1.6
+---
+- feat(notifications): update emails
+
 3.1.5
 ---
 - feat(assets): update families
