@@ -128,10 +128,16 @@
 
                             <hr>
 
-                            <label for="notes">{{ gettext('Notes') }}</label>
-                            <textarea class="form-control" rows="3" id="notes" name="notes">
-                                {%- if update and asset.notes -%}{{ asset.notes }}{%- endif -%}
-                            </textarea>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="notes">{{ gettext('Notes') }}</label>
+                                        <textarea class="form-control" rows="3" id="notes" name="notes">
+                                            {%- if update and asset.notes -%}{{ asset.notes }}{%- endif -%}
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
 
                             {% set can_create = not update and 'assets-create' in tenantless_principals %}
                             {% set can_update = update and 'assets-update' in tenantless_principals %}
