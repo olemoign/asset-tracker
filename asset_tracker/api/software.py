@@ -192,7 +192,7 @@ class Software:
             except (json.JSONDecodeError, OSError, TypeError, ValueError):
                 pass
 
-        if not last_event or (last_config and last_config != config):
+        if not last_event or last_config != config:
             file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
             # noinspection PyArgumentList
             new_event = models.Event(
@@ -214,7 +214,6 @@ class Software:
         """
         latest_events = asset.history(order='desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'software_update')
-
         last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
         last_event = next(last_event_generator, None)
 
@@ -255,13 +254,7 @@ class Software:
             capture_exception(error)
             raise HTTPBadRequest(json={'error': 'Invalid JSON.'})
 
-        # Check if asset exists (cart, station, telecardia).
-        try:
-            station_login = self.request.user.login
-        except KeyError:
-            raise HTTPBadRequest(json={'error': 'Invalid authentication.'})
-
-        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=station_login).first()
+        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=self.request.user.login).first()
         if not asset:
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
@@ -271,10 +264,12 @@ class Software:
             raise HTTPBadRequest(json='No data received.')
 
         # Handle software version update.
-        self.create_version_update_event(software_version, asset)
+        if software_version:
+            self.create_version_update_event(software_version, asset)
 
         # Handle software configuration file update.
-        self.create_config_update_event(config, asset)
+        if config:
+            self.create_config_update_event(config, asset)
 
         return HTTPOk(json='Information received.')
 
