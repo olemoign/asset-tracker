@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, capture_message
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
@@ -42,6 +42,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
             .first()
         if not site:
+            capture_message(f'Missing site: ${site_id}')
             raise HTTPNotFound()
 
         return site

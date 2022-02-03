@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, capture_message
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
@@ -55,12 +55,13 @@ class Assets(metaclass=AuthenticatedEndpoint):
                     .joinedload(models.EquipmentFamily.consumable_families)  # noqa: E131
             ).first()
         if not asset:
+            capture_message(f'Missing asset: ${asset_id}.')
             raise HTTPNotFound()
 
         # By putting the translated family name at the equipment level, when can then sort equipments by translated
         # family name and serial number.
         for equipment in asset.equipments:
-            # Don't put None here or we won't be able to sort later.
+            # Don't put None here, or we won't be able to sort later.
             model = equipment.family.model
             equipment.family_translated = self.request.localizer.translate(model) if equipment.family else ''
             equipment.serial_number = equipment.serial_number or ''
@@ -511,13 +512,14 @@ class Assets(metaclass=AuthenticatedEndpoint):
         file_id = self.request.matchdict.get('file_id')
         if not file_id:
             self.request.logger_technical.info(['missing file_id'])
+            capture_message('Missing file_id.')
             raise HTTPNotFound()
 
         try:
             file = DepotManager.get().get(file_id)
         except (OSError, ValueError) as error:
-            capture_exception(error)
             self.request.logger_technical.info(['unknown file requested'])
+            capture_exception(error)
             raise HTTPNotFound()
 
         config = file.read().decode('utf-8')

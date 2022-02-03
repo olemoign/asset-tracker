@@ -8,7 +8,7 @@ from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, capture_message
 
 from asset_tracker import models
 
@@ -98,6 +98,7 @@ class Software:
         """
         product = self.request.GET.get('product')
         if not product:
+            capture_message('Missing product.')
             raise HTTPBadRequest(json={'error': 'Missing product.'})
         else:
             self.product = product.lower()
@@ -107,7 +108,8 @@ class Software:
         if current:
             try:
                 current = sort_versions(current)
-            except TypeError:
+            except TypeError as error:
+                capture_exception(error)
                 # The current version wasn't in an expected format.
                 raise HTTPBadRequest(json={'error': 'Invalid current version.'})
 
@@ -189,8 +191,8 @@ class Software:
             try:
                 config_file = depot.get(last_event.extra_json['config'])
                 last_config = json.loads(config_file.read().decode('utf-8'))
-            except (json.JSONDecodeError, OSError, TypeError, ValueError):
-                pass
+            except (json.JSONDecodeError, OSError, TypeError, ValueError) as error:
+                capture_exception(error)
 
         if not last_event or last_config != config:
             file_id = depot.create(bytes(json.dumps(config), 'utf-8'), 'config.json', 'application/json')
@@ -243,6 +245,7 @@ class Software:
         """
         # Get product name (medcapture, camagent).
         if not self.request.GET.get('product'):
+            capture_message('Missing product.')
             raise HTTPBadRequest(json={'error': 'Missing product.'})
         else:
             self.product = self.request.GET['product'].lower()
@@ -256,11 +259,13 @@ class Software:
 
         asset = self.request.db_session.query(models.Asset).filter_by(asset_id=self.request.user.login).first()
         if not asset:
+            capture_message(f'Unknown asset: ${self.request.user.login}.')
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
         software_version = post_json.get('version')
         config = post_json.get('config')
         if not config and not software_version:
+            capture_message('No data received.')
             raise HTTPBadRequest(json='No data received.')
 
         # Handle software version update.

@@ -133,6 +133,7 @@ class Assets:
         # Validate data.
         if any(not json.get(field) for field in asset_info):
             self.request.logger_technical.info('Asset linking: missing values.')
+            capture_message('Asset linking: missing values.')
             raise HTTPBadRequest()
 
         # Create or update asset.
