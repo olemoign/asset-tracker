@@ -200,7 +200,7 @@
                                                     {{ gettext(
                                                         '<b>%(date)s</b> Configuration updated.', date=event.date|format_date(locale)
                                                     ) }}
-                                                    <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}">
+                                                    <a href="{{ 'files-asset-config'|route_path(file_id=event.extra_json.get('config')) }}" target="_blank">
                                                         <span class="glyphicon glyphicon-file"></span>
                                                     </a>
                                                 {% elif event.status.status_id == 'site_change' %}
@@ -297,7 +297,7 @@
                                         <div class="form-group">
                                             <label for="last_configuration">{{ gettext('Configuration') }}</label>
                                             {% if last_config %}
-                                                <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}">
+                                                <a href="{{ 'files-asset-config'|route_path(file_id=last_config) }}" target="_blank">
                                                     <span class="glyphicon glyphicon-file"></span>
                                                 </a>
                                             {% else %}
