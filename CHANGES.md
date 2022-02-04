@@ -1,3 +1,7 @@
+3.1.7
+---
+- fix(assets): remove null configs
+
 3.1.6
 ---
 - feat(notifications): update emails
