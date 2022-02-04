@@ -206,10 +206,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
         """Get last version of configuration updates."""
         last_config = self.asset.history('desc').join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'config_update').first()
-        if last_config is None:
-            return
-
-        return last_config.extra_json.get('config', None)
+        if last_config:
+            return last_config.extra_json.get('config')
 
     def get_site_data(self):
         """Get all sites. Sites will be filtered according to selected tenant in
