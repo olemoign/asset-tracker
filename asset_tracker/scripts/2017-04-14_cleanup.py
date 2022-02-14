@@ -4,6 +4,7 @@ from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
 from asset_tracker import models
+from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 from asset_tracker.views.assets import Assets as AssetView
 
 
@@ -23,7 +24,7 @@ def main():
         for asset in assets:
             print(f'Asset {asset.id}.')
             # Update calibration_frequency.
-            asset.calibration_frequency = 3
+            asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink_asus']
 
             # Add 'in stock' as first event.
             first_event = asset.history('asc').first()

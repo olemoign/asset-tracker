@@ -71,7 +71,7 @@ def main():
             kit.add_event(calibration)
             kit.add_event(activation)
 
-            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['marlink'])
+            kit.calibration_next = calibration_date + relativedelta(years=CALIBRATION_FREQUENCIES_YEARS['marlink_asus'])
 
             db_session.add_all([kit, base, telecardia, calibration, activation])
 
