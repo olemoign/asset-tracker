@@ -245,14 +245,13 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
     def validate_asset(self):
         """Validate asset data."""
-        has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
-
         # We don't need asset_id or tenant_id if asset is linked.
         is_linked = self.asset and self.asset.is_linked
-        needed_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        has_id_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        has_creation_event = self.asset or self.form.get('event')
+        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
         if (
-            not is_linked and not needed_data
+            not is_linked and not has_id_data
             or not self.form.get('asset_type')
             or not has_creation_event
             or not has_calibration_frequency
