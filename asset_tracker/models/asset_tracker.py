@@ -97,13 +97,16 @@ class Asset(Model, CreationDateTimeMixin):
         self._asset_dates['warranty_end'] = activation.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
             if not self.is_decommissioned and activation else None
 
-        calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
-        for status in ['calibration_last', 'production', 'delivery', 'activation']:
-            if locals().get(status):
-                self._asset_dates['calibration_last'] = locals()[status].date
-                break
-        else:
+        if self.asset_type == 'consumables_case':
             self._asset_dates['calibration_last'] = None
+        else:
+            calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
+            for status in ['calibration_last', 'production', 'delivery', 'activation']:
+                if locals().get(status):
+                    self._asset_dates['calibration_last'] = locals()[status].date
+                    break
+            else:
+                self._asset_dates['calibration_last'] = None
 
     @property
     def asset_dates(self):
