@@ -39,6 +39,12 @@ class Asset(Model, CreationDateTimeMixin):
     current_location = Column(String)
     notes = Column(String)
 
+    calibration_frequency = Column(Integer)
+    calibration_next = Column(Date)
+
+    status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
+    status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
+
     def add_event(self, event):
         """Add event to asset history.
 
@@ -66,9 +72,6 @@ class Asset(Model, CreationDateTimeMixin):
 
         return events
 
-    status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
-    status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
-
     @property
     def is_decommissioned(self):
         """Asset is decommissioned.
@@ -77,9 +80,6 @@ class Asset(Model, CreationDateTimeMixin):
             bool.
         """
         return self.status.status_id == 'decommissioned'
-
-    calibration_frequency = Column(Integer)
-    calibration_next = Column(Date)
 
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
@@ -97,13 +97,16 @@ class Asset(Model, CreationDateTimeMixin):
         self._asset_dates['warranty_end'] = activation.date + relativedelta(years=WARRANTY_DURATION_YEARS) \
             if not self.is_decommissioned and activation else None
 
-        calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
-        for status in ['calibration_last', 'production', 'delivery', 'activation']:
-            if locals().get(status):
-                self._asset_dates['calibration_last'] = locals()[status].date
-                break
-        else:
+        if self.asset_type == 'consumables_case':
             self._asset_dates['calibration_last'] = None
+        else:
+            calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
+            for status in ['calibration_last', 'production', 'delivery', 'activation']:
+                if locals().get(status):
+                    self._asset_dates['calibration_last'] = locals()[status].date
+                    break
+            else:
+                self._asset_dates['calibration_last'] = None
 
     @property
     def asset_dates(self):

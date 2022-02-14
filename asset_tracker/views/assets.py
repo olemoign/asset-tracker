@@ -181,7 +181,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         return expiration_dates
 
     def get_latest_softwares_version(self):
-        """Get last version of every softwares."""
+        """Get the last version of each software."""
         if not self.asset.id:
             return
 
@@ -238,21 +238,20 @@ class Assets(metaclass=AuthenticatedEndpoint):
     @staticmethod
     def update_calibration_next(asset):
         """Update next calibration date according to functional rules."""
-        if asset.is_decommissioned:
+        if asset.is_decommissioned or asset.asset_type == 'consumables_case':
             asset.calibration_next = None
         elif asset.calibration_last:
             asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
 
     def validate_asset(self):
         """Validate asset data."""
-        has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
-
         # We don't need asset_id or tenant_id if asset is linked.
         is_linked = self.asset and self.asset.is_linked
-        needed_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        has_id_data = self.form.get('asset_id') and self.form.get('tenant_id')
+        has_creation_event = self.asset or self.form.get('event')
+        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
         if (
-            not is_linked and not needed_data
+            not is_linked and not has_id_data
             or not self.form.get('asset_type')
             or not has_creation_event
             or not has_calibration_frequency
@@ -363,17 +362,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 **self.get_base_form_data(),
             }
 
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        if self.config == 'marlink':
-            calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
-        else:
-            calibration_frequency = int(self.form['calibration_frequency'])
-
         # noinspection PyArgumentList
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],
-            calibration_frequency=calibration_frequency,
             current_location=self.form.get('current_location'),
             customer_id=self.form.get('customer_id'),
             customer_name=self.form.get('customer_name'),
@@ -385,6 +377,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
             status=self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one(),
             tenant=self.request.db_session.query(models.Tenant).filter_by(tenant_id=self.form['tenant_id']).one(),
         )
+        # Marlink has only one calibration frequency, so they don't want to see the input.
+        if self.config == 'marlink':
+            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
+        else:
+            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
         self.request.db_session.add(self.asset)
 
         self.add_equipments()
@@ -432,12 +429,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 **self.get_base_form_data(),
             }
 
-        # Marlink has only one calibration frequency so they don't want to see the input.
-        if self.config == 'marlink':
-            self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
-        else:
-            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
-
         # No manual update if asset is linked with RTA.
         if not self.asset.is_linked:
             self.asset.asset_id = self.form['asset_id']
@@ -453,6 +444,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
         self.asset.customer_name = self.form.get('customer_name')
         self.asset.current_location = self.form.get('current_location')
         self.asset.notes = self.form.get('notes')
+
+        # Marlink has only one calibration frequency, so they don't want to see the input.
+        if self.config != 'marlink':
+            self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
         event = self.form.get('event')
         if event:
