@@ -59,7 +59,6 @@ class Assets:
             self.update_asset(asset, tenant, json)
             return
 
-        # Marlink has only one calibration frequency so they don't want to see the input.
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         if config == 'marlink':
             calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']

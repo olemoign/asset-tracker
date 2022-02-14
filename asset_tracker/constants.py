@@ -17,7 +17,6 @@ ASSET_TYPES = {
 }
 CALIBRATION_FREQUENCIES_YEARS = {
     'default': 2,
-    'marlink_asus': 3,
     'marlink': 4,
 }
 SITE_TYPES = [

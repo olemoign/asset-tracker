@@ -24,7 +24,7 @@ def main():
         for asset in assets:
             print(f'Asset {asset.id}.')
             # Update calibration_frequency.
-            asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink_asus']
+            asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
 
             # Add 'in stock' as first event.
             first_event = asset.history('asc').first()
