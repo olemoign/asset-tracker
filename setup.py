@@ -45,7 +45,7 @@ optional = {
         'flake8==4.0.1',
     ],
     'tests': [
-        'pytest==7.0.0',
+        'pytest==7.0.1',
         'pytest-cov==3.0.0',
         'webtest==3.0.0',
     ],

@@ -181,7 +181,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         return expiration_dates
 
     def get_latest_softwares_version(self):
-        """Get last version of every softwares."""
+        """Get the last version of each software."""
         if not self.asset.id:
             return
 
