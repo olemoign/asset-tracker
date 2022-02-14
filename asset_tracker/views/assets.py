@@ -238,7 +238,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
     @staticmethod
     def update_calibration_next(asset):
         """Update next calibration date according to functional rules."""
-        if asset.is_decommissioned:
+        if asset.is_decommissioned or asset.asset_type == 'consumables_case':
             asset.calibration_next = None
         elif asset.calibration_last:
             asset.calibration_next = asset.calibration_last + relativedelta(years=asset.calibration_frequency)
