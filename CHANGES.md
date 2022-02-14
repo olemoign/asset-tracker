@@ -1,3 +1,7 @@
+3.1.8
+---
+- feat(marlink): calibration frequency is now 4 years
+
 3.1.7
 ---
 - fix(assets): remove null configs
