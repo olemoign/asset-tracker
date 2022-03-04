@@ -84,7 +84,6 @@
                                 {# Site reference: the list depends on the asset's tenant but select2 doesn't understand
                                     'hidden' so we build the full reference here and copy the adapted list in site__options. #}
                                 <div class="hidden">
-                                    <!--suppress HtmlFormInputWithoutLabel-->
                                     <select class="form-control" id="site__reference">
                                         <option></option>
                                         {% for site_id, site in sites.items() %}
@@ -270,7 +269,6 @@
                                 {{ equipment_box() }}
                                  <div id="equipments_consumables__reference" class="form-group hidden">
                                     <label></label>
-                                    <!--suppress HtmlFormInputWithoutLabel-->
                                      <input type="date" class="form-control">
                                  </div>
 
