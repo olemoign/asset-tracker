@@ -109,11 +109,12 @@ def main(global_config, **settings):
     dsn = settings.get('sentry.dsn')
     if dsn:
         sentry_sdk.init(
-            dsn=dsn,
-            integrations=[CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()],
-            server_name=settings.get('asset_tracker.server_url') or DEFAULT_CONFIG['asset_tracker.server_url'],
             attach_stacktrace=True,
+            dsn=dsn,
+            environment=config['app:main'].get('sentry.environment', 'development'),
+            integrations=[CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()],
             send_default_pii=True,
+            server_name=settings.get('asset_tracker.server_url', 'configuration_error'),
         )
         ignore_logger('asset_tracker_technical')
 

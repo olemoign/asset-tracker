@@ -15,7 +15,6 @@ from asset_tracker.models import get_engine, get_session_factory, get_tm_session
 DEFAULT_CONFIG = {
     'asset_tracker.cloud_name': 'Parsys Cloud',
     'asset_tracker.config': 'parsys',
-    'asset_tracker.server_url': 'https://at.cloud.parsys.com',
 }
 MANDATORY_CONFIG = [
     'asset_tracker.blobstore_path',

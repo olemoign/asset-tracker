@@ -23,7 +23,7 @@ requires = [
     'psycopg2==2.9.3',
     'pyramid==1.10.8',
     'pyramid-assetviews==1.0a3',
-    'pyramid-jinja2==2.9.2',
+    'pyramid-jinja2==2.10.0',
     'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.5',
     'python-dateutil==2.8.2',
