@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 tracker = 'https://tracker.parsys.com/api/v4/projects/9/packages/pypi/files'
-parsys_utilities_4_2_7 = f'{tracker}/4e469e5b0edeb3997288845b04d6b5ad3599abe89bdc7d3f3c48636dd5a2bbcc/parsys_utilities-4.2.7-py3-none-any.whl'  # noqa: E501
+parsys_utilities_4_2_8 = f'{tracker}/b7493a116165ce9de09e88eb7cc3cdfec2f81cb664d124dd6dec94f4074abafd/parsys_utilities-4.2.8-py3-none-any.whl'  # noqa: E501
 requires = [
     'alembic==1.7.7',
     'arrow==1.2.2',
-    'celery[redis]==5.2.3',
+    'celery[redis]==5.2.6',
     'filedepot==0.8.0',
     'jinja2==3.1.1',
-    f'parsys-utilities @ {parsys_utilities_4_2_7}',
+    f'parsys-utilities @ {parsys_utilities_4_2_8}',
     'paste==3.5.0',
     'plaster-pastedeploy==0.7',
     'psycopg2==2.9.3',
@@ -28,7 +28,7 @@ requires = [
     'pyramid-tm==2.5',
     'python-dateutil==2.8.2',
     'sentry-sdk==1.5.8',
-    'sqlalchemy==1.4.32',
+    'sqlalchemy==1.4.35',
     'transaction==3.0.1',
     'waitress==2.1.1',
     'webob==1.8.7',
@@ -45,7 +45,7 @@ optional = {
         'flake8==4.0.1',
     ],
     'tests': [
-        'pytest==7.1.1',
+        'pytest==7.1.2',
         'pytest-cov==3.0.0',
         'webtest==3.0.0',
     ],
