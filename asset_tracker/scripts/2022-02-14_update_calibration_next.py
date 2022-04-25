@@ -46,6 +46,7 @@ def main():
                 ~models.Asset.asset_id.ilike('STHT%'),
             )
         for asset in assets:
+            asset.calibration_frequency = 4
             if asset.calibration_last:
                 print(asset.asset_id)
                 print(asset.calibration_next)
