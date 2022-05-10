@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   web:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
@@ -16,6 +14,8 @@ services:
       - PYTHONUNBUFFERED=True
     ports:
       - "6545:80"
+    extra_hosts:
+      - "dev.localhost:host-gateway"
 
   celery:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
@@ -29,6 +29,8 @@ services:
       start_period: 30s
     environment:
       - PYTHONUNBUFFERED=True
+    extra_hosts:
+      - "dev.localhost:host-gateway"
 
   celery_beat:
     image: tracker.parsys.com:1337/parsys/asset_tracker:develop
@@ -42,6 +44,8 @@ services:
       start_period: 30s
     environment:
       - PYTHONUNBUFFERED=True
+    extra_hosts:
+      - "dev.localhost:host-gateway"
 
   postgres:
     volumes:

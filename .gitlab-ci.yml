@@ -5,20 +5,13 @@ stages:
   - release
   - deploy
 
-# This authentication method is used within containers (flake8, tests, build, etc.) as we can't use docker login.
-.authenticate_tracker: &authenticate_tracker
-  before_script:
-    - echo "machine ${CI_REGISTRY}" > ~/.netrc
-    - echo "login gitlab-ci-token" >> ~/.netrc
-    - echo "password ${CI_JOB_TOKEN}" >> ~/.netrc
-
 variables:
   CONTAINER_TEST_IMAGE: ${CI_REGISTRY_IMAGE}:${CI_BUILD_REF_NAME}
   CONTAINER_RELEASE_IMAGE: ${CI_REGISTRY_IMAGE}:latest
+  GITLAB_INDEX_URL: https://gitlab-ci-token:${CI_JOB_TOKEN}@tracker.parsys.com/api/v4/projects/9/packages/pypi/simple
   PIP_CACHE_DIR: ${CI_PROJECT_DIR}/.cache/pip
 
 flake8:
-  <<: *authenticate_tracker
   stage: test
   image: python:3.8
   tags:
@@ -32,11 +25,10 @@ flake8:
 
   script:
     - pip3 install -q -U pip setuptools wheel
-    - pip3 -q install '.[qa]'
-    - flake8 --exclude asset_tracker/tests/a_porter
+    - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[qa]'
+    - flake8
 
 pytest:
-  <<: *authenticate_tracker
   stage: test
   image: python:3.8
   tags:
@@ -51,7 +43,7 @@ pytest:
 
   script:
     - pip3 install -q -U pip setuptools wheel
-    - pip3 -q install '.[tests]'
+    - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[tests]'
     - py.test --cov=asset_tracker
 
 build:
@@ -71,7 +63,7 @@ build:
   script:
     - pip3 install -q -U pip setuptools wheel
     - python3 setup.py bdist_wheel
-    - pip3 wheel -w dist/ .
+    - pip3 wheel -w dist/ --extra-index-url ${GITLAB_INDEX_URL} .
 
   artifacts:
     name: ${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}
