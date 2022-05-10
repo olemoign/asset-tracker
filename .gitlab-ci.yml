@@ -47,7 +47,6 @@ pytest:
     - py.test --cov=asset_tracker
 
 build:
-  <<: *authenticate_tracker
   stage: build
   image: python:3.8
   tags:
