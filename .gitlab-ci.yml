@@ -44,7 +44,12 @@ pytest:
   script:
     - pip3 install -q -U pip setuptools wheel
     - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[tests]'
-    - py.test --cov=asset_tracker
+    - pytest --cov=parsys_cloud --junitxml=report.xml
+
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
 
 build:
   stage: build

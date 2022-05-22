@@ -17,7 +17,6 @@ requires = [
     'jinja2==3.1.2',
     f'parsys-utilities==4.2.9',
     'paste==3.5.0',
-    'plaster-pastedeploy==0.7',
     'psycopg2==2.9.3',
     'pyramid==1.10.8',
     'pyramid-assetviews==1.0a3',
@@ -29,7 +28,6 @@ requires = [
     'sqlalchemy==1.4.36',
     'transaction==3.0.1',
     'waitress==2.1.1',
-    'webob==1.8.7',
     'zope.sqlalchemy==1.6',
 ]
 
