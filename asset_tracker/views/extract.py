@@ -48,6 +48,7 @@ class AssetsExtract:
             'current_location',
             'calibration_frequency',
             'status_label',
+            'last_status_change_date',
             'notes',
 
             'production_date',
@@ -99,16 +100,17 @@ class AssetsExtract:
         """
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
 
-        assets = self.request.db_session.query(models.Asset) \
+        assets = self.request.db_session.query(models.Asset, func.max(models.Event.created_at)) \
             .options(
                 joinedload(models.Asset.tenant),
                 joinedload(models.Asset.site),
                 joinedload(models.Asset.status),
             ) \
+            .outerjoin(models.Event, models.Event.asset_id == models.Asset.id).group_by(models.Asset.asset_id)\
             .order_by(models.Asset.asset_id)
 
         rows = []
-        for asset in windowed_query(assets, models.Asset.asset_id, 100):
+        for asset, last_event in windowed_query(assets, models.Asset.asset_id, 100):
             # Asset information.
             row = [
                 asset.asset_id,
@@ -120,6 +122,7 @@ class AssetsExtract:
                 asset.current_location,
                 asset.calibration_frequency,
                 asset.status.label(config),
+                last_event,
                 asset.notes,
                 asset.production,
                 asset.delivery,
