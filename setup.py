@@ -15,7 +15,7 @@ requires = [
     'celery[redis]==5.2.6',
     'filedepot==0.8.0',
     'jinja2==3.1.2',
-    f'parsys-utilities==4.2.9',
+    'parsys-utilities==4.2.11',
     'paste==3.5.0',
     'psycopg2==2.9.3',
     'pyramid==1.10.8',
