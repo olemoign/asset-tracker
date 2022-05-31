@@ -1,9 +1,27 @@
+from datetime import date
 from pathlib import Path
 from unittest.mock import patch
 
 from parsys_utilities.security import Right
 
+from asset_tracker.models import Asset, Event, EventStatus, Tenant
 from asset_tracker.tests import FunctionalTest
+
+
+def create_asset(request):
+    tenant = Tenant(tenant_id='tenantXX', name='Tenant XX')
+    status_created = EventStatus(
+        status_id='stock_parsys', position=1, status_type='event', _label='In stock Parsys'
+    )
+    status_software = EventStatus(
+        status_id='software_update', position=14, status_type='config', _label='Software update'
+    )
+    asset = Asset(asset_id='x@x.x', asset_type='station', status=status_created, tenant=tenant)
+    event_created = Event(
+        asset=asset, date=date.today(), creator_id='XXXXXXXX', creator_alias='XXXX XXXX', status=status_created
+    )
+    request.db_session.add_all([asset, event_created, status_created, status_software, tenant])
+    request.db_session.commit()
 
 
 class API(FunctionalTest):
@@ -19,9 +37,22 @@ class API(FunctionalTest):
         ]
 
         params = {'product': 'medcapture', 'current': '2.9.4'}
-        res = self.app.get('/api/update/', params=params, status=200)
-        assert res.json_body['updateAvailable'] is True
-        assert res.json_body['version'] == '3.0.5-rc2'
-        assert (
-            res.json_body['url'] == 'https://localhost:80/api/download/medcapture/ParsysMedCaptureSetup-3.0.5-rc2.exe'
-        )
+        response = self.app.get('/api/update/', params=params, status=200)
+        output = response.json_body
+        assert output['updateAvailable'] is True
+        assert output['version'] == '3.0.5-rc2'
+        assert output['url'] == 'https://localhost:80/api/download/medcapture/ParsysMedCaptureSetup-3.0.5-rc2.exe'
+
+    def test_software_post(self):
+        request = self.dummy_request()
+        create_asset(request)
+
+        self.app.post_json('/api/update/?product=medcapture', {'version': '2.9.4'}, status=200)
+
+        asset = request.db_session.query(Asset).filter_by(asset_id='x@x.x').first()
+        update = asset.history('desc') \
+            .join(Event.status) \
+            .filter(EventStatus.status_id == 'software_update') \
+            .first()
+        assert update.extra_json['software_name'] == 'medcapture'
+        assert update.extra_json['software_version'] == '2.9.4'

@@ -186,7 +186,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
             return
 
         software_updates = self.asset.history('desc') \
-            .join(models.Event.status).filter(models.EventStatus.status_id == 'software_update')
+            .join(models.Event.status) \
+            .filter(models.EventStatus.status_id == 'software_update')
 
         softwares = {}
         for event in software_updates:
