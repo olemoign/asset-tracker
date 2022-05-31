@@ -37,7 +37,8 @@ class Sites(metaclass=AuthenticatedEndpoint):
         if not site_id:
             return  # In the list page, site_id will be None and it's ok.
 
-        site = self.request.db_session.query(models.Site).filter_by(id=site_id) \
+        site = self.request.db_session.query(models.Site) \
+            .filter(models.Site.id == site_id) \
             .join(models.Asset.tenant) \
             .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
             .first()
@@ -55,14 +56,22 @@ class Sites(metaclass=AuthenticatedEndpoint):
         # site_id is stored in models.Event.extra in JSON. Filtering gets complicated.
         # noinspection PyProtectedMember
         assets_ever_on_site = self.request.db_session.query(models.Asset) \
-            .join(models.Asset._history).filter(models.Event.extra.ilike(f'%"site_id": "{self.site.site_id}"%')) \
-            .join(models.Event.status).filter(models.EventStatus.status_id == 'site_change')
+            .join(models.Asset._history) \
+            .join(models.Event.status) \
+            .filter(
+                models.Event.extra.ilike(f'%"site_id": "{self.site.site_id}"%'),
+                models.EventStatus.status_id == 'site_change',
+            )
 
         # For each asset, check if there is a site change AFTER arrival on the site. This could happen multiple times.
         for asset in assets_ever_on_site:
             site_changes = self.request.db_session.query(models.Event) \
-                .filter(models.Event.asset == asset) \
-                .join(models.Event.status).filter(models.EventStatus.status_id == 'site_change').all()
+                .join(models.Event.status) \
+                .filter(
+                    models.Event.asset == asset,
+                    models.EventStatus.status_id == 'site_change',
+                ) \
+                .all()
 
             for index, site_change in enumerate(site_changes):
                 if index == 0:

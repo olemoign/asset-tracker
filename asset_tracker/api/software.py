@@ -164,8 +164,10 @@ class Software:
         depot = DepotManager.get()
         last_config = None
 
-        last_event = asset.history(order='desc').join(models.Event.status) \
-            .filter(models.EventStatus.status_id == 'config_update').first()
+        last_event = asset.history(order='desc') \
+            .join(models.Event.status) \
+            .filter(models.EventStatus.status_id == 'config_update') \
+            .first()
         if last_event:
             try:
                 config_file = depot.get(last_event.extra_json['config'])
@@ -193,7 +195,8 @@ class Software:
             software_version (str).
             asset (asset_tracker.models.Asset).
         """
-        latest_events = asset.history(order='desc').join(models.Event.status) \
+        latest_events = asset.history(order='desc') \
+            .join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'software_update')
         last_event_generator = (e for e in latest_events if e.extra_json['software_name'] == self.product)
         last_event = next(last_event_generator, None)

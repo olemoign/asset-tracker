@@ -31,7 +31,8 @@ def main():
             asset = db_session.query(models.Asset) \
                 .join(models.Asset.status) \
                 .outerjoin(models.Asset.site) \
-                .filter(models.Asset.asset_id == asset_id).one()
+                .filter(models.Asset.asset_id == asset_id) \
+                .one()
 
             if not asset.site:
                 continue

@@ -23,19 +23,22 @@ def upgrade():
     db_session = Session(bind=connection)
 
     good_family = db_session.query(models.EquipmentFamily).filter_by(family_id='c494zUZ0').first()
-    biosys_list = db_session.query(models.Equipment).join(models.EquipmentFamily) \
+    biosys_list = db_session.query(models.Equipment) \
+        .join(models.EquipmentFamily) \
         .filter(models.EquipmentFamily.family_id == 'AWmOOZin')
     for biosys in biosys_list:
         biosys.family = good_family
 
     good_family = db_session.query(models.EquipmentFamily).filter_by(family_id='CJR99XSW').first()
-    telecardia_list = db_session.query(models.Equipment).join(models.EquipmentFamily) \
+    telecardia_list = db_session.query(models.Equipment) \
+        .join(models.EquipmentFamily) \
         .filter(models.EquipmentFamily.family_id == 'psqeAtt1')
     for telecardia in telecardia_list:
         telecardia.family = good_family
 
     good_family = db_session.query(models.EquipmentFamily).filter_by(family_id='jbVmQunF').first()
-    fora_ir21_list = db_session.query(models.Equipment).join(models.EquipmentFamily) \
+    fora_ir21_list = db_session.query(models.Equipment) \
+        .join(models.EquipmentFamily) \
         .filter(models.EquipmentFamily.family_id == 'hC5QzQL1')
     for fora_ir21 in fora_ir21_list:
         fora_ir21.family = good_family

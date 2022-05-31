@@ -48,12 +48,14 @@ class Assets(metaclass=AuthenticatedEndpoint):
         if not asset_id:
             return
 
-        asset = self.request.db_session.query(models.Asset).filter_by(id=asset_id) \
+        asset = self.request.db_session.query(models.Asset) \
+            .filter(models.Asset.id == asset_id) \
             .join(models.Asset.tenant) \
             .options(
                 joinedload(models.Asset.equipments).joinedload(models.Equipment.family)
                     .joinedload(models.EquipmentFamily.consumable_families)  # noqa: E131
-            ).first()
+            ) \
+            .first()
         if not asset:
             capture_message(f'Missing asset: ${asset_id}.')
             raise HTTPNotFound()
@@ -79,8 +81,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         for group in groups:
             family_id = self.form.get(f'{group}#equipment-family')
-            equipment_family = self.request.db_session.query(models.EquipmentFamily).filter_by(family_id=family_id) \
-                .options(joinedload(models.EquipmentFamily.consumable_families)).first()
+            equipment_family = self.request.db_session.query(models.EquipmentFamily) \
+                .filter(models.EquipmentFamily.family_id == family_id) \
+                .options(joinedload(models.EquipmentFamily.consumable_families)) \
+                .first()
 
             equipment = models.Equipment(
                 asset=self.asset,
@@ -132,7 +136,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         if new_site_id:
             new_site = self.request.db_session.query(models.Site) \
-                .filter_by(id=new_site_id) \
+                .filter(models.Site.id == new_site_id) \
                 .join(models.Site.tenant) \
                 .one()
             event.extra = json.dumps({'site_id': new_site.site_id, 'tenant_id': new_site.tenant.tenant_id})
@@ -147,7 +151,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         equipments_families = self.request.db_session.query(models.EquipmentFamily) \
             .options(joinedload(models.EquipmentFamily.consumable_families)) \
-            .order_by(models.EquipmentFamily.model).all()
+            .order_by(models.EquipmentFamily.model) \
+            .all()
 
         for equipment_family in equipments_families:
             # Translate family models so that they can be sorted translated on the page.
@@ -158,7 +163,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
                     localizer.translate(consumable_family.model)
 
         statuses = self.request.db_session.query(models.EventStatus) \
-            .filter(models.EventStatus.status_type != 'config').all()
+            .filter(models.EventStatus.status_type != 'config') \
+            .all()
 
         return {
             'asset_types': dict(sorted(ASSET_TYPES.items(), key=lambda t: self.request.localizer.translate(t[1]))),
@@ -205,8 +211,10 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
     def get_last_config(self):
         """Get last version of configuration updates."""
-        last_config = self.asset.history('desc').join(models.Event.status) \
-            .filter(models.EventStatus.status_id == 'config_update').first()
+        last_config = self.asset.history('desc') \
+            .join(models.Event.status) \
+            .filter(models.EventStatus.status_id == 'config_update') \
+            .first()
         if last_config:
             return last_config.extra_json.get('config')
 
@@ -279,11 +287,13 @@ class Assets(metaclass=AuthenticatedEndpoint):
             raise FormException(_('Invalid calibration frequency.'))
 
         if self.form.get('site_id'):
-            model_site = self.request.db_session.query(models.Site).join(models.Site.tenant) \
+            model_site = self.request.db_session.query(models.Site) \
+                .join(models.Site.tenant) \
                 .filter(
                     models.Site.id == self.form['site_id'],
                     models.Tenant.tenant_id == tenant_id,
-               ).first()
+                ) \
+                .first()
             if not model_site:
                 raise FormException(_('Invalid site.'))
 
@@ -303,7 +313,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         for equipments_family in equipments_families:
             db_family = self.request.db_session.query(models.EquipmentFamily) \
-                .filter_by(family_id=equipments_family).first()
+                .filter_by(family_id=equipments_family) \
+                .first()
             if not db_family:
                 raise FormException(_('Invalid equipment family.'))
 
@@ -336,7 +347,8 @@ class Assets(metaclass=AuthenticatedEndpoint):
                     models.Event.asset == self.asset,
                     models.EventStatus.status_type != 'config',
                     models.Event.event_id == event_id,
-                ).one()
+                ) \
+                .one()
             if not event:
                 raise FormException(_('Invalid event.'))
 

@@ -29,7 +29,7 @@ def main():
             .filter(or_(
                 Equipment.expiration_date_1.isnot(None),
                 Equipment.expiration_date_2.isnot(None),
-            )).all()
+            ))
 
         for equipment in equipments_to_migrate:
             if equipment.expiration_date_1:

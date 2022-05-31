@@ -65,7 +65,7 @@ class Asset(Model, CreationDateTimeMixin):
             sqlalchemy.orm.query.Query.
         """
         order_func = asc if order == 'asc' else desc
-        events = self._history.filter_by(removed=False).order_by(order_func(Event.date), order_func(Event.created_at))
+        events = self._history.filter(~Event.removed).order_by(order_func(Event.date), order_func(Event.created_at))
 
         if filter_config:
             events = events.join(Event.status).filter(EventStatus.status_type != 'config')

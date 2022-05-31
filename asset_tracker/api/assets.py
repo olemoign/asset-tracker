@@ -40,15 +40,19 @@ class Assets:
         tenant.name = json['tenantName']
 
         # If the asset exists in both the Asset Tracker and RTA.
-        asset = self.request.db_session.query(models.Asset).filter_by(user_id=json['userID']) \
-            .join(models.Asset.tenant).first()
+        asset = self.request.db_session.query(models.Asset) \
+            .filter(models.Asset.user_id == json['userID']) \
+            .join(models.Asset.tenant) \
+            .first()
         if asset:
             self.update_asset(asset, tenant, json)
             return
 
         # If the asset only exists in the Asset Tracker.
-        asset = self.request.db_session.query(models.Asset).filter_by(asset_id=json['login']) \
-            .join(models.Asset.tenant).first()
+        asset = self.request.db_session.query(models.Asset) \
+            .filter(models.Asset.user_id == json['login']) \
+            .join(models.Asset.tenant) \
+            .first()
         if asset:
             if asset.user_id:
                 capture_message(

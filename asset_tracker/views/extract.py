@@ -148,7 +148,8 @@ class AssetsExtract:
                 .filter(
                     models.Event.asset_id == asset.id,
                     models.EventStatus.status_id == 'software_update',
-                ).order_by(desc('date'))
+                ) \
+                .order_by(desc('date'))
 
             # Get last version of each software.
             most_recent_soft_per_asset = {}
@@ -172,7 +173,8 @@ class AssetsExtract:
                     joinedload(models.Equipment.family),
                     joinedload(models.Equipment.consumables).joinedload(models.Consumable.family),
                 ) \
-                .filter(models.Equipment.asset_id == asset.id).all()
+                .filter(models.Equipment.asset_id == asset.id) \
+                .all()
 
             for equipment in equipments:
                 empty_consumables_count = MAX_CONSUMABLES - len(equipment.consumables)
@@ -205,16 +207,19 @@ class AssetsExtract:
         # Dynamic data - software.
         # Find unique software name.
         software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Event.asset).join(models.Event.status) \
+            .join(models.Event.asset) \
+            .join(models.Event.status) \
             .filter(models.EventStatus.status_id == 'software_update')
 
         unique_software = {update.extra_json['software_name'] for update in software_updates}
+        print(unique_software)
 
         # Find maximum number of equipments per asset.
         asset_with_most_equipments = self.request.db_session.query(models.Asset) \
             .join(models.Asset.equipments) \
             .group_by(models.Asset.id) \
-            .order_by(func.count(models.Asset.equipments).desc()).first()
+            .order_by(func.count(models.Asset.equipments).desc()) \
+            .first()
 
         max_equipments = len(asset_with_most_equipments.equipments) if asset_with_most_equipments else 0
 

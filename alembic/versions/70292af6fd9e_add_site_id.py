@@ -36,7 +36,7 @@ def upgrade():
 
     db_session.commit()
 
-    for site in db_session.query(Site).all():
+    for site in db_session.query(Site):
         site.site_id = random_id()
 
     db_session.commit()
