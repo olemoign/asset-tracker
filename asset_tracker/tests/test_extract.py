@@ -1,13 +1,15 @@
 import csv
+import json
 import os
 import random
 import tempfile
 from datetime import datetime, timedelta
-
+from pathlib import Path
 from parsys_utilities.security import Right
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
+from asset_tracker.config import update_statuses, update_consumable_families, update_equipment_families
 from asset_tracker.constants import ASSET_TYPES
 from asset_tracker.models import Tenant, Asset, Event, EventStatus
 from asset_tracker.tests import FunctionalTest
@@ -19,30 +21,12 @@ class TestExtract(FunctionalTest):
     @staticmethod
     def populate_data(request):
         session = request.db_session
-        events_status = [
-            (1, 'stock_parsys', 1, 'In stock Parsys', 'event', 'Parsys - In stock'),
-            (2, 'transit_distributor', 2, 'In transit to distributor', 'event',
-             'Parsys - In transit to Marlink Logistics'),
-            (3, 'stock_distributor', 3, 'In stock distributor', 'event', 'Marlink Logistics - In stock'),
-            (4, 'transit_customer', 4, 'In transit to customer', 'event', 'Marlink Logistics - In transit to customer'),
-            (5, 'on_site', 5, 'On site', 'event', 'CCTS - On site'),
-            (6, 'service', 6, 'In service', 'event', 'CCTS - In service'),
-            (7, 'replacement_failure', 7, 'Replacement ordered (failure)', 'event',
-             'CCTS - Replacement ordered (failure)'),
-            (8, 'replacement_calibration', 8, 'Replacement ordered (calibration)', 'event',
-             'CCTS - Replacement ordered (calibration)'),
-            (9, 'transit_distributor_return', 9, 'In transit to distributor (return)', 'event',
-             'CCTS - In transit to Marlink Logistics'),
-            (10, 'transit_parsys', 10, 'In transit to Parsys', 'event', 'Marlink Logistics - In transit to Parsys'),
-            (11, 'calibration', 11, 'In calibration', 'event', 'Parsys - In calibration'),
-            (12, 'repair', 12, 'In repair', 'event', 'Parsys - In repair'),
-            (13, 'decommissioned', 13, 'Decommissioned', 'event', 'Parsys - Decommissioned'),
-        ]
+        with open(os.path.join('..', Path(os.path.dirname(__file__)).parent, 'config.json')) as config_file:
+            config = json.load(config_file)
 
-        for evt in events_status:
-            event_status = EventStatus(id=evt[0], status_id=evt[1], _label=evt[3], position=evt[2], status_type=evt[4],
-                                       _label_marlink=evt[5])
-            session.add(event_status)
+        update_equipment_families(session, config)
+        update_consumable_families(session, config)
+        update_statuses(session, config)
 
         now = datetime.now()
         status = session.query(EventStatus).order_by(EventStatus.position.asc()).first()
@@ -59,6 +43,8 @@ class TestExtract(FunctionalTest):
                                   date=now + timedelta(days=i*10 + j + event_status.position), creator_id='user',
                                   removed=False, status=event_status, creator_alias='user')
                     asset.status = event_status
+                    if event_status.status_id == 'software_update':
+                        event.extra = json.dumps({'software_name': 'test_soft', 'software_version': '1.0'})
                     session.add(event)
         session.flush()
 
@@ -81,6 +67,8 @@ class TestExtract(FunctionalTest):
                 if not header:
                     header = row
                     assert 'last_status_change_date' in header
+                    assert 'software_1_name' in header
+                    assert 'software_1_version' in header
                 else:
                     if len(row) <= 0:
                         continue
@@ -102,6 +90,8 @@ class TestExtract(FunctionalTest):
                         assert len(row[14]) == 0
                     else:
                         assert asset.calibration_last == datetime.strptime(row[14], '%Y-%m-%d').date()
+                    assert row[22] == 'test_soft'
+                    assert row[23] == '1.0'
                     nb_asset -= 1
         assert nb_asset == 0
         os.remove(tmp_file)
