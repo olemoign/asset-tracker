@@ -4,6 +4,7 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 
+import packaging.version
 from depot.manager import DepotManager
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound, HTTPOk
 from pyramid.security import Allow
@@ -37,44 +38,12 @@ def get_version_from_file(file_name):
         str: software version.
     """
     # Remove file extension.
-    return re.search(r'[0-9]+\.[0-9]+\.[0-9]+.*', file_name.stem).group()
-
-
-def sort_versions(version):
-    """Sort versions according to natural order.
-
-    When comparing strings, 'beta9' > 'beta15' because '9' > '1'. Actually, for humans, it should be '15' > '9'.
-    Here, we split the incoming string between text and digits and convert digits to int so that Python will be able
-    to compare int(15) and int(9).
-
-    Special case for final versions: 2.9.0 has only three items, less than 2.9.0-rc10. Thus we force final versions to
-    the end of the list.
-
-    Args:
-        version (str): version to be sorted.
-
-    Returns
-        list: split string, with text as str and numbers as int.
-    """
-    # 'if text' allows us to remove the empty strings always occurring for the first and last element of the re.split().
-    sort_key = []
-
-    for substring in re.split('([0-9]+)', version):
-        if substring.isdigit():
-            sort_key.append(int(substring))
-        elif substring and substring != '.':
-            sort_key.append(substring.lower().replace('-', ''))
-
-    # Final version.
-    if len(sort_key) == 3:
-        sort_key.append('zzz')
-
-    return sort_key
+    return re.search(r'\d+\.\d+\.\d+.*', file_name.stem).group()
 
 
 class Software:
     """Software update WebServices: tell the assets what is the latest version and url of a given product + store what
-    softwares versions a given asset is using.
+    software versions a given asset is using.
     """
 
     __acl__ = [
@@ -107,8 +76,8 @@ class Software:
         current = self.request.GET.get('current')
         if current:
             try:
-                current = sort_versions(current)
-            except TypeError as error:
+                current = packaging.version.Version(current)
+            except packaging.version.InvalidVersion as error:
                 capture_exception(error)
                 # The current version wasn't in an expected format.
                 raise HTTPBadRequest(json={'error': 'Invalid current version.'})
@@ -123,15 +92,13 @@ class Software:
         if not storage_path:
             return {'updateAvailable': False} if current else {}
 
-        storage = Path(storage_path)
         # Products are stored in sub-folders in the storage path.
-        if not (storage / self.product).is_dir():
+        product_folder = Path(storage_path) / self.product
+        if not product_folder.is_dir():
             return {'updateAvailable': False} if current else {}
 
-        product_folder = storage / self.product
-        product_files = [item for item in product_folder.iterdir() if item.is_file()]
-
         product_versions = {}
+        product_files = [item for item in product_folder.iterdir() if item.is_file()]
         for product_file in product_files:
             # Test channel.
             version = get_version_from_file(product_file)
@@ -152,7 +119,7 @@ class Software:
 
         # Sort dictionary by version (which are the keys of the dict).
         # noinspection PyTypeChecker
-        product_versions = dict(sorted(product_versions.items(), key=lambda k: sort_versions(k[0])))
+        product_versions = dict(sorted(product_versions.items(), key=lambda k: packaging.version.Version(k[0])))
 
         version = self.request.GET.get('version')
         if version and version in product_versions:
@@ -166,7 +133,7 @@ class Software:
         # We return only the latest version.
         product_latest = product_versions.popitem()
         # Make sure we aren't in the special case where the station is using a version that hasn't been uploaded yet.
-        if current and current > sort_versions(product_latest[0]):
+        if current and current > packaging.version.Version(product_latest[0]):
             return {'updateAvailable': False}
 
         download_url = self.request.route_url('api-software-download', product=self.product, file=product_latest[1])
