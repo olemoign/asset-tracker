@@ -26,6 +26,7 @@ class Extract(FunctionalTest):
         update_consumable_families(request.db_session, config)
         update_statuses(request.db_session, config)
 
+        now = datetime.now()
         today = date.today()
         status = request.db_session.query(EventStatus).order_by(EventStatus.position).first()
         events_status = request.db_session.query(EventStatus).order_by(EventStatus.position).all()
@@ -46,6 +47,7 @@ class Extract(FunctionalTest):
                         event_id=f'event_{i}_{j}_{event_status.position}',
                         asset=asset,
                         date=today + timedelta(days=i * 10 + j + event_status.position),
+                        created_at=now + timedelta(minutes=i * 10 + j + event_status.position),
                         creator_id='user',
                         creator_alias='user',
                         status=event_status,
