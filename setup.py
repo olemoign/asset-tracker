@@ -28,7 +28,7 @@ requires = [
     'sentry-sdk==1.5.12',
     'sqlalchemy==1.4.36',
     'transaction==3.0.1',
-    'waitress==2.1.1',
+    'waitress==2.1.2',
     'zope.sqlalchemy==1.6',
 ]
 
