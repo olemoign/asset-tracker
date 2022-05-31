@@ -28,6 +28,19 @@ def get_archi_from_file(file_name):
     return 32 if product_name.endswith('32') else 64
 
 
+def get_product_files(product_folder):
+    """Get the list of product files. Mocking pathlib.Path was too difficult, this (very simple) function was created
+    for testing purposes.
+
+    Args:
+        product_folder (pathlib.Path).
+
+    Returns:
+        list.
+    """
+    return [item for item in product_folder.iterdir() if item.is_file()]
+
+
 def get_version_from_file(file_name):
     """Get software version from file name.
 
@@ -85,7 +98,7 @@ class Software:
         # Release channel (alpha, beta, dev, stable).
         channel = self.request.GET.get('channel', 'stable')
         # 32 or 64 bits?
-        archi_32_bits = self.request.user_agent and 'Windows NT 6.3' in self.request.user_agent
+        archi_32_bits = bool(self.request.user_agent and 'Windows NT 6.3' in self.request.user_agent)
 
         # If storage folder wasn't set up, can't return link.
         storage_path = self.request.registry.settings.get('asset_tracker.software_storage')
@@ -98,8 +111,7 @@ class Software:
             return {'updateAvailable': False} if current else {}
 
         product_versions = {}
-        product_files = [item for item in product_folder.iterdir() if item.is_file()]
-        for product_file in product_files:
+        for product_file in get_product_files(product_folder):
             # Test channel.
             version = get_version_from_file(product_file)
             alpha = 'alpha' in version and channel in ['alpha', 'dev']
