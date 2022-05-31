@@ -5,7 +5,7 @@ import random
 import tempfile
 from datetime import date, datetime, timedelta
 from parsys_utilities.security import Right
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.config import update_statuses, update_consumable_families, update_equipment_families
@@ -43,11 +43,12 @@ class Extract(FunctionalTest):
                 request.db_session.add(asset)
 
                 for event_status in events_status:
+                    rnd_value = i * 10 + j + event_status.position
                     event = Event(
                         event_id=f'event_{i}_{j}_{event_status.position}',
                         asset=asset,
                         date=today + timedelta(days=i * 10 + j + event_status.position),
-                        created_at=now + timedelta(minutes=i * 10 + j + event_status.position),
+                        created_at=now + timedelta(minutes=random.randint(rnd_value * -1, rnd_value)),
                         creator_id='user',
                         creator_alias='user',
                         status=event_status,
@@ -70,6 +71,8 @@ class Extract(FunctionalTest):
             f.write(response.body.decode('utf-8'))
 
         nb_asset = request.db_session.query(Asset).count()
+        not_config_event_status = request.db_session.query(EventStatus.id) \
+            .filter(EventStatus.status_type != 'config').subquery()
         with open(tmp_file, 'r') as f:
             for index, row in enumerate(csv.reader(f)):
                 if index == 0:
@@ -83,7 +86,7 @@ class Extract(FunctionalTest):
                     .filter(Asset.asset_id == row[0]) \
                     .one()
                 last_status_change = request.db_session.query(func.max(Event.created_at)) \
-                    .filter(Event.asset_id == asset.id) \
+                    .filter(and_(Event.asset_id == asset.id, Event.status_id.in_(not_config_event_status))) \
                     .one()[0]
 
                 assert asset.asset_type == row[1]

@@ -5,7 +5,7 @@ from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.sql import windowed_query
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, and_
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
@@ -99,14 +99,17 @@ class AssetsExtract:
             csv body (list): information on the assets.
         """
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
-
+        not_config_event_status = self.request.db_session.query(models.EventStatus.id)\
+            .filter(models.EventStatus.status_type != 'config').subquery()
         assets = self.request.db_session.query(models.Asset, func.max(models.Event.created_at)) \
             .options(
                 joinedload(models.Asset.tenant),
                 joinedload(models.Asset.site),
                 joinedload(models.Asset.status),
             ) \
-            .outerjoin(models.Event, models.Event.asset_id == models.Asset.id).group_by(models.Asset.asset_id)\
+            .outerjoin(models.Event, and_(models.Event.asset_id == models.Asset.id,
+                                          models.Event.status_id.in_(not_config_event_status)))\
+            .group_by(models.Asset.asset_id)\
             .order_by(models.Asset.asset_id)
 
         rows = []
