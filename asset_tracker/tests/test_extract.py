@@ -8,9 +8,9 @@ from parsys_utilities.security import Right
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
+from asset_tracker import models
 from asset_tracker.config import update_statuses, update_consumable_families, update_equipment_families
 from asset_tracker.constants import ASSET_TYPES, PATH
-from asset_tracker.models import Asset, Event, EventStatus, Tenant
 from asset_tracker.tests import FunctionalTest
 
 
@@ -28,23 +28,23 @@ class Extract(FunctionalTest):
 
         now = datetime.now()
         today = date.today()
-        status = request.db_session.query(EventStatus).order_by(EventStatus.position).first()
-        events_status = request.db_session.query(EventStatus).order_by(EventStatus.position).all()
+        status = request.db_session.query(models.EventStatus).order_by(models.EventStatus.position).first()
+        events_status = request.db_session.query(models.EventStatus).order_by(models.EventStatus.position).all()
 
         for i in range(1, 3):
-            tenant = Tenant(tenant_id=f'tenant{i}', name=f'Tenant {i}')
+            tenant = models.Tenant(tenant_id=f'tenant{i}', name=f'Tenant {i}')
             request.db_session.add(tenant)
 
             for j in range(1, 5):
                 asset_type = list(ASSET_TYPES.keys())[random.randint(0, len(ASSET_TYPES) - 1)]
-                asset = Asset(
+                asset = models.Asset(
                     asset_id=f'asset_{i}_{j}', tenant=tenant, user_id='user', asset_type=asset_type, status=status
                 )
                 request.db_session.add(asset)
 
                 for event_status in events_status:
                     rnd_value = i * 10 + j + event_status.position
-                    event = Event(
+                    event = models.Event(
                         event_id=f'event_{i}_{j}_{event_status.position}',
                         asset=asset,
                         date=today + timedelta(days=i * 10 + j + event_status.position),
@@ -72,7 +72,7 @@ class Extract(FunctionalTest):
         with open(tmp_file, 'w+') as f:
             f.write(response.body.decode('utf-8'))
 
-        nb_asset = request.db_session.query(Asset).count()
+        nb_asset = request.db_session.query(models.Asset).count()
         with open(tmp_file, 'r') as f:
             for index, row in enumerate(csv.reader(f)):
                 if index == 0:
@@ -80,22 +80,26 @@ class Extract(FunctionalTest):
                     assert 'medcapture_version' in row
                     continue
 
-                asset = request.db_session.query(Asset) \
-                    .options(joinedload(Asset.tenant), joinedload(Asset.site), joinedload(Asset.status)) \
-                    .filter(Asset.asset_id == row[0]) \
-                    .one()
-                last_event = request.db_session.query(func.max(Event.created_at)) \
-                    .join(EventStatus) \
-                    .filter(Event.asset_id == asset.id, EventStatus.status_type == 'event') \
-                    .one()[0]
-                medcapture = request.db_session.query(Event.extra) \
-                    .join(Event.status) \
-                    .filter(
-                        Event.asset_id == asset.id,
-                        EventStatus.status_id == 'software_update',
-                        Event.extra.ilike('%"medcapture"%'),
+                asset = request.db_session.query(models.Asset) \
+                    .options(
+                        joinedload(models.Asset.tenant),
+                        joinedload(models.Asset.site),
+                        joinedload(models.Asset.status),
                     ) \
-                    .order_by(Event.created_at.desc()) \
+                    .filter(models.Asset.asset_id == row[0]) \
+                    .one()
+                last_event = request.db_session.query(func.max(models.Event.created_at)) \
+                    .join(models.EventStatus) \
+                    .filter(models.Event.asset_id == asset.id, models.EventStatus.status_type == 'event') \
+                    .one()[0]
+                medcapture = request.db_session.query(models.Event.extra) \
+                    .join(models.Event.status) \
+                    .filter(
+                        models.Event.asset_id == asset.id,
+                        models.EventStatus.status_id == 'software_update',
+                        models.Event.extra.ilike('%"medcapture"%'),
+                    ) \
+                    .order_by(models.Event.created_at.desc()) \
                     .limit(1) \
                     .first()
                 medcapture_version = json.loads(medcapture[0])['software_version'] if medcapture else None

@@ -9,8 +9,7 @@ from pathlib import Path
 
 import transaction
 
-from asset_tracker.models import Asset, Consumable, ConsumableFamily, Equipment, EquipmentFamily, EventStatus
-from asset_tracker.models import get_engine, get_session_factory, get_tm_session
+from asset_tracker import models
 
 DEFAULT_CONFIG = {
     'asset_tracker.cloud_name': 'Parsys Cloud',
@@ -37,13 +36,13 @@ def update_consumable_families(db_session, config):
         config (dict).
     """
     config_families = config['consumable_families']
-    db_families = db_session.query(ConsumableFamily).all()
+    db_families = db_session.query(models.ConsumableFamily).all()
 
     # Remove existing family if it was removed from the config and no consumable is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
         if not config_family:
-            consumable = db_session.query(Consumable).filter_by(family=db_family).first()
+            consumable = db_session.query(models.Consumable).filter_by(family=db_family).first()
             if consumable:
                 logger.info(
                     f"Consumable family {db_family.model} was removed from the config but can't be removed from the db."
@@ -56,7 +55,7 @@ def update_consumable_families(db_session, config):
     for config_family in config_families:
         db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
         if not db_family:
-            db_family = ConsumableFamily(family_id=config_family['family_id'])
+            db_family = models.ConsumableFamily(family_id=config_family['family_id'])
             db_session.add(db_family)
             logger.info(f'Adding consumable family {config_family["model"]}.')
 
@@ -65,7 +64,7 @@ def update_consumable_families(db_session, config):
         # Update equipment family / consumable family association.
         db_family.equipment_families = []
         for equipment_family_id in config_family['equipment_family_ids']:
-            equipment_family = db_session.query(EquipmentFamily).filter_by(family_id=equipment_family_id).first()
+            equipment_family = db_session.query(models.EquipmentFamily).filter_by(family_id=equipment_family_id).first()
             db_family.equipment_families.append(equipment_family)
 
 
@@ -77,13 +76,13 @@ def update_equipment_families(db_session, config):
         config (dict).
     """
     config_families = config['equipment_families']
-    db_families = db_session.query(EquipmentFamily).all()
+    db_families = db_session.query(models.EquipmentFamily).all()
 
     # Remove existing family if it was removed from the config and no equipment is from this family.
     for db_family in db_families:
         config_family = next((x for x in config_families if x['family_id'] == db_family.family_id), None)
         if not config_family:
-            equipment = db_session.query(Equipment).filter_by(family=db_family).first()
+            equipment = db_session.query(models.Equipment).filter_by(family=db_family).first()
             if equipment:
                 logger.info(
                     f"Equipment family {db_family.model} was removed from the config but can't be removed from the db."
@@ -96,7 +95,7 @@ def update_equipment_families(db_session, config):
     for config_family in config_families:
         db_family = next((x for x in db_families if x.family_id == config_family['family_id']), None)
         if not db_family:
-            db_family = EquipmentFamily(family_id=config_family['family_id'])
+            db_family = models.EquipmentFamily(family_id=config_family['family_id'])
             db_session.add(db_family)
             logger.info(f'Adding equipment family {config_family["model"]}.')
 
@@ -111,7 +110,7 @@ def update_statuses(db_session, config):
         config (dict).
     """
     config_statuses = config['status']
-    db_statuses = db_session.query(EventStatus).all()
+    db_statuses = db_session.query(models.EventStatus).all()
 
     # Put temp positions to make sure we don't overwrite existing ones, as the position has to be unique.
     for index, db_status in enumerate(db_statuses):
@@ -123,7 +122,7 @@ def update_statuses(db_session, config):
     for db_status in db_statuses:
         config_status = next((x for x in config_statuses if x['status_id'] == db_status.status_id), None)
         if not config_status:
-            event = db_session.query(Asset).filter_by(status=db_status).first()
+            event = db_session.query(models.Asset).filter_by(status=db_status).first()
             if event:
                 logger.info(f"Status {db_status.label} was removed from the config but can't be removed from the db.")
             else:
@@ -134,7 +133,7 @@ def update_statuses(db_session, config):
     for config_status in config_statuses:
         db_status = next((x for x in db_statuses if x.status_id == config_status['status_id']), None)
         if not db_status:
-            db_status = EventStatus(status_id=config_status['status_id'])
+            db_status = models.EventStatus(status_id=config_status['status_id'])
             db_session.add(db_status)
             logger.info(f'Adding status {config_status["label"]}.')
 
@@ -148,9 +147,9 @@ def update_configuration(settings):
     """Run the update."""
     with transaction.manager:
         # Connect to the db.
-        engine = get_engine(settings)
-        db_session_factory = get_session_factory(engine)
-        db_session = get_tm_session(db_session_factory, transaction.manager)
+        engine = models.get_engine(settings)
+        db_session_factory = models.get_session_factory(engine)
+        db_session = models.get_tm_session(db_session_factory, transaction.manager)
 
         # Read config.json.
         with open(PATH / 'config.json') as config_file:

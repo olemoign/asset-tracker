@@ -4,20 +4,20 @@ from unittest.mock import patch
 
 from parsys_utilities.security import Right
 
-from asset_tracker.models import Asset, Event, EventStatus, Tenant
+from asset_tracker import models
 from asset_tracker.tests import FunctionalTest
 
 
 def create_asset(request):
-    tenant = Tenant(tenant_id='tenantXX', name='Tenant XX')
-    status_created = EventStatus(
+    tenant = models.Tenant(tenant_id='tenantXX', name='Tenant XX')
+    status_created = models.EventStatus(
         status_id='stock_parsys', position=1, status_type='event', _label='In stock Parsys'
     )
-    status_software = EventStatus(
+    status_software = models.EventStatus(
         status_id='software_update', position=14, status_type='config', _label='Software update'
     )
-    asset = Asset(asset_id='x@x.x', asset_type='station', status=status_created, tenant=tenant)
-    event_created = Event(
+    asset = models.Asset(asset_id='x@x.x', asset_type='station', status=status_created, tenant=tenant)
+    event_created = models.Event(
         asset=asset, date=date.today(), creator_id='XXXXXXXX', creator_alias='XXXX XXXX', status=status_created
     )
     request.db_session.add_all([asset, event_created, status_created, status_software, tenant])
@@ -49,10 +49,10 @@ class API(FunctionalTest):
 
         self.app.post_json('/api/update/?product=medcapture', {'version': '2.9.4'}, status=200)
 
-        asset = request.db_session.query(Asset).filter_by(asset_id='x@x.x').first()
+        asset = request.db_session.query(models.Asset).filter_by(asset_id='x@x.x').first()
         update = asset.history('desc') \
-            .join(Event.status) \
-            .filter(EventStatus.status_id == 'software_update') \
+            .join(models.Event.status) \
+            .filter(models.EventStatus.status_id == 'software_update') \
             .first()
         assert update.extra_json['software_name'] == 'medcapture'
         assert update.extra_json['software_version'] == '2.9.4'

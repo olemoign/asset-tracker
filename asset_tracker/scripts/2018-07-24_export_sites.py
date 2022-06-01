@@ -5,7 +5,7 @@ import csv
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
-from asset_tracker.models import Site
+from asset_tracker import models
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
         db_session = env['request'].db_session
         writer = csv.writer(csv_file)
 
-        sites = db_session.query(Site).order_by(Site.tenant_id, Site.name)
+        sites = db_session.query(models.Site).order_by(models.Site.tenant_id, models.Site.name)
         count = sites.count()
         for site in sites:
             writer.writerow([site.tenant_id, site.name, site.site_id])

@@ -7,8 +7,8 @@ from dateutil.relativedelta import relativedelta
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
+from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
-from asset_tracker.models import Asset, Equipment, EquipmentFamily, Event, EventStatus
 
 
 def main():
@@ -25,11 +25,11 @@ def main():
         db_session = env['request'].db_session
         csv_reader = csv.reader(csv_file, delimiter=';')
 
-        family_base = db_session.query(EquipmentFamily).filter_by(family_id='j7tJ1y4A').first()
-        family_telecardia = db_session.query(EquipmentFamily).filter_by(family_id='psqeAtt1').first()
+        family_base = db_session.query(models.EquipmentFamily).filter_by(family_id='j7tJ1y4A').first()
+        family_telecardia = db_session.query(models.EquipmentFamily).filter_by(family_id='psqeAtt1').first()
 
-        calibration_status = db_session.query(EventStatus).filter_by(status_id='calibration').one()
-        activation_status = db_session.query(EventStatus).filter_by(status_id='service').one()
+        calibration_status = db_session.query(models.EventStatus).filter_by(status_id='calibration').one()
+        activation_status = db_session.query(models.EventStatus).filter_by(status_id='service').one()
 
         for row_number, row in enumerate(csv_reader):
             vessel, kit_id, base_id, telecardia_id, calibration_date = row
@@ -40,7 +40,7 @@ def main():
 
             print(f'Added asset for vessel {vessel}')
             # noinspection PyArgumentList
-            kit = Asset(
+            kit = models.Asset(
                 asset_id=kit_id,
                 tenant_id=args.tenant_id,
                 asset_type='telecardia',
@@ -48,21 +48,21 @@ def main():
                 site=vessel,
             )
 
-            base = Equipment(family=family_base, serial_number=base_id)
-            telecardia = Equipment(family=family_telecardia, serial_number=telecardia_id)
+            base = models.Equipment(family=family_base, serial_number=base_id)
+            telecardia = models.Equipment(family=family_telecardia, serial_number=telecardia_id)
             kit.equipments.append(base)
             kit.equipments.append(telecardia)
 
-            calibration_date = datetime.strptime(calibration_date, '%d/%m/%y')
+            calibration_date = datetime.strptime(calibration_date, '%d/%m/%y').date()
             # noinspection PyArgumentList
-            calibration = Event(
+            calibration = models.Event(
                 date=calibration_date,
                 creator_id=args.creator_id,
                 creator_alias=args.creator_alias,
                 status=calibration_status,
             )
             # noinspection PyArgumentList
-            activation = Event(
+            activation = models.Event(
                 date=calibration_date + timedelta(hours=1),
                 creator_id=args.creator_id,
                 creator_alias=args.creator_alias,

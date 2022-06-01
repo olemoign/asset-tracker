@@ -5,7 +5,7 @@ import csv
 from pyramid.paster import bootstrap
 from pyramid.scripts.common import parse_vars
 
-from asset_tracker.models import Asset, Site
+from asset_tracker import models
 
 
 def main():
@@ -22,18 +22,18 @@ def main():
         csv_reader = csv.reader(csv_file, delimiter=';')
 
         for asset_id, site_name in csv_reader:
-            asset = db_session.query(Asset).filter_by(asset_id=asset_id).first()
+            asset = db_session.query(models.Asset).filter_by(asset_id=asset_id).first()
 
             if not asset:
                 print(f'Asset {asset_id} not found.')
                 continue
 
             if site_name:
-                site = db_session.query(Site).filter_by(name=site_name).first()
+                site = db_session.query(models.Site).filter_by(name=site_name).first()
 
                 if not site:
                     # noinspection PyArgumentList
-                    site = Site(tenant_id=asset.tenant_id, name=site_name)
+                    site = models.Site(tenant_id=asset.tenant_id, name=site_name)
 
                     if site_name.startswith('CMA CGM') or site_name.startswith('APL'):
                         site.site_type = 'Ship'
