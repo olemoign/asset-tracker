@@ -5,7 +5,7 @@ import random
 import tempfile
 from datetime import date, datetime, timedelta
 from parsys_utilities.security import Right
-from sqlalchemy import func, and_
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker.config import update_statuses, update_consumable_families, update_equipment_families
@@ -56,7 +56,9 @@ class Extract(FunctionalTest):
                     if event_status.status_type == 'event':
                         asset.status = event_status
                     elif event_status.status_id == 'software_update':
-                        event.extra = json.dumps({'software_name': 'test_soft', 'software_version': '1.0'})
+                        event.extra = json.dumps(
+                            {'software_name': 'medcapture', 'software_version': f'3.0.{random.randint(0, 9)}'}
+                        )
                     request.db_session.add(event)
 
         request.db_session.commit()
@@ -71,38 +73,47 @@ class Extract(FunctionalTest):
             f.write(response.body.decode('utf-8'))
 
         nb_asset = request.db_session.query(Asset).count()
-        not_config_event_status = request.db_session.query(EventStatus.id) \
-            .filter(EventStatus.status_type != 'config').subquery()
         with open(tmp_file, 'r') as f:
             for index, row in enumerate(csv.reader(f)):
                 if index == 0:
-                    assert 'last_status_change_date' in row
-                    assert 'software_1_name' in row
-                    assert 'software_1_version' in row
+                    assert 'last_event' in row
+                    assert 'medcapture_version' in row
                     continue
 
                 asset = request.db_session.query(Asset) \
                     .options(joinedload(Asset.tenant), joinedload(Asset.site), joinedload(Asset.status)) \
                     .filter(Asset.asset_id == row[0]) \
                     .one()
-                last_status_change = request.db_session.query(func.max(Event.created_at)) \
-                    .filter(and_(Event.asset_id == asset.id, Event.status_id.in_(not_config_event_status))) \
+                last_event = request.db_session.query(func.max(Event.created_at)) \
+                    .join(EventStatus) \
+                    .filter(Event.asset_id == asset.id, EventStatus.status_type == 'event') \
                     .one()[0]
+                medcapture = request.db_session.query(Event.extra) \
+                    .join(Event.status) \
+                    .filter(
+                        Event.asset_id == asset.id,
+                        EventStatus.status_id == 'software_update',
+                        Event.extra.ilike('%"medcapture"%'),
+                    ) \
+                    .order_by(Event.created_at.desc()) \
+                    .limit(1) \
+                    .first()
+                medcapture_version = json.loads(medcapture[0])['software_version'] if medcapture else None
 
+                assert asset.asset_id == row[0]
                 assert asset.asset_type == row[1]
                 assert asset.tenant.tenant_id == row[2]
                 assert asset.tenant.name == row[3]
                 assert asset.status.label('parsys') == row[8]
-                assert last_status_change == datetime.fromisoformat(row[9])
-                assert asset.production == date.fromisoformat(row[11])
-                assert asset.delivery == date.fromisoformat(row[12])
-                assert asset.activation == date.fromisoformat(row[13])
+                assert last_event == datetime.fromisoformat(row[9])
+                assert medcapture_version == row[10]
+                assert asset.production == date.fromisoformat(row[12])
+                assert asset.delivery == date.fromisoformat(row[13])
+                assert asset.activation == date.fromisoformat(row[14])
                 if asset.asset_type == 'consumables_case':
-                    assert not row[14]
+                    assert not row[15]
                 else:
-                    assert asset.calibration_last == date.fromisoformat(row[14])
-                assert row[22] == 'test_soft'
-                assert row[23] == '1.0'
+                    assert asset.calibration_last == date.fromisoformat(row[15])
 
                 nb_asset -= 1
 

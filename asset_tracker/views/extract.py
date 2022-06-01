@@ -1,11 +1,12 @@
 """Asset tracker views: assets lists and read/update."""
+import json
 from datetime import datetime
 
 from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.sql import windowed_query
 from pyramid.security import Allow
 from pyramid.view import view_config
-from sqlalchemy import desc, func, and_
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
@@ -48,7 +49,8 @@ class AssetsExtract:
             'current_location',
             'calibration_frequency',
             'status_label',
-            'last_status_change_date',
+            'last_event',
+            'medcapture_version',
             'notes',
 
             'production_date',
@@ -63,11 +65,6 @@ class AssetsExtract:
             'site_contact',
             'site_phone',
             'site_email',
-
-            'software_1_name',
-            'software_1_version',
-            'software_2_name',
-            'software_2_version',
         ]
 
         equipment_columns = []
@@ -88,32 +85,43 @@ class AssetsExtract:
 
         return asset_columns + equipment_columns
 
-    def get_csv_rows(self, unique_software, max_equipments_per_asset):
+    def get_csv_rows(self, max_equipments_per_asset):
         """Get the asset information for the csv file.
 
         Args:
-            unique_software (set): names of the deployed software.
             max_equipments_per_asset (int): maximum number of equipment.
 
         Returns:
             csv body (list): information on the assets.
         """
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
-        not_config_event_status = self.request.db_session.query(models.EventStatus.id)\
-            .filter(models.EventStatus.status_type != 'config').subquery()
-        assets = self.request.db_session.query(models.Asset, func.max(models.Event.created_at)) \
+        last_event = self.request.db_session.query(func.max(models.Event.created_at)) \
+            .join(models.Event.status) \
+            .filter(
+                models.Event.asset_id == models.Asset.id,
+                models.EventStatus.status_type == 'event',
+            ) \
+            .scalar_subquery()
+        medcapture_version = self.request.db_session.query(models.Event.extra) \
+            .join(models.Event.status) \
+            .filter(
+                models.Event.asset_id == models.Asset.id,
+                models.EventStatus.status_id == 'software_update',
+                models.Event.extra.ilike('%"medcapture"%'),
+            ) \
+            .order_by(models.Event.created_at.desc()) \
+            .limit(1) \
+            .scalar_subquery()
+        assets = self.request.db_session.query(models.Asset, last_event, medcapture_version) \
             .options(
                 joinedload(models.Asset.tenant),
                 joinedload(models.Asset.site),
                 joinedload(models.Asset.status),
             ) \
-            .outerjoin(models.Event, and_(models.Event.asset_id == models.Asset.id,
-                                          models.Event.status_id.in_(not_config_event_status)))\
-            .group_by(models.Asset.asset_id)\
             .order_by(models.Asset.asset_id)
 
         rows = []
-        for asset, last_event in windowed_query(assets, models.Asset.asset_id, 100):
+        for asset, last_event, medcapture_version in windowed_query(assets, models.Asset.asset_id, 100):
             # Asset information.
             row = [
                 asset.asset_id,
@@ -126,6 +134,7 @@ class AssetsExtract:
                 asset.calibration_frequency,
                 asset.status.label(config),
                 last_event,
+                json.loads(medcapture_version)['software_version'] if medcapture_version else None,
                 asset.notes,
                 asset.production,
                 asset.delivery,
@@ -147,31 +156,6 @@ class AssetsExtract:
             else:
                 # Fill with None values to maintain column alignment.
                 row += [None, None, None, None, None]
-
-            # Software information.
-            software_updates = self.request.db_session.query(models.Event) \
-                .join(models.Event.status) \
-                .filter(
-                    models.Event.asset_id == asset.id,
-                    models.EventStatus.status_id == 'software_update',
-                ) \
-                .order_by(desc('date'))
-
-            # Get last version of each software.
-            most_recent_soft_per_asset = {}
-            for update in software_updates:
-                extra_json = update.extra_json
-                software_name, software_version = extra_json['software_name'], extra_json['software_version']
-                if software_name not in most_recent_soft_per_asset:
-                    most_recent_soft_per_asset[software_name] = software_version
-
-            # Format software output.
-            for software_name in unique_software:
-                if software_name in most_recent_soft_per_asset:
-                    row += [software_name, most_recent_soft_per_asset[software_name]]
-                else:
-                    # Fill with None values to maintain column alignment.
-                    row += [None, None]
 
             # Equipments information.
             equipments = self.request.db_session.query(models.Equipment) \
@@ -210,16 +194,6 @@ class AssetsExtract:
         Returns:
             (dict): header (list) and rows (list) of csv file.
         """
-        # Dynamic data - software.
-        # Find unique software name.
-        software_updates = self.request.db_session.query(models.Event) \
-            .join(models.Event.asset) \
-            .join(models.Event.status) \
-            .filter(models.EventStatus.status_id == 'software_update')
-
-        unique_software = {update.extra_json['software_name'] for update in software_updates}
-        print(unique_software)
-
         # Find maximum number of equipments per asset.
         asset_with_most_equipments = self.request.db_session.query(models.Asset) \
             .join(models.Asset.equipments) \
@@ -235,7 +209,7 @@ class AssetsExtract:
 
         return {
             'header': self.get_csv_header(max_equipments),
-            'rows': self.get_csv_rows(unique_software, max_equipments),
+            'rows': self.get_csv_rows(max_equipments),
         }
 
 
