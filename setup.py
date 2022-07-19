@@ -10,14 +10,14 @@ with open(here / 'CHANGES.md') as f:
     CHANGES = f.read()
 
 requires = [
-    'alembic==1.8.0',
+    'alembic==1.8.1',
     'arrow==1.2.2',
     'celery[redis]==5.2.7',
     'filedepot==0.8.0',
     'jinja2==3.1.2',
     'packaging==21.3',
-    'parsys-utilities==4.2.15',
-    'paste==3.5.0',
+    'parsys-utilities==4.2.17',
+    'paste==3.5.1',
     'psycopg2==2.9.3',
     'pyramid==1.10.8',
     'pyramid-assetviews==1.0a3',
@@ -25,8 +25,8 @@ requires = [
     'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.5',
     'python-dateutil==2.8.2',
-    'sentry-sdk==1.6.0',
-    'sqlalchemy==1.4.37',
+    'sentry-sdk==1.7.2',
+    'sqlalchemy==1.4.39',
     'transaction==3.0.1',
     'waitress==2.1.2',
     'zope.sqlalchemy==1.6',
