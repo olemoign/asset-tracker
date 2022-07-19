@@ -1,3 +1,7 @@
+3.1.9
+---
+- feat(reports): add last event date
+
 3.1.8
 ---
 - feat(marlink): calibration frequency is now 4 years
