@@ -43,7 +43,7 @@ class Sites(metaclass=AuthenticatedEndpoint):
             .options(joinedload(models.Site.assets).joinedload(models.Asset.status)) \
             .first()
         if not site:
-            capture_message(f'Missing site: ${site_id}')
+            capture_message(f'Missing site: {site_id}')
             raise HTTPNotFound()
 
         return site

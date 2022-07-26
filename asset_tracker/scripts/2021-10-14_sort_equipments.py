@@ -16,7 +16,7 @@ def main():
             family_ids.add(family['family_id'])
         for family in config['consumable_families']:
             if family['family_id'] in family_ids:
-                print(f'Family_id error: ${family["family_id"]}.')
+                print(f'Family_id error: {family["family_id"]}.')
             family_ids.add(family['family_id'])
 
         config['equipment_families'] = sorted(config['equipment_families'], key=itemgetter('model'))

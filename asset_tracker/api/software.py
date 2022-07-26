@@ -241,7 +241,7 @@ class Software:
 
         asset = self.request.db_session.query(models.Asset).filter_by(asset_id=self.request.user.login).first()
         if not asset:
-            capture_message(f'Unknown asset: ${self.request.user.login}.')
+            capture_message(f'Unknown asset: {self.request.user.login}.')
             raise HTTPNotFound(json={'error': 'Unknown asset.'})
 
         software_version = post_json.get('version')

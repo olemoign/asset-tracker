@@ -57,7 +57,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
             ) \
             .first()
         if not asset:
-            capture_message(f'Missing asset: ${asset_id}.')
+            capture_message(f'Missing asset: {asset_id}.')
             raise HTTPNotFound()
 
         # By putting the translated family name at the equipment level, when can then sort equipments by translated
