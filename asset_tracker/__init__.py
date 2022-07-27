@@ -113,6 +113,7 @@ def main(global_config, **settings):
             dsn=dsn,
             environment=settings.get('sentry.environment', 'development'),
             integrations=[CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()],
+            release=ASSET_TRACKER_VERSION,
             send_default_pii=True,
             server_name=settings.get('asset_tracker.server_url', 'configuration_error'),
         )
