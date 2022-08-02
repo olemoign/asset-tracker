@@ -1,4 +1,5 @@
 recursive-include asset_tracker/locale *.mo
 recursive-include asset_tracker/static *
 recursive-include asset_tracker/templates *
+include CHANGES.md
 include asset_tracker/config.json

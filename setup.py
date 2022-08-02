@@ -1,4 +1,3 @@
-import subprocess
 from pathlib import Path
 
 from setuptools import find_packages, setup
@@ -48,12 +47,8 @@ optional = {
     ],
 }
 
-get_version = 'git describe --match "[0-9]*.[0-9]*" --tags --dirty | sed -e "s/-/+/"'
-version = subprocess.check_output(get_version, shell=True).decode('ascii').strip()
-
 setup(
     name='asset-tracker',
-    version=version,
     description='Asset Tracker',
     long_description=f'{README}\n\n{CHANGES}',
     classifiers=[
@@ -76,6 +71,8 @@ setup(
     python_requires='>=3.8',
     install_requires=requires,
     extras_require=optional,
+    setup_requires=['setuptools_scm==7.0.5'],
+    use_scm_version=True,
     entry_points={
         'paste.app_factory': [
             'main = asset_tracker:main',

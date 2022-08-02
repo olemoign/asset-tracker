@@ -65,8 +65,8 @@ build:
     policy: pull
 
   script:
-    - pip3 install -q -U pip setuptools wheel
-    - python3 setup.py bdist_wheel
+    - pip3 install -q -U build pip setuptools setuptools_scm wheel
+    - python3 -m build
     - pip3 wheel -w dist/ --extra-index-url ${GITLAB_INDEX_URL} .
 
   artifacts:
