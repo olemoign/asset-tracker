@@ -24,7 +24,7 @@ flake8:
       - .cache/pip
 
   script:
-    - pip3 install -q -U pip setuptools wheel
+    - pip3 install -q -U pip
     - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[qa]'
     - flake8
 
@@ -42,7 +42,7 @@ pytest:
     policy: pull
 
   script:
-    - pip3 install -q -U pip setuptools wheel
+    - pip3 install -q -U pip
     - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[tests]'
     - pytest --cov=asset_tracker --junitxml=report.xml
 
@@ -65,8 +65,8 @@ build:
     policy: pull
 
   script:
-    - pip3 install -q -U build pip setuptools setuptools_scm wheel
-    - python3 -m build
+    - pip3 install -q -U build pip wheel
+    - python3 -m build --wheel
     - pip3 wheel -w dist/ --extra-index-url ${GITLAB_INDEX_URL} .
 
   artifacts:
