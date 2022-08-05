@@ -1,3 +1,8 @@
+3.1.10
+---
+- feat(ci): use python build
+- feat(sentry): add release
+
 3.1.9
 ---
 - feat(reports): add last event date
