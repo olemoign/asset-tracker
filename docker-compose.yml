@@ -58,8 +58,7 @@ services:
     restart: always
 
   redis:
-    image: redis:6
-    command: ["redis-server", "--appendonly", "yes"]
+    image: redis:7
     volumes:
       - ./data/redis:/data
     healthcheck:
