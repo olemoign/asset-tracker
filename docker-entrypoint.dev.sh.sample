@@ -15,8 +15,10 @@ else
 fi
 
 pip3 install pyramid_debugtoolbar
+SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from importlib.metadata import version; print(version("parsys_utilities"));')
+export SETUPTOOLS_SCM_PRETEND_VERSION
 pip3 install --user --use-deprecated=legacy-resolver -e /opt/parsys_utilities
-SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from asset_tracker.constants import ASSET_TRACKER_VERSION; print(ASSET_TRACKER_VERSION);')
+SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from importlib.metadata import version; print(version("asset_tracker"));')
 export SETUPTOOLS_SCM_PRETEND_VERSION
 pip3 install --user --use-deprecated=legacy-resolver -e /srv
 
