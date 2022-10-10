@@ -27,7 +27,6 @@ classifiers = [
 ]
 dependencies = [
     'alembic==1.8.1',
-    'arrow==1.2.3',
     'celery[redis]==5.2.7',
     'filedepot==0.8.0',
     'jinja2==3.1.2',

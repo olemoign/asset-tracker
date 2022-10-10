@@ -1,6 +1,6 @@
 import itertools
+from datetime import date, timedelta
 
-import arrow
 from parsys_utilities.celery import app
 from pyramid.threadlocal import get_current_request
 from sqlalchemy.orm import joinedload
@@ -18,7 +18,7 @@ def assets_calibration(months=3):
     request = get_current_request()
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    calibration_date = arrow.utcnow().shift(days=months * 30).naive
+    calibration_date = date.today() + timedelta(days=months * 30)
 
     # Assets that need calibration.
     assets = request.db_session.query(models.Asset) \
@@ -28,7 +28,7 @@ def assets_calibration(months=3):
         .all()
 
     if not assets:
-        return
+        return 0
 
     # groupby will transform the list, so we need to check its length now.
     assets_number = len(assets)
@@ -52,7 +52,7 @@ def consumables_expiration():
 
     total_assets = 0
     for delay_days in expiration_delays:
-        expiration_date = arrow.utcnow().shift(days=delay_days).naive
+        expiration_date = date.today() + timedelta(days=delay_days)
 
         assets = request.db_session.query(models.Asset, models.Consumable) \
             .join(models.Asset.tenant) \
