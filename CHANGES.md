@@ -1,3 +1,7 @@
+3.1.11
+---
+- fix(reminders): invalid dates
+
 3.1.10
 ---
 - feat(ci): use python build
