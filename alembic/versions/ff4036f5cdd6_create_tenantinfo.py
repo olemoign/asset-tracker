@@ -8,7 +8,7 @@ Create Date: 2021-03-05 22:34:00.377708
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.orm import declarative_base, relationship, Session
+from sqlalchemy.orm import Session, declarative_base, relationship
 
 # revision identifiers, used by Alembic.
 revision = 'ff4036f5cdd6'

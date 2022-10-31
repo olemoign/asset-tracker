@@ -1,6 +1,6 @@
 import json
-from pathlib import Path
 from operator import itemgetter
+from pathlib import Path
 
 PATH = Path(__file__).resolve().parent.parent
 

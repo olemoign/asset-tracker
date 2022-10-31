@@ -11,8 +11,8 @@ from parsys_utilities import celery as celery_utils
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
-from parsys_utilities.security.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy
-from parsys_utilities.security.authorization import get_user, get_effective_principals, get_user_locale
+from parsys_utilities.security.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy, \
+    get_effective_principals, get_user, get_user_locale
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
@@ -23,8 +23,7 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG
-from asset_tracker.config import update_configuration
+from asset_tracker.config import DEFAULT_CONFIG, MANDATORY_CONFIG, update_configuration
 from asset_tracker.constants import ASSET_TRACKER_VERSION, LOCALES_PATH
 
 

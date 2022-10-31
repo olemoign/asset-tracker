@@ -4,12 +4,13 @@ import os
 import random
 import tempfile
 from datetime import date, datetime, timedelta
+
 from parsys_utilities.security import Right
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
-from asset_tracker.config import update_statuses, update_consumable_families, update_equipment_families
+from asset_tracker.config import update_consumable_families, update_equipment_families, update_statuses
 from asset_tracker.constants import ASSET_TYPES, PATH
 from asset_tracker.tests import FunctionalTest
 
