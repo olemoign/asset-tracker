@@ -124,6 +124,11 @@ class Software:
             wanted_archi = archi_32_bits == (archi == 32)
 
             if wanted_channel and wanted_archi:
+                # Handle formats like 4.1.0-alpha5-26-g014084c7e in at.dev for compatibility with packaging.version.
+                parsed_intermediate_version = re.search(r'\d+\.\d+\.\d+-\w+-\d+(-{1}.*)', version)
+                if parsed_intermediate_version:
+                    version = version.replace(parsed_intermediate_version.group(1), '')
+
                 product_versions[version] = product_file.name
 
         if not product_versions:
