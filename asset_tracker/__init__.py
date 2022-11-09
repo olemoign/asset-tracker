@@ -140,10 +140,6 @@ def main(global_config, **settings):
 
     config.add_static_view('static', 'static', cache_max_age=STATIC_FILES_CACHE)
 
-    # Serve root static files.
-    config.include('pyramid_assetviews')
-    config.add_asset_views('asset_tracker:static', filenames=['.htaccess', 'robots.txt'], http_cache=STATIC_FILES_CACHE)
-
     # Log app version on startup.
     technical_logger.info(f'Starting asset tracker version {ASSET_TRACKER_VERSION}.')
 
