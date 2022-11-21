@@ -6,10 +6,10 @@ stages:
   - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: ${CI_REGISTRY_IMAGE}:${CI_BUILD_REF_NAME}
-  CONTAINER_RELEASE_IMAGE: ${CI_REGISTRY_IMAGE}:latest
-  GITLAB_INDEX_URL: https://gitlab-ci-token:${CI_JOB_TOKEN}@tracker.parsys.com/api/v4/projects/9/packages/pypi/simple
-  PIP_CACHE_DIR: ${CI_PROJECT_DIR}/.cache/pip
+  CONTAINER_TEST_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  CONTAINER_RELEASE_IMAGE: "$CI_REGISTRY_IMAGE:latest"
+  GITLAB_INDEX_URL: "https://gitlab-ci-token:$CI_JOB_TOKEN@tracker.parsys.com/api/v4/projects/9/packages/pypi/simple"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 flake8:
   stage: test
@@ -19,13 +19,13 @@ flake8:
     - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
 
   script:
     - pip3 install -q -U pip
-    - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[qa]'
+    - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[qa]'
     - flake8
 
 pytest:
@@ -36,14 +36,14 @@ pytest:
     - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
 
   script:
     - pip3 install -q -U pip
-    - pip3 install -q --extra-index-url ${GITLAB_INDEX_URL} '.[tests]'
+    - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[tests]'
     - pytest --cov=asset_tracker --junitxml=report.xml
 
   artifacts:
@@ -59,7 +59,7 @@ build:
     - asset_tracker
 
   cache:
-    key: ${CI_PROJECT_ID}
+    key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
@@ -67,10 +67,10 @@ build:
   script:
     - pip3 install -q -U build pip wheel
     - python3 -m build --wheel
-    - pip3 wheel -w dist/ --extra-index-url ${GITLAB_INDEX_URL} .
+    - pip3 wheel -w dist/ --extra-index-url $GITLAB_INDEX_URL .
 
   artifacts:
-    name: ${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     expire_in: 6 hours
     paths:
       - dist/
@@ -81,8 +81,8 @@ docker-image:
     - shell
 
   script:
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker build -t ${CONTAINER_TEST_IMAGE} .
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CONTAINER_TEST_IMAGE .
 
 release-image:
   stage: release
@@ -90,8 +90,8 @@ release-image:
     - shell
 
   script:
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker push ${CONTAINER_TEST_IMAGE}
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $CONTAINER_TEST_IMAGE
 
 release-latest-image:
   stage: release
@@ -101,9 +101,9 @@ release-latest-image:
     - master
 
   script:
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker tag ${CONTAINER_TEST_IMAGE} ${CONTAINER_RELEASE_IMAGE}
-    - docker push ${CONTAINER_RELEASE_IMAGE}
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
 
 deploy_dev:
   stage: deploy
