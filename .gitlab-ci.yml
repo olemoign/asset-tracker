@@ -97,8 +97,8 @@ release-latest-image:
   stage: release
   tags:
     - shell
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
 
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -109,8 +109,8 @@ deploy_dev:
   stage: deploy
   tags:
     - shell
-  only:
-    - develop
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
 
   script:
     - ssh root@at.dev.parsys.com parsys upgrade at.dev.parsys.com
@@ -123,8 +123,8 @@ deploy_staging:
   stage: deploy
   tags:
     - shell
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
 
   script:
     - ssh root@at.cloud.staging.parsys.com parsys upgrade at.cloud.staging.parsys.com
@@ -137,8 +137,8 @@ deploy_staging_marlink:
   stage: deploy
   tags:
     - shell
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
 
   script:
     - ssh root@asset.pp.telemed.marlink.com parsys upgrade asset.pp.telemed.marlink.com
