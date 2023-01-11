@@ -1,3 +1,7 @@
+3.1.12
+---
+- fix(software_update): intermediate versions
+
 3.1.11
 ---
 - fix(reminders): invalid dates
