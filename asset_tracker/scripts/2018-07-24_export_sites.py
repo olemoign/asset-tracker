@@ -10,13 +10,13 @@ from asset_tracker import models
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     parser.add_argument('output', nargs='?', default='sites.csv')
     args, extras = parser.parse_known_args()
 
     print('Exporting sites.')
 
-    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, env['request'].tm, \
+    with bootstrap(args.config_file, options=parse_vars(extras)) as env, env['request'].tm, \
             open(args.output, 'w') as csv_file:
         db_session = env['request'].db_session
         writer = csv.writer(csv_file)

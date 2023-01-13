@@ -11,14 +11,14 @@ from asset_tracker import models
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     parser.add_argument('csv_file')
     args, extras = parser.parse_known_args()
 
     print('Removing sites from decommissioned assets.')
 
     options = parse_vars(extras)
-    with bootstrap(args.config_uri, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
+    with bootstrap(args.config_file, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
         db_session = env['request'].db_session
         csv_reader = csv.reader(csv_file, delimiter=';')
 

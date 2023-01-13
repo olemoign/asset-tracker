@@ -10,13 +10,13 @@ from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     args, extras = parser.parse_known_args()
 
     print('Updating calibration_next...')
 
     options = parse_vars(extras)
-    with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
+    with bootstrap(args.config_file, options=options) as env, env['request'].tm:
         db_session = env['request'].db_session
 
         print('Consumable cases')

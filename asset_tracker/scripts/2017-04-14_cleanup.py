@@ -10,12 +10,12 @@ from asset_tracker.views.assets import Assets as AssetView
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     args, extras = parser.parse_known_args()
 
     print('Updating stations ...')
 
-    with bootstrap(args.config_uri, options=parse_vars(extras)) as env, env['request'].tm:
+    with bootstrap(args.config_file, options=parse_vars(extras)) as env, env['request'].tm:
         db_session = env['request'].db_session
 
         in_stock_status = db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()

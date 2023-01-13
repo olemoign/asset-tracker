@@ -13,7 +13,7 @@ from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     parser.add_argument('csv_file')
     parser.add_argument('tenant_id')
     parser.add_argument('creator_id')
@@ -21,7 +21,7 @@ def main():
     args, extras = parser.parse_known_args()
 
     options = parse_vars(extras)
-    with bootstrap(args.config_uri, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
+    with bootstrap(args.config_file, options=options) as env, env['request'].tm, open(args.csv_file) as csv_file:
         db_session = env['request'].db_session
         csv_reader = csv.reader(csv_file, delimiter=';')
 

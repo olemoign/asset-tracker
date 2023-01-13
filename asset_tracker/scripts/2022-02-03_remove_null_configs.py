@@ -10,13 +10,13 @@ from asset_tracker import models
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_uri')
+    parser.add_argument('config_file')
     args, extras = parser.parse_known_args()
 
     print('Removing null configs...')
 
     options = parse_vars(extras)
-    with bootstrap(args.config_uri, options=options) as env, env['request'].tm:
+    with bootstrap(args.config_file, options=options) as env, env['request'].tm:
         db_session = env['request'].db_session
         depot = DepotManager.get()
 
