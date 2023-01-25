@@ -1,3 +1,7 @@
+3.1.13
+---
+- fix(extract): equipments columns order
+
 3.1.12
 ---
 - fix(software_update): intermediate versions
