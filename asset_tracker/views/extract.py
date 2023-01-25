@@ -76,10 +76,10 @@ class AssetsExtract:
                 *[
                     label
                     for j in range(1, MAX_CONSUMABLES + 1)
-                    for label in {
+                    for label in [
                         f'equipment_{i}_consumable_{j}_name',
                         f'equipment_{i}_consumable_{j}_expiration_date',
-                    }
+                    ]
                 ]
             ]
 
