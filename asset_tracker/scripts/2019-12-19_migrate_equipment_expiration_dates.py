@@ -26,26 +26,32 @@ def main():
         test_strips = db_session.query(models.ConsumableFamily).filter_by(family_id=TEST_STRIPS_ID).first()
 
         equipments_to_migrate = db_session.query(models.Equipment) \
-            .filter(or_(
-                models.Equipment.expiration_date_1.isnot(None),
-                models.Equipment.expiration_date_2.isnot(None),
-            ))
+            .filter(
+                or_(
+                    models.Equipment.expiration_date_1.isnot(None),
+                    models.Equipment.expiration_date_2.isnot(None),
+                )
+            )
 
         for equipment in equipments_to_migrate:
             if equipment.expiration_date_1:
-                db_session.add(models.Consumable(
-                    family=lancets,
-                    equipment_id=equipment.id,
-                    expiration_date=equipment.expiration_date_1,
-                ))
+                db_session.add(
+                    models.Consumable(
+                        family=lancets,
+                        equipment_id=equipment.id,
+                        expiration_date=equipment.expiration_date_1,
+                    )
+                )
                 print(f'Created lancets consumable for equipment {equipment.id}.')
 
             if equipment.expiration_date_2:
-                db_session.add(models.Consumable(
-                    family=test_strips,
-                    equipment_id=equipment.id,
-                    expiration_date=equipment.expiration_date_2,
-                ))
+                db_session.add(
+                    models.Consumable(
+                        family=test_strips,
+                        equipment_id=equipment.id,
+                        expiration_date=equipment.expiration_date_2,
+                    )
+                )
                 print(f'Created test strips consumable for equipment {equipment.id}.')
 
     print('Done.')

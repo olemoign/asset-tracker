@@ -96,7 +96,7 @@ def main(global_config, **settings):
     notifier = partial(
         Notifier,
         translation_directories=LOCALES_PATH,
-        send_notifications=not asbool(settings.get('asset_tracker.dev.disable_notifications', False))
+        send_notifications=not asbool(settings.get('asset_tracker.dev.disable_notifications', False)),
     )
     config.add_request_method(notifier, 'notifier', reify=True)
 

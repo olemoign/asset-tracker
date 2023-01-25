@@ -25,8 +25,17 @@ def main():
         site_change = db_session.query(models.EventStatus).filter_by(status_id='site_change').one()
 
         for row in csv_reader:
-            asset_id, site_entry, site_exit, production, activation, calibration_last, calibration_next, \
-                warranty_end, site_name = row
+            (
+                asset_id,
+                site_entry,
+                site_exit,
+                production,
+                activation,
+                calibration_last,
+                calibration_next,
+                warranty_end,
+                site_name,
+            ) = row
 
             asset = db_session.query(models.Asset) \
                 .join(models.Asset.status) \

@@ -9,7 +9,7 @@ from asset_tracker.models.asset_tracker import Asset, Consumable, ConsumableFami
 
 _ = (
     Asset, consumable_families_equipment_families, Consumable, ConsumableFamily, Equipment, EquipmentFamily, Event,
-    EventStatus, Site, Tenant
+    EventStatus, Site, Tenant,
 )
 
 # run configure_mappers after defining all of the models to ensure
