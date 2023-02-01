@@ -4,32 +4,32 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/pages/assets-create_update.html:205
-#: templates/pages/assets-create_update.html:212
+#: templates/pages/assets-create_update.html:208
+#: templates/pages/assets-create_update.html:215
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set site to"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:220
+#: templates/pages/assets-create_update.html:223
 #, python-format
 msgid "<b>%(date)s</b> %(creator)s set status to <b>%(status)s</b>."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:189
+#: templates/pages/assets-create_update.html:192
 #, python-format
 msgid "<b>%(date)s</b> %(software)s updated to version %(version)s."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:196
+#: templates/pages/assets-create_update.html:199
 #, python-format
 msgid "<b>%(date)s</b> Configuration updated."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:173
+#: templates/pages/assets-create_update.html:176
 msgid "Activation"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:238
+#: templates/pages/assets-create_update.html:241
 msgid "Add Event"
 msgstr ""
 
@@ -96,7 +96,27 @@ msgstr ""
 msgid "Blood tests - Nal Von Minden"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:116
+#: config.json:474
+msgid "CCTS - In service"
+msgstr ""
+
+#: config.json:495
+msgid "CCTS - In transit to Marlink Logistics"
+msgstr ""
+
+#: config.json:467
+msgid "CCTS - On site"
+msgstr ""
+
+#: config.json:488
+msgid "CCTS - Replacement ordered (calibration)"
+msgstr ""
+
+#: config.json:481
+msgid "CCTS - Replacement ordered (failure)"
+msgstr ""
+
+#: templates/pages/assets-create_update.html:115
 msgid "Calibration frequency"
 msgstr ""
 
@@ -132,7 +152,7 @@ msgstr ""
 msgid "Camera intraoral - Owandy OWandyCam HD"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:143
+#: templates/pages/assets-create_update.html:146
 #: templates/pages/sites-create_update.html:78
 msgid "Cancel"
 msgstr ""
@@ -145,8 +165,8 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:286
-#: templates/pages/assets-create_update.html:294
+#: templates/pages/assets-create_update.html:288
+#: templates/pages/assets-create_update.html:296
 msgid "Configuration"
 msgstr ""
 
@@ -158,7 +178,7 @@ msgstr ""
 msgid "Consumables case"
 msgstr ""
 
-#: notifications/assets.py:54
+#: notifications/assets.py:55
 msgid "Consumables expiration reminder"
 msgstr ""
 
@@ -179,7 +199,7 @@ msgstr ""
 msgid "Current"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:103
+#: templates/pages/assets-create_update.html:102
 msgid "Current location"
 msgstr ""
 
@@ -195,11 +215,11 @@ msgstr ""
 msgid "Customer name"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:248
+#: templates/pages/assets-create_update.html:251
 msgid "DD/MM/YYYY"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:248
+#: templates/pages/assets-create_update.html:251
 msgid "Date"
 msgstr ""
 
@@ -234,7 +254,7 @@ msgstr ""
 msgid "Defibrillator lithium battery"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:172
+#: templates/pages/assets-create_update.html:175
 msgid "Delivery"
 msgstr ""
 
@@ -315,7 +335,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:256
+#: templates/pages/assets-create_update.html:259
 msgid "Equipments"
 msgstr ""
 
@@ -343,7 +363,7 @@ msgstr ""
 msgid "Hardware version"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:185
+#: templates/pages/assets-create_update.html:188
 #: templates/pages/sites-create_update.html:106
 msgid "History"
 msgstr ""
@@ -400,35 +420,35 @@ msgstr ""
 msgid "Intraoral camera casing - Soprocare"
 msgstr ""
 
-#: views/assets.py:322
+#: views/assets.py:332
 msgid "Invalid asset status."
 msgstr ""
 
-#: views/assets.py:280
+#: views/assets.py:287
 msgid "Invalid calibration frequency."
 msgstr ""
 
-#: views/assets.py:309
+#: views/assets.py:319
 msgid "Invalid equipment family."
 msgstr ""
 
-#: views/assets.py:328
+#: views/assets.py:338
 msgid "Invalid event date."
 msgstr ""
 
-#: views/assets.py:342
+#: views/assets.py:353
 msgid "Invalid event."
 msgstr ""
 
-#: views/assets.py:315
+#: views/assets.py:325
 msgid "Invalid expiration date."
 msgstr ""
 
-#: views/assets.py:289
+#: views/assets.py:298
 msgid "Invalid site."
 msgstr ""
 
-#: views/assets.py:276 views/sites.py:94
+#: views/assets.py:283 views/sites.py:104
 msgid "Invalid tenant."
 msgstr ""
 
@@ -440,7 +460,7 @@ msgstr ""
 msgid "Laryngoscope digital USB - Vivid Medical VT-A100"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:176
+#: templates/pages/assets-create_update.html:179
 msgid "Last calibration"
 msgstr ""
 
@@ -448,15 +468,27 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:111
+#: templates/pages/assets-create_update.html:110
 msgid "MAC address (ethernet)"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:109
+#: templates/pages/assets-create_update.html:108
 msgid "MAC address (wifi)"
 msgstr ""
 
-#: views/assets.py:261
+#: config.json:453
+msgid "Marlink Logistics - In stock"
+msgstr ""
+
+#: config.json:502
+msgid "Marlink Logistics - In transit to Parsys"
+msgstr ""
+
+#: config.json:460
+msgid "Marlink Logistics - In transit to customer"
+msgstr ""
+
+#: views/assets.py:268
 msgid "Missing mandatory data."
 msgstr ""
 
@@ -473,11 +505,11 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: views/sites.py:103
+#: views/sites.py:113
 msgid "Name already exists."
 msgstr ""
 
-#: views/sites.py:98
+#: views/sites.py:108
 msgid "Name is required."
 msgstr ""
 
@@ -493,7 +525,7 @@ msgstr ""
 msgid "New site"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:177
+#: templates/pages/assets-create_update.html:180
 #: templates/pages/assets-list.html:39
 msgid "Next calibration"
 msgstr ""
@@ -503,19 +535,19 @@ msgstr ""
 msgid "No asset registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:300
+#: templates/pages/assets-create_update.html:302
 msgid "No configuration registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:316
+#: templates/pages/assets-create_update.html:318
 msgid "No software registered."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:210
+#: templates/pages/assets-create_update.html:213
 msgid "None"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:132
+#: templates/pages/assets-create_update.html:133
 msgid "Notes"
 msgstr ""
 
@@ -567,6 +599,26 @@ msgstr ""
 msgid "Page not found"
 msgstr ""
 
+#: config.json:523
+msgid "Parsys - Decommissioned"
+msgstr ""
+
+#: config.json:509
+msgid "Parsys - In calibration"
+msgstr ""
+
+#: config.json:516
+msgid "Parsys - In repair"
+msgstr ""
+
+#: config.json:439
+msgid "Parsys - In stock"
+msgstr ""
+
+#: config.json:446
+msgid "Parsys - In transit to Marlink Logistics"
+msgstr ""
+
 #: templates/pages/sites-create_update.html:70
 #: templates/pages/sites-list.html:30
 msgid "Phone"
@@ -579,7 +631,7 @@ msgid ""
 " the consumable expiration dates have passed."
 msgstr ""
 
-#: templates/pages/assets-create_update.html:171
+#: templates/pages/assets-create_update.html:174
 msgid "Production"
 msgstr ""
 
@@ -622,7 +674,7 @@ msgstr ""
 msgid "Sincerely"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:99
+#: templates/pages/assets-create_update.html:98
 #: templates/pages/assets-list.html:38
 msgid "Site"
 msgstr ""
@@ -631,7 +683,7 @@ msgstr ""
 msgid "Site change"
 msgstr ""
 
-#: views/sites.py:107
+#: views/sites.py:117
 msgid "Site type is required."
 msgstr ""
 
@@ -644,7 +696,7 @@ msgstr ""
 msgid "Software update"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:311
+#: templates/pages/assets-create_update.html:313
 msgid "Softwares versions"
 msgstr ""
 
@@ -664,8 +716,8 @@ msgstr ""
 msgid "Station"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:153
-#: templates/pages/assets-create_update.html:162
+#: templates/pages/assets-create_update.html:156
+#: templates/pages/assets-create_update.html:165
 #: templates/pages/assets-list.html:40
 msgid "Status"
 msgstr ""
@@ -674,7 +726,7 @@ msgstr ""
 msgid "Stethoscope USB - Riester PCP-USB"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:144
+#: templates/pages/assets-create_update.html:147
 #: templates/pages/sites-create_update.html:79
 msgid "Submit"
 msgstr ""
@@ -720,7 +772,7 @@ msgstr ""
 msgid "Thermometer infrared wireless - Foracare IR21b"
 msgstr ""
 
-#: views/assets.py:271
+#: views/assets.py:278
 msgid "This asset id already exists."
 msgstr ""
 
@@ -774,7 +826,7 @@ msgstr ""
 msgid "Urine test 10 parameters"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:178
+#: templates/pages/assets-create_update.html:181
 msgid "Warranty end"
 msgstr ""
 
@@ -786,6 +838,6 @@ msgstr ""
 msgid "or go to"
 msgstr ""
 
-#: templates/pages/assets-create_update.html:121
+#: templates/pages/assets-create_update.html:120
 msgid "years"
 msgstr ""
