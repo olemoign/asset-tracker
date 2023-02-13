@@ -7,6 +7,11 @@ from sqlalchemy.orm import joinedload
 
 from asset_tracker import models, notifications
 
+CLIENT_STATUSES = [
+    'transit_distributor', 'stock_distributor', 'transit_customer', 'on_site', 'service', 'replacement_failure',
+    'replacement_calibration', 'transit_distributor_return',
+]
+
 
 @app.task()
 def assets_calibration():
@@ -18,11 +23,8 @@ def assets_calibration():
     # Assets that need calibration.
     assets = request.db_session.query(models.Asset) \
         .join(models.Asset.tenant) \
-        .filter(
-            ~models.Asset.is_decommissioned,
-            models.Asset.calibration_next == calibration_date,
-        ) \
-        .options(joinedload(models.Asset.site)) \
+        .filter(~models.Asset.is_decommissioned, models.Asset.calibration_next == calibration_date) \
+        .options(joinedload(models.Asset.site), joinedload(models.Asset.status)) \
         .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
         .all()
 
@@ -37,6 +39,19 @@ def assets_calibration():
 
     for tenant_id, tenant_assets in groupby_tenant:
         notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date)
+
+    # Keep assets with statuses related to the client.
+    client_assets = [asset for asset in assets if asset.status.status_id in CLIENT_STATUSES]
+    if not client_assets:
+        return total_assets
+
+    # Group assets by tenant.
+    client_groupby_tenant = itertools.groupby(client_assets, key=lambda asset: asset.tenant.tenant_id)
+
+    for tenant_id, tenant_assets in client_groupby_tenant:
+        notifications.assets.assets_calibration(
+            request, tenant_id, tenant_assets, calibration_date, right='notifications-client-calibration'
+        )
 
     return total_assets
 
