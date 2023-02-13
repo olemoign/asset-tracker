@@ -3,8 +3,7 @@
 {{ gettext('The following assets use consumables expiring in %(delay_days)s days on %(expiration_date)s:', delay_days=delay_days, expiration_date=expiration_date|format_date(locale, 'long')) }}
 
 {% for asset in assets %}
-    * {{ asset.asset_id }} : {{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}
-    ( {% for consumable in asset.consumables %}{{ gettext(consumable.family.model) }}{% if not loop.last %}, {% endif %}{% endfor %} )
+    * {{ asset.asset_id }} / {{ asset.site.name }} / {{ asset.customer_name }} / {% for consumable in asset.consumables %}{{ gettext(consumable.family.model) }}{% if not loop.last %}//{% endif %}{% endfor %} / {{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}
 {% endfor %}
 
 {{ gettext('Please know that there is no guarantee that diagnoses will be reliable if the consumable expiration dates have passed.') }}

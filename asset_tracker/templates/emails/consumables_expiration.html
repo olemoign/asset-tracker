@@ -9,8 +9,14 @@
 <ul>
     {% for asset in assets %}
         <li>
-            <a href="{{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}">{{ asset.asset_id }}</a>
-            ( {% for consumable in asset.consumables %}{{ gettext(consumable.family.model) }}{% if not loop.last %}, {% endif %}{% endfor %} )
+            <a href="{{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}">
+                {{ asset.asset_id }} / {{ asset.site.name }} / {{ asset.customer_name }}
+                <ul>
+                    {% for consumable in asset.consumables %}
+                        <li>{{ gettext(consumable.family.model) }}</li>
+                    {% endfor %}
+                </ul>
+            </a>
         </li>
     {% endfor %}
 </ul>
