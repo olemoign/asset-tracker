@@ -8,7 +8,11 @@
 
 <ul>
     {% for asset in assets %}
-        <li><a href="{{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}">{{ asset.asset_id }}</a></li>
+        <li>
+            <a href="{{ 'assets-update'|route_url(asset_id=asset.asset_id, _app_url=app_url) }}">
+                {{ asset.asset_id }} / {{ gettext(asset.status.label(config)) }} / {{ asset.site.name }} / {{ asset.customer_name }}
+            </a>
+        </li>
     {% endfor %}
 </ul>
 

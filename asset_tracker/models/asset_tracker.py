@@ -5,7 +5,8 @@ from parsys_utilities import random_id
 from parsys_utilities.sql.model import CreationDateTimeMixin, Model
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table
 from sqlalchemy import Unicode as String
-from sqlalchemy import UniqueConstraint, asc, desc
+from sqlalchemy import UniqueConstraint, asc, desc, select
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
@@ -17,7 +18,7 @@ class Asset(Model, CreationDateTimeMixin):
     tenant = relationship('Tenant', foreign_keys=tenant_id, uselist=False, backref='assets')
     user_id = Column(String)  # Received from RTA during station creation/update.
 
-    @property
+    @hybrid_property
     def is_linked(self):
         """Asset is_linked if it received user_id from RTA.
 
@@ -73,7 +74,7 @@ class Asset(Model, CreationDateTimeMixin):
 
         return events
 
-    @property
+    @hybrid_property
     def is_decommissioned(self):
         """Asset is decommissioned.
 
@@ -81,6 +82,13 @@ class Asset(Model, CreationDateTimeMixin):
             bool.
         """
         return self.status.status_id == 'decommissioned'
+
+    # noinspection PyMethodParameters
+    @is_decommissioned.expression
+    def is_decommissioned(cls):
+        return select(EventStatus.status_id == 'decommissioned') \
+            .where(EventStatus.id == cls.status_id) \
+            .scalar_subquery()
 
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
@@ -119,7 +127,7 @@ class Asset(Model, CreationDateTimeMixin):
             self._get_asset_dates()
         return self._asset_dates
 
-    @property
+    @hybrid_property
     def activation(self):
         """Get the date of the asset first activation.
 
@@ -128,7 +136,7 @@ class Asset(Model, CreationDateTimeMixin):
         """
         return self.asset_dates['activation']
 
-    @property
+    @hybrid_property
     def calibration_last(self):
         """Get the date of the asset last calibration.
 
@@ -137,7 +145,7 @@ class Asset(Model, CreationDateTimeMixin):
         """
         return self.asset_dates['calibration_last']
 
-    @property
+    @hybrid_property
     def delivery(self):
         """Get the date of the asset first activation.
 
@@ -146,7 +154,7 @@ class Asset(Model, CreationDateTimeMixin):
         """
         return self.asset_dates['delivery']
 
-    @property
+    @hybrid_property
     def production(self):
         """Get the date of the asset production.
 
@@ -155,7 +163,7 @@ class Asset(Model, CreationDateTimeMixin):
         """
         return self.asset_dates['production']
 
-    @property
+    @hybrid_property
     def warranty_end(self):
         """Get the date of the end of the asset warranty.
 
