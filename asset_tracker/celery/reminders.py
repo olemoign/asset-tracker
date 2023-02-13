@@ -67,12 +67,11 @@ def consumables_expiration():
         .join(models.Asset.tenant) \
         .join(models.Asset.equipments) \
         .join(models.Equipment.consumables) \
-        .filter(
-            ~models.Asset.is_decommissioned,
-            models.Consumable.expiration_date == expiration_date,
-        ) \
+        .filter(~models.Asset.is_decommissioned, models.Consumable.expiration_date == expiration_date) \
         .options(
             joinedload(models.Asset.equipments).joinedload(models.Equipment.family),
+            joinedload(models.Asset.site),
+            joinedload(models.Asset.status),
             joinedload(models.Consumable.family),
         ) \
         .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
@@ -82,11 +81,13 @@ def consumables_expiration():
         return 0
 
     # Group consumables by asset.
-    groupby_asset = []
+    groupby_asset, client_groupby_asset = [], []
     for asset, consumable in assets:
         if not hasattr(asset, 'consumables'):
             asset.consumables = [consumable]
             groupby_asset.append(asset)
+            if asset.status.status_id in CLIENT_STATUSES:
+                client_groupby_asset.append(asset)
         else:
             asset.consumables.append(consumable)
 
@@ -94,8 +95,14 @@ def consumables_expiration():
 
     # Group assets by tenant.
     groupby_tenant = itertools.groupby(groupby_asset, key=lambda asset: asset.tenant.tenant_id)
+    client_groupby_tenant = itertools.groupby(client_groupby_asset, key=lambda asset: asset.tenant.tenant_id)
 
     for tenant_id, tenant_assets in groupby_tenant:
         notifications.assets.consumables_expiration(request, tenant_id, list(tenant_assets), expiration_date)
+
+    for tenant_id, tenant_assets in client_groupby_tenant:
+        notifications.assets.consumables_expiration(
+            request, tenant_id, tenant_assets, expiration_date, right='notifications-client-consumables'
+        )
 
     return total_assets
