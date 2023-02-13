@@ -30,7 +30,7 @@ def assets_calibration():
         return 0
 
     # groupby will transform the list, so we need to check its length now.
-    assets_number = len(assets)
+    total_assets = len(assets)
 
     # Group assets by tenant.
     groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
@@ -38,7 +38,7 @@ def assets_calibration():
     for tenant_id, tenant_assets in groupby_tenant:
         notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date)
 
-    return assets_number
+    return total_assets
 
 
 @app.task()
@@ -46,47 +46,41 @@ def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
     request = get_current_request()
 
-    expiration_delays = [0, 90]
-    total_assets = 0
+    expiration_date = date.today() + timedelta(days=90)
 
-    for delay_days in expiration_delays:
-        expiration_date = date.today() + timedelta(days=delay_days)
+    assets = request.db_session.query(models.Asset, models.Consumable) \
+        .join(models.Asset.tenant) \
+        .join(models.Asset.equipments) \
+        .join(models.Equipment.consumables) \
+        .filter(
+            ~models.Asset.is_decommissioned,
+            models.Consumable.expiration_date == expiration_date,
+        ) \
+        .options(
+            joinedload(models.Asset.equipments).joinedload(models.Equipment.family),
+            joinedload(models.Consumable.family),
+        ) \
+        .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
+        .all()
 
-        assets = request.db_session.query(models.Asset, models.Consumable) \
-            .join(models.Asset.tenant) \
-            .join(models.Asset.equipments) \
-            .join(models.Equipment.consumables) \
-            .filter(
-                ~models.Asset.is_decommissioned,
-                models.Consumable.expiration_date == expiration_date,
-            ) \
-            .options(
-                joinedload(models.Asset.equipments).joinedload(models.Equipment.family),
-                joinedload(models.Consumable.family),
-            ) \
-            .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
-            .all()
+    if not assets:
+        return 0
 
-        if not assets:
-            continue
+    # Group consumables by asset.
+    groupby_asset = []
+    for asset, consumable in assets:
+        if not hasattr(asset, 'consumables'):
+            asset.consumables = [consumable]
+            groupby_asset.append(asset)
+        else:
+            asset.consumables.append(consumable)
 
-        # Group consumables by asset.
-        groupby_asset = []
-        for asset, consumable in assets:
-            if not hasattr(asset, 'consumables'):
-                asset.consumables = [consumable]
-                groupby_asset.append(asset)
-            else:
-                asset.consumables.append(consumable)
+    total_assets = len(groupby_asset)
 
-        total_assets += len(groupby_asset)
+    # Group assets by tenant.
+    groupby_tenant = itertools.groupby(groupby_asset, key=lambda asset: asset.tenant.tenant_id)
 
-        # Group assets by tenant.
-        groupby_tenant = itertools.groupby(groupby_asset, key=lambda asset: asset.tenant.tenant_id)
-
-        for tenant_id, tenant_assets in groupby_tenant:
-            notifications.assets.consumables_expiration(
-                request, tenant_id, list(tenant_assets), expiration_date, delay_days
-            )
+    for tenant_id, tenant_assets in groupby_tenant:
+        notifications.assets.consumables_expiration(request, tenant_id, list(tenant_assets), expiration_date)
 
     return total_assets
