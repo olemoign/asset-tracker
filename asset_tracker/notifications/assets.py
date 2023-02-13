@@ -1,7 +1,7 @@
 from pyramid.i18n import TranslationString as _
 
 
-def assets_calibration(request, tenant_id, assets, calibration_date, delay_days):
+def assets_calibration(request, tenant_id, assets, calibration_date):
     """Notify an asset owner that the asset needs to be calibrated.
 
     Args:
@@ -9,14 +9,12 @@ def assets_calibration(request, tenant_id, assets, calibration_date, delay_days)
         tenant_id (str).
         assets (list[asset_tracker.models.Asset]).
         calibration_date (date): precise calibration date (YYYY-MM-DD).
-        delay_days (int): number of days before expiration.
     """
     template_data = {
         'app_url': request.registry.tenant_config.get_for_tenant('asset_tracker.server_url', tenant_id),
         'assets': assets,
         'calibration_date': calibration_date,
         'cloud_name': request.registry.settings['asset_tracker.cloud_name'],
-        'delay_days': delay_days,
     }
 
     # Email.

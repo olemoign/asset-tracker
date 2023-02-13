@@ -9,17 +9,11 @@ from asset_tracker import models, notifications
 
 
 @app.task()
-def assets_calibration(months=3):
-    """Remind the assets' owner about planned calibration.
-
-    Args:
-        months (int): a reminder is sent x months before a calibration is needed.
-    """
+def assets_calibration():
+    """Remind the assets' owner about planned calibration."""
     request = get_current_request()
 
-    # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    delay_days = months * 30
-    calibration_date = date.today() + timedelta(days=delay_days)
+    calibration_date = date.today() + timedelta(days=90)
 
     # Assets that need calibration.
     assets = request.db_session.query(models.Asset) \
@@ -42,7 +36,7 @@ def assets_calibration(months=3):
     groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
     for tenant_id, tenant_assets in groupby_tenant:
-        notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date, delay_days)
+        notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date)
 
     return assets_number
 
@@ -52,7 +46,6 @@ def consumables_expiration():
     """Remind involved users about equipment consumables expiration."""
     request = get_current_request()
 
-    # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
     expiration_delays = [0, 90]
     total_assets = 0
 
