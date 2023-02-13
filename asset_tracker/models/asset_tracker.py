@@ -5,7 +5,7 @@ from parsys_utilities import random_id
 from parsys_utilities.sql.model import CreationDateTimeMixin, Model
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table
 from sqlalchemy import Unicode as String
-from sqlalchemy import UniqueConstraint, asc, desc
+from sqlalchemy import UniqueConstraint, asc, desc, select
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -82,6 +82,13 @@ class Asset(Model, CreationDateTimeMixin):
             bool.
         """
         return self.status.status_id == 'decommissioned'
+
+    # noinspection PyMethodParameters
+    @is_decommissioned.expression
+    def is_decommissioned(cls):
+        return select(EventStatus.status_id == 'decommissioned') \
+            .where(EventStatus.id == cls.status_id) \
+            .scalar_subquery()
 
     def _get_asset_dates(self):
         """Compute all the dates in one method to avoid too many sql request."""
