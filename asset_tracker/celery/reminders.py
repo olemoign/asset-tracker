@@ -18,7 +18,8 @@ def assets_calibration(months=3):
     request = get_current_request()
 
     # To avoid Jan (28,29,30,31) + 1 month = Feb 28, convert months in days.
-    calibration_date = date.today() + timedelta(days=months * 30)
+    delay_days = months * 30
+    calibration_date = date.today() + timedelta(days=delay_days)
 
     # Assets that need calibration.
     assets = request.db_session.query(models.Asset) \
@@ -27,6 +28,7 @@ def assets_calibration(months=3):
             ~models.Asset.is_decommissioned,
             models.Asset.calibration_next == calibration_date,
         ) \
+        .options(joinedload(models.Asset.site)) \
         .order_by(models.Tenant.tenant_id, models.Asset.asset_id) \
         .all()
 
@@ -40,7 +42,7 @@ def assets_calibration(months=3):
     groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
     for tenant_id, tenant_assets in groupby_tenant:
-        notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date)
+        notifications.assets.assets_calibration(request, tenant_id, list(tenant_assets), calibration_date, delay_days)
 
     return assets_number
 
