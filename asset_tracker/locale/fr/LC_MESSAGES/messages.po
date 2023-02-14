@@ -286,7 +286,7 @@ msgstr ""
 "Dermatoscope avec lentille large 300 mm pour tablette/smartphone - "
 "Dermlite DL4"
 
-#: notifications/assets.py:21
+#: notifications/assets.py:22
 msgid "Device calibration reminder"
 msgstr "Rappel d'étalonnage du matériel"
 
@@ -628,8 +628,8 @@ msgstr "Parsys - En transit vers Marlink Logistics"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: templates/emails/consumables_expiration.html:19
-#: templates/emails/consumables_expiration.txt:10
+#: templates/emails/consumables_expiration.html:25
+#: templates/emails/consumables_expiration.txt:9
 msgid ""
 "Please know that there is no guarantee that diagnoses will be reliable if"
 " the consumable expiration dates have passed."
@@ -673,10 +673,10 @@ msgstr "Bateau"
 msgid "Show decommissioned assets"
 msgstr "Afficher les matériels hors service"
 
-#: templates/emails/assets_calibration.html:16
+#: templates/emails/assets_calibration.html:20
 #: templates/emails/assets_calibration.txt:9
-#: templates/emails/consumables_expiration.html:23
-#: templates/emails/consumables_expiration.txt:12
+#: templates/emails/consumables_expiration.html:29
+#: templates/emails/consumables_expiration.txt:11
 msgid "Sincerely"
 msgstr "Cordialement"
 
@@ -761,12 +761,10 @@ msgstr "Les assets suivants doivent être calibrés avant le %(calibration_date)
 #: templates/emails/consumables_expiration.html:6
 #: templates/emails/consumables_expiration.txt:3
 #, python-format
-msgid ""
-"The following assets use consumables expiring in %(delay_days)s days on "
-"%(expiration_date)s:"
+msgid "The following assets use consumables expiring on %(expiration_date)s:"
 msgstr ""
-"Les assets suivants utilisent des consommables expirant dans "
-"%(delay_days)s jours le %(expiration_date)s:"
+"Les assets suivants utilisent des consommables expirant le "
+"%(expiration_date)s:"
 
 #: config.json:217
 msgid "Thermometer ear wireless - Foracare IR20b"
