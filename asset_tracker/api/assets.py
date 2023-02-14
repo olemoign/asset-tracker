@@ -7,6 +7,7 @@ from pyramid.security import Allow, Everyone
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 from asset_tracker import models
 from asset_tracker.constants import CALIBRATION_FREQUENCIES_YEARS
@@ -42,7 +43,7 @@ class Assets:
         # If the asset exists in both the Asset Tracker and RTA.
         asset = self.request.db_session.query(models.Asset) \
             .filter(models.Asset.user_id == json['userID']) \
-            .join(models.Asset.tenant) \
+            .options(joinedload(models.Asset.site).joinedload(models.Site.tenant)) \
             .first()
         if asset:
             self.update_asset(asset, tenant, json)
@@ -51,15 +52,14 @@ class Assets:
         # If the asset only exists in the Asset Tracker.
         asset = self.request.db_session.query(models.Asset) \
             .filter(models.Asset.user_id == json['login']) \
-            .join(models.Asset.tenant) \
+            .options(joinedload(models.Asset.site).joinedload(models.Site.tenant)) \
             .first()
+        if asset and asset.user_id:
+            capture_message(
+                f'Trying to link asset {asset.id} which is already linked: {asset.user_id}/{json["userID"]}.'
+            )
+            return
         if asset:
-            if asset.user_id:
-                capture_message(
-                    f'Trying to link asset {asset.id} which is already linked: {asset.user_id}/{json["userID"]}.'
-                )
-                return
-
             self.update_asset(asset, tenant, json)
             return
 
@@ -113,16 +113,16 @@ class Assets:
             asset.add_event(event)
             self.request.db_session.add(event)
 
-            # As an asset and its site must have the same tenant, if the asset's tenant changed, its site cannot
-            # be valid anymore.
-            asset.site_id = None
+        # Allow returning to the original asset site from a test tenant.
+        if asset.site and asset.site.tenant.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
+            asset.site = None
 
         asset.asset_id = json['login']
         asset.tenant = tenant
         asset.user_id = json['userID']
 
     def rta_link_post(self):
-        """/api/assets/ POST view. The route is also used in api.datatables but it's more logical to have this code
+        """/api/assets/ POST view. The route is also used in api.datatables, but it's more logical to have this code
         here."""
         # Make sure the JSON provided is valid.
         try:
