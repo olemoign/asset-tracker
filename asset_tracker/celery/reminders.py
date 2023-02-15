@@ -37,7 +37,7 @@ def assets_calibration(months=3):
     groupby_tenant = itertools.groupby(assets, key=lambda asset: asset.tenant.tenant_id)
 
     for tenant_id, assets in groupby_tenant:
-        notifications.assets.assets_calibration(request, tenant_id, assets, calibration_date)
+        notifications.assets.assets_calibration(request, tenant_id, list(assets), calibration_date)
 
     return assets_number
 
@@ -69,25 +69,21 @@ def consumables_expiration():
         if not assets:
             continue
 
-        # Group assets by tenant.
-        groupby_asset = {}
+        # Group consumables by asset.
+        groupby_asset = []
         for asset, consumable in assets:
-            if asset.asset_id not in groupby_asset:
-                groupby_asset[asset.asset_id] = {'asset': asset, 'consumables': [consumable]}
+            if not hasattr(asset, 'consumables'):
+                asset.consumables = [consumable]
+                groupby_asset.append(asset)
             else:
-                groupby_asset[asset.asset_id]['consumables'].append(consumable)
+                asset.consumables.append(consumable)
 
         total_assets += len(groupby_asset)
 
-        groupby_tenant = {}
-        for asset_dict in groupby_asset.values():
-            tenant_id = asset_dict['asset'].tenant.tenant_id
-            if tenant_id not in groupby_tenant:
-                groupby_tenant[tenant_id] = [asset_dict]
-            else:
-                groupby_tenant[tenant_id].append(asset_dict)
+        # Group assets by tenant.
+        groupby_tenant = itertools.groupby(groupby_asset, key=lambda asset: asset.tenant.tenant_id)
 
-        for tenant_id, assets in groupby_tenant.items():
-            notifications.assets.consumables_expiration(request, tenant_id, assets, expiration_date, delay_days)
+        for tenant_id, assets in groupby_tenant:
+            notifications.assets.consumables_expiration(request, tenant_id, list(assets), expiration_date, delay_days)
 
     return total_assets

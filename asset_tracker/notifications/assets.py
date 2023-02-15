@@ -64,4 +64,4 @@ def consumables_expiration(request, tenant_id, assets, expiration_date, delay_da
         'tenant': tenant_id,
     })
 
-    request.logger_technical.info(['notify consumables expiration', [asset['asset'].id for asset in assets]])
+    request.logger_technical.info(['notify consumables expiration', [asset.id for asset in assets]])
