@@ -1,3 +1,10 @@
+3.1.14
+---
+- fix(asset): last calibration
+- fix(labels): Marlink translations
+- fix(logs): notifications count
+- fix(site): test tenants management
+
 3.1.13
 ---
 - fix(extract): equipments columns order
