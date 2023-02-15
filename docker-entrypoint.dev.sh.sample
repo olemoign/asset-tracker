@@ -8,10 +8,13 @@ if [ "$1" == "--celery" ]; then
   set -- "${@:2}"
 fi
 
+mkdir -p /srv/tmp /srv/tmp/redis
+if [ "$celery" == false ]; then
+  mkdir -p /srv/tmp/postgres
+fi
+
 if [ "$celery" == true ]; then
-  mkdir -p /srv/tmp /srv/tmp/redis
-else
-  mkdir -p /srv/tmp /srv/tmp/postgres /srv/tmp/redis
+  pip3 install watchfiles
 fi
 
 pip3 install pyramid_debugtoolbar
