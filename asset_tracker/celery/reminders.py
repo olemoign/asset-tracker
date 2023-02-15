@@ -50,7 +50,7 @@ def assets_calibration():
 
     for tenant_id, tenant_assets in client_groupby_tenant:
         notifications.assets.assets_calibration(
-            request, tenant_id, tenant_assets, calibration_date, right='notifications-client-calibration'
+            request, tenant_id, list(tenant_assets), calibration_date, right='notifications-client-calibration'
         )
 
     return total_assets
