@@ -86,6 +86,7 @@ class Asset(Model, CreationDateTimeMixin):
         """Compute all the dates in one method to avoid too many sql request."""
         self._asset_dates = {}
         asset_history = self.history('asc').join(Event.status)
+        asset_history_desc = self.history('desc').join(Event.status)
 
         production = asset_history.filter(EventStatus.status_id == 'stock_parsys').first()
         self._asset_dates['production'] = production.date if production else None
@@ -104,7 +105,7 @@ class Asset(Model, CreationDateTimeMixin):
         if self.asset_type == 'consumables_case':
             self._asset_dates['calibration_last'] = None
         else:
-            calibration_last = asset_history.filter(EventStatus.status_id == 'calibration').first()
+            calibration_last = asset_history_desc.filter(EventStatus.status_id == 'calibration').first()
             for status in ['calibration_last', 'production', 'delivery', 'activation']:
                 if locals().get(status):
                     self._asset_dates['calibration_last'] = locals()[status].date
