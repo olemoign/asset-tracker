@@ -11,18 +11,20 @@ variables:
   GITLAB_INDEX_URL: "https://gitlab-ci-token:$CI_JOB_TOKEN@tracker.parsys.com/api/v4/projects/9/packages/pypi/simple"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
+.production_version:
+  rules:
+    - if: "$CI_COMMIT_TAG =~ /^\\d+\\.\\d+\\.\\d+$/"
+
 flake8:
   stage: test
   image: python:3.10
   tags:
     - docker
     - asset_tracker
-
   cache:
     key: $CI_PROJECT_ID
     paths:
       - .cache/pip
-
   script:
     - pip3 install -q -U pip
     - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[qa]'
@@ -34,18 +36,15 @@ pytest:
   tags:
     - docker
     - asset_tracker
-
   cache:
     key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
-
   script:
     - pip3 install -q -U pip
     - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[tests]'
     - pytest --cov=asset_tracker --junitxml=report.xml
-
   artifacts:
     when: always
     reports:
@@ -57,18 +56,15 @@ build:
   tags:
     - docker
     - asset_tracker
-
   cache:
     key: $CI_PROJECT_ID
     paths:
       - .cache/pip
     policy: pull
-
   script:
     - pip3 install -q -U build pip wheel
     - python3 -m build --wheel
     - pip3 wheel -w dist/ --extra-index-url $GITLAB_INDEX_URL .
-
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     expire_in: 6 hours
@@ -79,7 +75,6 @@ docker-image:
   stage: dist
   tags:
     - shell
-
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $CONTAINER_TEST_IMAGE .
@@ -88,7 +83,6 @@ release-image:
   stage: release
   tags:
     - shell
-
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $CONTAINER_TEST_IMAGE
@@ -98,8 +92,7 @@ release-latest-image:
   tags:
     - shell
   rules:
-    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
-
+    - !reference [ .production_version, rules ]
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
@@ -111,10 +104,8 @@ deploy_dev:
     - shell
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
-
   script:
     - ssh root@at.dev.parsys.com parsys upgrade at.dev.parsys.com
-
   environment:
     name: dev
     url: https://at.dev.parsys.com
@@ -124,11 +115,9 @@ deploy_staging:
   tags:
     - shell
   rules:
-    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
-
+    - !reference [ .production_version, rules ]
   script:
     - ssh root@at.cloud.staging.parsys.com parsys upgrade at.cloud.staging.parsys.com
-
   environment:
     name: staging
     url: https://at.cloud.staging.parsys.com
@@ -138,11 +127,9 @@ deploy_staging_marlink:
   tags:
     - shell
   rules:
-    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
-
+    - !reference [ .production_version, rules ]
   script:
     - ssh root@asset.pp.telemed.marlink.com parsys upgrade asset.pp.telemed.marlink.com
-
   environment:
     name: staging_marlink
     url: https://asset.pp.telemed.marlink.com
