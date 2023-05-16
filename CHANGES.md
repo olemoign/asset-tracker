@@ -1,3 +1,7 @@
+3.1.15
+---
+- feat(notifications): update frequencies and grouping
+
 3.1.14
 ---
 - fix(asset): last calibration
