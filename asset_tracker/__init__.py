@@ -13,6 +13,7 @@ from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
 from parsys_utilities.security.authorization import OpenIDConnectAuthenticationPolicy, TenantedAuthorizationPolicy, \
     get_effective_principals, get_user, get_user_locale
+from parsys_utilities.sql import activate_hook
 from paste.translogger import TransLogger
 from pyramid.config import Configurator
 from pyramid.settings import asbool
@@ -43,6 +44,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     # Activate CSRF check by default.
     config.set_default_csrf_options()
+    settings['tm.activate_hook'] = activate_hook
     config.include('pyramid_tm')
 
     config_file = global_config['__file__']
