@@ -40,11 +40,11 @@ def main(global_config, **settings):
     if not settings.get('asset_tracker.tests.disable_configuration', False):
         update_configuration(settings)
 
+    settings['tm.activate_hook'] = activate_hook
     # noinspection PyShadowingNames
     config = Configurator(settings=settings, locale_negotiator=get_user_locale)
     # Activate CSRF check by default.
     config.set_default_csrf_options()
-    settings['tm.activate_hook'] = activate_hook
     config.include('pyramid_tm')
 
     config_file = global_config['__file__']

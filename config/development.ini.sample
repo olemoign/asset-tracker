@@ -25,6 +25,7 @@ sqlalchemy.url = postgresql://postgres:postgres@postgres/postgres
 
 asset_tracker.blobstore_path = /srv/tmp/
 asset_tracker.cloud_name = Parsys Cloud
+asset_tracker.config = parsys
 asset_tracker.cookie_signature = onceuponatimeinthewildwildwest
 asset_tracker.server_url = http://dev.localhost:6455
 asset_tracker.sessions_broker_url = redis://redis
@@ -57,7 +58,7 @@ broker_url = redis://redis
 ###
 
 [loggers]
-keys = root, alembic, sqlalchemy
+keys = root, celery
 
 [handlers]
 keys = console
@@ -69,15 +70,10 @@ keys = generic
 level = DEBUG
 handlers = console
 
-[logger_alembic]
-level = INFO
-handlers =
-qualname = alembic
-
-[logger_sqlalchemy]
+[logger_celery]
 level = WARN
 handlers =
-qualname = sqlalchemy.engine
+qualname = celery
 
 [handler_console]
 class = StreamHandler
