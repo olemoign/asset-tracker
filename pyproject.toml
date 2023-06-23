@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    'setuptools==67.8.0',
+    'setuptools==68.0.0',
     'setuptools-scm==7.1.0',
     'wheel==0.40.0',
 ]
@@ -53,9 +53,12 @@ dev = [
     'pybabel-json-md==0.1.0',
     'pyramid-debugtoolbar==4.10',
 ]
-qa = ['flake8==6.0.0']
+qa = [
+    'flake8==6.0.0',
+    'flake8-pyproject==1.2.3',
+]
 tests = [
-    'pytest==7.3.2',
+    'pytest==7.4.0',
     'pytest-cov==4.1.0',
     'webtest==3.0.0',
 ]
@@ -68,6 +71,11 @@ main = 'asset_tracker:main'
 
 [project.scripts]
 parsys_healthcheck = 'parsys_utilities.status:healthcheck'
+
+[tool.flake8]
+doctests = true
+max-line-length = 120
+statistics = true
 
 [tool.setuptools.dynamic]
 readme = {file = ['README.md', 'CHANGES.md']}
