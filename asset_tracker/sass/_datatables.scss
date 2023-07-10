@@ -183,3 +183,12 @@ div.dataTables_wrapper div.dataTables_info {
 .panel .dataTables_paginate {
   overflow-y: hidden;
 }
+
+/**********************************/
+/*********** colResize ************/
+/**********************************/
+
+table.dataTable thead th[data-is-resizable].dt-colresizable-hover {
+  cursor: col-resize;
+  border-right: #808080 dashed 1px;
+}

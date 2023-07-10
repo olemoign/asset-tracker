@@ -195,6 +195,13 @@ function addHrefToDataTablesRows(row, data) {
   }
 }
 
+function cancelColReorderEvents() {
+  $(document).unbind('touchmove.ColReorder');
+  $(document).unbind('mousemove.ColReorder');
+  $(document).unbind('mouseup.ColReorder');
+  $(document).unbind('touchend.ColReorder');
+}
+
 function manageColumnsRender(table) {
   const columns = [];
 
@@ -250,6 +257,15 @@ $(function createDatatables() {
     processing: true,
     columns: manageColumnsRender(table),
     rowCallback: assetTrackerCallback,
+    colReorder: true,
+    colResize: {
+      isEnabled: true,
+      isResizable: function(column) {
+        return !!column.sTitle;
+      },
+      onResizeStart: cancelColReorderEvents,
+      onResize: cancelColReorderEvents,
+    },
   };
 
   if (window.userLocale in DATATABLES_TRANSLATIONS) {
