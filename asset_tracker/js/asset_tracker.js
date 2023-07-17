@@ -15,7 +15,7 @@ function manageSites() {
 
   // Filter Sites - remove irrelevant options.
   $('#site_id').children('option').each(function removeSitesFromOtherTenants() {
-    if ($(this).data('tenant_id') && $(this).data('tenant_id') !== tenantIdSelected) {
+    if ($(this).data('tenant-id') && $(this).data('tenant-id') !== tenantIdSelected) {
       $(this).remove();
     }
   });
@@ -72,8 +72,8 @@ $(document).on('click', '.equipment__add', function addEquipment(event) {
   let equipmentsCounter = 0;
   // Get the current biggest counter value.
   $('.equipment__block').each(function getCounter() {
-    if ($(this).data('equipmentsCounter') > equipmentsCounter) {
-      equipmentsCounter = $(this).data('equipmentsCounter');
+    if ($(this).data('equipments-counter') > equipmentsCounter) {
+      equipmentsCounter = $(this).data('equipments-counter');
     }
   });
   equipmentsCounter += 1;
@@ -90,7 +90,7 @@ $(document).on('click', '.equipment__add', function addEquipment(event) {
   $(`label[for="${modelSerialNumberId}"]`).attr('for', newSerialNumberId);
   serialNumberInput.attr('id', newSerialNumberId).attr('name', newSerialNumberId);
 
-  equipmentBlock.data('equipmentsCounter', equipmentsCounter)
+  equipmentBlock.attr('data-equipments-counter', equipmentsCounter)
     .removeAttr('id').removeClass('hidden')
     .appendTo('#equipments__list');
   equipmentBlock.find('select').select2({
@@ -120,12 +120,12 @@ $(document).on('change', '.equipment__family', function addConsumableExpirationD
    */
   const equipmentContainer = $(this).closest('.equipment__block');
   const expirationDates = equipmentContainer.find('.expiration_dates');
-  const equipmentCounter = equipmentContainer.data('equipmentsCounter');
+  const equipmentCounter = equipmentContainer.data('equipments-counter');
 
   const selectedValue = event.target.value;
   expirationDates.empty();
 
-  const consumablesFamilies = $('#equipments__container').data('consumablesFamilies');
+  const consumablesFamilies = $('#equipments__container').data('consumables-families');
 
   if (consumablesFamilies[selectedValue]) {
     const equipmentsConsumablesEntries = Object.entries(consumablesFamilies[selectedValue]);
@@ -353,7 +353,7 @@ $(document).on('click', '.event__delete', function removeEvent() {
   /**
    * When the user removes an event, store this action in the form then hide the event.
    */
-  const eventID = $(this).data('eventid');
+  const eventID = $(this).data('event-id');
   $('form').append(`<input type="hidden" name="event-removed" value="${eventID}">`);
   $(this).parent().hide('fast');
 });

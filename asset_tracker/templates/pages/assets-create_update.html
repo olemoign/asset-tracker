@@ -87,7 +87,7 @@
                                     <select class="form-control" id="site__reference">
                                         <option></option>
                                         {% for site_id, site in sites.items() %}
-                                            <option value="{{ site.id }}" data-tenant_id="{{ site.tenant.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
+                                            <option value="{{ site.id }}" data-tenant-id="{{ site.tenant.tenant_id }}"{% if update and asset.site_id == site.id %} selected{% endif %}>
                                                 {{- site.name -}}
                                             </option>
                                         {% endfor %}
@@ -226,7 +226,7 @@
                                                         status=gettext(event.status.label(config)),
                                                         date=event.date|format_date(locale)
                                                     ) }}
-                                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-eventid="{{ event.event_id }}"></span>
+                                                    <span class="event__delete glyphicon glyphicon-remove-circle" data-event-id="{{ event.event_id }}"></span>
                                                 {% endif %}
                                             </p>
                                         {% endfor %}
