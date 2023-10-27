@@ -71,7 +71,6 @@ class Assets:
 
         # New asset.
         stock_parsys = self.request.db_session.query(models.EventStatus).filter_by(status_id='stock_parsys').one()
-        # noinspection PyArgumentList
         asset = models.Asset(
             asset_type='station',
             asset_id=json['login'],
@@ -81,7 +80,6 @@ class Assets:
             user_id=json['userID'],
         )
         # Add event.
-        # noinspection PyArgumentList
         event = models.Event(
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
@@ -103,7 +101,6 @@ class Assets:
             json (dict).
         """
         if asset.tenant.tenant_id != json['tenantID'] and json['tenantType'] != 'Test':
-            # noinspection PyArgumentList
             event = models.Event(
                 creator_id=json['creatorID'],
                 creator_alias=json['creatorAlias'],

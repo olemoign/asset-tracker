@@ -110,7 +110,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
             event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
         else:
             event_date = datetime.utcnow().date()
-        # noinspection PyArgumentList
         event = models.Event(
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
@@ -126,7 +125,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
         Args:
             new_site_id (int).
         """
-        # noinspection PyArgumentList
         event = models.Event(
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
@@ -375,7 +373,6 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 **self.get_base_form_data(),
             }
 
-        # noinspection PyArgumentList
         self.asset = models.Asset(
             asset_id=self.form['asset_id'],
             asset_type=self.form['asset_type'],

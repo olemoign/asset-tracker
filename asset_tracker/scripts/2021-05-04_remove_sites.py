@@ -46,7 +46,6 @@ def main():
             if not asset.site:
                 continue
 
-            # noinspection PyArgumentList
             event = models.Event(
                 creator_id='MFjUDRnl',
                 creator_alias='Olivier Le Moign',

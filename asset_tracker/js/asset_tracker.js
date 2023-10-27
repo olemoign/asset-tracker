@@ -10,7 +10,6 @@ function manageSites() {
     .prop('id', 'site_id').prop('name', 'site_id')
     .appendTo('#site__options');
 
-  // noinspection JSCheckFunctionSignatures
   const tenantIdSelected = $('#tenant_id').find('option:selected').val();
 
   // Filter Sites - remove irrelevant options.
@@ -208,7 +207,7 @@ function manageColumnsRender(table) {
   // Loop through all the columns, to be able to hook the 'data-render' parameters to existing functions.
   table.find('th').each(function setRenderFunctions() {
     const col = {};
-    // We can't set the render functions using HTML5 data parameters so we simulate this behavior.
+    // We can't set the render functions using HTML5 data parameters, so we simulate this behavior.
     const renderFunction = $(this).data('render');
     if (renderFunction) {
       col.render = window[renderFunction];
@@ -285,14 +284,11 @@ $(function createDatatables() {
 
   // Manage the custom filter.
   if (customFilter) {
-    // noinspection JSCheckFunctionSignatures
     const tableContainer = $(initialisedDataTable.table().container());
-    // noinspection JSCheckFunctionSignatures
     tableContainer.find('.dataTables_info').css('padding-bottom', '10px');
 
     // Save the custom filter state with the other dataTables parameters.
     initialisedDataTable.on('stateSaveParams.dt', function saveCustomFilter(event, settings, data) {
-      // noinspection JSCheckFunctionSignatures
       data.customFilter = !tableContainer.find('.custom_filter__input').is(':checked');
     });
 
@@ -301,15 +297,12 @@ $(function createDatatables() {
     const tableState = initialisedDataTable.state.loaded();
 
     // If table didn't yet store state in local storage, input is checked, otherwise, use local storage.
-    // noinspection JSUnresolvedVariable
     const inputIsChecked = !tableState || !tableState.customFilter ? ' checked' : '';
     const filterHTML = `<label><input class="custom_filter__input" type="checkbox"${inputIsChecked}> ${filterLabel}</label>`;
-      // noinspection JSCheckFunctionSignatures
     tableContainer.find('.custom_filter').html(filterHTML).css('padding', '10px 0 0 10px');
     initialisedDataTable.state.save();
 
     // Force a draw of the table when the filter state changes.
-      // noinspection JSCheckFunctionSignatures
     tableContainer.find('.custom_filter__input').on('change', initialisedDataTable.draw);
   }
 
@@ -333,13 +326,10 @@ $(document).on('preInit.dt', function initCustomFilter(event, settings) {
   if (customFilter) {
     settings.ajax.data = function setDatatablesFilter(data) {
       // This is the HTML node wrapping around the table with the special search, filter, etc.
-      // noinspection JSCheckFunctionSignatures
       const dataTableContainer = $(table.DataTable().table().container());
-      // noinspection JSCheckFunctionSignatures
       const customFilterInput = dataTableContainer.find('.custom_filter__input');
 
       // 1: the filter checkbox is visible.
-      // noinspection JSUnresolvedVariable
       if ((customFilterInput.length && !customFilterInput.is(':checked')) ||
         // 2: the table isn't visible yet but a filter value is present in the local storage.
         (!customFilterInput.length && state && state.customFilter)) {
@@ -369,7 +359,7 @@ $(document).on('click', '.panel_link', function followRTALink(event) {
 $(function preparePageReady() {
   setActiveMenu($('#menu-main li, #menu-settings li'));
 
-  // Auto focus first input in page.
+  // Autofocus first input in page.
   const firstInput = $('input[type=text]').first();
   firstInput.trigger('focus');
   // Move cursor to the end of the input.
