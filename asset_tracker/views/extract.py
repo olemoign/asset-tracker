@@ -1,6 +1,6 @@
 """Asset tracker views: assets lists and read/update."""
 import json
-from datetime import datetime
+from datetime import date
 
 from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.sql import windowed_query
@@ -204,7 +204,7 @@ class AssetsExtract:
         max_equipments = len(asset_with_most_equipments.equipments) if asset_with_most_equipments else 0
 
         # Override attributes of response.
-        filename = f'{datetime.utcnow():%Y%m%d}_assets.csv'
+        filename = f'{date.today():%Y%m%d}_assets.csv'
         self.request.response.content_disposition = f'attachment;filename={filename}'
 
         return {

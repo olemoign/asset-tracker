@@ -1,7 +1,7 @@
 """Asset Tracker software management."""
 import json
 import re
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 import packaging.version
@@ -209,7 +209,7 @@ class Software:
             new_event = models.Event(
                 creator_id=self.request.user.id,
                 creator_alias=self.request.user.alias,
-                date=datetime.utcnow().date(),
+                date=date.today(),
                 extra=json.dumps({'software_name': self.product, 'software_version': software_version}),
                 status=self.request.db_session.query(models.EventStatus).filter_by(status_id='software_update').one(),
             )

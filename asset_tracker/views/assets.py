@@ -2,7 +2,7 @@
 import json
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, timezone
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
@@ -97,7 +97,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 if expiration_date:
                     consumable = models.Consumable(
                         equipment=equipment,
-                        expiration_date=datetime.strptime(expiration_date, '%Y-%m-%d').date(),
+                        expiration_date=date.fromisoformat(expiration_date),
                         family=consumable_family,
                     )
                     self.request.db_session.add(consumable)
@@ -107,9 +107,9 @@ class Assets(metaclass=AuthenticatedEndpoint):
     def add_event(self):
         """Add asset event."""
         if self.form.get('event_date'):
-            event_date = datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
+            event_date = date.fromisoformat(self.form['event_date'])
         else:
-            event_date = datetime.utcnow().date()
+            event_date = date.today()
         event = models.Event(
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
@@ -128,7 +128,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         event = models.Event(
             creator_id=self.request.user.id,
             creator_alias=self.request.user.alias,
-            date=datetime.utcnow().date(),
+            date=date.today(),
             status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
         )
 
@@ -238,7 +238,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 continue
 
             event.removed = True
-            event.removed_at = datetime.utcnow()
+            event.removed_at = datetime.now(timezone.utc)
             event.remover_id = self.request.user.id
             event.remover_alias = self.request.user.alias
 
@@ -318,7 +318,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         for expiration_date in expiration_dates:
             try:
-                datetime.strptime(expiration_date, '%Y-%m-%d').date()
+                date.fromisoformat(expiration_date)
             except (TypeError, ValueError):
                 raise FormException(_('Invalid expiration date.'))
 
@@ -331,7 +331,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
 
         if self.form.get('event_date'):
             try:
-                datetime.strptime(self.form['event_date'], '%Y-%m-%d').date()
+                date.fromisoformat(self.form['event_date'])
             except (TypeError, ValueError):
                 raise FormException(_('Invalid event date.'))
 

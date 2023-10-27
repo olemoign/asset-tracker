@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from json import JSONDecodeError
 
 from parsys_utilities.security.authorization import authenticate_rta
@@ -83,7 +83,7 @@ class Assets:
         event = models.Event(
             creator_id=json['creatorID'],
             creator_alias=json['creatorAlias'],
-            date=datetime.utcnow().date(),
+            date=date.today(),
             status=stock_parsys,
         )
         asset.add_event(event)
@@ -104,7 +104,7 @@ class Assets:
             event = models.Event(
                 creator_id=json['creatorID'],
                 creator_alias=json['creatorAlias'],
-                date=datetime.utcnow().date(),
+                date=date.today(),
                 status=self.request.db_session.query(models.EventStatus).filter_by(status_id='site_change').one(),
             )
             asset.add_event(event)
