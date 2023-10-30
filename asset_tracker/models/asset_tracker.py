@@ -2,7 +2,7 @@ from json import loads
 
 from dateutil.relativedelta import relativedelta
 from parsys_utilities import random_id
-from parsys_utilities.sql.model import CreationDateTimeMixin, Model
+from parsys_utilities.sql.model import CreationDateTimeMixin, Model, TZDateTime
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Table
 from sqlalchemy import Unicode as String
 from sqlalchemy import UniqueConstraint, asc, desc, select
@@ -229,7 +229,7 @@ class Event(Model, CreationDateTimeMixin):
     creator_alias = Column(String, nullable=False)
 
     removed = Column(Boolean, nullable=False, default=False)
-    removed_at = Column(DateTime)
+    removed_at = Column(TZDateTime)
     remover_id = Column(String)
     remover_alias = Column(String)
 

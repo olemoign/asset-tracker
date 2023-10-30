@@ -2,12 +2,13 @@
 import json
 import re
 from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import date
 from operator import attrgetter
 
 from dateutil.relativedelta import relativedelta
 from depot.manager import DepotManager
 from parsys_utilities import ADMIN_PRINCIPAL
+from parsys_utilities.dates import utc_now
 from parsys_utilities.security import AuthenticatedEndpoint
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -238,7 +239,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
                 continue
 
             event.removed = True
-            event.removed_at = datetime.now(timezone.utc)
+            event.removed_at = utc_now()
             event.remover_id = self.request.user.id
             event.remover_alias = self.request.user.alias
 

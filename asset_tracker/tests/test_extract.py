@@ -5,6 +5,7 @@ import random
 import tempfile
 from datetime import date, datetime, timedelta
 
+from parsys_utilities.dates import utc_now
 from parsys_utilities.security import Right
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
@@ -27,7 +28,7 @@ class Extract(FunctionalTest):
         update_consumable_families(request.db_session, config)
         update_statuses(request.db_session, config)
 
-        now = datetime.now()
+        now = utc_now()
         today = date.today()
         status = request.db_session.query(models.EventStatus).order_by(models.EventStatus.position).first()
         events_status = request.db_session.query(models.EventStatus).order_by(models.EventStatus.position).all()
