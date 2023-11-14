@@ -82,12 +82,7 @@ readme = {file = ['README.md', 'CHANGES.md']}
 
 [tool.setuptools.packages.find]
 include = ['asset_tracker*']
-exclude = [
-    'asset_tracker.js*',
-    'asset_tracker.sass*',
-    'asset_tracker.scripts*',
-    'asset_tracker.tests*',
-]
+exclude = ['asset_tracker.js*', 'asset_tracker.sass*', 'asset_tracker.scripts*', 'asset_tracker.tests*']
 
 [tool.setuptools.exclude-package-data]
 '*' = ['*.ejs', '*.ini', '*.po', '*.pot', '*.sh']

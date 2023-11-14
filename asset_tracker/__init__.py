@@ -55,7 +55,6 @@ def main(global_config, **settings):
         'jinja2.directories': 'asset_tracker:templates',
         'jinja2.filters': {
             'format_date': 'parsys_utilities.dates:format_date',
-            'format_datetime': 'parsys_utilities.dates:format_datetime',
             'route_path': 'pyramid_jinja2.filters:route_path_filter',
             'route_url': 'pyramid_jinja2.filters:route_url_filter',
         },
@@ -113,6 +112,7 @@ def main(global_config, **settings):
             attach_stacktrace=True,
             dsn=dsn,
             environment=settings.get('sentry.environment', 'development'),
+            in_app_include=['asset_tracker', 'parsys_utilities'],
             integrations=[CeleryIntegration(), PyramidIntegration(), RedisIntegration(), SqlalchemyIntegration()],
             release=ASSET_TRACKER_VERSION,
             send_default_pii=True,
