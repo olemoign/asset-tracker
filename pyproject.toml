@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    'setuptools==68.1.2',
+    'setuptools==69.0.2',
     'setuptools-scm==8.0.4',
     'wheel==0.41.2',
 ]
@@ -27,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
     'alembic==1.12.1',
-    'celery[redis]==5.3.4',
+    'celery[redis]==5.3.6',
     'filedepot==0.10.0',
     'jinja2==3.1.2',
     'packaging==23.2',
@@ -39,9 +39,9 @@ dependencies = [
     'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.5',
     'python-dateutil==2.8.2',
-    'sentry-sdk==1.32.0',
+    'sentry-sdk==1.36.0',
     'sqlalchemy==1.4.50',
-    'transaction==3.1.0',
+    'transaction==4.0',
     'waitress==2.1.2',
     'zope.sqlalchemy==3.1',
 ]
