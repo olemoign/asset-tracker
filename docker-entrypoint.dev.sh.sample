@@ -14,16 +14,16 @@ if [ "$celery" == false ]; then
 fi
 
 if [ "$celery" == true ]; then
-  pip3 install watchfiles
+  pip3.12 install watchfiles
 fi
 
-pip3 install pyramid_debugtoolbar
-SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from importlib.metadata import version; print(version("parsys_utilities"));')
+pip3.12 install pyramid_debugtoolbar
+SETUPTOOLS_SCM_PRETEND_VERSION=$(python3.12 -c 'from importlib.metadata import version; print(version("parsys_utilities"));')
 export SETUPTOOLS_SCM_PRETEND_VERSION
-pip3 install -e /opt/parsys_utilities
-SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from importlib.metadata import version; print(version("asset_tracker"));')
+pip3.12 install -e /opt/parsys_utilities
+SETUPTOOLS_SCM_PRETEND_VERSION=$(python3.12 -c 'from importlib.metadata import version; print(version("asset_tracker"));')
 export SETUPTOOLS_SCM_PRETEND_VERSION
-pip3 install -e /srv
+pip3.12 install -e /srv
 
 if [ "$celery" == false ]; then
   alembic -c /srv/config/development.ini upgrade head
