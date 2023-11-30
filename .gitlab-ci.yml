@@ -17,7 +17,7 @@ variables:
 
 flake8:
   stage: test
-  image: python:3.10
+  image: python:3.12
   tags:
     - docker
     - asset_tracker
@@ -32,7 +32,7 @@ flake8:
 
 pytest:
   stage: test
-  image: python:3.10
+  image: python:3.12
   tags:
     - docker
     - asset_tracker
@@ -52,7 +52,7 @@ pytest:
 
 build:
   stage: build
-  image: python:3.10
+  image: python:3.12
   tags:
     - docker
     - asset_tracker

@@ -6,7 +6,7 @@ ENV LANG C.UTF-8
 COPY dist/ /opt
 
 # Install app.
-RUN pip3 install --no-cache-dir /opt/*
+RUN pip3.12 install --no-cache-dir /opt/*
 RUN rm /opt/*
 
 # Copy config files.
