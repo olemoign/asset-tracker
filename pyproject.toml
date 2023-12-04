@@ -79,13 +79,15 @@ statistics = true
 [tool.setuptools.dynamic]
 readme = {file = ['README.md', 'CHANGES.md']}
 
+[tool.setuptools]
+include-package-data = false
+
 [tool.setuptools.packages.find]
 include = ['asset_tracker*']
-exclude = ['asset_tracker.js*', 'asset_tracker.sass*', 'asset_tracker.scripts*', 'asset_tracker.tests*']
+exclude = ['asset_tracker.scripts*', 'asset_tracker.tests*']
 
-[tool.setuptools.exclude-package-data]
-'*' = ['*.ejs', '*.ini', '*.po', '*.pot', '*.sh']
-'asset_tracker' = ['js*', 'sass*', 'scripts*', 'tests*']
+[tool.setuptools.package-data]
+'asset_tracker' = ['config.json', 'locale/**/*.mo', 'static/**', 'templates/**']
 
 [tool.setuptools_scm]
 version_scheme = 'no-guess-dev'
