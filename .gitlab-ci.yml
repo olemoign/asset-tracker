@@ -17,6 +17,7 @@ variables:
 
 flake8:
   stage: test
+  interruptible: true
   image: python:3.12
   tags:
     - docker
@@ -32,6 +33,7 @@ flake8:
 
 pytest:
   stage: test
+  interruptible: true
   image: python:3.12
   tags:
     - docker
@@ -53,6 +55,7 @@ pytest:
 build:
   stage: build
   image: python:3.12
+  interruptible: true
   tags:
     - docker
     - asset_tracker
@@ -73,6 +76,7 @@ build:
 
 docker-image:
   stage: dist
+  interruptible: true
   tags:
     - shell
   script:
