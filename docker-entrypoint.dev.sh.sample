@@ -12,6 +12,7 @@ mkdir -p /srv/tmp /srv/tmp/redis
 if [ "$celery" == false ]; then
   mkdir -p /srv/tmp/postgres
 fi
+rm -f /srv/tmp/celerybeat-schedule.db
 
 if [ "$celery" == true ]; then
   pip3 install watchfiles
