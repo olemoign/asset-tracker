@@ -1,3 +1,11 @@
+3.2.0
+---
+- feat(datatables): add colresize and colreorder
+- feat(db): do not start a db transaction on /health or serving static files
+- feat(docker): use multistage to limit layers
+- feat(global): remove datetime.utcnow
+- fix(sentry): messages stack trace
+
 3.1.15
 ---
 - feat(notifications): update frequencies and grouping
