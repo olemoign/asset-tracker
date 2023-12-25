@@ -21,7 +21,6 @@ flake8:
   image: python:3.12
   tags:
     - docker
-    - asset_tracker
   cache:
     key: $CI_PROJECT_ID
     paths:
@@ -36,7 +35,6 @@ pytest:
   image: python:3.12
   tags:
     - docker
-    - asset_tracker
   cache:
     key: $CI_PROJECT_ID
     paths:
@@ -56,7 +54,6 @@ build:
   interruptible: true
   tags:
     - docker
-    - asset_tracker
   cache:
     key: $CI_PROJECT_ID
     paths:
