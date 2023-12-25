@@ -1,8 +1,8 @@
 [build-system]
 requires = [
-    'setuptools==69.0.2',
+    'setuptools==69.0.3',
     'setuptools-scm==8.0.4',
-    'wheel==0.41.2',
+    'wheel==0.42.0',
 ]
 build-backend = 'setuptools.build_meta'
 
@@ -25,7 +25,7 @@ classifiers = [
     'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
 ]
 dependencies = [
-    'alembic==1.12.1',
+    'alembic==1.13.1',
     'celery[redis]==5.3.6',
     'filedepot==0.10.0',
     'jinja2==3.1.2',
@@ -38,7 +38,7 @@ dependencies = [
     'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.5',
     'python-dateutil==2.8.2',
-    'sentry-sdk==1.36.0',
+    'sentry-sdk==1.39.1',
     'sqlalchemy==1.4.50',
     'transaction==4.0',
     'waitress==2.1.2',
@@ -48,7 +48,7 @@ dynamic = ['readme', 'version']
 
 [project.optional-dependencies]
 dev = [
-    'babel==2.13.1',
+    'babel==2.14.0',
     'pybabel-json-md==0.1.0',
     'pyramid-debugtoolbar==4.10',
 ]
