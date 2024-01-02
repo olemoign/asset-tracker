@@ -9,8 +9,7 @@ from pyramid.security import Allow, Everyone
 from pyramid.settings import asbool
 from pyramid.view import view_config
 from sentry_sdk import capture_exception, capture_message
-from sqlalchemy import Unicode as String
-from sqlalchemy import cast
+from sqlalchemy import Unicode as String, cast
 
 from asset_tracker import models
 from asset_tracker.api.assets import Assets as AssetsAPI

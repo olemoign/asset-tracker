@@ -6,8 +6,7 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from depot.manager import DepotManager
-from parsys_utilities import STATIC_FILES_CACHE, USER_SESSION_DURATION
-from parsys_utilities import celery as celery_utils
+from parsys_utilities import STATIC_FILES_CACHE, USER_SESSION_DURATION, celery as celery_utils
 from parsys_utilities.config import TenantConfigurator
 from parsys_utilities.logs import logger
 from parsys_utilities.notifications import Notifier
