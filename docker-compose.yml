@@ -46,7 +46,7 @@ services:
     restart: always
 
   postgres:
-    image: postgres:12
+    image: postgres:16-alpine
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
@@ -58,7 +58,7 @@ services:
     restart: always
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
     volumes:
       - ./data/redis:/data
     healthcheck:
