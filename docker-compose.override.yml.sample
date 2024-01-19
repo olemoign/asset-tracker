@@ -4,7 +4,6 @@ services:
     entrypoint: ["/srv/docker-entrypoint.dev.sh"]
     command: ["pserve", "/srv/config/development.ini", "--reload"]
     volumes:
-      - .:/srv
       - ../parsys_utilities:/opt/parsys_utilities
     healthcheck:
       test: ["CMD", "parsys_healthcheck", "--dev"]
@@ -25,7 +24,6 @@ services:
       --loglevel=info", "/srv"
     ]
     volumes:
-      - .:/srv
       - ../parsys_utilities:/opt/parsys_utilities
     healthcheck:
       test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/config/development.ini"]
@@ -43,7 +41,6 @@ services:
       --loglevel=info", "/srv"
     ]
     volumes:
-      - .:/srv
       - ../parsys_utilities:/opt/parsys_utilities
     healthcheck:
       test: ["CMD", "celery", "-A", "asset_tracker", "inspect", "ping", "--ini", "/srv/config/development.ini"]
