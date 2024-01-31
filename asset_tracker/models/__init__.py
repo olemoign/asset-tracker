@@ -17,12 +17,12 @@ _ = (
 configure_mappers()
 
 
-def get_engine(settings, prefix='sqlalchemy.'):
+def get_engine(settings):
     if settings['sqlalchemy.url'].startswith('sqlite'):
         connect_args = {}
     else:
         connect_args = {'options': '-c statement_timeout=10000'}
-    return engine_from_config(settings, prefix, connect_args=connect_args)
+    return engine_from_config(settings, connect_args=connect_args)
 
 
 def get_session_factory(engine):

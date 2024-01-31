@@ -59,7 +59,7 @@ def run_migrations_online():
     if config.attributes.get('engine'):
         engine = config.attributes['engine']
     else:
-        engine = engine_from_config(settings, prefix='sqlalchemy.')
+        engine = engine_from_config(settings)
 
     with engine.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata, render_as_batch=True)

@@ -70,7 +70,7 @@ class Assets:
 
         # tables_from_dict makes all columns as strings.
         joined_tables = [
-            (statuses, statuses.c.id == cast(models.Asset.status_id, String)),
+            (models.Asset, statuses, statuses.c.id == cast(models.Asset.status_id, String)),
             models.Asset.site,
             models.Asset.tenant,
         ]
