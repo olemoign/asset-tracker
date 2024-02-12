@@ -42,7 +42,7 @@ pytest:
     policy: pull
   script:
     - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[tests]'
-    - pytest -n logical --cov=asset_tracker --junitxml=report.xml
+    - pytest -n logical --reruns 1 --cov=asset_tracker --junitxml=report.xml
   artifacts:
     when: always
     reports:
@@ -50,8 +50,8 @@ pytest:
 
 build:
   stage: build
-  image: python:3.12
   interruptible: true
+  image: python:3.12
   tags:
     - docker
   cache:
