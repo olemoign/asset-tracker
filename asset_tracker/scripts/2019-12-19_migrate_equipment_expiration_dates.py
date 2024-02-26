@@ -1,4 +1,5 @@
 """19/12/2019: transfer glucose meter consumable expiration date information on the new consumables table."""
+
 import argparse
 
 from pyramid.paster import bootstrap

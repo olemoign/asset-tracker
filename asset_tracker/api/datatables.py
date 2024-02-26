@@ -1,4 +1,5 @@
 """Asset tracker datatables API."""
+
 from parsys_utilities import ADMIN_PRINCIPAL
 from parsys_utilities.api import DataTablesAPI, manage_datatables_queries
 from parsys_utilities.dates import format_date

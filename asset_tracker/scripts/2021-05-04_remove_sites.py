@@ -1,4 +1,5 @@
 """04/05/2021: remove sites from decommissioned assets."""
+
 import argparse
 import csv
 from datetime import datetime

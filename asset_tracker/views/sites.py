@@ -1,4 +1,5 @@
 """Site tracker views: sites lists and read/update."""
+
 from operator import itemgetter
 
 from parsys_utilities import ADMIN_PRINCIPAL

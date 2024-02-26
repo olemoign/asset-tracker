@@ -1,4 +1,5 @@
 """Asset tracker views: assets lists and read/update."""
+
 import json
 import re
 from collections import defaultdict
