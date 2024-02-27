@@ -41,7 +41,7 @@ pytest:
       - .cache/pip
     policy: pull
   script:
-    - pip3 install -q --extra-index-url $GITLAB_INDEX_URL '.[tests]'
+    - pip3 install -e -q --extra-index-url $GITLAB_INDEX_URL '.[tests]'
     - pytest -n logical --reruns 1 --cov=asset_tracker --junitxml=report.xml
   artifacts:
     when: always
