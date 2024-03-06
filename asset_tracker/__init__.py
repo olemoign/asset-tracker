@@ -51,6 +51,7 @@ def main(global_config, **settings):
 
     config.include('pyramid_jinja2')
     jinja2_settings = {
+        'jinja2.bytecode_caching': True,
         'jinja2.directories': 'asset_tracker:templates',
         'jinja2.filters': {
             'format_date': 'parsys_utilities.dates:format_date',
