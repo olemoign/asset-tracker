@@ -103,7 +103,7 @@ class Assets:
             c_next = asset.calibration_next
             asset_output = {
                 'asset_id': asset.asset_id,
-                'calibration_next': format_date(c_next, self.request.locale_name) if c_next else None,
+                'calibration_next': format_date(c_next, self.request.locale_name),
                 'customer_name': asset.customer_name,
                 'id': asset.id,
                 'is_active': not asset.is_decommissioned,
