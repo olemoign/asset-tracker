@@ -6,7 +6,7 @@ from parsys_utilities.sql.model import CreationDateTimeMixin, Model, TZDateTime
 from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, Table, Unicode as String, UniqueConstraint, asc, \
     desc, select
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 
 from asset_tracker.constants import WARRANTY_DURATION_YEARS
 
@@ -14,7 +14,7 @@ from asset_tracker.constants import WARRANTY_DURATION_YEARS
 class Asset(Model, CreationDateTimeMixin):
     asset_id = Column(String, nullable=False, unique=True)
     tenant_id = Column(Integer, ForeignKey('tenant.id'), nullable=False)
-    tenant = relationship('Tenant', foreign_keys=tenant_id, uselist=False, backref='assets')
+    tenant = relationship('Tenant', foreign_keys=tenant_id, uselist=False, back_populates='assets')
     user_id = Column(String)  # Received from RTA during station creation/update.
 
     @hybrid_property
@@ -35,7 +35,7 @@ class Asset(Model, CreationDateTimeMixin):
     customer_name = Column(String)
 
     site_id = Column(Integer, ForeignKey('site.id'))
-    site = relationship('Site', foreign_keys=site_id, uselist=False, backref='assets')
+    site = relationship('Site', foreign_keys=site_id, uselist=False, back_populates='assets')
 
     current_location = Column(String)
     notes = Column(String)
@@ -45,6 +45,10 @@ class Asset(Model, CreationDateTimeMixin):
 
     status_id = Column(Integer, ForeignKey('event_status.id'), nullable=False)
     status = relationship('EventStatus', foreign_keys=status_id, uselist=False)
+
+    equipments = relationship('Equipment', back_populates='asset')
+
+    _history = relationship('Event', lazy='dynamic', back_populates='asset')
 
     def add_event(self, event):
         """Add event to asset history.
@@ -177,7 +181,7 @@ class Consumable(Model):
     family = relationship('ConsumableFamily', foreign_keys=family_id, uselist=False)
 
     equipment_id = Column(Integer, ForeignKey('equipment.id'), nullable=False)
-    equipment = relationship('Equipment', foreign_keys=equipment_id, uselist=False, backref='consumables')
+    equipment = relationship('Equipment', foreign_keys=equipment_id, uselist=False, back_populates='consumables')
 
     expiration_date = Column(Date)
 
@@ -197,30 +201,37 @@ class ConsumableFamily(Model):
     model = Column(String, nullable=False, unique=True)
 
     equipment_families = relationship(
-        'EquipmentFamily', secondary=consumable_families_equipment_families, backref='consumable_families'
+        'EquipmentFamily', secondary=consumable_families_equipment_families, back_populates='consumable_families'
     )
 
 
 class Equipment(Model):
     family_id = Column(Integer, ForeignKey('equipment_family.id'), nullable=False)
-    family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False, backref='equipments')
+    family = relationship('EquipmentFamily', foreign_keys=family_id, uselist=False, back_populates='equipments')
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
-    asset = relationship('Asset', foreign_keys=asset_id, uselist=False, backref='equipments')
+    asset = relationship('Asset', foreign_keys=asset_id, uselist=False, back_populates='equipments')
 
     serial_number = Column(String)
+
+    consumables = relationship('Consumable', back_populates='equipment')
 
 
 class EquipmentFamily(Model):
     family_id = Column(String, nullable=False, unique=True)
     model = Column(String, nullable=False, unique=True)
 
+    equipments = relationship('Equipment', back_populates='family')
+    consumable_families = relationship(
+        'ConsumableFamily', secondary=consumable_families_equipment_families, back_populates='equipment_families'
+    )
+
 
 class Event(Model, CreationDateTimeMixin):
     event_id = Column(String, default=random_id, nullable=False, unique=True)
 
     asset_id = Column(Integer, ForeignKey('asset.id'), nullable=False)
-    asset = relationship('Asset', foreign_keys=asset_id, uselist=False, backref=backref('_history', lazy='dynamic'))
+    asset = relationship('Asset', foreign_keys=asset_id, uselist=False, back_populates='_history')
 
     date = Column(Date, nullable=False)
 
@@ -273,7 +284,7 @@ class EventStatus(Model):
 class Site(Model, CreationDateTimeMixin):
     site_id = Column(String, default=random_id, nullable=False, unique=True)
     tenant_id = Column(Integer, ForeignKey('tenant.id'), nullable=False)
-    tenant = relationship('Tenant', foreign_keys=tenant_id, uselist=False, backref='sites')
+    tenant = relationship('Tenant', foreign_keys=tenant_id, uselist=False, back_populates='sites')
 
     name = Column(String, nullable=False, unique=True)
     site_type = Column(String)
@@ -282,7 +293,12 @@ class Site(Model, CreationDateTimeMixin):
     phone = Column(String)
     email = Column(String)
 
+    assets = relationship('Asset', back_populates='site')
+
 
 class Tenant(Model):
     tenant_id = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
+
+    assets = relationship('Asset', back_populates='tenant')
+    sites = relationship('Site', back_populates='tenant')
