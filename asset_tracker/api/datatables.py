@@ -53,7 +53,7 @@ class Assets:
         config = self.request.registry.settings.get('asset_tracker.config', 'parsys')
         statuses_dict = [
             {
-                'id': status.id,
+                'id': str(status.id),
                 'label': self.request.localizer.translate(status.label(config)),
                 'status_id': status.status_id,
             }
