@@ -17,7 +17,6 @@ rm -f /srv/tmp/celerybeat-schedule.db
 if [ "$celery" == true ]; then
   pip3 install watchfiles
 fi
-
 pip3 install pyramid_debugtoolbar
 SETUPTOOLS_SCM_PRETEND_VERSION=$(python3 -c 'from importlib.metadata import version; print(version("parsys_utilities"));')
 export SETUPTOOLS_SCM_PRETEND_VERSION
