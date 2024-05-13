@@ -86,8 +86,8 @@ class Assets:
             date=date.today(),
             status=stock_parsys,
         )
-        asset.add_event(event)
         self.request.db_session.add_all([asset, event])
+        asset.add_event(event)
 
         # Update status and calibration.
         AssetView.update_calibration_next(asset)
