@@ -1,3 +1,7 @@
+3.2.1
+---
+- fix(api): rta asset linking
+
 3.2.0
 ---
 - feat(datatables): add colresize and colreorder
