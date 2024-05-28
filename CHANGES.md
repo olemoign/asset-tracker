@@ -1,3 +1,7 @@
+3.2.2
+---
+- feat(marlink): calibration frequency 4 years => 5 years
+
 3.2.1
 ---
 - fix(api): rta asset linking
