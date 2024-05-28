@@ -17,7 +17,7 @@ ASSET_TYPES = {
 }
 CALIBRATION_FREQUENCIES_YEARS = {
     'default': 2,
-    'marlink': 4,
+    'marlink': 5,
 }
 SITE_TYPES = [
     _('Company'),
