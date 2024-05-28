@@ -258,7 +258,11 @@ class Assets(metaclass=AuthenticatedEndpoint):
         is_linked = self.asset and self.asset.is_linked
         has_id_data = self.form.get('asset_id') and self.form.get('tenant_id')
         has_creation_event = self.asset or self.form.get('event')
-        has_calibration_frequency = self.config == 'marlink' or self.form.get('calibration_frequency')
+        has_calibration_frequency = (
+            self.config == 'marlink'
+            or self.form.get('asset_type') == 'consumables_case'
+            or self.form.get('calibration_frequency')
+        )
         if (
             not is_linked and not has_id_data
             or not self.form.get('asset_type')
@@ -392,7 +396,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         # Marlink has only one calibration frequency, so they don't want to see the input.
         if self.config == 'marlink':
             self.asset.calibration_frequency = CALIBRATION_FREQUENCIES_YEARS['marlink']
-        else:
+        elif self.asset.asset_type != 'consumables_case':
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
         self.request.db_session.add(self.asset)
 
@@ -458,7 +462,7 @@ class Assets(metaclass=AuthenticatedEndpoint):
         self.asset.notes = self.form.get('notes')
 
         # Marlink has only one calibration frequency, so they don't want to see the input.
-        if self.config != 'marlink':
+        if self.config != 'marlink' and self.asset.asset_type != 'consumables_case':
             self.asset.calibration_frequency = int(self.form['calibration_frequency'])
 
         event = self.form.get('event')
