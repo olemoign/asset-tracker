@@ -1,5 +1,4 @@
-'use strict';
-
+/* global $ */
 
 function manageSites() {
   /**
@@ -41,6 +40,17 @@ $(document).on('change', '#tenant_id', function manageSiteSelect() {
     width: '100%',
   });
 });
+
+function manageCalibrationFrequency() {
+  const assetType = $('#asset_type');
+  const calibrationFrequency = $('#calibration_frequency').parent();
+  if (assetType.val() === 'consumables_case') {
+    calibrationFrequency.addClass('hidden');
+  } else {
+    calibrationFrequency.removeClass('hidden');
+  }
+}
+$(document).on('change', '#asset_type', manageCalibrationFrequency);
 
 function setActiveMenu(menuLinks) {
   /**
@@ -365,6 +375,8 @@ $(function preparePageReady() {
   // Move cursor to the end of the input.
   firstInput.val(firstInput.val());
 
+  // Show or hide calibration frequency depending on asset type.
+  manageCalibrationFrequency();
   // Show sites corresponding to the selected tenant when page is ready.
   manageSites();
 
