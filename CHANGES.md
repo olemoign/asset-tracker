@@ -1,3 +1,7 @@
+3.2.3
+---
+- feat(asset): hide calibration frequency for consumable case
+
 3.2.2
 ---
 - feat(marlink): calibration frequency 4 years => 5 years
