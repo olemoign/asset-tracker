@@ -69,6 +69,12 @@ body {
 .login-container {
   height: calc(100% - #{$footer-height});
   padding-top: 35vh;
+
+  .alert-danger {
+    background-color: #c1032f;
+    color: white;
+    border: none;
+  }
 }
 
 .main-logo {
