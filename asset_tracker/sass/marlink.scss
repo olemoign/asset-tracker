@@ -1,35 +1,32 @@
-$marlink-orange: #f04c24;
-$marlink-light-grey: #dedede;
-$marlink-middle-grey: #7d7d7d;
-$marlink-dark-grey: #4d4d4f;
+$marlink-blue: #0066aa;
+$marlink-blue-lighter: #35a9e1;
+$link-grey: #dadada;
 
 // General site branding
-$panel-default-text: white;
-$panel-default-border: $marlink-light-grey;
-$panel-default-heading-bg: $marlink-dark-grey;
-
-$brand-primary: black;
+$brand-primary: $marlink-blue;
 $panel-primary-text: white;
-$panel-primary-border: $marlink-light-grey;
-$panel-primary-heading-bg: $marlink-dark-grey;
 
 // Navbar styling
-$navbar-height: 60px;
-$navbar-margin-bottom: 0;
+$navbar-default-bg: $marlink-blue;
+$navbar-default-link-color: white;
+$navbar-default-link-hover-color: $link-grey;
+$navbar-default-link-active-color: white;
+$navbar-default-link-active-bg: $marlink-blue-lighter;
 
-$navbar-default-bg: white;
-$navbar-default-border: $marlink-light-grey;
-$navbar-default-link-color: black;
-$navbar-default-link-hover-color: $marlink-middle-grey;
-$navbar-default-link-active-color: black;
-$navbar-default-link-active-bg: white;
+$navbar-default-toggle-hover-bg: $marlink-blue-lighter;
+$navbar-default-toggle-icon-bar-bg: white;
+$navbar-default-toggle-border-color: $marlink-blue;
 
-$navbar-default-toggle-hover-bg: $marlink-orange;
-$navbar-default-toggle-icon-bar-bg: black;
-$navbar-default-toggle-border-color: $marlink-orange;
+$navbar-height: 50px;
+$navbar-margin: 9px;
 
 $footer-height: 40px;
 $footer-height-sm: 249px;
+
+@font-face {
+  font-family: 'ibm-plex-sans-medium';
+  src: url('/static/fonts/ibm-plex-sans-medium.ttf');
+}
 
 @import 'main';
 
@@ -39,14 +36,52 @@ $footer-height-sm: 249px;
 
 body {
   font-family: Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
-  background-color: $marlink-dark-grey;
+
+  &.login-background {
+    background-image: url('/static/images/marlink/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+  }
+}
+
+.root-container {
+  // 1px: navbar border
+  min-height: calc(100% - #{$navbar-height} - 1px - #{$navbar-margin} - #{$footer-height});
+}
+
+.top-left-logo {
+  background-image: url('/static/images/marlink/top-left-logo.svg');
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  height: 65px;
+  width: 287px;
+  background-position: inherit;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/**********************************/
+/************** Login *************/
+/**********************************/
+
+.login-container {
+  height: calc(100% - #{$footer-height});
+  padding-top: 35vh;
+}
+
+.main-logo {
+  color: white;
+  font-family: 'ibm-plex-sans-medium';
+  font-size: 52px;
 }
 
 footer {
   width: 100%;
   height: $footer-height;
   padding: 0 20px;
-  background-color: $marlink-orange;
+  background-color: $marlink-blue;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -64,120 +99,65 @@ footer {
   }
 }
 
-.img-background-fixed {
-  background-image: url('/static/images/marlink/background.png');
-  background-position: right;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-30%);
-  height: 40%;
-  width: 100%;
-}
+/**********************************/
+/************** Menu **************/
+/**********************************/
 
-.login-container {
-  height: calc(100% - #{$footer-height});
-  display: flex;
-  flex-grow: 2;
-  flex-direction: column;
-  justify-content: center;
-  color: white;
-  padding-right: 0;
-  padding-left: 30px;
-  margin-right: calc(50% - 30px);
-
-  @media (max-height: 900px) {
-    padding-top: 30px;
-  }
-
-  .btn-default {
-    border: none;
-    background-color: $marlink-orange;
-    color: white;
-    min-width: 110px;
-    float: left !important;
-  }
-}
-
-.main-logo {
-  background-image: url('/static/images/marlink/logo.png');
-  height: 70px;
-  margin-bottom: 20px;
-
-  @media (max-height: 900px) {
-    position: absolute;
-    top: 71px;
-    right: 30px;
-    width: 300px;
-  }
-}
-
-.root-container {
-  background: white;
-  min-height: calc(100% - #{$navbar-height} - 3px - #{$footer-height});
-  padding-top: 7px;
-}
-
-.top-left-logo {
-  background-image: url('/static/images/marlink/top-left-logo.png');
-  position: absolute;
-  top: 40px;
-  left: 30px;
-  height: 105px;
-  width: 266px;
-  background-position: inherit;
+.menu-logo {
+  background-image: url('/static/images/marlink/menu-logo.svg');
+  height: 38px;
+  width: 170px;
+  margin-top: -9px;
   background-size: contain;
   background-repeat: no-repeat;
 }
 
-#user_settings-iframe {
-  min-height: calc(100% - #{$navbar-height} - 3px - #{$footer-height});
+.menu-name {
+  display: none;
 }
 
-@media (max-width: 1600px) {
-  .login-container {
-    padding-top: 180px;
-  }
-}
+/**********************************/
+/************ Responsive **********/
+/**********************************/
 
-@media (max-width: 1100px) {
+@media (width <= 1100px) {
   footer > div {
     font-size: 10px;
   }
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
+  .top-left-logo {
+    top: 20px;
+    left: 20px;
+  }
+
   footer > div {
     font-size: 7.5px;
   }
+}
 
-  .img-background-fixed {
-    right: 10px;
-    transform: translateY(-65%);
-    height: 220px;
-  }
-
-  .login-container.login-container {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding-left: 0;
-    padding-top: 130px;
-  }
-
-  .main-logo {
-    width: 210px;
-    position: absolute;
-    top: 71px;
-    right: 10px;
+@media (width <= 500px) {
+  .root-container {
+    // 1px: navbar border
+    min-height: calc(100% - #{$navbar-height} - 1px - #{$navbar-margin} - #{$footer-height-sm});
   }
 
   .top-left-logo {
-    height: 74px;
-    width: 186px;
+    top: 10px;
     left: 10px;
+    width: 220px;
   }
-}
 
-@media (max-width: 500px) {
+  .login-container {
+    height: calc(100% - #{$footer-height-sm});
+    padding-top: 25vh;
+  }
+
+  .main-logo {
+    font-size: 9vw;
+  }
+
   footer {
     flex-direction: column;
     height: auto;
@@ -191,105 +171,4 @@ footer {
       }
     }
   }
-
-  .img-background-fixed {
-    display: none;
-  }
-
-  .login-container {
-    height: calc(100% - #{$footer-height-sm});
-    padding-top: 120px;
-  }
-
-  .main-logo {
-    width: 169px;
-    position: absolute;
-    top: 60px;
-    right: 10px;
-  }
-
-  .root-container {
-    min-height: calc(100% - #{$navbar-height} - 3px - #{$footer-height-sm});
-  }
-
-  .top-left-logo {
-    height: 59px;
-    width: 146px;
-    left: 10px;
-  }
-}
-
-/**********************************/
-/************** Menu **************/
-/**********************************/
-
-.menu-logo {
-  background-image: url('/static/images/marlink/menu-logo.png');
-  height: 51px;
-  width: 156px;
-  margin-top: -16px;
-  margin-left: 5px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.menu-name {
-  display: none;
-}
-
-.navbar-default .navbar-nav > .active > a {
-  border-bottom: 2px solid $marlink-orange;
-}
-
-// Navbar dropdown.
-#menu-settings > .open > a,
-#menu-settings > .open > a:hover,
-#menu-settings > .open > a:focus {
-  color: white;
-  background-color: $marlink-orange;
-}
-
-#menu-settings .dropdown-menu > li > a {
-  &:hover,
-  &:focus {
-    @media (min-width: $grid-float-breakpoint) {
-      color: white;
-      background-color: $marlink-orange;
-    }
-  }
-}
-
-table.dataTable thead .sorting:after,
-table.dataTable thead .sorting_desc:after,
-table.dataTable thead .sorting_asc:after {
-  color: $marlink-orange;
-  opacity: 0.6;
-}
-
-/**********************************/
-/************* Panels *************/
-/**********************************/
-
-.panel-heading {
-  a {
-    color: white;
-  }
-
-  a:active,
-  a:focus,
-  a:hover {
-    color: $marlink-light-grey;
-  }
-
-  a.btn {
-    color: black;
-  }
-}
-
-/****************/
-/** Site info ***/
-/****************/
-
-.site-info {
-  background: white;
 }
