@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 
+{% set landing_page = True %}
+
 {% block title -%}
     {{ gettext('Error') }}
 {%- endblock %}
 
 {% block page %}
-    <div class="img-background-fixed"></div>
-
     <div class="login-container container">
-        <a href="{{ 'home'|route_path }}"><div class="top-left-logo"></div></a>
-        <a href="{{ 'home'|route_path }}"><div class="main-logo"></div></a>
+        <a href="{{ 'home'|route_path }}">
+            <div class="top-left-logo"></div>
+        </a>
+        <a href="{{ 'home'|route_path }}">
+            <div class="main-logo">{% if config == 'marlink' %}{{ cloud_name|upper }}{% endif %}</div>
+        </a>
 
         <div class="alert alert-danger text-center" role="alert">
             {{ gettext('An error occurred. Please retry later.') }}

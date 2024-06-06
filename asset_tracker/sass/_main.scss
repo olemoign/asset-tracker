@@ -4,7 +4,7 @@ $border-radius-large: 0;
 $border-radius-small: 0;
 $grid-float-breakpoint: 1100px;
 $icon-font-path: '/static/fonts/';
-$link-color: black;
+$navbar-margin-bottom: 0;
 
 @import 'bootstrap';
 @import 'datatables';
@@ -15,8 +15,25 @@ $link-color: black;
 
 body,
 html {
-  width: 100%;
   height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.root-container {
+  width: 100%;
+  overflow: auto;
+  // header: 50px + 1px border
+  margin-top: 51px;
+  padding-top: 9px;
+}
+
+#user_settings-iframe {
+  margin-top: 51px;
 }
 
 .img-background-fixed {
@@ -35,31 +52,6 @@ html {
   width: 100%;
   background-size: contain;
   background-repeat: no-repeat;
-}
-
-.root-container {
-  width: 100%;
-}
-
-// Bootstrap tries to fix date inputs in Safari but this doesn't apply anymore and breaks the inputs in Firefox.
-// So deactivate their fix.
-input[type='date'],
-input[type='time'],
-input[type='datetime-local'],
-input[type='month'] {
-  &.form-control {
-    line-height: normal;
-  }
-
-  &.input-sm,
-  .input-group-sm & {
-    line-height: normal;
-  }
-
-  &.input-lg,
-  .input-group-lg & {
-    line-height: normal;
-  }
 }
 
 /**********************************/

@@ -8,4 +8,7 @@
     {% include 'menu.html' %}
 
     <iframe id="user_settings-iframe" src="{{ rta_settings_url }}"></iframe>
+
+    {% set footer = 'branding/footer-{}.html'.format(config) %}
+    {% include footer ignore missing %}
 {% endblock %}
