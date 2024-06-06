@@ -65,10 +65,23 @@ body {
   height: calc(100% - #{$footer-height});
   padding-top: 35vh;
 
+  .alert {
+    text-align: left;
+  }
+
   .alert-danger {
     background-color: #c1032f;
     color: white;
     border: none;
+
+    a {
+      color: white;
+      text-decoration: underline;
+
+      &:hover {
+        color: #b1b3b5;
+      }
+    }
   }
 }
 
