@@ -7,41 +7,42 @@
 {% block page %}
     {% include 'menu.html' %}
 
-    <div class="root-container">
-        <div class="container-fluid">
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <h3 class="panel__title">{{ gettext('Assets') }}</h3>
-                    <div class="flex-align-right">
-                        {% if request.user.is_admin or 'assets-extract' in tenantless_principals %}
-                            <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default margin-right-10">
-                                {{ gettext('Extract') }}
-                            </a>
-                        {% endif %}
-                        {% if request.user.is_admin or 'assets-create' in tenantless_principals %}
-                            <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default">
-                                {{ gettext('New') }}
-                            </a>
-                        {% endif %}
-                    </div>
+    <div class="root-container container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h3 class="panel__title">{{ gettext('Assets') }}</h3>
+                <div class="flex-align-right">
+                    {% if request.user.is_admin or 'assets-extract' in tenantless_principals %}
+                        <a href="{{ 'assets-extract'|route_path }}" type="button" class="btn btn-default margin-right-10">
+                            {{ gettext('Extract') }}
+                        </a>
+                    {% endif %}
+                    {% if request.user.is_admin or 'assets-create' in tenantless_principals %}
+                        <a href="{{ 'assets-create'|route_path }}" type="button" class="btn btn-default">
+                            {{ gettext('New') }}
+                        </a>
+                    {% endif %}
                 </div>
-
-                <table id="assets-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
-                       data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
-                       data-custom-filter="status!=decommissioned"
-                       data-custom-filter-label="{{ gettext('Show decommissioned assets') }}">
-                    <thead>
-                        <tr>
-                            <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>
-                            <th data-data="tenant_name" data-priority="2">{{ gettext('Tenant') }}</th>
-                            <th data-data="customer_name">{{ gettext('Customer') }}</th>
-                            <th data-data="site">{{ gettext('Site') }}</th>
-                            <th data-data="calibration_next">{{ gettext('Next calibration') }}</th>
-                            <th data-data="status_label" data-priority="1">{{ gettext('Status') }}</th>
-                        </tr>
-                    </thead>
-                </table>
             </div>
+
+            <table id="assets-list" class="dataTables table table-striped table-hover nowrap" style="width:100%"
+                   data-ajax-url="{{ 'api-assets'|route_path(_query={'datatables': 'true'}) }}"
+                   data-custom-filter="status!=decommissioned"
+                   data-custom-filter-label="{{ gettext('Show decommissioned assets') }}">
+                <thead>
+                    <tr>
+                        <th data-data="asset_id" data-priority="1">{{ gettext('Asset ID') }}</th>
+                        <th data-data="tenant_name" data-priority="2">{{ gettext('Tenant') }}</th>
+                        <th data-data="customer_name">{{ gettext('Customer') }}</th>
+                        <th data-data="site">{{ gettext('Site') }}</th>
+                        <th data-data="calibration_next">{{ gettext('Next calibration') }}</th>
+                        <th data-data="status_label" data-priority="1">{{ gettext('Status') }}</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
+
+        {% set footer = 'branding/footer-{}.html'.format(config) %}
+        {% include footer ignore missing %}
     </div>
 {% endblock %}

@@ -18,7 +18,7 @@ $navbar-default-toggle-icon-bar-bg: white;
 $navbar-default-toggle-border-color: $marlink-blue;
 
 $navbar-height: 50px;
-$navbar-margin: 20px;
+$navbar-margin: 9px;
 
 $footer-height: 40px;
 $footer-height-sm: 249px;
@@ -37,17 +37,12 @@ $footer-height-sm: 249px;
 body {
   font-family: Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
 
-  &.login-background {
+  &.landing_page {
     background-image: url('/static/images/marlink/background.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
   }
-}
-
-.root-container {
-  // 1px: navbar border
-  min-height: calc(100% - #{$navbar-height} - 1px - #{$navbar-margin} - #{$footer-height});
 }
 
 .top-left-logo {
@@ -84,8 +79,9 @@ body {
 }
 
 footer {
-  width: 100%;
+  width: calc(100% + 30px);
   height: $footer-height;
+  margin-left: -15px;
   padding: 0 20px;
   background-color: $marlink-blue;
   display: flex;
@@ -144,11 +140,6 @@ footer {
 }
 
 @media (width <= 500px) {
-  .root-container {
-    // 1px: navbar border
-    min-height: calc(100% - #{$navbar-height} - 1px - #{$navbar-margin} - #{$footer-height-sm});
-  }
-
   .top-left-logo {
     top: 10px;
     left: 10px;
