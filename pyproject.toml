@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    'setuptools==69.5.1',
+    'setuptools==70.1.0',
     'setuptools-scm==8.1.0',
     'wheel==0.43.0',
 ]
@@ -29,8 +29,8 @@ dependencies = [
     'celery[redis]==5.4.0',
     'filedepot==0.11.0',
     'jinja2==3.1.4',
-    'packaging==24.0',
-    'parsys-utilities~=4.9.11',
+    'packaging==24.1',
+    'parsys-utilities~=4.9.12',
     'paste==3.10.1',
     'psycopg2==2.9.9',
     'pyramid==1.10.8',
@@ -38,8 +38,8 @@ dependencies = [
     'pyramid-session-redis==1.6.3',
     'pyramid-tm==2.5',
     'python-dateutil==2.9.0.post0',
-    'sentry-sdk==2.3.1',
-    'sqlalchemy==2.0.30',
+    'sentry-sdk==2.6.0',
+    'sqlalchemy==2.0.31',
     'transaction==4.0',
     'waitress==3.0.0',
     'zope.sqlalchemy==3.1',
@@ -53,11 +53,11 @@ dev = [
     'pyramid-debugtoolbar==4.12.1',
 ]
 qa = [
-    'flake8==7.0.0',
+    'flake8==7.1.0',
     'flake8-pyproject==1.2.3',
 ]
 tests = [
-    'parsys-utilities[tests]~=4.9.11',
+    'parsys-utilities[tests]~=4.9.12',
     'pytest==8.2.2',
     'pytest-cov==5.0.0',
     'pytest-rerunfailures==14.0',
